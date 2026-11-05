@@ -1,0 +1,20 @@
+{
+  "description": "Development regressions for categorical column semantics; not an unseen benchmark.",
+  "questions": [
+    {
+      "id": "sem-passive",
+      "question": "List the names of Passive portfolios, alphabetically.",
+      "ground_truth": {"sql_query": "SELECT portfolio_name FROM portfolios WHERE status='Passive' ORDER BY portfolio_name"}
+    },
+    {
+      "id": "sem-active",
+      "question": "Which portfolios have Active status? Return only portfolio names alphabetically.",
+      "ground_truth": {"sql_query": "SELECT portfolio_name FROM portfolios WHERE status='Active' ORDER BY portfolio_name"}
+    },
+    {
+      "id": "sem-index",
+      "question": "List the portfolio names with the Index strategy, alphabetically.",
+      "ground_truth": {"sql_query": "SELECT portfolio_name FROM portfolios WHERE strategy_type='Index' ORDER BY portfolio_name"}
+    }
+  ]
+}

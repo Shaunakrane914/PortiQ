@@ -14,10 +14,13 @@ from typing import Any
 
 import sqlglot
 
-from portiq.agent import PortfolioAgent
+from portiq.agent import AgentResponse, PortfolioAgent
+from portiq.config import Settings
 from portiq.database import connect_readonly
 from portiq.errors import PortiqError
-from portiq.sql import execute
+from portiq.exposure import ExposureResult
+from portiq.faithfulness import check_faithfulness
+from portiq.sql import QueryResult, execute
 
 
 def cells_equal(expected: Any, actual: Any) -> bool:
@@ -103,100 +106,208 @@ def _reference_sql(path: Path, sql: str) -> tuple[list[str], list[list[Any]]]:
         return [c[0] for c in cursor.description], [list(r) for r in cursor.fetchall()]
 
 
-def evaluate_case(agent: PortfolioAgent, case: dict[str, Any]) -> dict[str, Any]:
-    start = time.perf_counter()
-    record: dict[str, Any] = {
+def _record(case: dict[str, Any]) -> dict[str, Any]:
+    return {
         "id": case["id"],
         "question": case["question"],
         "category": case.get("category", case.get("type")),
         "split": case.get("split", "supplied"),
         "passed": False,
         "routing_correct": False,
+        "answer_correct": False,
+        "result_correct": None,
+        "status_correct": False,
         "sql_valid": None,
         "expected": [],
+        "failures": [],
     }
+
+
+def _expectations(settings: Settings, case: dict[str, Any]) -> list[dict[str, Any]]:
+    if case.get("expected_status", "answer") != "answer":
+        return []
+    expected = []
+    for reference in case.get("references", [case.get("ground_truth", {})]):
+        if "sql_query" in reference:
+            sql = reference["sql_query"]
+            columns, rows = _reference_sql(settings.database, sql)
+            expected.append(
+                {
+                    "tool": "sql_query",
+                    "columns": columns,
+                    "rows": rows,
+                    "ordered": bool(sqlglot.parse_one(sql, read="sqlite").args.get("order")),
+                }
+            )
+        else:
+            name = reference["parameters"]["portfolio_name"]
+            expected.append(
+                {
+                    "tool": "exposure_calculator",
+                    "portfolio_name": name,
+                    "sectors": reference_exposure(settings.source, name),
+                }
+            )
+    return expected
+
+
+def _compare_evidence(reference: dict[str, Any], candidate: dict[str, Any]) -> str | None:
+    if reference["tool"] != candidate["tool"]:
+        return "Different tool type."
+    if candidate.get("error"):
+        return str(candidate["error"])
+    actual = candidate["result"]
+    if reference["tool"] == "sql_query":
+        if len(reference["columns"]) != len(actual["columns"]):
+            return f"Projection width: expected {reference['columns']}, got {actual['columns']}."
+        return compare_rows(reference["rows"], actual["rows"], ordered=reference["ordered"])
+    if reference["portfolio_name"] != actual["portfolio_name"]:
+        return (
+            f"Portfolio identity: expected {reference['portfolio_name']}, "
+            f"got {actual['portfolio_name']}."
+        )
+    if set(reference["sectors"]) != set(actual["sectors"]):
+        return "Exposure sector sets differ."
+    if any(
+        not math.isfinite(float(actual["sectors"][k]))
+        or abs(value - float(actual["sectors"][k])) > 0.005001
+        for k, value in reference["sectors"].items()
+    ):
+        return "Exposure percentage mismatch (tolerance 0.005001 percentage points)."
+    return None
+
+
+def score_answer(
+    settings: Settings,
+    case: dict[str, Any],
+    answer: AgentResponse,
+    *,
+    narrative_rules: list[str] | None = None,
+) -> dict[str, Any]:
+    """Score evidence, routing and limited prose claims independently; never stop at routing."""
+    record = _record(case)
+    record["actual"] = answer.model_dump(mode="json")
+    record["expected"] = expected = _expectations(settings, case)
+
+    def fail(dimension: str, message: str) -> None:
+        record["failures"].append({"dimension": dimension, "message": message})
+
+    expected_status = case.get("expected_status", "answer")
+    record["status_correct"] = answer.status == expected_status
+    if not record["status_correct"]:
+        fail("status", f"Expected {expected_status}; actual {answer.status}: {answer.answer[:240]}")
+    successful = [t for t in answer.tools if t.result is not None]
+    expected_tools = [e["tool"] for e in expected]
+    record["routing_correct"] = (
+        sorted(t.tool for t in successful) == sorted(expected_tools)
+        if expected_status == "answer"
+        else record["status_correct"]
+    )
+    record["analytical_calls"] = len(successful)
+    if not record["routing_correct"]:
+        fail("routing", f"Expected tools {expected_tools}; got {[t.tool for t in successful]}.")
+
+    candidates = []
+    sql_validity = []
+    for index, tool in enumerate(successful):
+        candidate: dict[str, Any] = {"tool_index": index, "tool": tool.tool, "result": tool.result}
+        try:
+            if tool.tool == "sql_query":
+                actual = QueryResult.model_validate(tool.result)
+                query = execute(settings.database, actual.sql, max_rows=5000)
+                sql_validity.append(True)
+                candidate["result"] = query.model_dump(mode="json")
+                if actual.truncated or query.truncated:
+                    candidate["error"] = "Truncated query results cannot pass evaluation."
+                elif actual.columns != query.columns:
+                    candidate["error"] = "Tool columns differ from independently re-executed SQL."
+                else:
+                    candidate["error"] = compare_rows(query.rows, actual.rows, ordered=True)
+            elif tool.tool == "exposure_calculator":
+                candidate["result"] = ExposureResult.model_validate(tool.result).model_dump()
+        except (PortiqError, ValueError, KeyError, TypeError) as exc:
+            candidate["error"] = f"Evidence execution/validation failed: {exc}"
+            if tool.tool == "sql_query":
+                sql_validity.append(False)
+        candidates.append(candidate)
+    record["sql_valid"] = all(sql_validity) if sql_validity else None
+    comparisons = [[_compare_evidence(ref, c) for c in candidates] for ref in expected]
+    matches = [[i for i, error in enumerate(row) if error is None] for row in comparisons]
+
+    def assign(index: int, used: set[int]) -> list[int] | None:
+        if index == len(matches):
+            return []
+        for candidate in matches[index]:
+            if candidate not in used:
+                rest = assign(index + 1, used | {candidate})
+                if rest is not None:
+                    return [candidate, *rest]
+        return None
+
+    assignment = assign(0, set())
+    record["reference_checks"] = [
+        {
+            "reference_index": i,
+            "matched_tool_index": assignment[i] if assignment else None,
+            "candidates": [
+                {"tool_index": j, "matched": error is None, "error": error}
+                for j, error in enumerate(row)
+            ],
+        }
+        for i, row in enumerate(comparisons)
+    ]
+    if expected_status == "answer":
+        record["result_correct"] = assignment is not None
+        if assignment is None:
+            details = [
+                f"Reference {i}: "
+                + ("; ".join(str(e) for e in row if e) if row else "No successful tool evidence.")
+                for i, row in enumerate(comparisons)
+                if not matches[i]
+            ]
+            fail(
+                "result",
+                " | ".join(details) or "References require distinct matching tool results.",
+            )
+    with (settings.source / "data/portfolios.csv").open(encoding="utf-8-sig", newline="") as handle:
+        names = [row["portfolio_name"] for row in csv.DictReader(handle)]
+    with (settings.source / "data/sectors.csv").open(encoding="utf-8-sig", newline="") as handle:
+        sectors = [row["sector_name"] for row in csv.DictReader(handle)]
+    record["faithfulness"] = faithfulness = check_faithfulness(
+        answer.answer,
+        expected,
+        narrative_rules or [],
+        names,
+        sectors,
+    )
+    if faithfulness["status"] == "failed":
+        fail("faithfulness", "; ".join(faithfulness["failures"]))
+    record["answer_correct"] = (
+        record["status_correct"]
+        and record["result_correct"] is not False
+        and faithfulness["status"] != "failed"
+    )
+    record["passed"] = record["answer_correct"] and record["routing_correct"]
+    if record["failures"]:
+        record["failure"] = " | ".join(
+            f"{f['dimension']}: {f['message']}" for f in record["failures"]
+        )
+    return record
+
+
+def evaluate_case(
+    agent: PortfolioAgent, case: dict[str, Any], *, narrative_rules: list[str] | None = None
+) -> dict[str, Any]:
+    start = time.perf_counter()
     try:
-        answer = agent.answer(case["question"])
-        record["actual"] = answer.model_dump(mode="json")
-        expected_status = case.get("expected_status", "answer")
-        if answer.status != expected_status:
-            record["failure"] = (
-                f"Expected status {expected_status}; actual {answer.status}: {answer.answer[:240]}"
-            )
-            return record
-        if expected_status != "answer":
-            # Subjective handling has explicit status/no-mutation rules, not exact prose equality.
-            record["routing_correct"] = True
-            record["passed"] = True
-            return record
-        references = case.get("references", [case.get("ground_truth", {})])
-        expected_tools = [
-            "sql_query" if "sql_query" in ref else "exposure_calculator" for ref in references
-        ]
-        successful = [t for t in answer.tools if t.result is not None]
-        record["routing_correct"] = sorted(t.tool for t in successful) == sorted(expected_tools)
-        if not record["routing_correct"]:
-            record["failure"] = (
-                f"Expected tools {expected_tools}; got {[t.tool for t in successful]}."
-            )
-            return record
-        remaining = list(successful)
-        for reference in references:
-            if "sql_query" in reference:
-                columns, expected = _reference_sql(agent.settings.database, reference["sql_query"])
-                record["expected"].append({"columns": columns, "rows": expected})
-                candidate = next(t for t in remaining if t.tool == "sql_query")
-                remaining.remove(candidate)
-                actual = candidate.result
-                assert actual is not None
-                # Independent re-execution checks data returned by the agent, too.
-                query = execute(agent.settings.database, actual["sql"], max_rows=5000)
-                record["sql_valid"] = True
-                if actual["truncated"] or query.truncated:
-                    record["failure"] = "Truncated query results cannot pass evaluation."
-                    return record
-                if len(columns) != len(query.columns):
-                    record["failure"] = (
-                        f"Projection width: expected {columns}, got {query.columns}."
-                    )
-                    return record
-                ordered = bool(
-                    sqlglot.parse_one(reference["sql_query"], read="sqlite").args.get("order")
-                )
-                mismatch = compare_rows(query.rows, actual["rows"], ordered=True)
-                mismatch = mismatch or compare_rows(expected, query.rows, ordered=ordered)
-            else:
-                name = reference["parameters"]["portfolio_name"]
-                expected_exposure = reference_exposure(agent.settings.source, name)
-                record["expected"].append({"portfolio_name": name, "sectors": expected_exposure})
-                candidate = next(
-                    t
-                    for t in remaining
-                    if t.tool == "exposure_calculator"
-                    and t.result
-                    and t.result["portfolio_name"] == name
-                )
-                remaining.remove(candidate)
-                assert candidate.result is not None
-                actual_exposure = candidate.result["sectors"]
-                mismatch = None
-                if set(expected_exposure) != set(actual_exposure):
-                    mismatch = "Exposure sector sets differ."
-                elif any(
-                    abs(expected_exposure[k] - float(actual_exposure[k])) > 0.005001
-                    for k in expected_exposure
-                ):
-                    mismatch = (
-                        "Exposure percentage mismatch (tolerance 0.005001 percentage points)."
-                    )
-            if mismatch:
-                record["failure"] = mismatch
-                return record
-        record["passed"] = True
-    except (PortiqError, ValueError, KeyError, StopIteration) as exc:
+        record = score_answer(
+            agent.settings, case, agent.answer(case["question"]), narrative_rules=narrative_rules
+        )
+    except (PortiqError, ValueError, KeyError, TypeError) as exc:
+        record = _record(case)
         record["failure"] = f"Evaluation failed: {type(exc).__name__}: {exc}"
-    finally:
-        record["duration_ms"] = round((time.perf_counter() - start) * 1000, 3)
+        record["failures"] = [{"dimension": "execution", "message": str(exc)}]
+    record["duration_ms"] = round((time.perf_counter() - start) * 1000, 3)
     return record
 
 
@@ -214,11 +325,16 @@ def evaluate(
         cases = [c for c in cases if c.get("split") == split]
     if limit:
         cases = cases[:limit]
+    rules_path = agent.settings.source / "evaluation/faithfulness.json"
+    rules = json.loads(rules_path.read_text(encoding="utf-8")) if rules_path.is_file() else {}
+    suite_rules = rules.get(suite.name, {})
     records = []
     output.parent.mkdir(parents=True, exist_ok=True)
     for trial in range(1, trials + 1):
         for case in cases:
-            record = evaluate_case(agent, case)
+            record = evaluate_case(
+                agent, case, narrative_rules=suite_rules.get(str(case["id"]), [])
+            )
             record["trial"] = trial
             records.append(record)
             output.with_suffix(".progress.json").write_text(
@@ -232,6 +348,7 @@ def evaluate(
             )
     durations = sorted(r["duration_ms"] for r in records)
     report = {
+        "evaluator_version": 2,
         "timestamp_utc": datetime.now(UTC).isoformat(),
         "suite": suite.name,
         "model": agent.settings.model,
@@ -245,6 +362,9 @@ def evaluate(
             for path in sorted(agent.settings.source.glob("data/*.csv"))
         },
         "suite_sha256": hashlib.sha256(suite.read_bytes()).hexdigest(),
+        "narrative_rules_sha256": (
+            hashlib.sha256(rules_path.read_bytes()).hexdigest() if rules_path.is_file() else None
+        ),
         "runtime_sha256": {
             path.name: hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted(Path(__file__).parent.glob("*.py"))
@@ -254,7 +374,16 @@ def evaluate(
         "split": split or "all",
         "total": len(records),
         "passed": sum(r["passed"] for r in records),
+        "answer_correct": sum(r["answer_correct"] for r in records),
+        "result_correct": sum(r["result_correct"] is True for r in records),
+        "result_checked": sum(r["result_correct"] is not None for r in records),
         "routing_correct": sum(r["routing_correct"] for r in records),
+        "narrative_checked": sum(
+            r.get("faithfulness", {}).get("status") in {"passed", "failed"} for r in records
+        ),
+        "narrative_failed": sum(
+            r.get("faithfulness", {}).get("status") == "failed" for r in records
+        ),
         "mean_ms": statistics.mean(durations) if durations else None,
         "p95_ms": durations[max(0, math.ceil(len(durations) * 0.95) - 1)] if durations else None,
         "api_calls": sum(r.get("actual", {}).get("api_calls", 0) for r in records),
@@ -266,11 +395,17 @@ def evaluate(
     output.with_suffix(".progress.json").unlink(missing_ok=True)
     output.with_suffix(".md").write_text(
         f"# Evaluation: {suite.name}\n\n{report['passed']}/{report['total']} passed. "
+        f"Answer correctness: {report['answer_correct']}/{report['total']}. "
         f"Routing: {report['routing_correct']}/{report['total']}. "
+        f"Limited narrative checks: {report['narrative_checked']} cases, "
+        f"{report['narrative_failed']} failures. Unchecked prose is not certified. "
         f"Model: `{report['model']}`. Cache disabled. Trials: {trials}.\n\n"
-        "| Trial | ID | Pass | Failure |\n|---|---|---|---|\n"
+        "| Trial | ID | Strict pass | Answer | Routing | Narrative | Failure |\n"
+        "|---|---|---|---|---|---|---|\n"
         + "\n".join(
             f"| {r['trial']} | {r['id']} | {r['passed']} | "
+            f"{r['answer_correct']} | {r['routing_correct']} | "
+            f"{r.get('faithfulness', {}).get('status', 'not_checked')} | "
             f"{str(r.get('failure', '')).replace('|', '/')} |"
             for r in records
         )

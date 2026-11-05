@@ -1,0 +1,22 @@
+{
+  "description": "Limited narrative contracts, separate from frozen reference suites; not a general prose judge.",
+  "ground_truth_dataset.json": {
+    "1": ["portfolio_count"],
+    "4": ["scalar"],
+    "9": ["exposure"],
+    "10": ["exposure"]
+  },
+  "semantic_regression.json": {
+    "sem-passive": ["portfolio_names"],
+    "sem-active": ["portfolio_names"],
+    "sem-index": ["portfolio_names"]
+  },
+  "extended.json": {
+    "ext-02": ["portfolio_names"],
+    "ext-03": ["scalar"],
+    "ext-21": ["scalar"],
+    "ext-35": ["exposure"],
+    "ext-37": ["exposure"],
+    "ext-44": ["scalar", "exposure"]
+  }
+}
