@@ -28,7 +28,9 @@ class SQLInput(BaseModel):
         max_length=20000,
         description=(
             "Read-only SQLite query. Unless exact columns are explicitly requested, holdings "
-            "listings include holding_id, symbol, company_name, quantity and cost_basis."
+            "listings include holding_id, symbol, company_name, quantity and cost_basis. "
+            "For grouped metric summaries without a user-specified ordering, include ORDER BY "
+            "the last requested numeric metric DESC. Preserve any explicit user ordering."
         ),
     )
     explanation: str = Field(max_length=1000)
