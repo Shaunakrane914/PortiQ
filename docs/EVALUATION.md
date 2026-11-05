@@ -60,3 +60,10 @@ rerun after changes informed by supplied development questions; it must not be l
 new unseen evaluation. `transport-interrupted.json` is explicitly incomplete and preserves
 the interrupted run that motivated bounded transport retries. Development diagnostics are
 also labeled separately and are never merged into a full-suite score.
+
+The measured live release revision is `b51a242`. Subsequent revision `8d88898` changes
+corrupt-file error translation and case-insensitive main-database qualification, leaving
+the live prompt and financial conventions unchanged. `scripts/replay_reports.py` replays
+all recorded successful tool outputs under the updated boundary; its 70 reconciliations
+are compatibility checks, not 70 additional live AI answers. The original report hashes
+remain intact rather than being rewritten to imply a new model run.

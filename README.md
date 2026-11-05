@@ -26,11 +26,16 @@ requirements include optional UI/scientific packages that this CLI does not need
 ## What works
 
 Verified release evidence: **20/20 supplied cases across two fresh trials** (10/10 each),
-**49/50 on the first frozen extended run**, and **110 automated tests passed** with one
-opt-in live test skipped. Overall line coverage is 92.64% (93% rounded); exposure coverage
+**49/50 on both the first frozen extended run and the later regression run**, and
+**116 automated tests passed** with one opt-in live test skipped. Overall line coverage
+is 92.95% (93% rounded); exposure coverage
 is 100% and the SQL boundary is 94% rounded. Ruff, strict mypy and all four hosted CI jobs
 pass. The first extended score predates the final planning/name-grounding changes; the
 separate extended regression report measures the updated runtime.
+
+Live accuracy was measured on runtime revision `b51a242`. Later error-handling and valid
+`main`-namespace fixes passed the expanded test suite and an offline replay of all 70
+recorded tool results with zero mismatches. The replay is not another live model score.
 
 - Atomic schema-aware CSV ingestion, reproducible rebuilds, FK and data validation.
 - Genuine Gemini function calling with manual typed dispatch and multiple analytical tools.
@@ -136,6 +141,7 @@ uv run ruff format --check .
 uv run mypy
 uv run pytest --cov=portiq --cov-report=term-missing
 uv run python scripts/benchmark.py
+uv run python scripts/replay_reports.py
 ```
 
 Ordinary tests use injected deterministic Gemini responses and no API key. The separate
@@ -176,4 +182,4 @@ Further documentation:
 - [Architecture](docs/ARCHITECTURE.md) and [decisions](docs/DECISIONS.md)
 - [Security](docs/SECURITY.md) and [performance](docs/PERFORMANCE.md)
 - [Evaluation](docs/EVALUATION.md), [limitations](docs/KNOWN_LIMITATIONS.md) and [interview notes](docs/INTERVIEW.md)
-- [Acceptance record](docs/ACCEPTANCE.md)
+- [Acceptance record](docs/ACCEPTANCE.md) and [reviewer quick start](docs/SUBMISSION.md)

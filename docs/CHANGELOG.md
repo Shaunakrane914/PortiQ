@@ -31,3 +31,9 @@ fixed sector-presence semantics; a subsequent check still failed ordering and wa
 real ConnectError/ReadTimeout failures. Its fresh supplied release run scored 10/10 twice.
 All 110 ordinary tests pass, and its four hosted CI matrix jobs pass. The first extended
 run scored 49/50 before these changes; a later run is labeled regression coverage.
+
+The later regression run also scored 49/50. `8d88898` handled corrupt SQLite files and
+accepted valid case-insensitive `main` qualification; new tests caught and fixed an
+authorizer case-sensitivity issue. Its local suite passes 116 tests. Offline replay
+reconciled all 70 recorded release tool results with zero mismatches. No additional
+live accuracy claim is inferred from that replay.
