@@ -55,6 +55,8 @@ def test_classification_values_belong_to_the_actual_columns(database: Path) -> N
     assert "Passive" not in context["portfolios.strategy_type"]["values"]
     assert "Index" in context["portfolios.strategy_type"]["values"]
     assert "securities.company_name" not in context
+    assert set(context) == {"portfolios.status", "portfolios.strategy_type"}
+    assert "sectors.industry_group" not in context
 
 
 def test_categorical_context_is_dynamic_and_bounded(database: Path) -> None:

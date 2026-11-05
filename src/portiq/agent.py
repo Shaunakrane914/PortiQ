@@ -23,7 +23,14 @@ logger = logging.getLogger(__name__)
 class SQLInput(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     question: str = Field(min_length=1, max_length=4000)
-    sql: str = Field(min_length=1, max_length=20000)
+    sql: str = Field(
+        min_length=1,
+        max_length=20000,
+        description=(
+            "Read-only SQLite query. Unless exact columns are explicitly requested, holdings "
+            "listings include holding_id, symbol, company_name, quantity and cost_basis."
+        ),
+    )
     explanation: str = Field(max_length=1000)
 
 

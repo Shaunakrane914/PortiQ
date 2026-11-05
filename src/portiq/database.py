@@ -158,7 +158,7 @@ def schema_context(path: Path) -> str:
 
 
 def categorical_context(path: Path, *, max_values: int = 16) -> dict[str, Any]:
-    """Describe classification domains from current data, with explicit truncation limits."""
+    """Describe portfolio classification domains with explicit size/truncation limits."""
     if not 1 <= max_values <= 32:
         raise ValueError("max_values must be between 1 and 32")
     categories: dict[str, Any] = {}
@@ -166,25 +166,14 @@ def categorical_context(path: Path, *, max_values: int = 16) -> dict[str, Any]:
         tables = [
             row[0]
             for row in conn.execute(
-                "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='portfolios'"
             )
         ]
         for table in tables:
             for column in conn.execute(f"PRAGMA table_info({quote_identifier(table)})"):
                 name, kind = column[1], column[2]
-                # These are schema classifications, not question-specific routing rules.
-                if kind != "TEXT" or not (
-                    name.endswith("_type")
-                    or name
-                    in {
-                        "status",
-                        "target_risk_level",
-                        "currency",
-                        "exchange",
-                        "country",
-                        "industry_group",
-                    }
-                ):
+                # Keep this patch scoped to portfolio status/strategy semantics.
+                if kind != "TEXT" or name not in {"status", "strategy_type"}:
                     continue
                 values = [
                     row[0]
