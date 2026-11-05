@@ -1,108 +1,171 @@
-# AI Engineering Take-Home: Portfolio Analytics Agent
+# PortiQ — PL Capital Portfolio Intelligence Agent
 
-## Overview
+A CLI-first Gemini agent for the supplied PL Capital take-home dataset. Gemini selects
+typed analytical tools and generates SQLite queries; Python performs deterministic equity
+sector calculations. Every answer includes inspectable tool evidence. This is static
+demonstration data, not a live market feed or investment recommendation.
 
-Build a simple AI agent that can answer questions about portfolio data. The agent should be able to understand natural language questions and either query a database or calculate basic portfolio metrics.
-
-## What You'll Build
-
-1. **SQL Query Tool**: Convert questions like "How many portfolios do we have?" into SQL queries.
-2. **Exposure Calculator Tool**: Given a portfolio, calculate sector exposures. You will need to combine weights of each holding in a portfolio with the respective sector of that security, so that given a portfolio your calculator can output percentage exposures to each sector. Ignore bond holdings for this calculation, only consider the equities in the portfolio.
-3. **Portfolio Agent**: A command-line agent that can choose one of the above tools to answer a user query.
-4. **Agent Evaluator**: A command-line script that uses the given ground truth dataset, runs each question through the agent, and confirms whether the generated response matches the expected true answer.
-
-## Provided Materials
-✅ **Sample data** - CSV files with portfolio related information under `data/`  
-✅ **Database schema** - See `database_schema.sql`  
-✅ **Suggested libraries** - see `requirements.txt`   
-✅ **Ground Truth Dataset** - see `ground_truth_dataset.json` 
-
-## Getting Started
-
-### Step 1: Environment Setup
-```bash
-# 1. Install dependencies
-pip install -r requirements.txt
-
-# 2. Get API key from Google AI Studio (https://ai.google.dev/gemini-api/docs)
-
-# 3. Create a script to load your in-memory DB with the provided schema & data
+```powershell
+uv sync --frozen --extra dev
+Copy-Item .env.example .env
+# Set GEMINI_API_KEY in .env locally. Never commit the key.
+uv run portfolio-agent init-db
+uv run portfolio-agent ask "How many portfolios do we have in total?" --show-sql
+uv run portfolio-agent chat
 ```
 
-### Step 2: Understand the Data
-- Explore the CSV files in the `data/` folder
-- Look at `database_schema.sql` to understand table relationships
-- Run a few test queries on the database
-- Understand the evaluation Q&A in the `ground_truth_dataset.json` file
+Python 3.11+ and [uv](https://docs.astral.sh/uv/getting-started/installation/) are required
+for the locked workflow. On macOS/Linux use `cp .env.example .env` instead of `Copy-Item`.
+Run commands from the repository root; `--source` and `--db` support other locations.
 
-### Step 3: Build Your Agent
+The original [assignment README](docs/assignment/README.md), schema, nine CSVs,
+ground-truth file and suggested `requirements.txt` are preserved. Runtime dependencies
+are defined in `pyproject.toml` and exactly resolved in `uv.lock`; the suggested original
+requirements include optional UI/scientific packages that this CLI does not need.
 
-**Start Simple:**
-```python
-# Basic structure - build on this
-class PortfolioAgent:
-    def __init__(self):
-        self.db_connection = sqlite3.connect('portfolio_database.db')
-    
-    def answer_question(self, question):
-        # Your logic here
-        pass
+## What works
+
+- Atomic schema-aware CSV ingestion, reproducible rebuilds, FK and data validation.
+- Genuine Gemini function calling with manual typed dispatch and multiple analytical tools.
+- Text-to-SQL with parsed validation, SQLite authorization, read-only connections and limits.
+- Stock-only sector exposure from `current_weight`, Decimal arithmetic and explicit normalization.
+- Bounded SQL repair, duplicate-failure detection, model errors and ambiguous-name clarification.
+- Independent supplied and extended evaluation, fresh calls, JSON/Markdown reports and traces.
+- Key-free automated tests, Ruff, strict mypy and GitHub Actions.
+
+There is no benchmark lookup in runtime code. The CLI works independently of a frontend.
+Optional dashboard and REST API work is deferred in favor of the assignment's core requirements.
+
+## Configuration and installation
+
+The tested model is `gemini-3.1-flash-lite`. Set `GEMINI_MODEL` to another model available
+to your account if needed. Model availability and quota vary; a successful model list
+does not guarantee successful generation. `doctor --live` makes a real generation call.
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `GEMINI_API_KEY` | required for AI commands | Local secret; deterministic commands need no key |
+| `GEMINI_MODEL` | `gemini-3.1-flash-lite` | Configured Gemini model ID |
+| `PORTIQ_DB` | `portfolio_database.db` | Read-only analytical database path |
+| `PORTIQ_SOURCE` | `.` | Directory containing supplied schema, CSVs and evaluation files |
+| `PORTIQ_REQUEST_INTERVAL` | `13` | Minimum seconds between requests within one process |
+
+The conservative pacing default accommodates the observed five-requests/minute preview
+quota. It is not a quota guarantee. The release evaluation uses 6.5 seconds on Flash-Lite;
+set your own interval according to your account. Multiple CLI processes do not share a limiter.
+No persistent answer cache is enabled. The CLI's `--model`, `--db` and `--source` options
+come **before** the subcommand.
+
+A regular pip installation is also supported, though `uv.lock` is the canonical tested resolution:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\python -m pip install -e ".[dev]"
+.venv\Scripts\portfolio-agent --help
 ```
 
-**Key Implementation Tips:**
-- Start with hardcoded SQL for a few questions to test your setup
-- Add Gemini API integration once basic structure works
-- Focus on getting a few questions working well before expanding
-- Test frequently with the evaluation questions
+On macOS/Linux the corresponding executables are `.venv/bin/python` and
+`.venv/bin/portfolio-agent`. A clone with source data is required; the installed wheel
+does not bundle the assessment dataset. No deprecated `google.generativeai` API is used.
 
-### Step 4: Evaluation
-Create a simple script to test your agent against the ground truth questions.
+## CLI examples
 
-## Technical Hints
-
-### Database Connection
-```python
-import sqlite3
-db_path = 'portfolio_database.db'
-conn = sqlite3.connect(db_path)
+```powershell
+uv run portfolio-agent --help
+uv run portfolio-agent doctor
+uv run portfolio-agent doctor --live
+uv run portfolio-agent init-db --rebuild
+uv run portfolio-agent exposure "Balanced Portfolio"
+uv run portfolio-agent sql "SELECT COUNT(*) FROM portfolios"
+uv run portfolio-agent ask "What are the sector exposures for Tech Innovation Fund?" --json
+uv run portfolio-agent ask "Show the top 5 holdings by cost basis in Growth Equity Fund" --show-sql
+uv run portfolio-agent ask "Compare Balanced Portfolio sector exposure and the current AAPL price" --trace
+uv run portfolio-agent chat --show-sql
 ```
 
-### Gemini API Usage
-```python
-import google.generativeai as genai
-genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-model = genai.GenerativeModel('gemini-pro')
+`chat` supports `help`, `exit`, EOF and Ctrl+C. Each question starts a fresh context; name
+the portfolio in every question. Normal output shows a generated summary followed by
+authoritative tables or exposure calculations. JSON includes request ID, status, model,
+provider model version, tool arguments, SQL, attempts, errors, durations and token totals.
+`--verbose` enables operational logging without provider payloads or hidden reasoning.
+Failed/partial asks exit 1; valid answers, clarification and unsupported responses exit 0.
+
+For Balanced Portfolio, stock weight is 0.36: Technology 61.11%, Financials 22.22%,
+Healthcare 16.67%. Bonds are excluded from both numerator and denominator. The reported
+equity weight makes the calculation basis explicit. Bond-only portfolios receive an
+undefined-exposure error. See [data assumptions](docs/DATA_ASSUMPTIONS.md) for the 0.98
+index weight total, AUM/market-value differences and supplied question conventions.
+
+## Evaluation
+
+These commands use real Gemini requests and consume your account's quota:
+
+```powershell
+uv run portfolio-agent evaluate --output reports/local/supplied.json
+uv run portfolio-agent evaluate --trials 2 --output reports/local/repeated.json
+uv run portfolio-agent evaluate --suite extended --output reports/local/extended.json
+uv run portfolio-agent evaluate --suite extended --split heldout --output reports/local/heldout.json
+uv run python scripts/release_evaluation.py
 ```
 
-## Common Pitfalls to Avoid
+The release script runs two supplied trials followed by all 50 extended questions with
+one backend and 6.5-second pacing. The evaluator executes reference SQL independently,
+re-executes generated SQL, and checks full results, projection width, duplicate rows,
+ordering and numeric tolerances. Exposure references read the original CSVs independently
+of the production calculator. Extra, missing or truncated results fail. Tool routing is
+scored separately. Alias spelling is allowed; projection position and values must agree.
 
-1. **Don't overthink the architecture** - Start simple and add complexity gradually
-2. **Test early and often** - Verify each piece works before moving on
-3. **Focus on accuracy first** - Get basic functionality working before optimizing
-4. **Handle errors gracefully** - Add try/catch blocks around database operations
-5. **Read the data first** - Understand the portfolio data structure before coding
+The extended suite was authored here and frozen before its first live run. Its 17
+development, 17 validation and 16 heldout cases are not an externally blind benchmark.
+See [evaluation methodology](docs/EVALUATION.md) and committed `reports/` artifacts for
+actual scores and failures. Targets such as 10/10 or 45/50 are not claims of achievement.
 
-## Optional Enhancements 
+## Verification
 
-- Use parameterized queries to prevent SQL injection (SQL Safety)
-- Validate queries before execution (SQL Safety)
-- Handle database errors gracefully (SQL Safety)
-- Add logging to track what your agent is doing
-- Add basic input validation and error messages
-- Implement caching for repeated queries
-- Provide a graphical interface via Streamlit
-- Leverage RAG or GraphRAG to find the right metadata related to the user question to be used in the context.
-- Convert the agent to a production ready REST API
-- Support concurrent query handling from multiple users
-- Improve evaluation to favor queries that are more performant (e.g. ones that have lower logical i/o)
-- Handle and evaluate hybrid questions that require both tools to be used together
+```powershell
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy
+uv run pytest --cov=portiq --cov-report=term-missing
+uv run python scripts/benchmark.py
+```
 
-## Deliverables
+Ordinary tests use injected deterministic Gemini responses and no API key. The separate
+opt-in live test requires `PORTIQ_LIVE=1` and initialized source data/database:
 
-1. **Working agent** that can answer questions via command line
-2. **Evaluation script** that tests against the ground truth questions
-3. **Brief documentation** explaining how to run your solution (can include design diagrams)
-4. **Clean code** with basic error handling
+```powershell
+$env:PORTIQ_LIVE = "1"
+uv run pytest -m live -q
+Remove-Item Env:PORTIQ_LIVE
+```
 
+Mock tests verify orchestration, validation and failures; only live reports establish
+measured AI accuracy. CI runs formatting, linting, type checks, tests, coverage, database
+initialization, CLI help, doctor and exposure smoke checks without secrets.
 
-Don't worry about perfect accuracy - focus on building something that works and shows good engineering practices!
+## Architecture and review notes
+
+```mermaid
+flowchart LR
+  CLI[Python CLI] --> Gemini[Gemini function calling]
+  Gemini --> SQL[Validated SQL tool]
+  Gemini --> Equity[Decimal exposure tool]
+  SQL --> RO[Read-only SQLite]
+  Equity --> RO
+  CSV[Original CSVs and schema] --> Init[Atomic initializer]
+  Init --> RO
+  Eval[Independent evaluator] --> CLI
+```
+
+The SQL boundary combines SQLGlot parsing, an explicit SQLite authorizer, allowed
+functions, `mode=ro`, `query_only=ON`, result limits and a VM deadline. It is a local
+analyst tool rather than an isolated multi-tenant execution service. The model's prose
+can still misstate valid results; the structured evidence is authoritative.
+
+Further documentation:
+
+- [Requirement traceability](docs/REQUIREMENTS.md) and [data audit](docs/DATA_ASSUMPTIONS.md)
+- [Architecture](docs/ARCHITECTURE.md) and [decisions](docs/DECISIONS.md)
+- [Security](docs/SECURITY.md) and [performance](docs/PERFORMANCE.md)
+- [Evaluation](docs/EVALUATION.md), [limitations](docs/KNOWN_LIMITATIONS.md) and [interview notes](docs/INTERVIEW.md)
+- [Acceptance record](docs/ACCEPTANCE.md)

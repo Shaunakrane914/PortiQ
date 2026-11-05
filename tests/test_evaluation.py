@@ -40,6 +40,24 @@ def test_supplied_references_are_executable(database: Path, source: Path) -> Non
             assert reference_exposure(source, reference["parameters"]["portfolio_name"])
 
 
+def test_all_frozen_extended_references(database: Path, source: Path) -> None:
+    from portiq.sql import execute
+
+    cases = json.loads((source / "evaluation/extended.json").read_text())["questions"]
+    assert len(cases) == 50
+    assert len({c["id"] for c in cases}) == 50
+    assert {c["split"] for c in cases} == {"development", "validation", "heldout"}
+    for case in cases:
+        if case.get("expected_status"):
+            assert case["expected_status"] in {"clarification", "unsupported"}
+            continue
+        for reference in case.get("references", [case.get("ground_truth", {})]):
+            if "sql_query" in reference:
+                assert not execute(database, reference["sql_query"]).truncated
+            else:
+                assert reference_exposure(source, reference["parameters"]["portfolio_name"])
+
+
 def test_evaluator_rejects_incorrect_sql_even_plausible_prose(database: Path, source: Path) -> None:
     case = {
         "id": 1,

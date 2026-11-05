@@ -1,0 +1,557 @@
+{
+  "timestamp_utc": "2026-11-05T17:01:15.448961+00:00",
+  "suite": "ground_truth_dataset.json",
+  "model": "gemini-3-flash-preview",
+  "cache": "disabled",
+  "trials": 1,
+  "split": "all",
+  "total": 10,
+  "passed": 2,
+  "routing_correct": 3,
+  "mean_ms": 16936.1337,
+  "p95_ms": 26532.111,
+  "api_calls": 14,
+  "tokens": 14098,
+  "records": [
+    {
+      "id": 1,
+      "question": "How many portfolios do we have in total?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              13
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "1ef7540d-3a33-4032-a988-694491ccae01",
+        "status": "answer",
+        "answer": "There are a total of 13 portfolios.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT COUNT(*) AS total_portfolios FROM portfolios;",
+              "question": "How many portfolios do we have in total?",
+              "explanation": "Count the total number of portfolios in the portfolios table."
+            },
+            "result": {
+              "columns": [
+                "total_portfolios"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) AS total_portfolios FROM portfolios;",
+              "duration_ms": 0.945,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 8.495
+          }
+        ],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [
+          "gemini-3-flash-preview"
+        ],
+        "duration_ms": 14283.507,
+        "model_duration_ms": 14260.659,
+        "api_calls": 2,
+        "tokens": 3715,
+        "cache": "disabled"
+      },
+      "duration_ms": 14285.602,
+      "trial": 1
+    },
+    {
+      "id": 2,
+      "question": "What are the names of all active portfolios?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Growth Equity Fund"
+            ],
+            [
+              "Conservative Income Fund"
+            ],
+            [
+              "Tech Innovation Fund"
+            ],
+            [
+              "Balanced Portfolio"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Small Cap Value Fund"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Fixed Income Plus"
+            ],
+            [
+              "Dividend Aristocrats Fund"
+            ],
+            [
+              "Emerging Markets Fund"
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "9393409e-bddc-42fa-92cd-677a52c0d376",
+        "status": "answer",
+        "answer": "The active portfolios are:\n1. Growth Equity Fund\n2. Conservative Income Fund\n3. Tech Innovation Fund\n4. Balanced Portfolio\n5. ESG Sustainable Fund\n6. Small Cap Value Fund\n7. International Equity Fund\n8. Fixed Income Plus\n9. Dividend Aristocrats Fund\n10. Emerging Markets Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active';",
+              "question": "What are the names of all active portfolios?",
+              "explanation": "Select the names of all portfolios where the status is 'Active'."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "Conservative Income Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ],
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active';",
+              "duration_ms": 0.927,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 1.403
+          }
+        ],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [
+          "gemini-3-flash-preview"
+        ],
+        "duration_ms": 26376.684,
+        "model_duration_ms": 26373.448,
+        "api_calls": 2,
+        "tokens": 3911,
+        "cache": "disabled"
+      },
+      "duration_ms": 26381.406,
+      "trial": 1
+    },
+    {
+      "id": 3,
+      "question": "Which securities are in the Technology sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "symbol",
+            "company_name"
+          ],
+          "rows": [
+            [
+              "AAPL",
+              "Apple Inc."
+            ],
+            [
+              "MSFT",
+              "Microsoft Corporation"
+            ],
+            [
+              "GOOGL",
+              "Alphabet Inc."
+            ],
+            [
+              "META",
+              "Meta Platforms Inc."
+            ],
+            [
+              "NVDA",
+              "NVIDIA Corporation"
+            ],
+            [
+              "AVGO",
+              "Broadcom Inc."
+            ],
+            [
+              "CRM",
+              "Salesforce Inc."
+            ],
+            [
+              "ORCL",
+              "Oracle Corporation"
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "46b1f79d-b1ab-4c51-ac65-ee71f3b5f62f",
+        "status": "answer",
+        "answer": "The following 8 securities are in the Technology sector:\n\n| Symbol | Company Name | Asset Type | Market Cap ($M) | Current Price |\n| :--- | :--- | :--- | :--- | :--- |\n| AAPL | Apple Inc. | Stock | 2,800,000 | 185.50 |\n| MSFT | Microsoft Corporation | Stock | 2,750,000 | 415.26 |\n| GOOGL | Alphabet Inc. | Stock | 1,650,000 | 2,750.80 |\n| META | Meta Platforms Inc. | Stock | 750,000 | 325.20 |\n| NVDA | NVIDIA Corporation | Stock | 1,800,000 | 875.30 |\n| AVGO | Broadcom Inc. | Stock | 620,000 | 875.15 |\n| CRM | Salesforce Inc. | Stock | 195,000 | 210.90 |\n| ORCL | Oracle Corporation | Stock | 315,000 | 115.85 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT s.symbol, s.company_name, s.asset_type, s.market_cap, s.current_price\nFROM securities s\nJOIN sectors sec ON s.sector_id = sec.sector_id\nWHERE sec.sector_name = 'Technology';",
+              "explanation": "Find all securities associated with the 'Technology' sector by joining the securities and sectors tables.",
+              "question": "Which securities are in the Technology sector?"
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "company_name",
+                "asset_type",
+                "market_cap",
+                "current_price"
+              ],
+              "rows": [
+                [
+                  "AAPL",
+                  "Apple Inc.",
+                  "Stock",
+                  2800000.0,
+                  185.5
+                ],
+                [
+                  "MSFT",
+                  "Microsoft Corporation",
+                  "Stock",
+                  2750000.0,
+                  415.26
+                ],
+                [
+                  "GOOGL",
+                  "Alphabet Inc.",
+                  "Stock",
+                  1650000.0,
+                  2750.8
+                ],
+                [
+                  "META",
+                  "Meta Platforms Inc.",
+                  "Stock",
+                  750000.0,
+                  325.2
+                ],
+                [
+                  "NVDA",
+                  "NVIDIA Corporation",
+                  "Stock",
+                  1800000.0,
+                  875.3
+                ],
+                [
+                  "AVGO",
+                  "Broadcom Inc.",
+                  "Stock",
+                  620000.0,
+                  875.15
+                ],
+                [
+                  "CRM",
+                  "Salesforce Inc.",
+                  "Stock",
+                  195000.0,
+                  210.9
+                ],
+                [
+                  "ORCL",
+                  "Oracle Corporation",
+                  "Stock",
+                  315000.0,
+                  115.85
+                ]
+              ],
+              "sql": "SELECT s.symbol, s.company_name, s.asset_type, s.market_cap, s.current_price\nFROM securities s\nJOIN sectors sec ON s.sector_id = sec.sector_id\nWHERE sec.sector_name = 'Technology';",
+              "duration_ms": 1.583,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.361
+          }
+        ],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [
+          "gemini-3-flash-preview"
+        ],
+        "duration_ms": 26528.565,
+        "model_duration_ms": 26523.8,
+        "api_calls": 2,
+        "tokens": 4550,
+        "cache": "disabled"
+      },
+      "failure": "Projection width: expected ['symbol', 'company_name'], got ['symbol', 'company_name', 'asset_type', 'market_cap', 'current_price'].",
+      "duration_ms": 26532.111,
+      "trial": 1
+    },
+    {
+      "id": 4,
+      "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "dcffaba5-4390-4439-97cd-27fcf1ed8814",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT SUM(total_aum) AS total_high_risk_aum FROM portfolios WHERE target_risk_level = 'High';",
+              "explanation": "Calculate the sum of total_aum for all portfolios where the target_risk_level is 'High'.",
+              "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?"
+            },
+            "result": {
+              "columns": [
+                "total_high_risk_aum"
+              ],
+              "rows": [
+                [
+                  85000000.0
+                ]
+              ],
+              "sql": "SELECT SUM(total_aum) AS total_high_risk_aum FROM portfolios WHERE target_risk_level = 'High';",
+              "duration_ms": 1.025,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 1.381
+          }
+        ],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [
+          "gemini-3-flash-preview"
+        ],
+        "duration_ms": 24229.708,
+        "model_duration_ms": 24226.498,
+        "api_calls": 2,
+        "tokens": 1922,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 24229.806,
+      "trial": 1
+    },
+    {
+      "id": 5,
+      "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "f227196b-d8ac-4986-8fdd-7b46ab8b9ddb",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 12927.673,
+        "model_duration_ms": 12927.06,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 12927.748,
+      "trial": 1
+    },
+    {
+      "id": 6,
+      "question": "What is the average current price of securities in each sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "2850604c-142e-4d51-82a4-837398e80244",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 13086.753,
+        "model_duration_ms": 13085.386,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 13086.812,
+      "trial": 1
+    },
+    {
+      "id": 7,
+      "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "71461f9c-998d-4087-a3b2-02d42666ed79",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 12951.742,
+        "model_duration_ms": 12951.106,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 12951.796,
+      "trial": 1
+    },
+    {
+      "id": 8,
+      "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "d9ff21a1-a8f2-44db-b6c2-3778b5cb33dd",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 13001.741,
+        "model_duration_ms": 13001.126,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 13001.804,
+      "trial": 1
+    },
+    {
+      "id": 9,
+      "question": "What are the sector exposures for the Tech Innovation Fund?",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "c31c535b-639e-47a3-8491-c160f5451d90",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 13014.121,
+        "model_duration_ms": 13012.951,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 13014.181,
+      "trial": 1
+    },
+    {
+      "id": 10,
+      "question": "Calculate the sector exposure breakdown for international equity",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "0b32a8e7-1c7e-4127-9445-4628fc29a776",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 12950.001,
+        "model_duration_ms": 12948.935,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 12950.071,
+      "trial": 1
+    }
+  ]
+}

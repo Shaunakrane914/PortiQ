@@ -1,0 +1,2032 @@
+{
+  "timestamp_utc": "2026-11-05T17:12:26.479495+00:00",
+  "suite": "ground_truth_dataset.json",
+  "model": "gemini-3.1-flash-lite",
+  "request_interval_seconds": 6.5,
+  "sql_attempts": 3,
+  "max_tool_calls": 6,
+  "source_sha256": {
+    "data\\benchmarks.csv": "c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62",
+    "data\\historical_prices.csv": "4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0",
+    "data\\holdings.csv": "6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc",
+    "data\\portfolio_performance.csv": "acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1",
+    "data\\portfolios.csv": "11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb",
+    "data\\risk_metrics.csv": "424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304",
+    "data\\sectors.csv": "5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010",
+    "data\\securities.csv": "973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e",
+    "data\\transactions.csv": "736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f"
+  },
+  "suite_sha256": "7a5c9e4ea18f973d047d31aece044a84a179010e53ca06a6fb65f00ae0343244",
+  "runtime_sha256": {
+    "__init__.py": "ae3ce640088023063cf4239c6d4a04adec87185cf978e2c1c7352e40befd1e56",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8",
+    "agent.py": "97a449781eefd8047cd889fac5976a01ac3424dd14112000b9ee38aafef13c8c",
+    "cli.py": "7b1dd46e96c1ad2a826f0dbaca2d073eeb7ed5da2b585ce2fb9bdefcb0c51a6c",
+    "config.py": "783a5345b103312ef2ef755644a67475ec4c1b86b15e59c05bf1f5d02849bbdd",
+    "database.py": "688bbb9b238f99325d87350f03b3007737e5079326f3726314a19c7eb46a7d99",
+    "errors.py": "2699a789cbe218449043a298ef8dc93a386ccb2fb694043e17688af753d0a5b6",
+    "evaluation.py": "e6404420219211c2698cca2a3ae76512b107cef69a8ce0da49f5e7cc99e3c791",
+    "exposure.py": "45854cf77093240491754586f3a1cc1c0b109d14e84d4d8b834b212fc74f028d",
+    "model.py": "446dd9aeb1d67d002e14f814dc1394d9e0a2ef184537119c5aec4f81bd6bf556",
+    "prompts.py": "32a4f6259416ebaddbdb9ad176107b63bc552db56a61f4024bc9db447b95337d",
+    "sql.py": "bfc6b2cca311619575fe0380ddc60017720f41d66245d7844659bd736a08a229"
+  },
+  "cache": "disabled",
+  "trials": 2,
+  "split": "all",
+  "total": 20,
+  "passed": 16,
+  "routing_correct": 18,
+  "mean_ms": 12767.65145,
+  "p95_ms": 14102.102,
+  "api_calls": 40,
+  "tokens": 88670,
+  "records": [
+    {
+      "id": 1,
+      "question": "How many portfolios do we have in total?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              13
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "371010e2-1f00-481c-858f-c143efa6f68d",
+        "status": "answer",
+        "answer": "There are a total of 13 portfolios.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT COUNT(*) FROM portfolios;",
+              "question": "How many portfolios do we have in total?",
+              "explanation": "Count the total number of portfolios in the portfolios table."
+            },
+            "result": {
+              "columns": [
+                "COUNT(*)"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) FROM portfolios;",
+              "duration_ms": 2.898,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 21.93
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 7856.989,
+        "model_duration_ms": 7793.739,
+        "api_calls": 2,
+        "tokens": 4007,
+        "cache": "disabled"
+      },
+      "duration_ms": 7861.554,
+      "trial": 1
+    },
+    {
+      "id": 2,
+      "question": "What are the names of all active portfolios?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Growth Equity Fund"
+            ],
+            [
+              "Conservative Income Fund"
+            ],
+            [
+              "Tech Innovation Fund"
+            ],
+            [
+              "Balanced Portfolio"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Small Cap Value Fund"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Fixed Income Plus"
+            ],
+            [
+              "Dividend Aristocrats Fund"
+            ],
+            [
+              "Emerging Markets Fund"
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "2f563a49-e5b5-4e4e-b613-741d256d6035",
+        "status": "answer",
+        "answer": "The active portfolios are:\n- Growth Equity Fund\n- Conservative Income Fund\n- Tech Innovation Fund\n- Balanced Portfolio\n- ESG Sustainable Fund\n- Small Cap Value Fund\n- International Equity Fund\n- Fixed Income Plus\n- Dividend Aristocrats Fund\n- Emerging Markets Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "What are the names of all active portfolios?",
+              "explanation": "Retrieve the names of all portfolios where the status is 'Active'.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active'"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "Conservative Income Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ],
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active'",
+              "duration_ms": 1.182,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 1.715
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12928.511,
+        "model_duration_ms": 12923.807,
+        "api_calls": 2,
+        "tokens": 4135,
+        "cache": "disabled"
+      },
+      "duration_ms": 12934.336,
+      "trial": 1
+    },
+    {
+      "id": 3,
+      "question": "Which securities are in the Technology sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "symbol",
+            "company_name"
+          ],
+          "rows": [
+            [
+              "AAPL",
+              "Apple Inc."
+            ],
+            [
+              "MSFT",
+              "Microsoft Corporation"
+            ],
+            [
+              "GOOGL",
+              "Alphabet Inc."
+            ],
+            [
+              "META",
+              "Meta Platforms Inc."
+            ],
+            [
+              "NVDA",
+              "NVIDIA Corporation"
+            ],
+            [
+              "AVGO",
+              "Broadcom Inc."
+            ],
+            [
+              "CRM",
+              "Salesforce Inc."
+            ],
+            [
+              "ORCL",
+              "Oracle Corporation"
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "e92f1f8e-df6a-4783-8d7b-f4b7175292fc",
+        "status": "answer",
+        "answer": "The following securities are in the Technology sector:\n- AAPL: Apple Inc.\n- MSFT: Microsoft Corporation\n- GOOGL: Alphabet Inc.\n- META: Meta Platforms Inc.\n- NVDA: NVIDIA Corporation\n- AVGO: Broadcom Inc.\n- CRM: Salesforce Inc.\n- ORCL: Oracle Corporation",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT s.symbol, s.company_name FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id WHERE sec.sector_name = 'Technology'",
+              "question": "Which securities are in the Technology sector?",
+              "explanation": "I am querying the securities table and joining it with the sectors table to filter for securities where the sector_name is 'Technology'. I am selecting the symbol and company_name."
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "company_name"
+              ],
+              "rows": [
+                [
+                  "AAPL",
+                  "Apple Inc."
+                ],
+                [
+                  "MSFT",
+                  "Microsoft Corporation"
+                ],
+                [
+                  "GOOGL",
+                  "Alphabet Inc."
+                ],
+                [
+                  "META",
+                  "Meta Platforms Inc."
+                ],
+                [
+                  "NVDA",
+                  "NVIDIA Corporation"
+                ],
+                [
+                  "AVGO",
+                  "Broadcom Inc."
+                ],
+                [
+                  "CRM",
+                  "Salesforce Inc."
+                ],
+                [
+                  "ORCL",
+                  "Oracle Corporation"
+                ]
+              ],
+              "sql": "SELECT s.symbol, s.company_name FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id WHERE sec.sector_name = 'Technology'",
+              "duration_ms": 0.992,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 1.465
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13197.199,
+        "model_duration_ms": 13193.119,
+        "api_calls": 2,
+        "tokens": 4299,
+        "cache": "disabled"
+      },
+      "duration_ms": 13201.735,
+      "trial": 1
+    },
+    {
+      "id": 4,
+      "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "SUM(total_aum)"
+          ],
+          "rows": [
+            [
+              85000000.0
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "6759f5e2-0ffa-43d9-9037-1bea52afd9ad",
+        "status": "answer",
+        "answer": "The total Assets Under Management (AUM) for portfolios with a 'High' target risk level is $85,000,000.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+              "explanation": "Sum the total_aum for all portfolios where the target_risk_level is 'High'.",
+              "sql": "SELECT SUM(total_aum) AS total_aum_high_risk FROM portfolios WHERE target_risk_level = 'High';"
+            },
+            "result": {
+              "columns": [
+                "total_aum_high_risk"
+              ],
+              "rows": [
+                [
+                  85000000.0
+                ]
+              ],
+              "sql": "SELECT SUM(total_aum) AS total_aum_high_risk FROM portfolios WHERE target_risk_level = 'High';",
+              "duration_ms": 1.872,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.498
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12889.699,
+        "model_duration_ms": 12884.056,
+        "api_calls": 2,
+        "tokens": 4168,
+        "cache": "disabled"
+      },
+      "duration_ms": 12894.609,
+      "trial": 1
+    },
+    {
+      "id": 5,
+      "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "holding_id",
+            "symbol",
+            "company_name",
+            "quantity",
+            "cost_basis"
+          ],
+          "rows": [
+            [
+              1,
+              "AAPL",
+              "Apple Inc.",
+              2500.0,
+              438000.0
+            ],
+            [
+              8,
+              "AMZN",
+              "Amazon.com Inc.",
+              100.0,
+              320000.0
+            ],
+            [
+              2,
+              "MSFT",
+              "Microsoft Corporation",
+              800.0,
+              304400.0
+            ],
+            [
+              3,
+              "NVDA",
+              "NVIDIA Corporation",
+              400.0,
+              288040.0
+            ],
+            [
+              6,
+              "CRM",
+              "Salesforce Inc.",
+              1000.0,
+              185400.0
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "a290f5fe-b81b-45fb-9172-499bf9f3c458",
+        "status": "answer",
+        "answer": "The top 5 holdings by cost basis in the Growth Equity Fund are:\n\n1. **Apple Inc. (AAPL)**: 438,000\n2. **Amazon.com Inc. (AMZN)**: 320,000\n3. **Microsoft Corporation (MSFT)**: 304,400\n4. **NVIDIA Corporation (NVDA)**: 288,040\n5. **Salesforce Inc. (CRM)**: 185,400",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Find the top 5 holdings by cost basis for the 'Growth Equity Fund'. I first join holdings with portfolios to filter by name, then join with securities to get the company name.",
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis \nFROM holdings h\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nJOIN securities s ON h.security_id = s.security_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;",
+              "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund"
+            },
+            "result": {
+              "columns": [
+                "holding_id",
+                "symbol",
+                "company_name",
+                "quantity",
+                "cost_basis"
+              ],
+              "rows": [
+                [
+                  1,
+                  "AAPL",
+                  "Apple Inc.",
+                  2500.0,
+                  438000.0
+                ],
+                [
+                  8,
+                  "AMZN",
+                  "Amazon.com Inc.",
+                  100.0,
+                  320000.0
+                ],
+                [
+                  2,
+                  "MSFT",
+                  "Microsoft Corporation",
+                  800.0,
+                  304400.0
+                ],
+                [
+                  3,
+                  "NVDA",
+                  "NVIDIA Corporation",
+                  400.0,
+                  288040.0
+                ],
+                [
+                  6,
+                  "CRM",
+                  "Salesforce Inc.",
+                  1000.0,
+                  185400.0
+                ]
+              ],
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis \nFROM holdings h\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nJOIN securities s ON h.security_id = s.security_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;",
+              "duration_ms": 2.929,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 5.142
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 14095.05,
+        "model_duration_ms": 14086.609,
+        "api_calls": 2,
+        "tokens": 4580,
+        "cache": "disabled"
+      },
+      "duration_ms": 14102.102,
+      "trial": 1
+    },
+    {
+      "id": 6,
+      "question": "What is the average current price of securities in each sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "sector_name",
+            "avg_price"
+          ],
+          "rows": [
+            [
+              "Consumer Discretionary",
+              3380.0
+            ],
+            [
+              "Technology",
+              719.245
+            ],
+            [
+              "Healthcare",
+              285.17
+            ],
+            [
+              "Automotive",
+              248.5
+            ],
+            [
+              "Financials",
+              201.2125
+            ],
+            [
+              "Consumer Staples",
+              173.8625
+            ],
+            [
+              "Energy",
+              128.575
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "aa87b568-4713-4184-b4c3-ba017e4f6a5f",
+        "status": "answer",
+        "answer": "The average current price of securities by sector is as follows:\n\n| Sector | Average Price |\n| :--- | :--- |\n| Consumer Discretionary | 3,380.00 |\n| Technology | 719.25 |\n| Healthcare | 285.17 |\n| Automotive | 248.50 |\n| Financials | 201.21 |\n| Consumer Staples | 173.86 |\n| Energy | 128.58 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "What is the average current price of securities in each sector?",
+              "explanation": "I am calculating the average current price of securities grouped by their sector name. I join the securities and sectors tables on the sector_id column.",
+              "sql": "SELECT s.sector_name, AVG(sec.current_price) AS average_price FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id GROUP BY s.sector_name ORDER BY average_price DESC;"
+            },
+            "result": {
+              "columns": [
+                "sector_name",
+                "average_price"
+              ],
+              "rows": [
+                [
+                  "Consumer Discretionary",
+                  3380.0
+                ],
+                [
+                  "Technology",
+                  719.245
+                ],
+                [
+                  "Healthcare",
+                  285.17
+                ],
+                [
+                  "Automotive",
+                  248.5
+                ],
+                [
+                  "Financials",
+                  201.2125
+                ],
+                [
+                  "Consumer Staples",
+                  173.8625
+                ],
+                [
+                  "Energy",
+                  128.575
+                ]
+              ],
+              "sql": "SELECT s.sector_name, AVG(sec.current_price) AS average_price FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id GROUP BY s.sector_name ORDER BY average_price DESC;",
+              "duration_ms": 1.882,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 4.013
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12956.11,
+        "model_duration_ms": 12948.844,
+        "api_calls": 2,
+        "tokens": 4388,
+        "cache": "disabled"
+      },
+      "duration_ms": 12963.297,
+      "trial": 1
+    },
+    {
+      "id": 7,
+      "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "portfolio_name",
+            "tech_value",
+            "total_value",
+            "tech_percentage"
+          ],
+          "rows": [
+            [
+              "Tech Innovation Fund",
+              1565292.5,
+              1565292.5,
+              100.0
+            ],
+            [
+              "Growth Equity Fund",
+              1866148.0,
+              2204148.0,
+              84.67
+            ],
+            [
+              "Total International Index Fund",
+              1427086.0,
+              2281686.0,
+              62.55
+            ],
+            [
+              "International Equity Fund",
+              346888.0,
+              734928.0,
+              47.2
+            ],
+            [
+              "Total Stock Market Index Fund",
+              3093520.0,
+              6622340.0,
+              46.71
+            ],
+            [
+              "Balanced Portfolio",
+              388704.0,
+              1073279.0,
+              36.22
+            ],
+            [
+              "Emerging Markets Fund",
+              339095.0,
+              1045100.0,
+              32.45
+            ],
+            [
+              "ESG Sustainable Fund",
+              272978.0,
+              1007228.0,
+              27.1
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "b0c0767c-d77f-408c-b67b-83c94fdee9c9",
+        "status": "answer",
+        "answer": "The following table summarizes the Technology sector holdings value and its percentage of the total portfolio value for each portfolio:\n\n| Portfolio Name | Tech Value | Total Portfolio Value | Tech Percentage |\n| :--- | :--- | :--- | :--- |\n| Growth Equity Fund | 1,866,148.00 | 2,204,148.00 | 84.67% |\n| Conservative Income Fund | 0.00 | 1,162,520.00 | 0.00% |\n| Tech Innovation Fund | 1,565,292.50 | 1,565,292.50 | 100.00% |\n| Balanced Portfolio | 388,704.00 | 1,073,279.00 | 36.22% |\n| ESG Sustainable Fund | 272,978.00 | 1,007,228.00 | 27.10% |\n| Small Cap Value Fund | 0.00 | 758,085.00 | 0.00% |\n| International Equity Fund | 346,888.00 | 734,928.00 | 47.20% |\n| Fixed Income Plus | 0.00 | 589,225.00 | 0.00% |\n| Dividend Aristocrats Fund | 0.00 | 944,180.00 | 0.00% |\n| Emerging Markets Fund | 339,095.00 | 1,045,100.00 | 32.45% |\n| Total Stock Market Index Fund | 3,093,520.00 | 6,622,340.00 | 46.71% |\n| Total Bond Market Index Fund | 0.00 | 999,625.00 | 0.00% |\n| Total International Index Fund | 1,427,086.00 | 2,281,686.00 | 62.55% |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "WITH PortfolioValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS total_portfolio_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    GROUP BY p.portfolio_id\n),\nTechValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS tech_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    JOIN sectors sec ON s.sector_id = sec.sector_id\n    WHERE sec.sector_name = 'Technology'\n    GROUP BY p.portfolio_id\n)\nSELECT \n    pv.portfolio_name,\n    COALESCE(tv.tech_value, 0) AS tech_value,\n    pv.total_portfolio_value,\n    (COALESCE(tv.tech_value, 0) / pv.total_portfolio_value) * 100 AS tech_percentage\nFROM PortfolioValues pv\nLEFT JOIN TechValues tv ON pv.portfolio_name = tv.portfolio_name;",
+              "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value.",
+              "explanation": "Calculate the total market value of Technology sector holdings and the total portfolio value for each portfolio, then compute the percentage. Market value is calculated as quantity * current_price."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "tech_value",
+                "total_portfolio_value",
+                "tech_percentage"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund",
+                  1866148.0,
+                  2204148.0,
+                  84.66527656037617
+                ],
+                [
+                  "Conservative Income Fund",
+                  0,
+                  1162520.0,
+                  0.0
+                ],
+                [
+                  "Tech Innovation Fund",
+                  1565292.5,
+                  1565292.5,
+                  100.0
+                ],
+                [
+                  "Balanced Portfolio",
+                  388704.0,
+                  1073279.0,
+                  36.21649170439373
+                ],
+                [
+                  "ESG Sustainable Fund",
+                  272978.0,
+                  1007228.0,
+                  27.101907413217262
+                ],
+                [
+                  "Small Cap Value Fund",
+                  0,
+                  758085.0,
+                  0.0
+                ],
+                [
+                  "International Equity Fund",
+                  346888.0,
+                  734928.0,
+                  47.20026995841769
+                ],
+                [
+                  "Fixed Income Plus",
+                  0,
+                  589225.0,
+                  0.0
+                ],
+                [
+                  "Dividend Aristocrats Fund",
+                  0,
+                  944180.0,
+                  0.0
+                ],
+                [
+                  "Emerging Markets Fund",
+                  339095.0,
+                  1045100.0,
+                  32.44617739929193
+                ],
+                [
+                  "Total Stock Market Index Fund",
+                  3093520.0,
+                  6622340.0,
+                  46.713397379174125
+                ],
+                [
+                  "Total Bond Market Index Fund",
+                  0,
+                  999625.0,
+                  0.0
+                ],
+                [
+                  "Total International Index Fund",
+                  1427086.0,
+                  2281686.0,
+                  62.545240668523185
+                ]
+              ],
+              "sql": "WITH PortfolioValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS total_portfolio_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    GROUP BY p.portfolio_id\n),\nTechValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS tech_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    JOIN sectors sec ON s.sector_id = sec.sector_id\n    WHERE sec.sector_name = 'Technology'\n    GROUP BY p.portfolio_id\n)\nSELECT \n    pv.portfolio_name,\n    COALESCE(tv.tech_value, 0) AS tech_value,\n    pv.total_portfolio_value,\n    (COALESCE(tv.tech_value, 0) / pv.total_portfolio_value) * 100 AS tech_percentage\nFROM PortfolioValues pv\nLEFT JOIN TechValues tv ON pv.portfolio_name = tv.portfolio_name;",
+              "duration_ms": 2.507,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 8.329
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 14166.462,
+        "model_duration_ms": 14154.5,
+        "api_calls": 2,
+        "tokens": 5928,
+        "cache": "disabled"
+      },
+      "failure": "Row count: expected 8, actual 13.",
+      "duration_ms": 14179.182,
+      "trial": 1
+    },
+    {
+      "id": 8,
+      "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "portfolio_name",
+            "sector_count",
+            "total_holdings",
+            "diversification_ratio"
+          ],
+          "rows": [
+            [
+              "Total Stock Market Index Fund",
+              6,
+              12,
+              0.5
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "2f7d2949-333d-4ac4-a989-755bea2ea928",
+        "status": "answer",
+        "answer": "The following portfolio has holdings in more than 5 different sectors:\n\n| Portfolio Name | Sector Count | Total Holdings | Diversification Ratio |\n| :--- | :--- | :--- | :--- |\n| Total Stock Market Index Fund | 6 | 12 | 0.5 |\n\nThe diversification ratio is calculated as the number of distinct sectors divided by the total number of holdings.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "I am calculating the diversification metrics for each portfolio by counting the number of distinct sectors associated with their holdings and the total number of holdings. I then filter for portfolios with more than 5 distinct sectors and calculate the diversification ratio (sector_count / total_holdings).",
+              "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+              "sql": "SELECT \n    p.portfolio_name, \n    COUNT(DISTINCT s.sector_id) AS sector_count, \n    COUNT(h.holding_id) AS total_holdings,\n    ROUND(CAST(COUNT(DISTINCT s.sector_id) AS REAL) / COUNT(h.holding_id), 3) AS diversification_ratio\nFROM portfolios p\nJOIN holdings h ON p.portfolio_id = h.portfolio_id\nJOIN securities sec ON h.security_id = sec.security_id\nJOIN sectors s ON sec.sector_id = s.sector_id\nGROUP BY p.portfolio_id\nHAVING sector_count > 5\nORDER BY diversification_ratio DESC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "sector_count",
+                "total_holdings",
+                "diversification_ratio"
+              ],
+              "rows": [
+                [
+                  "Total Stock Market Index Fund",
+                  6,
+                  12,
+                  0.5
+                ]
+              ],
+              "sql": "SELECT \n    p.portfolio_name, \n    COUNT(DISTINCT s.sector_id) AS sector_count, \n    COUNT(h.holding_id) AS total_holdings,\n    ROUND(CAST(COUNT(DISTINCT s.sector_id) AS REAL) / COUNT(h.holding_id), 3) AS diversification_ratio\nFROM portfolios p\nJOIN holdings h ON p.portfolio_id = h.portfolio_id\nJOIN securities sec ON h.security_id = sec.security_id\nJOIN sectors s ON sec.sector_id = s.sector_id\nGROUP BY p.portfolio_id\nHAVING sector_count > 5\nORDER BY diversification_ratio DESC;",
+              "duration_ms": 2.454,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 4.445
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 10372.508,
+        "model_duration_ms": 10364.101,
+        "api_calls": 2,
+        "tokens": 4685,
+        "cache": "disabled"
+      },
+      "duration_ms": 10388.149,
+      "trial": 1
+    },
+    {
+      "id": 9,
+      "question": "What are the sector exposures for the Tech Innovation Fund?",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": null,
+      "expected": [
+        {
+          "portfolio_name": "Tech Innovation Fund",
+          "sectors": {
+            "Technology": 100.0
+          }
+        }
+      ],
+      "actual": {
+        "request_id": "4d435171-43d1-4c3b-8300-fb453482b3b7",
+        "status": "answer",
+        "answer": "The Tech Innovation Fund has a 100.00% exposure to the Technology sector.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "Tech Innovation Fund"
+            },
+            "result": {
+              "portfolio_id": 3,
+              "portfolio_name": "Tech Innovation Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Technology": "100.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 3.88
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13412.441,
+        "model_duration_ms": 13404.754,
+        "api_calls": 2,
+        "tokens": 4000,
+        "cache": "disabled"
+      },
+      "duration_ms": 13416.5,
+      "trial": 1
+    },
+    {
+      "id": 10,
+      "question": "Calculate the sector exposure breakdown for international equity",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "6d980f51-1df7-4c7c-a7bc-21a97eca1cdb",
+        "status": "clarification",
+        "answer": "I found multiple portfolios matching your request: \"Growth Equity Fund\", \"International Equity Fund\", and \"Total International Index Fund\". Could you please specify which one you would like the sector exposure breakdown for?",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Find portfolios with 'international' or 'equity' in their name.",
+              "explanation": "Searching for portfolios with 'international' or 'equity' in their name to identify the correct portfolio.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE portfolio_name LIKE '%International%' OR portfolio_name LIKE '%Equity%'"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE portfolio_name LIKE '%International%' OR portfolio_name LIKE '%Equity%'",
+              "duration_ms": 2.704,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 3.443
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12985.845,
+        "model_duration_ms": 12978.447,
+        "api_calls": 2,
+        "tokens": 4129,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual clarification: I found multiple portfolios matching your request: \"Growth Equity Fund\", \"International Equity Fund\", and \"Total International Index Fund\". Could you please specify which one you would like the sector exposure breakdown for?",
+      "duration_ms": 12985.971,
+      "trial": 1
+    },
+    {
+      "id": 1,
+      "question": "How many portfolios do we have in total?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              13
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "3ba4b637-e55e-4997-8f9b-4d59c872f8a8",
+        "status": "answer",
+        "answer": "There are a total of 13 portfolios.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Count the total number of portfolios in the portfolios table.",
+              "question": "How many portfolios do we have in total?",
+              "sql": "SELECT COUNT(*) FROM portfolios;"
+            },
+            "result": {
+              "columns": [
+                "COUNT(*)"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) FROM portfolios;",
+              "duration_ms": 1.967,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.533
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12795.676,
+        "model_duration_ms": 12790.965,
+        "api_calls": 2,
+        "tokens": 4007,
+        "cache": "disabled"
+      },
+      "duration_ms": 12799.337,
+      "trial": 2
+    },
+    {
+      "id": 2,
+      "question": "What are the names of all active portfolios?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Growth Equity Fund"
+            ],
+            [
+              "Conservative Income Fund"
+            ],
+            [
+              "Tech Innovation Fund"
+            ],
+            [
+              "Balanced Portfolio"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Small Cap Value Fund"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Fixed Income Plus"
+            ],
+            [
+              "Dividend Aristocrats Fund"
+            ],
+            [
+              "Emerging Markets Fund"
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "fab9b9f8-6f9d-42f4-84c8-9736aaf68b89",
+        "status": "answer",
+        "answer": "The active portfolios are:\n- Growth Equity Fund\n- Conservative Income Fund\n- Tech Innovation Fund\n- Balanced Portfolio\n- ESG Sustainable Fund\n- Small Cap Value Fund\n- International Equity Fund\n- Fixed Income Plus\n- Dividend Aristocrats Fund\n- Emerging Markets Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Retrieve the names of all portfolios where the status is 'Active'.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active'",
+              "question": "What are the names of all active portfolios?"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "Conservative Income Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ],
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active'",
+              "duration_ms": 2.225,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.881
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12895.427,
+        "model_duration_ms": 12889.001,
+        "api_calls": 2,
+        "tokens": 4135,
+        "cache": "disabled"
+      },
+      "duration_ms": 12902.497,
+      "trial": 2
+    },
+    {
+      "id": 3,
+      "question": "Which securities are in the Technology sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "symbol",
+            "company_name"
+          ],
+          "rows": [
+            [
+              "AAPL",
+              "Apple Inc."
+            ],
+            [
+              "MSFT",
+              "Microsoft Corporation"
+            ],
+            [
+              "GOOGL",
+              "Alphabet Inc."
+            ],
+            [
+              "META",
+              "Meta Platforms Inc."
+            ],
+            [
+              "NVDA",
+              "NVIDIA Corporation"
+            ],
+            [
+              "AVGO",
+              "Broadcom Inc."
+            ],
+            [
+              "CRM",
+              "Salesforce Inc."
+            ],
+            [
+              "ORCL",
+              "Oracle Corporation"
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "d6303e60-862c-4a54-a9d8-4eb02d6c8b4f",
+        "status": "answer",
+        "answer": "The following securities are in the Technology sector:\n- AAPL: Apple Inc.\n- MSFT: Microsoft Corporation\n- GOOGL: Alphabet Inc.\n- META: Meta Platforms Inc.\n- NVDA: NVIDIA Corporation\n- AVGO: Broadcom Inc.\n- CRM: Salesforce Inc.\n- ORCL: Oracle Corporation",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "I am querying the securities table and joining it with the sectors table to filter for securities where the sector_name is 'Technology'. I am selecting the symbol and company_name.",
+              "question": "Which securities are in the Technology sector?",
+              "sql": "SELECT s.symbol, s.company_name FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id WHERE sec.sector_name = 'Technology'"
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "company_name"
+              ],
+              "rows": [
+                [
+                  "AAPL",
+                  "Apple Inc."
+                ],
+                [
+                  "MSFT",
+                  "Microsoft Corporation"
+                ],
+                [
+                  "GOOGL",
+                  "Alphabet Inc."
+                ],
+                [
+                  "META",
+                  "Meta Platforms Inc."
+                ],
+                [
+                  "NVDA",
+                  "NVIDIA Corporation"
+                ],
+                [
+                  "AVGO",
+                  "Broadcom Inc."
+                ],
+                [
+                  "CRM",
+                  "Salesforce Inc."
+                ],
+                [
+                  "ORCL",
+                  "Oracle Corporation"
+                ]
+              ],
+              "sql": "SELECT s.symbol, s.company_name FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id WHERE sec.sector_name = 'Technology'",
+              "duration_ms": 1.905,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.965
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13339.541,
+        "model_duration_ms": 13333.043,
+        "api_calls": 2,
+        "tokens": 4299,
+        "cache": "disabled"
+      },
+      "duration_ms": 13344.577,
+      "trial": 2
+    },
+    {
+      "id": 4,
+      "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "SUM(total_aum)"
+          ],
+          "rows": [
+            [
+              85000000.0
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "30a4f73f-1028-461f-8868-29dc4f2aa427",
+        "status": "answer",
+        "answer": "The total Assets Under Management (AUM) for portfolios with a 'High' target risk level is $85,000,000.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT SUM(total_aum) AS total_aum_high_risk FROM portfolios WHERE target_risk_level = 'High';",
+              "explanation": "Sum the total_aum for all portfolios where the target_risk_level is 'High'.",
+              "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?"
+            },
+            "result": {
+              "columns": [
+                "total_aum_high_risk"
+              ],
+              "rows": [
+                [
+                  85000000.0
+                ]
+              ],
+              "sql": "SELECT SUM(total_aum) AS total_aum_high_risk FROM portfolios WHERE target_risk_level = 'High';",
+              "duration_ms": 4.189,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 5.018
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12778.949,
+        "model_duration_ms": 12770.103,
+        "api_calls": 2,
+        "tokens": 4168,
+        "cache": "disabled"
+      },
+      "duration_ms": 12786.584,
+      "trial": 2
+    },
+    {
+      "id": 5,
+      "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "holding_id",
+            "symbol",
+            "company_name",
+            "quantity",
+            "cost_basis"
+          ],
+          "rows": [
+            [
+              1,
+              "AAPL",
+              "Apple Inc.",
+              2500.0,
+              438000.0
+            ],
+            [
+              8,
+              "AMZN",
+              "Amazon.com Inc.",
+              100.0,
+              320000.0
+            ],
+            [
+              2,
+              "MSFT",
+              "Microsoft Corporation",
+              800.0,
+              304400.0
+            ],
+            [
+              3,
+              "NVDA",
+              "NVIDIA Corporation",
+              400.0,
+              288040.0
+            ],
+            [
+              6,
+              "CRM",
+              "Salesforce Inc.",
+              1000.0,
+              185400.0
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "107aa7b1-4b69-46a8-9bd3-095c5f8736b8",
+        "status": "answer",
+        "answer": "The top 5 holdings by cost basis in the Growth Equity Fund are:\n\n1. **Apple Inc. (AAPL)**: $438,000 (2,500 shares)\n2. **Amazon.com Inc. (AMZN)**: $320,000 (100 shares)\n3. **Microsoft Corporation (MSFT)**: $304,400 (800 shares)\n4. **NVIDIA Corporation (NVDA)**: $288,040 (400 shares)\n5. **Salesforce Inc. (CRM)**: $185,400 (1,000 shares)",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Find the top 5 holdings by cost basis for the 'Growth Equity Fund'. I first join holdings with portfolios to filter by name, then join with securities to get the company name.",
+              "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund",
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis \nFROM holdings h\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nJOIN securities s ON h.security_id = s.security_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;"
+            },
+            "result": {
+              "columns": [
+                "holding_id",
+                "symbol",
+                "company_name",
+                "quantity",
+                "cost_basis"
+              ],
+              "rows": [
+                [
+                  1,
+                  "AAPL",
+                  "Apple Inc.",
+                  2500.0,
+                  438000.0
+                ],
+                [
+                  8,
+                  "AMZN",
+                  "Amazon.com Inc.",
+                  100.0,
+                  320000.0
+                ],
+                [
+                  2,
+                  "MSFT",
+                  "Microsoft Corporation",
+                  800.0,
+                  304400.0
+                ],
+                [
+                  3,
+                  "NVDA",
+                  "NVIDIA Corporation",
+                  400.0,
+                  288040.0
+                ],
+                [
+                  6,
+                  "CRM",
+                  "Salesforce Inc.",
+                  1000.0,
+                  185400.0
+                ]
+              ],
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis \nFROM holdings h\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nJOIN securities s ON h.security_id = s.security_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;",
+              "duration_ms": 2.963,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 4.844
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13260.934,
+        "model_duration_ms": 13252.325,
+        "api_calls": 2,
+        "tokens": 4614,
+        "cache": "disabled"
+      },
+      "duration_ms": 13269.099,
+      "trial": 2
+    },
+    {
+      "id": 6,
+      "question": "What is the average current price of securities in each sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "sector_name",
+            "avg_price"
+          ],
+          "rows": [
+            [
+              "Consumer Discretionary",
+              3380.0
+            ],
+            [
+              "Technology",
+              719.245
+            ],
+            [
+              "Healthcare",
+              285.17
+            ],
+            [
+              "Automotive",
+              248.5
+            ],
+            [
+              "Financials",
+              201.2125
+            ],
+            [
+              "Consumer Staples",
+              173.8625
+            ],
+            [
+              "Energy",
+              128.575
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "e03dec8b-a763-4593-94b0-2b6a7038bc22",
+        "status": "answer",
+        "answer": "The average current price of securities by sector is as follows:\n\n| Sector | Average Price |\n| :--- | :--- |\n| Consumer Discretionary | 3,380.00 |\n| Technology | 719.25 |\n| Healthcare | 285.17 |\n| Automotive | 248.50 |\n| Financials | 201.21 |\n| Consumer Staples | 173.86 |\n| Energy | 128.58 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT s.sector_name, AVG(sec.current_price) AS average_price FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id GROUP BY s.sector_name ORDER BY average_price DESC;",
+              "question": "What is the average current price of securities in each sector?",
+              "explanation": "I am calculating the average current price of securities grouped by their sector name. I join the securities and sectors tables on the sector_id column."
+            },
+            "result": {
+              "columns": [
+                "sector_name",
+                "average_price"
+              ],
+              "rows": [
+                [
+                  "Consumer Discretionary",
+                  3380.0
+                ],
+                [
+                  "Technology",
+                  719.245
+                ],
+                [
+                  "Healthcare",
+                  285.17
+                ],
+                [
+                  "Automotive",
+                  248.5
+                ],
+                [
+                  "Financials",
+                  201.2125
+                ],
+                [
+                  "Consumer Staples",
+                  173.8625
+                ],
+                [
+                  "Energy",
+                  128.575
+                ]
+              ],
+              "sql": "SELECT s.sector_name, AVG(sec.current_price) AS average_price FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id GROUP BY s.sector_name ORDER BY average_price DESC;",
+              "duration_ms": 2.1,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 3.074
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12832.78,
+        "model_duration_ms": 12826.591,
+        "api_calls": 2,
+        "tokens": 4386,
+        "cache": "disabled"
+      },
+      "duration_ms": 12840.779,
+      "trial": 2
+    },
+    {
+      "id": 7,
+      "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "portfolio_name",
+            "tech_value",
+            "total_value",
+            "tech_percentage"
+          ],
+          "rows": [
+            [
+              "Tech Innovation Fund",
+              1565292.5,
+              1565292.5,
+              100.0
+            ],
+            [
+              "Growth Equity Fund",
+              1866148.0,
+              2204148.0,
+              84.67
+            ],
+            [
+              "Total International Index Fund",
+              1427086.0,
+              2281686.0,
+              62.55
+            ],
+            [
+              "International Equity Fund",
+              346888.0,
+              734928.0,
+              47.2
+            ],
+            [
+              "Total Stock Market Index Fund",
+              3093520.0,
+              6622340.0,
+              46.71
+            ],
+            [
+              "Balanced Portfolio",
+              388704.0,
+              1073279.0,
+              36.22
+            ],
+            [
+              "Emerging Markets Fund",
+              339095.0,
+              1045100.0,
+              32.45
+            ],
+            [
+              "ESG Sustainable Fund",
+              272978.0,
+              1007228.0,
+              27.1
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "a2000dc9-5933-49e5-a46d-3ee25057c0f8",
+        "status": "answer",
+        "answer": "The following table summarizes the Technology sector holdings value and its percentage of the total portfolio value for each portfolio:\n\n| Portfolio Name | Tech Value | Total Portfolio Value | Tech Percentage |\n| :--- | :--- | :--- | :--- |\n| Growth Equity Fund | 1,866,148.00 | 2,204,148.00 | 84.67% |\n| Conservative Income Fund | 0.00 | 1,162,520.00 | 0.00% |\n| Tech Innovation Fund | 1,565,292.50 | 1,565,292.50 | 100.00% |\n| Balanced Portfolio | 388,704.00 | 1,073,279.00 | 36.22% |\n| ESG Sustainable Fund | 272,978.00 | 1,007,228.00 | 27.10% |\n| Small Cap Value Fund | 0.00 | 758,085.00 | 0.00% |\n| International Equity Fund | 346,888.00 | 734,928.00 | 47.20% |\n| Fixed Income Plus | 0.00 | 589,225.00 | 0.00% |\n| Dividend Aristocrats Fund | 0.00 | 944,180.00 | 0.00% |\n| Emerging Markets Fund | 339,095.00 | 1,045,100.00 | 32.45% |\n| Total Stock Market Index Fund | 3,093,520.00 | 6,622,340.00 | 46.71% |\n| Total Bond Market Index Fund | 0.00 | 999,625.00 | 0.00% |\n| Total International Index Fund | 1,427,086.00 | 2,281,686.00 | 62.55% |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Calculate the total market value of Technology sector holdings and the total portfolio value for each portfolio, then compute the percentage. Market value is calculated as quantity * current_price.",
+              "sql": "WITH PortfolioValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS total_portfolio_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    GROUP BY p.portfolio_id\n),\nTechValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS tech_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    JOIN sectors sec ON s.sector_id = sec.sector_id\n    WHERE sec.sector_name = 'Technology'\n    GROUP BY p.portfolio_id\n)\nSELECT \n    pv.portfolio_name,\n    COALESCE(tv.tech_value, 0) AS tech_value,\n    pv.total_portfolio_value,\n    (COALESCE(tv.tech_value, 0) / pv.total_portfolio_value) * 100 AS tech_percentage\nFROM PortfolioValues pv\nLEFT JOIN TechValues tv ON pv.portfolio_name = tv.portfolio_name;",
+              "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "tech_value",
+                "total_portfolio_value",
+                "tech_percentage"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund",
+                  1866148.0,
+                  2204148.0,
+                  84.66527656037617
+                ],
+                [
+                  "Conservative Income Fund",
+                  0,
+                  1162520.0,
+                  0.0
+                ],
+                [
+                  "Tech Innovation Fund",
+                  1565292.5,
+                  1565292.5,
+                  100.0
+                ],
+                [
+                  "Balanced Portfolio",
+                  388704.0,
+                  1073279.0,
+                  36.21649170439373
+                ],
+                [
+                  "ESG Sustainable Fund",
+                  272978.0,
+                  1007228.0,
+                  27.101907413217262
+                ],
+                [
+                  "Small Cap Value Fund",
+                  0,
+                  758085.0,
+                  0.0
+                ],
+                [
+                  "International Equity Fund",
+                  346888.0,
+                  734928.0,
+                  47.20026995841769
+                ],
+                [
+                  "Fixed Income Plus",
+                  0,
+                  589225.0,
+                  0.0
+                ],
+                [
+                  "Dividend Aristocrats Fund",
+                  0,
+                  944180.0,
+                  0.0
+                ],
+                [
+                  "Emerging Markets Fund",
+                  339095.0,
+                  1045100.0,
+                  32.44617739929193
+                ],
+                [
+                  "Total Stock Market Index Fund",
+                  3093520.0,
+                  6622340.0,
+                  46.713397379174125
+                ],
+                [
+                  "Total Bond Market Index Fund",
+                  0,
+                  999625.0,
+                  0.0
+                ],
+                [
+                  "Total International Index Fund",
+                  1427086.0,
+                  2281686.0,
+                  62.545240668523185
+                ]
+              ],
+              "sql": "WITH PortfolioValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS total_portfolio_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    GROUP BY p.portfolio_id\n),\nTechValues AS (\n    SELECT \n        p.portfolio_name,\n        SUM(h.quantity * s.current_price) AS tech_value\n    FROM portfolios p\n    JOIN holdings h ON p.portfolio_id = h.portfolio_id\n    JOIN securities s ON h.security_id = s.security_id\n    JOIN sectors sec ON s.sector_id = sec.sector_id\n    WHERE sec.sector_name = 'Technology'\n    GROUP BY p.portfolio_id\n)\nSELECT \n    pv.portfolio_name,\n    COALESCE(tv.tech_value, 0) AS tech_value,\n    pv.total_portfolio_value,\n    (COALESCE(tv.tech_value, 0) / pv.total_portfolio_value) * 100 AS tech_percentage\nFROM PortfolioValues pv\nLEFT JOIN TechValues tv ON pv.portfolio_name = tv.portfolio_name;",
+              "duration_ms": 3.108,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 7.663
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13884.12,
+        "model_duration_ms": 13872.663,
+        "api_calls": 2,
+        "tokens": 5928,
+        "cache": "disabled"
+      },
+      "failure": "Row count: expected 8, actual 13.",
+      "duration_ms": 13898.299,
+      "trial": 2
+    },
+    {
+      "id": 8,
+      "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "portfolio_name",
+            "sector_count",
+            "total_holdings",
+            "diversification_ratio"
+          ],
+          "rows": [
+            [
+              "Total Stock Market Index Fund",
+              6,
+              12,
+              0.5
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "e7f52b6f-843e-496d-a74d-081d6c023637",
+        "status": "answer",
+        "answer": "The following portfolio has holdings in more than 5 different sectors:\n\n| Portfolio Name | Sector Count | Total Holdings | Diversification Ratio |\n| :--- | :--- | :--- | :--- |\n| Total Stock Market Index Fund | 6 | 12 | 0.5 |\n\nThe diversification ratio is calculated as the number of distinct sectors divided by the total number of holdings.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT \n    p.portfolio_name, \n    COUNT(DISTINCT s.sector_id) AS sector_count, \n    COUNT(h.holding_id) AS total_holdings,\n    ROUND(CAST(COUNT(DISTINCT s.sector_id) AS REAL) / COUNT(h.holding_id), 3) AS diversification_ratio\nFROM portfolios p\nJOIN holdings h ON p.portfolio_id = h.portfolio_id\nJOIN securities sec ON h.security_id = sec.security_id\nJOIN sectors s ON sec.sector_id = s.sector_id\nGROUP BY p.portfolio_id\nHAVING sector_count > 5\nORDER BY diversification_ratio DESC;",
+              "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+              "explanation": "I am calculating the diversification metrics for each portfolio by counting the number of distinct sectors associated with their holdings and the total number of holdings. I then filter for portfolios with more than 5 distinct sectors and calculate the diversification ratio (sector_count / total_holdings)."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "sector_count",
+                "total_holdings",
+                "diversification_ratio"
+              ],
+              "rows": [
+                [
+                  "Total Stock Market Index Fund",
+                  6,
+                  12,
+                  0.5
+                ]
+              ],
+              "sql": "SELECT \n    p.portfolio_name, \n    COUNT(DISTINCT s.sector_id) AS sector_count, \n    COUNT(h.holding_id) AS total_holdings,\n    ROUND(CAST(COUNT(DISTINCT s.sector_id) AS REAL) / COUNT(h.holding_id), 3) AS diversification_ratio\nFROM portfolios p\nJOIN holdings h ON p.portfolio_id = h.portfolio_id\nJOIN securities sec ON h.security_id = sec.security_id\nJOIN sectors s ON sec.sector_id = s.sector_id\nGROUP BY p.portfolio_id\nHAVING sector_count > 5\nORDER BY diversification_ratio DESC;",
+              "duration_ms": 4.196,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 8.703
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12083.75,
+        "model_duration_ms": 12070.529,
+        "api_calls": 2,
+        "tokens": 4685,
+        "cache": "disabled"
+      },
+      "duration_ms": 12094.68,
+      "trial": 2
+    },
+    {
+      "id": 9,
+      "question": "What are the sector exposures for the Tech Innovation Fund?",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": null,
+      "expected": [
+        {
+          "portfolio_name": "Tech Innovation Fund",
+          "sectors": {
+            "Technology": 100.0
+          }
+        }
+      ],
+      "actual": {
+        "request_id": "99b53aee-367f-4008-874e-6c5e7013bfa4",
+        "status": "answer",
+        "answer": "The Tech Innovation Fund has a 100.00% exposure to the Technology sector.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "Tech Innovation Fund"
+            },
+            "result": {
+              "portfolio_id": 3,
+              "portfolio_name": "Tech Innovation Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Technology": "100.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 4.874
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12979.613,
+        "model_duration_ms": 12971.038,
+        "api_calls": 2,
+        "tokens": 4000,
+        "cache": "disabled"
+      },
+      "duration_ms": 12981.888,
+      "trial": 2
+    },
+    {
+      "id": 10,
+      "question": "Calculate the sector exposure breakdown for international equity",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "ad647734-5373-4928-80ca-24e9c3fe541f",
+        "status": "clarification",
+        "answer": "I found multiple portfolios matching your request: \"Growth Equity Fund\", \"International Equity Fund\", and \"Total International Index Fund\". Could you please specify which one you would like the sector exposure breakdown for?",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT portfolio_name FROM portfolios WHERE portfolio_name LIKE '%International%' OR portfolio_name LIKE '%Equity%'",
+              "question": "Find portfolios with 'international' or 'equity' in their name.",
+              "explanation": "Searching for portfolios with 'international' or 'equity' in their name to identify the correct portfolio."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE portfolio_name LIKE '%International%' OR portfolio_name LIKE '%Equity%'",
+              "duration_ms": 1.682,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.442
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13507.716,
+        "model_duration_ms": 13501.619,
+        "api_calls": 2,
+        "tokens": 4129,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual clarification: I found multiple portfolios matching your request: \"Growth Equity Fund\", \"International Equity Fund\", and \"Total International Index Fund\". Could you please specify which one you would like the sector exposure breakdown for?",
+      "duration_ms": 13507.854,
+      "trial": 2
+    }
+  ]
+}

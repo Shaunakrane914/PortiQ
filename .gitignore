@@ -15,6 +15,7 @@ htmlcov/
 *.db-*
 *.sqlite*
 reports/local/
+*.progress.json
 build/
 dist/
 *.log

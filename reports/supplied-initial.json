@@ -1,0 +1,324 @@
+{
+  "timestamp_utc": "2026-11-05T16:56:37.204175+00:00",
+  "suite": "ground_truth_dataset.json",
+  "model": "gemini-3-flash-preview",
+  "cache": "disabled",
+  "trials": 1,
+  "split": "all",
+  "total": 10,
+  "passed": 1,
+  "routing_correct": 1,
+  "mean_ms": 2489.7986,
+  "p95_ms": 5442.498,
+  "api_calls": 14,
+  "tokens": 6572,
+  "records": [
+    {
+      "id": 1,
+      "question": "How many portfolios do we have in total?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "columns": [
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              13
+            ]
+          ]
+        }
+      ],
+      "actual": {
+        "request_id": "26e50988-fe9a-447c-a89d-3de70f0a8862",
+        "status": "answer",
+        "answer": "There are a total of 13 portfolios.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "How many portfolios do we have in total?"
+            },
+            "result": {
+              "columns": [
+                "total_portfolios"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) AS total_portfolios FROM portfolios;",
+              "duration_ms": 0.801,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 1533.667
+          }
+        ],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [
+          "gemini-3-flash-preview"
+        ],
+        "duration_ms": 3698.165,
+        "model_duration_ms": 3675.033,
+        "api_calls": 3,
+        "tokens": 4873,
+        "cache": "disabled"
+      },
+      "duration_ms": 3700.23,
+      "trial": 1
+    },
+    {
+      "id": 2,
+      "question": "What are the names of all active portfolios?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "5c65d4af-ac3a-4286-970e-f09fcdbfe4b9",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "What are the names of all active portfolios?"
+            },
+            "result": null,
+            "error": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+            "duration_ms": 2248.951
+          }
+        ],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [
+          "gemini-3-flash-preview"
+        ],
+        "duration_ms": 5442.428,
+        "model_duration_ms": 5440.4,
+        "api_calls": 3,
+        "tokens": 1699,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 5442.498,
+      "trial": 1
+    },
+    {
+      "id": 3,
+      "question": "Which securities are in the Technology sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "58599729-f127-4df1-807c-dc122c9a93ce",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 1716.523,
+        "model_duration_ms": 1715.769,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 1716.592,
+      "trial": 1
+    },
+    {
+      "id": 4,
+      "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "c8860f5d-5b24-486f-acec-934f49425d87",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 1940.026,
+        "model_duration_ms": 1939.132,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 1940.091,
+      "trial": 1
+    },
+    {
+      "id": 5,
+      "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "bfe1b922-570f-4da0-92b1-1992b79cbcde",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 1887.118,
+        "model_duration_ms": 1886.213,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 1887.187,
+      "trial": 1
+    },
+    {
+      "id": 6,
+      "question": "What is the average current price of securities in each sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "5a1d5ddf-ad09-4194-ae84-5d4c607b7dfa",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 2191.824,
+        "model_duration_ms": 2191.157,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 2191.881,
+      "trial": 1
+    },
+    {
+      "id": 7,
+      "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "8f2440f8-7cec-43d1-ba61-6fb408d88d29",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 1626.787,
+        "model_duration_ms": 1626.059,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 1626.85,
+      "trial": 1
+    },
+    {
+      "id": 8,
+      "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "ace727af-2a2d-4158-b1e0-b7bb1ae0857a",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 2284.17,
+        "model_duration_ms": 2283.22,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 2284.231,
+      "trial": 1
+    },
+    {
+      "id": 9,
+      "question": "What are the sector exposures for the Tech Innovation Fund?",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "48aaab5a-ac48-4683-b453-69f6d9595269",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 1722.439,
+        "model_duration_ms": 1721.788,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 1722.497,
+      "trial": 1
+    },
+    {
+      "id": 10,
+      "question": "Calculate the sector exposure breakdown for international equity",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "fd81e7fd-c208-4e85-ba57-2c7e94fb843e",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=429). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3-flash-preview",
+        "model_versions": [],
+        "duration_ms": 2385.865,
+        "model_duration_ms": 2385.07,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error.",
+      "duration_ms": 2385.929,
+      "trial": 1
+    }
+  ]
+}
