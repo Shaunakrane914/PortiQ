@@ -55,6 +55,14 @@ def test_rebuild_is_atomic(database: Path, source: Path, tmp_path: Path) -> None
     assert initialize(source, database, rebuild=True)["rows"] == COUNTS
 
 
+def test_destination_cannot_replace_source(source: Path) -> None:
+    file = source / "data/holdings.csv"
+    original = file.read_bytes()
+    with pytest.raises(DataError, match="original assessment"):
+        initialize(source, file, rebuild=True)
+    assert file.read_bytes() == original
+
+
 @pytest.mark.parametrize(
     "change", ["missing", "duplicate", "foreign", "date", "number", "nan", "blank_id"]
 )

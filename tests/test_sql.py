@@ -73,3 +73,8 @@ def test_timeout(database: Path) -> None:
             "FROM holdings a CROSS JOIN holdings b CROSS JOIN holdings c CROSS JOIN holdings d",
             seconds=0.001,
         )
+
+
+def test_result_byte_budget(database: Path) -> None:
+    with pytest.raises(QueryError, match="exceeds 1 MB"):
+        execute(database, "SELECT printf('%.*c',900000,'x') FROM holdings LIMIT 2")

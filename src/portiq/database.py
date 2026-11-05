@@ -52,6 +52,18 @@ def _convert(value: str, kind: str, column: str) -> str | int | float | None:
 
 def initialize(source: Path, destination: Path, *, rebuild: bool = False) -> dict[str, Any]:
     """Build in a sibling temporary file; replace only after full validation succeeds."""
+    protected = [
+        source / name
+        for name in (
+            "database_schema.sql",
+            "ground_truth_dataset.json",
+            "requirements.txt",
+            "README.md",
+            "docs/assignment/README.md",
+        )
+    ] + list((source / "data").glob("*.csv"))
+    if destination.resolve() in {path.resolve() for path in protected}:
+        raise DataError("Database destination cannot overwrite an original assessment input.")
     if destination.exists() and not rebuild:
         raise DataError("Database already exists. Use --rebuild to replace it atomically.")
     schema = source / "database_schema.sql"

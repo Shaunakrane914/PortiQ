@@ -1,4 +1,6 @@
 import json
+import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 import pytest
@@ -8,6 +10,7 @@ from portiq.agent import PortfolioAgent, render_response, run_sql_tool
 from portiq.config import Settings
 from portiq.database import schema_context
 from portiq.errors import ModelError, PortiqError, QueryError
+from portiq.sql import SQLPlan
 
 
 def call(name: str, **arguments: object) -> types.GenerateContentResponse:
@@ -99,6 +102,34 @@ def test_sql_repair(database: Path) -> None:
     assert "no such column" in backend.requests[1][0][-1].parts[0].text
 
 
+def test_complex_sql_uses_focused_planner(database: Path) -> None:
+    draft = SQLPlan(
+        sql="WITH x AS (SELECT 1), y AS (SELECT 2) SELECT * FROM x,y",
+        explanation="A complex routing draft",
+    )
+    backend = FakeBackend([plan("SELECT COUNT(*) FROM portfolios")])
+    result = run_sql_tool(
+        Settings(database=database),
+        backend,
+        "Count portfolios",
+        schema_context(database),
+        initial_plan=draft,
+    )
+    assert result.rows == [[13]] and result.attempts == 2
+    assert len(backend.requests) == 1
+
+
+def test_simple_sql_uses_routing_plan_directly(database: Path) -> None:
+    result = run_sql_tool(
+        Settings(database=database),
+        FakeBackend([]),
+        "Count portfolios",
+        schema_context(database),
+        initial_plan=SQLPlan(sql="SELECT COUNT(*) FROM portfolios", explanation="Count rows"),
+    )
+    assert result.rows == [[13]] and result.attempts == 1
+
+
 def test_sql_repair_rejects_repeated_failures(database: Path) -> None:
     backend = FakeBackend([plan("DROP TABLE holdings"), plan("DROP TABLE holdings")])
     with pytest.raises(ModelError, match="identical"):
@@ -188,3 +219,17 @@ def test_bounded_tool_calls(database: Path) -> None:
 def test_question_validation(database: Path, question: str) -> None:
     with pytest.raises(PortiqError):
         PortfolioAgent(Settings(database=database), FakeBackend([])).answer(question)
+
+
+def test_agent_receives_actual_portfolio_catalogue(database: Path) -> None:
+    with closing(sqlite3.connect(database)) as conn, conn:
+        conn.execute(
+            "INSERT INTO portfolios(portfolio_id,portfolio_name) VALUES(99,?)",
+            ("A Newly Supplied Fund",),
+        )
+    backend = FakeBackend([call("respond", status="clarification", answer="Which fund?")])
+    PortfolioAgent(Settings(database=database), backend).answer("Show fund exposure")
+    system = backend.requests[0][1].system_instruction
+    assert isinstance(system, str)
+    assert "A Newly Supplied Fund" in system
+    assert "International Equity Fund" in system

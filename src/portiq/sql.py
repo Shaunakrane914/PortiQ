@@ -77,8 +77,27 @@ class QueryResult(BaseModel):
 
 class SQLPlan(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    sql: str = Field(min_length=1, max_length=20000)
+    sql: str = Field(
+        min_length=1,
+        max_length=20000,
+        description=(
+            "One read-only SQLite query. For aggregate comparisons without a requested order, "
+            "include ORDER BY the last requested numeric metric DESC. Use an inner join for "
+            "sector-specific value aggregates unless zero-sector portfolios are explicitly requested."
+        ),
+    )
     explanation: str = Field(max_length=1000)
+
+
+def requires_dedicated_planning(sql: str) -> bool:
+    """Give structurally complex analytics a focused planner context before execution."""
+    try:
+        tree = sqlglot.parse_one(sql, read="sqlite")
+    except (ParseError, RecursionError):
+        return False  # The ordinary validation/repair loop handles malformed drafts.
+    return (
+        sum(1 for _ in tree.find_all(exp.Join)) >= 5 or sum(1 for _ in tree.find_all(exp.CTE)) >= 2
+    )
 
 
 def validate_sql(sql: str) -> None:
@@ -148,7 +167,16 @@ def execute(
         try:
             cursor = conn.execute(sql, parameters)
             columns = [c[0] for c in cursor.description or []]
-            rows = [list(r) for r in cursor.fetchmany(max_rows + 1)]
+            rows = []
+            result_bytes = 0
+            for _ in range(max_rows + 1):
+                row = cursor.fetchone()
+                if row is None:
+                    break
+                result_bytes += sum(len(str(value).encode("utf-8")) for value in row)
+                if result_bytes > 1_000_000:
+                    raise QueryError("Query result exceeds 1 MB; narrow the request.")
+                rows.append(list(row))
             if any(isinstance(value, bytes) for row in rows for value in row):
                 raise QueryError("Binary query results are not supported.")
         except sqlite3.Error as exc:
