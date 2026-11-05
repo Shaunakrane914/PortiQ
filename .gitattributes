@@ -6,3 +6,4 @@ database_schema.sql -text
 ground_truth_dataset.json -text
 requirements.txt -text
 docs/assignment/README.md -text
+.github/workflows/*.yml -text
