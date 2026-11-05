@@ -14,7 +14,9 @@ Layers:
    file, randomblob and zeroblob functions.
 4. Every application query runs with a read-only URI, `query_only=ON`, and extensions disabled.
 5. SQL size, expression depth, compound query count, value length, result rows and SQLite
-   execution time are bounded. Truncation is explicit and cannot pass evaluation.
+   execution time are bounded. Results are fetched incrementally with a 1 MB value budget.
+   Truncation is explicit and cannot pass evaluation. Initialization rejects destinations
+   that would overwrite original assessment inputs, including through resolved paths.
 6. Exposure resolution uses parameterized IDs and whole-token matching; names never become SQL.
 
 Generated analytical SQL may contain correctly escaped literals; the model has no write

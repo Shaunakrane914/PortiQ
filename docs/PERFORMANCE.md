@@ -13,8 +13,10 @@ speedup is claimed.
 
 The first live SQL vertical slice required three SDK requests for a simple count: routing,
 SQL generation and summarization. The final design generates the SQL in the routing
-function call, reducing that same successful flow to two SDK requests. The initial trace
-and final reports record the actual request counts. There is no controlled before/after
+function call, reducing simple successful flows to two SDK requests. Structurally complex
+queries use an additional focused planning call: an observed sector-aggregate scope error
+showed that reducing all planning to the routing request sacrificed correctness. The initial
+trace and final reports record actual request counts. There is no controlled before/after
 latency experiment across identical service/quota conditions, so no speedup percentage is claimed.
 
 The default model request interval is 13 seconds; the release evaluation uses 6.5 seconds

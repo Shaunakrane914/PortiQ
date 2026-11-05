@@ -19,6 +19,9 @@
   an independently blind or externally validated generalization score.
 - There is no persistent chat memory, answer cache, multi-user authentication or isolated worker.
   The SQLite execution boundary is defense in depth for local use, not a hard memory sandbox.
+- Schema and portfolio catalogue are captured when an agent starts. Restart chat after a
+  database rebuild so its metadata context reflects the new database. Complex-planning
+  selection is a structural heuristic (five joins or two CTEs), not a semantic proof.
 - The wheel excludes source datasets; install from a checkout and set PORTIQ_SOURCE when needed.
 - Dashboard and REST API enhancements are deliberately deferred. The mandatory CLI is independent.
 

@@ -25,6 +25,13 @@ requirements include optional UI/scientific packages that this CLI does not need
 
 ## What works
 
+Verified release evidence: **20/20 supplied cases across two fresh trials** (10/10 each),
+**49/50 on the first frozen extended run**, and **110 automated tests passed** with one
+opt-in live test skipped. Overall line coverage is 92.64% (93% rounded); exposure coverage
+is 100% and the SQL boundary is 94% rounded. Ruff, strict mypy and all four hosted CI jobs
+pass. The first extended score predates the final planning/name-grounding changes; the
+separate extended regression report measures the updated runtime.
+
 - Atomic schema-aware CSV ingestion, reproducible rebuilds, FK and data validation.
 - Genuine Gemini function calling with manual typed dispatch and multiple analytical tools.
 - Text-to-SQL with parsed validation, SQLite authorization, read-only connections and limits.
@@ -108,7 +115,7 @@ uv run portfolio-agent evaluate --suite extended --split heldout --output report
 uv run python scripts/release_evaluation.py
 ```
 
-The release script runs two supplied trials followed by all 50 extended questions with
+The release script runs two supplied trials followed by all 50 extended regression questions with
 one backend and 6.5-second pacing. The evaluator executes reference SQL independently,
 re-executes generated SQL, and checks full results, projection width, duplicate rows,
 ordering and numeric tolerances. Exposure references read the original CSVs independently
@@ -117,6 +124,7 @@ scored separately. Alias spelling is allowed; projection position and values mus
 
 The extended suite was authored here and frozen before its first live run. Its 17
 development, 17 validation and 16 heldout cases are not an externally blind benchmark.
+The first frozen run is retained separately; later reruns are labeled regression results.
 See [evaluation methodology](docs/EVALUATION.md) and committed `reports/` artifacts for
 actual scores and failures. Targets such as 10/10 or 45/50 are not claims of achievement.
 

@@ -42,13 +42,21 @@ Mock orchestration tests are never counted as live model accuracy.
 Each live report includes per-case expected/actual data, status, routing, SQL validity where
 applicable, failures, latency, SDK call count, provider token counts, model versions and
 cache status. New reports also include source, suite and runtime hashes and pacing/budgets.
-SDK automatic retries are disabled in the final implementation, so request accounting does
-not hide automatic transport retries. No persistent answer cache is used.
+SDK automatic retries are disabled. The application retries transient transport failures
+and HTTP 408/500/502/503/504 once; every actual backend invocation increments the reported
+API count. Authentication, validation and quota errors are not automatically retried.
+No persistent answer cache is used.
 
-The release script runs two uncached supplied trials, then one complete extended trial.
+The release script runs two uncached supplied trials, then one complete extended regression trial.
 Latency includes intentional quota pacing as well as model/network time; it should not be
 presented as unthrottled model latency. Comparison runs across models are separate artifacts,
 not interchangeable samples of one configuration.
 
 Results are recorded in the committed JSON/Markdown files in `reports/`; read the acceptance
 record for the final measured outcome. A failed run is not replaced by a fictional target score.
+
+`extended-final.json` is the first frozen-suite run. `extended-regression.json` is a later
+rerun after changes informed by supplied development questions; it must not be labeled a
+new unseen evaluation. `transport-interrupted.json` is explicitly incomplete and preserves
+the interrupted run that motivated bounded transport retries. Development diagnostics are
+also labeled separately and are never merged into a full-suite score.

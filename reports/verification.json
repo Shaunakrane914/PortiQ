@@ -1,0 +1,37 @@
+{
+  "timestamp_utc": "2026-11-05T17:37:09.651267+00:00",
+  "runtime_commit": "b51a24214fcbd6383f3267784d328862686c9fef",
+  "python": "3.14.0",
+  "platform": "Windows",
+  "pytest": {
+    "tests": 111,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "passed": 110
+  },
+  "coverage": {
+    "lines_covered": 692,
+    "lines_valid": 747,
+    "line_rate": 0.9264,
+    "modules": {
+      "src/portiq/__init__.py": 1.0,
+      "src/portiq/__main__.py": 0.0,
+      "src/portiq/agent.py": 0.9615,
+      "src/portiq/cli.py": 0.8522,
+      "src/portiq/config.py": 1.0,
+      "src/portiq/database.py": 0.9223,
+      "src/portiq/errors.py": 1.0,
+      "src/portiq/evaluation.py": 0.8903,
+      "src/portiq/exposure.py": 1.0,
+      "src/portiq/model.py": 1.0,
+      "src/portiq/prompts.py": 1.0,
+      "src/portiq/sql.py": 0.9367
+    }
+  },
+  "ruff_check": "passed",
+  "ruff_format": "passed",
+  "strict_mypy": "passed",
+  "clean_python_install": "3.11.15; separate environment; no API key or prebuilt database",
+  "secrets": "Current API key absent from tracked and staged files; .env ignored"
+}

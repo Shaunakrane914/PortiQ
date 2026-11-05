@@ -17,9 +17,17 @@ flowchart TD
 
 The maintained Google GenAI SDK handles network transport. Automatic SDK function
 execution is disabled: this application validates and executes every tool call itself.
-Gemini generates SQL in its typed function arguments, avoiding an extra planning request.
-The standalone SQL-generation path is also used for bounded correction when initial SQL
-fails. There is no keyword router or benchmark lookup in production.
+Gemini generates a SQL draft in its typed function arguments. Simple queries execute after
+validation without an extra planning request. Drafts with at least five joins or two CTEs
+use a focused SQL planner before execution; this structural heuristic was introduced after
+an actual aggregate-scope failure. The same structured generator performs bounded correction.
+This heuristic contains no question text, portfolio names, sectors or benchmark identifiers.
+It is not a guarantee of semantic correctness. There is no keyword router or benchmark lookup.
+
+The system context includes the actual portfolio ID/name catalogue read from SQLite, with
+values explicitly labeled as data. This gives the model name grounding without injecting
+benchmark answers or repeatedly asking broad discovery queries. Schema, catalogue and
+conventions are built once per agent instance.
 
 Each request has a fresh conversation. Model response content, including provider thought
 signatures, is retained only while that request runs. Function response IDs are preserved.

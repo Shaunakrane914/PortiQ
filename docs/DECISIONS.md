@@ -8,9 +8,11 @@ measure actual model behavior separately.
 
 **Combine SQL planning and routing.** The first working vertical slice used three SDK calls
 for a simple SQL question: route, generate, summarize. It actually exhausted a free-tier quota.
-Generating SQL in the routing function call removes the redundant generation call on valid
-queries. SQL repairs still use structured JSON and the same execution boundary. There is no
-claim of a latency percentage improvement from these uncontrolled live runs.
+Generating SQL in the routing function call removes the redundant generation call on simple
+valid queries. A later real sector-aggregate failure showed that complex drafts needed a
+focused planner: drafts with five joins or two CTEs receive that additional call. This is
+an explicit correctness/cost trade-off, not a question-specific route. Planning and repair
+share one JSON generator and execution boundary. No latency speedup percentage is claimed.
 
 **SQLite and atomic file initialization.** The assignment suggests an in-memory database as
 a starting point; a reproducible on-disk SQLite database allows independent CLI processes,

@@ -1,0 +1,524 @@
+{
+  "timestamp_utc": "2026-11-05T17:17:03.387552+00:00",
+  "suite": "ground_truth_dataset.json",
+  "model": "gemini-3.6-flash",
+  "request_interval_seconds": 13.0,
+  "sql_attempts": 3,
+  "max_tool_calls": 6,
+  "source_sha256": {
+    "data\\benchmarks.csv": "c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62",
+    "data\\historical_prices.csv": "4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0",
+    "data\\holdings.csv": "6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc",
+    "data\\portfolio_performance.csv": "acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1",
+    "data\\portfolios.csv": "11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb",
+    "data\\risk_metrics.csv": "424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304",
+    "data\\sectors.csv": "5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010",
+    "data\\securities.csv": "973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e",
+    "data\\transactions.csv": "736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f"
+  },
+  "suite_sha256": "7a5c9e4ea18f973d047d31aece044a84a179010e53ca06a6fb65f00ae0343244",
+  "runtime_sha256": {
+    "__init__.py": "ae3ce640088023063cf4239c6d4a04adec87185cf978e2c1c7352e40befd1e56",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8",
+    "agent.py": "97a449781eefd8047cd889fac5976a01ac3424dd14112000b9ee38aafef13c8c",
+    "cli.py": "7b1dd46e96c1ad2a826f0dbaca2d073eeb7ed5da2b585ce2fb9bdefcb0c51a6c",
+    "config.py": "783a5345b103312ef2ef755644a67475ec4c1b86b15e59c05bf1f5d02849bbdd",
+    "database.py": "688bbb9b238f99325d87350f03b3007737e5079326f3726314a19c7eb46a7d99",
+    "errors.py": "2699a789cbe218449043a298ef8dc93a386ccb2fb694043e17688af753d0a5b6",
+    "evaluation.py": "e6404420219211c2698cca2a3ae76512b107cef69a8ce0da49f5e7cc99e3c791",
+    "exposure.py": "45854cf77093240491754586f3a1cc1c0b109d14e84d4d8b834b212fc74f028d",
+    "model.py": "446dd9aeb1d67d002e14f814dc1394d9e0a2ef184537119c5aec4f81bd6bf556",
+    "prompts.py": "32a4f6259416ebaddbdb9ad176107b63bc552db56a61f4024bc9db447b95337d",
+    "sql.py": "bfc6b2cca311619575fe0380ddc60017720f41d66245d7844659bd736a08a229"
+  },
+  "cache": "disabled",
+  "trials": 1,
+  "split": "all",
+  "total": 10,
+  "passed": 0,
+  "routing_correct": 0,
+  "mean_ms": 18758.1817,
+  "p95_ms": 28269.918,
+  "api_calls": 15,
+  "tokens": 10921,
+  "records": [
+    {
+      "id": 1,
+      "question": "How many portfolios do we have in total?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "51bd1e9b-d2ac-4d61-8445-484b556902c6",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "How many portfolios do we have in total?",
+              "sql": "SELECT COUNT(*) AS total_portfolios FROM portfolios;",
+              "explanation": "Count the total number of portfolios in the database."
+            },
+            "result": {
+              "columns": [
+                "total_portfolios"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) AS total_portfolios FROM portfolios;",
+              "duration_ms": 2.516,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 21.724
+          }
+        ],
+        "model": "gemini-3.6-flash",
+        "model_versions": [
+          "gemini-3.6-flash"
+        ],
+        "duration_ms": 13767.321,
+        "model_duration_ms": 13712.489,
+        "api_calls": 2,
+        "tokens": 2033,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+      "duration_ms": 13767.478,
+      "trial": 1
+    },
+    {
+      "id": 2,
+      "question": "What are the names of all active portfolios?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "68532a7e-ef8d-44a2-8958-a565815b47ae",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Query all portfolio names where status is Active.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE LOWER(status) = 'active' ORDER BY portfolio_name ASC;",
+              "question": "What are the names of all active portfolios?"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "Conservative Income Fund"
+                ],
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE LOWER(status) = 'active' ORDER BY portfolio_name ASC;",
+              "duration_ms": 2.784,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 3.673
+          }
+        ],
+        "model": "gemini-3.6-flash",
+        "model_versions": [
+          "gemini-3.6-flash"
+        ],
+        "duration_ms": 25851.611,
+        "model_duration_ms": 25844.92,
+        "api_calls": 2,
+        "tokens": 2099,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+      "duration_ms": 25851.771,
+      "trial": 1
+    },
+    {
+      "id": 3,
+      "question": "Which securities are in the Technology sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "9003ca5f-da11-4a52-8511-6b27af080142",
+        "status": "error",
+        "answer": "Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3.6-flash",
+        "model_versions": [],
+        "duration_ms": 15932.28,
+        "model_duration_ms": 15929.752,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+      "duration_ms": 15932.447,
+      "trial": 1
+    },
+    {
+      "id": 4,
+      "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "61c10ead-8407-4b6d-8c0b-baccf0a0f8f1",
+        "status": "error",
+        "answer": "Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3.6-flash",
+        "model_versions": [],
+        "duration_ms": 17070.67,
+        "model_duration_ms": 17068.711,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+      "duration_ms": 17070.776,
+      "trial": 1
+    },
+    {
+      "id": 5,
+      "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "ccb9ad9f-6f0e-41da-919f-9ee5985eb5a2",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Retrieve the top 5 holdings by cost basis for Growth Equity Fund, including holding_id, symbol, company_name, quantity, and cost_basis.",
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;",
+              "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund"
+            },
+            "result": {
+              "columns": [
+                "holding_id",
+                "symbol",
+                "company_name",
+                "quantity",
+                "cost_basis"
+              ],
+              "rows": [
+                [
+                  1,
+                  "AAPL",
+                  "Apple Inc.",
+                  2500.0,
+                  438000.0
+                ],
+                [
+                  8,
+                  "AMZN",
+                  "Amazon.com Inc.",
+                  100.0,
+                  320000.0
+                ],
+                [
+                  2,
+                  "MSFT",
+                  "Microsoft Corporation",
+                  800.0,
+                  304400.0
+                ],
+                [
+                  3,
+                  "NVDA",
+                  "NVIDIA Corporation",
+                  400.0,
+                  288040.0
+                ],
+                [
+                  6,
+                  "CRM",
+                  "Salesforce Inc.",
+                  1000.0,
+                  185400.0
+                ]
+              ],
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;",
+              "duration_ms": 2.464,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 4.052
+          }
+        ],
+        "model": "gemini-3.6-flash",
+        "model_versions": [
+          "gemini-3.6-flash"
+        ],
+        "duration_ms": 21464.336,
+        "model_duration_ms": 21457.2,
+        "api_calls": 2,
+        "tokens": 2295,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+      "duration_ms": 21464.537,
+      "trial": 1
+    },
+    {
+      "id": 6,
+      "question": "What is the average current price of securities in each sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "d448a435-7b3d-4956-bdda-d977a77c422c",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT sec.sector_name, AVG(s.current_price) AS avg_current_price FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id GROUP BY sec.sector_name ORDER BY avg_current_price DESC;",
+              "question": "What is the average current price of securities in each sector?",
+              "explanation": "Calculate the average current price of securities grouped by sector, ordered by the average price descending."
+            },
+            "result": {
+              "columns": [
+                "sector_name",
+                "avg_current_price"
+              ],
+              "rows": [
+                [
+                  "Consumer Discretionary",
+                  3380.0
+                ],
+                [
+                  "Technology",
+                  719.245
+                ],
+                [
+                  "Healthcare",
+                  285.17
+                ],
+                [
+                  "Automotive",
+                  248.5
+                ],
+                [
+                  "Financials",
+                  201.2125
+                ],
+                [
+                  "Consumer Staples",
+                  173.8625
+                ],
+                [
+                  "Energy",
+                  128.575
+                ]
+              ],
+              "sql": "SELECT sec.sector_name, AVG(s.current_price) AS avg_current_price FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id GROUP BY sec.sector_name ORDER BY avg_current_price DESC;",
+              "duration_ms": 2.24,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 3.173
+          }
+        ],
+        "model": "gemini-3.6-flash",
+        "model_versions": [
+          "gemini-3.6-flash"
+        ],
+        "duration_ms": 28269.808,
+        "model_duration_ms": 28262.211,
+        "api_calls": 2,
+        "tokens": 2463,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+      "duration_ms": 28269.918,
+      "trial": 1
+    },
+    {
+      "id": 7,
+      "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "7bbab6c3-be5c-45ef-b06e-8747f8cd9d5a",
+        "status": "error",
+        "answer": "Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3.6-flash",
+        "model_versions": [],
+        "duration_ms": 16326.195,
+        "model_duration_ms": 16324.273,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+      "duration_ms": 16326.421,
+      "trial": 1
+    },
+    {
+      "id": 8,
+      "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "da8f0a5f-51d6-40be-929e-2241bd5f00ef",
+        "status": "error",
+        "answer": "Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3.6-flash",
+        "model_versions": [],
+        "duration_ms": 16136.185,
+        "model_duration_ms": 16134.751,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+      "duration_ms": 16136.29,
+      "trial": 1
+    },
+    {
+      "id": 9,
+      "question": "What are the sector exposures for the Tech Innovation Fund?",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "a614bcbb-961d-4a8b-83c3-b7f68a363819",
+        "status": "error",
+        "answer": "Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "Tech Innovation Fund"
+            },
+            "result": {
+              "portfolio_id": 3,
+              "portfolio_name": "Tech Innovation Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Technology": "100.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 4.675
+          }
+        ],
+        "model": "gemini-3.6-flash",
+        "model_versions": [
+          "gemini-3.6-flash"
+        ],
+        "duration_ms": 18617.823,
+        "model_duration_ms": 18609.725,
+        "api_calls": 2,
+        "tokens": 2031,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ClientError, status=400). Check model availability, credentials, network, and quota.",
+      "duration_ms": 18617.927,
+      "trial": 1
+    },
+    {
+      "id": 10,
+      "question": "Calculate the sector exposure breakdown for international equity",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "actual": {
+        "request_id": "257ae150-e86b-46ea-9041-46f6194bd9bd",
+        "status": "error",
+        "answer": "Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+        "tools": [],
+        "model": "gemini-3.6-flash",
+        "model_versions": [],
+        "duration_ms": 14144.132,
+        "model_duration_ms": 14142.191,
+        "api_calls": 1,
+        "tokens": 0,
+        "cache": "disabled"
+      },
+      "failure": "Expected status answer; actual error: Gemini request failed (ServerError, status=503). Check model availability, credentials, network, and quota.",
+      "duration_ms": 14144.252,
+      "trial": 1
+    }
+  ]
+}
