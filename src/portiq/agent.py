@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 class SQLInput(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     question: str = Field(min_length=1, max_length=4000)
+    sql: str = Field(min_length=1, max_length=20000)
+    explanation: str = Field(max_length=1000)
 
 
 class FinalInput(BaseModel):
@@ -57,24 +59,36 @@ def user_content(text: str) -> types.Content:
     return types.Content(role="user", parts=[types.Part.from_text(text=text)])
 
 
-def run_sql_tool(settings: Settings, backend: Backend, question: str, schema: str) -> QueryResult:
+def run_sql_tool(
+    settings: Settings,
+    backend: Backend,
+    question: str,
+    schema: str,
+    *,
+    initial_plan: SQLPlan | None = None,
+) -> QueryResult:
     """Generate JSON SQL and repair only within a strict, deduplicated attempt budget."""
     contents = [user_content(question)]
     seen: set[str] = set()
     last_error = "SQL generation failed."
     for attempt in range(1, settings.sql_attempts + 1):
-        response = backend.generate(
-            contents,
-            types.GenerateContentConfig(
-                system_instruction=SQL_SYSTEM + "\nDATABASE SCHEMA:\n" + schema,
-                temperature=0,
-                response_mime_type="application/json",
-                response_json_schema=SQLPlan.model_json_schema(),
-                max_output_tokens=4096,
-            ),
-        )
+        response = None
+        if attempt == 1 and initial_plan is not None:
+            plan = initial_plan
+        else:
+            response = backend.generate(
+                contents,
+                types.GenerateContentConfig(
+                    system_instruction=SQL_SYSTEM + "\nDATABASE SCHEMA:\n" + schema,
+                    temperature=0,
+                    response_mime_type="application/json",
+                    response_json_schema=SQLPlan.model_json_schema(),
+                    max_output_tokens=4096,
+                ),
+            )
         try:
-            plan = SQLPlan.model_validate_json(response.text or "")
+            if response is not None:
+                plan = SQLPlan.model_validate_json(response.text or "")
             signature = plan.sql.strip()
             if signature in seen:
                 raise ModelError("SQL repair repeated an identical failing query.")
@@ -91,8 +105,10 @@ def run_sql_tool(settings: Settings, backend: Backend, question: str, schema: st
             last_error = "Output must be valid JSON with only sql and explanation fields."
         except QueryError as exc:
             last_error = str(exc)
-        if response.candidates and response.candidates[0].content:
+        if response is not None and response.candidates and response.candidates[0].content:
             contents.append(response.candidates[0].content)
+        elif initial_plan is not None:
+            contents.append(user_content("Previous generated SQL: " + initial_plan.sql))
         contents.append(user_content("Correct the previous query. Validation error: " + last_error))
     raise QueryError(f"SQL failed after {settings.sql_attempts} attempts: {last_error}")
 
@@ -102,7 +118,8 @@ def tool_declarations() -> list[types.FunctionDeclaration]:
         types.FunctionDeclaration(
             name="sql_query",
             description=(
-                "Answer a natural-language database analytics question using safe text-to-SQL."
+                "Translate the question to one read-only SQLite query. Supply question, "
+                "generated sql and explanation; execution is validated locally."
             ),
             parameters_json_schema=SQLInput.model_json_schema(),
         ),
@@ -221,7 +238,11 @@ class PortfolioAgent:
                     if name == "sql_query":
                         query = SQLInput.model_validate(arguments)
                         result = run_sql_tool(
-                            self.settings, meter, query.question, self.schema
+                            self.settings,
+                            meter,
+                            query.question,
+                            self.schema,
+                            initial_plan=SQLPlan(sql=query.sql, explanation=query.explanation),
                         ).model_dump(mode="json")
                     elif name == "exposure_calculator":
                         exposure = ExposureInput.model_validate(arguments)

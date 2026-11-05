@@ -19,6 +19,7 @@ class Settings(BaseModel):
     query_seconds: float = Field(default=2.0, gt=0, le=10)
     max_tool_calls: int = Field(default=6, ge=1, le=12)
     sql_attempts: int = Field(default=3, ge=1, le=4)
+    request_interval: float = Field(default=13.0, ge=0, le=60)
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -28,6 +29,7 @@ class Settings(BaseModel):
             source=Path(os.getenv("PORTIQ_SOURCE", ".")),
             model=os.getenv("GEMINI_MODEL", "gemini-3-flash-preview"),
             api_key=SecretStr(os.getenv("GEMINI_API_KEY", "")),
+            request_interval=float(os.getenv("PORTIQ_REQUEST_INTERVAL", "13")),
         )
 
     def require_key(self) -> str:

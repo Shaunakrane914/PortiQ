@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
-from test_agent import FakeBackend, call, plan
+from test_agent import FakeBackend, call
 
 from portiq.agent import PortfolioAgent
 from portiq.config import Settings
@@ -48,8 +48,7 @@ def test_evaluator_rejects_incorrect_sql_even_plausible_prose(database: Path, so
     }
     backend = FakeBackend(
         [
-            call("sql_query", question="Count"),
-            plan("SELECT 12"),
+            call("sql_query", question="Count", sql="SELECT 12", explanation="wrong count"),
             call("respond", status="answer", answer="There are 13 portfolios."),
         ]
     )
@@ -67,8 +66,12 @@ def test_evaluator_extra_columns_fail(database: Path, source: Path) -> None:
     }
     backend = FakeBackend(
         [
-            call("sql_query", question="Count"),
-            plan("SELECT COUNT(*), 42 FROM portfolios"),
+            call(
+                "sql_query",
+                question="Count",
+                sql="SELECT COUNT(*), 42 FROM portfolios",
+                explanation="extra column",
+            ),
             call("respond", status="answer", answer="13"),
         ]
     )

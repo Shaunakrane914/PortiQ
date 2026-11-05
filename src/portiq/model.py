@@ -20,10 +20,12 @@ class Backend(Protocol):
 class GeminiBackend:
     def __init__(self, settings: Settings) -> None:
         self.model = settings.model
+        self.request_interval = settings.request_interval
+        self.last_request = 0.0
         self.client = genai.Client(
             api_key=settings.require_key(),
             http_options=types.HttpOptions(
-                timeout=30000, retry_options=types.HttpRetryOptions(attempts=2)
+                timeout=30000, retry_options=types.HttpRetryOptions(attempts=1)
             ),
         )
 
@@ -31,6 +33,10 @@ class GeminiBackend:
         self, contents: list[types.Content], config: types.GenerateContentConfig
     ) -> types.GenerateContentResponse:
         try:
+            remaining = self.request_interval - (time.monotonic() - self.last_request)
+            if remaining > 0:
+                time.sleep(remaining)
+            self.last_request = time.monotonic()
             return self.client.models.generate_content(
                 model=self.model,
                 contents=contents,

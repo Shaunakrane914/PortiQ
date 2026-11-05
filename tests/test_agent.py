@@ -69,15 +69,19 @@ def test_multitool_orchestration(database: Path) -> None:
     backend = FakeBackend(
         [
             call("exposure_calculator", portfolio="Tech Innovation Fund"),
-            call("sql_query", question="Count portfolios"),
-            plan("SELECT COUNT(*) FROM portfolios"),
+            call(
+                "sql_query",
+                question="Count portfolios",
+                sql="SELECT COUNT(*) FROM portfolios",
+                explanation="Count all rows",
+            ),
             call("respond", status="answer", answer="There are 13 portfolios. Technology is 100%."),
         ]
     )
     result = PortfolioAgent(Settings(database=database), backend).answer(
         "Compare exposure and count"
     )
-    assert result.status == "answer" and result.api_calls == 4
+    assert result.status == "answer" and result.api_calls == 3
     assert result.tools[0].result["sectors"] == {"Technology": "100.00"}
     assert result.tools[1].result["rows"] == [[13]]
     assert result.tokens == 15 and result.cache == "disabled"
@@ -112,8 +116,12 @@ def test_prompt_injection_cannot_mutate(database: Path) -> None:
     before = database.read_bytes()
     backend = FakeBackend(
         [
-            call("sql_query", question="Delete everything"),
-            plan("DELETE FROM portfolios"),
+            call(
+                "sql_query",
+                question="Delete everything",
+                sql="DELETE FROM portfolios",
+                explanation="malicious",
+            ),
             plan("DROP TABLE holdings"),
             plan("PRAGMA writable_schema=1"),
             call("respond", status="unsupported", answer="Cannot modify data."),
