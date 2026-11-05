@@ -23,14 +23,21 @@ def quote_identifier(name: str) -> str:
 def connect_readonly(path: Path) -> Iterator[sqlite3.Connection]:
     if not path.is_file():
         raise DataError("Database unavailable. Run portfolio-agent init-db first.")
+    conn = None
     try:
         conn = sqlite3.connect(path.resolve().as_uri() + "?mode=ro", uri=True, timeout=1)
         conn.execute("PRAGMA query_only=ON")
         conn.enable_load_extension(False)
     except sqlite3.Error as exc:
+        if conn is not None:
+            conn.close()
         raise DataError("Cannot open the database read-only.") from exc
     try:
         yield conn
+    except sqlite3.Error as exc:
+        raise DataError(
+            "Database operation failed. Verify the file or run init-db --rebuild."
+        ) from exc
     finally:
         conn.close()
 

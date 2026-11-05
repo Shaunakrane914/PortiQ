@@ -22,7 +22,7 @@ from portiq.sql import execute
         "WITH RECURSIVE x(n) AS (SELECT 1 UNION ALL SELECT n+1 FROM x) SELECT * FROM x",
         "SELECT randomblob(1000000000)",
         "SELECT zeroblob(1000000000)",
-        "SELECT * FROM main.portfolios",
+        "SELECT * FROM temp.portfolios",
         "SELECT 1 INTO stolen",
         "",
         "nonsense",
@@ -42,6 +42,8 @@ def test_unsafe_queries_rejected(database: Path, sql: str) -> None:
     "sql",
     [
         "SELECT COUNT(*) FROM portfolios;",
+        "SELECT COUNT(*) FROM main.portfolios",
+        "SELECT COUNT(*) FROM MAIN.portfolios",
         "-- valid comment\n SELECT portfolio_name FROM portfolios WHERE status='Active'",
         "WITH x AS (SELECT portfolio_id FROM portfolios) SELECT COUNT(*) FROM x",
         "SELECT 1 UNION ALL SELECT 2",

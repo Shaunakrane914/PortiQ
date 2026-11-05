@@ -117,7 +117,9 @@ def validate_sql(sql: str) -> None:
         if isinstance(node, exp.With) and node.args.get("recursive"):
             raise QueryError("Recursive queries are forbidden.")
         if isinstance(node, exp.Table) and (
-            node.catalog or node.db or node.name.lower().startswith(("sqlite_", "pragma_"))
+            node.catalog
+            or node.db.casefold() not in {"", "main"}
+            or node.name.lower().startswith(("sqlite_", "pragma_"))
         ):
             raise QueryError("Only application tables in the main database may be queried.")
 
@@ -152,7 +154,7 @@ def execute(
             if (
                 action == sqlite3.SQLITE_READ
                 and arg1 in tables
-                and (database == "main" or (database is None and arg2 == ""))
+                and ((database or "").casefold() == "main" or (database is None and arg2 == ""))
             ):
                 return sqlite3.SQLITE_OK
             if action == sqlite3.SQLITE_FUNCTION and (arg2 or "").lower() in SAFE_FUNCTIONS:

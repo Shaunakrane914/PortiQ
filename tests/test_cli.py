@@ -36,6 +36,13 @@ def test_cli_missing_database(tmp_path: Path, capsys: pytest.CaptureFixture) -> 
     assert "init-db" in capsys.readouterr().err
 
 
+def test_cli_corrupt_database(tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
+    file = tmp_path / "broken.db"
+    file.write_bytes(b"not SQLite")
+    assert main(["--db", str(file), "doctor"]) == 1
+    assert "rebuild" in capsys.readouterr().err
+
+
 def test_module_entrypoint(source: Path) -> None:
     env = os.environ.copy()
     result = subprocess.run(

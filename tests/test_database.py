@@ -41,6 +41,42 @@ def test_missing_database_does_not_create(tmp_path: Path) -> None:
     assert not path.exists()
 
 
+def test_corrupt_database_is_actionable(tmp_path: Path) -> None:
+    path = tmp_path / "corrupt.db"
+    path.write_bytes(b"not a SQLite database")
+    with pytest.raises(DataError, match="rebuild"):
+        schema_context(path)
+    assert path.read_bytes() == b"not a SQLite database"
+
+
+@pytest.mark.parametrize("fail_before_allocation", [True, False])
+def test_open_failure_is_safe_and_closes_allocated_connection(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    fail_before_allocation: bool,
+) -> None:
+    path = tmp_path / "present.db"
+    path.touch()
+    closed = []
+
+    class BrokenConnection:
+        def execute(self, sql: str) -> None:
+            raise sqlite3.OperationalError("Access denied")
+
+        def close(self) -> None:
+            closed.append(True)
+
+    def broken_connect(*args: object, **kwargs: object) -> BrokenConnection:
+        if fail_before_allocation:
+            raise sqlite3.OperationalError("Access denied")
+        return BrokenConnection()
+
+    monkeypatch.setattr("portiq.database.sqlite3.connect", broken_connect)
+    with pytest.raises(DataError, match="Cannot open"), connect_readonly(path):
+        pass
+    assert closed == ([] if fail_before_allocation else [True])
+
+
 def test_rebuild_is_atomic(database: Path, source: Path, tmp_path: Path) -> None:
     original = database.read_bytes()
     with pytest.raises(DataError, match="already exists"):
