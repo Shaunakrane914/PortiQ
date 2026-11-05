@@ -253,3 +253,12 @@ def test_agent_receives_actual_portfolio_catalogue(database: Path) -> None:
     assert isinstance(system, str)
     assert "A Newly Supplied Fund" in system
     assert "International Equity Fund" in system
+
+
+def test_agent_and_sql_planner_receive_column_domains(database: Path) -> None:
+    backend = FakeBackend([call("respond", status="unsupported", answer="No query requested.")])
+    agent = PortfolioAgent(Settings(database=database), backend)
+    agent.answer("Describe supported tools")
+    assert '"portfolios.status": {"values": ["Active", "Passive"]' in agent.schema
+    assert '"portfolios.strategy_type"' in agent.schema
+    assert agent.schema in backend.requests[0][1].system_instruction

@@ -155,3 +155,48 @@ def schema_context(path: Path) -> str:
                 "SELECT sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
             )
         )
+
+
+def categorical_context(path: Path, *, max_values: int = 16) -> dict[str, Any]:
+    """Describe classification domains from current data, with explicit truncation limits."""
+    if not 1 <= max_values <= 32:
+        raise ValueError("max_values must be between 1 and 32")
+    categories: dict[str, Any] = {}
+    with connect_readonly(path) as conn:
+        tables = [
+            row[0]
+            for row in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+            )
+        ]
+        for table in tables:
+            for column in conn.execute(f"PRAGMA table_info({quote_identifier(table)})"):
+                name, kind = column[1], column[2]
+                # These are schema classifications, not question-specific routing rules.
+                if kind != "TEXT" or not (
+                    name.endswith("_type")
+                    or name
+                    in {
+                        "status",
+                        "target_risk_level",
+                        "currency",
+                        "exchange",
+                        "country",
+                        "industry_group",
+                    }
+                ):
+                    continue
+                values = [
+                    row[0]
+                    for row in conn.execute(
+                        f"SELECT DISTINCT {quote_identifier(name)} FROM {quote_identifier(table)} "
+                        f"ORDER BY {quote_identifier(name)} LIMIT ?",
+                        (max_values + 1,),
+                    )
+                ]
+                categories[f"{table}.{name}"] = {
+                    "values": [v for v in values[:max_values] if v is None or len(v) <= 80],
+                    "complete": len(values) <= max_values
+                    and all(v is None or len(v) <= 80 for v in values),
+                }
+    return categories

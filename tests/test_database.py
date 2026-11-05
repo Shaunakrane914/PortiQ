@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from portiq.database import connect_readonly, initialize, schema_context
+from portiq.database import categorical_context, connect_readonly, initialize, schema_context
 from portiq.errors import DataError
 
 COUNTS = {
@@ -47,6 +47,29 @@ def test_corrupt_database_is_actionable(tmp_path: Path) -> None:
     with pytest.raises(DataError, match="rebuild"):
         schema_context(path)
     assert path.read_bytes() == b"not a SQLite database"
+
+
+def test_classification_values_belong_to_the_actual_columns(database: Path) -> None:
+    context = categorical_context(database)
+    assert context["portfolios.status"] == {"values": ["Active", "Passive"], "complete": True}
+    assert "Passive" not in context["portfolios.strategy_type"]["values"]
+    assert "Index" in context["portfolios.strategy_type"]["values"]
+    assert "securities.company_name" not in context
+
+
+def test_categorical_context_is_dynamic_and_bounded(database: Path) -> None:
+    from contextlib import closing
+
+    with closing(sqlite3.connect(database)) as conn, conn:
+        conn.execute("UPDATE portfolios SET status='Dormant' WHERE status='Passive'")
+        conn.execute("UPDATE portfolios SET strategy_type='Passive' WHERE strategy_type='Index'")
+    context = categorical_context(database)
+    assert context["portfolios.status"]["values"] == ["Active", "Dormant"]
+    assert "Passive" in context["portfolios.strategy_type"]["values"]
+    limited = categorical_context(database, max_values=1)
+    assert limited["portfolios.status"] == {"values": ["Active"], "complete": False}
+    with pytest.raises(ValueError):
+        categorical_context(database, max_values=0)
 
 
 @pytest.mark.parametrize("fail_before_allocation", [True, False])

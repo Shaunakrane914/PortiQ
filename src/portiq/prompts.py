@@ -13,6 +13,9 @@ COALESCE absent sector holdings into zero unless zero rows are explicitly reques
 Round percentage-of-value results to two decimals. If no order is specified for an
 aggregate comparison, rank by the last requested metric descending.
 Use supplied asset_type, sector_name, status and risk classifications without reinterpretation.
+Use the categorical domains to associate a filter value with its actual column. Do not
+reinterpret a stored classification as a strategy synonym. An empty result from a guessed
+column is not proof that the requested category is absent; verify the relevant domain first.
 Historical tables contain snapshots: use the latest available date when latest is requested,
 not today's date. Do not invent exchange rates, prices, returns, or predictive metrics.
 Return all requested fields; for holdings listings include holding_id, symbol, company_name,
