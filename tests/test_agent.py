@@ -209,6 +209,26 @@ def test_invalid_or_unavailable_model(database: Path, response: object) -> None:
     assert result.status == "error"
 
 
+def test_transient_failure_retried_and_counted(database: Path) -> None:
+    backend = FakeBackend(
+        [
+            ModelError("Temporary transport failure", retryable=True),
+            call("exposure_calculator", portfolio="3"),
+            call("respond", status="answer", answer="Technology 100%."),
+        ]
+    )
+    response = PortfolioAgent(Settings(database=database), backend).answer(
+        "Tech Innovation exposure"
+    )
+    assert response.status == "answer" and response.api_calls == 3
+
+
+def test_transient_retry_is_bounded(database: Path) -> None:
+    backend = FakeBackend([ModelError("Temporary failure", retryable=True)] * 2)
+    response = PortfolioAgent(Settings(database=database), backend).answer("Count portfolios")
+    assert response.status == "error" and response.api_calls == 2
+
+
 def test_bounded_tool_calls(database: Path) -> None:
     backend = FakeBackend([call("exposure_calculator", portfolio="3")] * 4)
     result = PortfolioAgent(Settings(database=database, max_tool_calls=2), backend).answer("test")

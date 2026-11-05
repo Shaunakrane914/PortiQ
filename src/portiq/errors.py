@@ -16,6 +16,10 @@ class QueryError(PortiqError):
 class ModelError(PortiqError):
     """Unavailable model or malformed model response."""
 
+    def __init__(self, message: str, *, retryable: bool = False) -> None:
+        super().__init__(message)
+        self.retryable = retryable
+
 
 class PortfolioError(PortiqError):
     """Portfolio reference requires correction or clarification."""

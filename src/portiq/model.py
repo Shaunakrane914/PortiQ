@@ -47,7 +47,9 @@ class GeminiBackend:
             code = getattr(exc, "code", None)
             raise ModelError(
                 f"Gemini request failed ({type(exc).__name__}, status={code}). "
-                "Check model availability, credentials, network, and quota."
+                "Check model availability, credentials, network, and quota.",
+                retryable=isinstance(exc, httpx.TransportError)
+                or code in {408, 500, 502, 503, 504},
             ) from exc
 
     def close(self) -> None:
@@ -67,10 +69,16 @@ class MeteredBackend:
     def generate(
         self, contents: list[types.Content], config: types.GenerateContentConfig
     ) -> types.GenerateContentResponse:
-        self.calls += 1
         start = time.perf_counter()
         try:
-            response = self.backend.generate(contents, config)
+            for attempt in range(2):
+                self.calls += 1
+                try:
+                    response = self.backend.generate(contents, config)
+                    break
+                except ModelError as exc:
+                    if not exc.retryable or attempt == 1:
+                        raise
         finally:
             self.duration_ms += (time.perf_counter() - start) * 1000
         if response.model_version:

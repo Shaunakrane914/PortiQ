@@ -83,7 +83,8 @@ class SQLPlan(BaseModel):
         description=(
             "One read-only SQLite query. For aggregate comparisons without a requested order, "
             "include ORDER BY the last requested numeric metric DESC. Use an inner join for "
-            "sector-specific value aggregates unless zero-sector portfolios are explicitly requested."
+            "sector-specific value aggregates unless zero-sector portfolios are "
+            "explicitly requested."
         ),
     )
     explanation: str = Field(max_length=1000)
