@@ -13,7 +13,7 @@ class Settings(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
     database: Path = Path("portfolio_database.db")
     source: Path = Path(".")
-    model: str = Field(default="gemini-3-flash-preview", min_length=1, max_length=120)
+    model: str = Field(default="gemini-3.1-flash-lite", min_length=1, max_length=120)
     api_key: SecretStr = Field(default=SecretStr(""), exclude=True, repr=False)
     max_rows: int = Field(default=1000, ge=1, le=5000)
     query_seconds: float = Field(default=2.0, gt=0, le=10)
@@ -27,7 +27,7 @@ class Settings(BaseModel):
         return cls(
             database=Path(os.getenv("PORTIQ_DB", "portfolio_database.db")),
             source=Path(os.getenv("PORTIQ_SOURCE", ".")),
-            model=os.getenv("GEMINI_MODEL", "gemini-3-flash-preview"),
+            model=os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite"),
             api_key=SecretStr(os.getenv("GEMINI_API_KEY", "")),
             request_interval=float(os.getenv("PORTIQ_REQUEST_INTERVAL", "13")),
         )

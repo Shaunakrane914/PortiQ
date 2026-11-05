@@ -1,6 +1,7 @@
 import csv
 import sqlite3
 from collections import defaultdict
+from contextlib import closing
 from decimal import Decimal
 from pathlib import Path
 
@@ -55,21 +56,32 @@ def test_ambiguous(database: Path) -> None:
 
 @pytest.mark.parametrize("weight", [None, -0.1, 1.1, "bad", 0])
 def test_invalid_or_zero_weights(database: Path, weight: object) -> None:
-    with sqlite3.connect(database) as conn:
+    with closing(sqlite3.connect(database)) as conn, conn:
         conn.execute("UPDATE holdings SET current_weight=? WHERE portfolio_id=3", (weight,))
     with pytest.raises((DataError, PortfolioError)):
         calculate_exposure(database, "3")
 
 
 def test_missing_sector(database: Path) -> None:
-    with sqlite3.connect(database) as conn:
+    with closing(sqlite3.connect(database)) as conn, conn:
         conn.execute("UPDATE securities SET sector_id=NULL WHERE security_id=1")
     with pytest.raises(DataError, match="missing sector"):
         calculate_exposure(database, "3")
 
 
 def test_empty_portfolio(database: Path) -> None:
-    with sqlite3.connect(database) as conn:
+    with closing(sqlite3.connect(database)) as conn, conn:
         conn.execute("DELETE FROM holdings WHERE portfolio_id=3")
     with pytest.raises(PortfolioError, match="undefined"):
         calculate_exposure(database, "3")
+
+
+def test_round_half_up_boundary(database: Path) -> None:
+    with closing(sqlite3.connect(database)) as conn, conn:
+        conn.execute("INSERT INTO portfolios(portfolio_id,portfolio_name) VALUES(99,'Rounding')")
+        conn.execute(
+            "INSERT INTO holdings(holding_id,portfolio_id,security_id,quantity,current_weight) "
+            "VALUES(999,99,1,1,0.00005),(1000,99,4,1,0.99995)"
+        )
+    result = calculate_exposure(database, "Rounding")
+    assert result.sectors == {"Consumer Discretionary": "100.00", "Technology": "0.01"}

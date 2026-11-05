@@ -55,7 +55,9 @@ def test_rebuild_is_atomic(database: Path, source: Path, tmp_path: Path) -> None
     assert initialize(source, database, rebuild=True)["rows"] == COUNTS
 
 
-@pytest.mark.parametrize("change", ["missing", "duplicate", "foreign", "date", "number", "nan"])
+@pytest.mark.parametrize(
+    "change", ["missing", "duplicate", "foreign", "date", "number", "nan", "blank_id"]
+)
 def test_bad_data_rejected(source: Path, tmp_path: Path, change: str) -> None:
     bad = tmp_path / "bad"
     shutil.copytree(source / "data", bad / "data")
@@ -72,6 +74,7 @@ def test_bad_data_rejected(source: Path, tmp_path: Path, change: str) -> None:
             "date": ("2023-09-25", "2023-99-25"),
             "number": ("2500", "oops"),
             "nan": ("0.18", "NaN"),
+            "blank_id": ("1,1,1,2500", ",1,1,2500"),
         }
         file.write_text(text.replace(*replacements[change], 1))
     with pytest.raises(DataError):

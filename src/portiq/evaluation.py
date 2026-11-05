@@ -1,6 +1,7 @@
 """Independent result evaluation. This module is never imported by runtime agent code."""
 
 import csv
+import hashlib
 import json
 import math
 import statistics
@@ -119,7 +120,9 @@ def evaluate_case(agent: PortfolioAgent, case: dict[str, Any]) -> dict[str, Any]
         record["actual"] = answer.model_dump(mode="json")
         expected_status = case.get("expected_status", "answer")
         if answer.status != expected_status:
-            record["failure"] = f"Expected status {expected_status}; actual {answer.status}."
+            record["failure"] = (
+                f"Expected status {expected_status}; actual {answer.status}: {answer.answer[:240]}"
+            )
             return record
         if expected_status != "answer":
             # Subjective handling has explicit status/no-mutation rules, not exact prose equality.
@@ -212,11 +215,16 @@ def evaluate(
     if limit:
         cases = cases[:limit]
     records = []
+    output.parent.mkdir(parents=True, exist_ok=True)
     for trial in range(1, trials + 1):
         for case in cases:
             record = evaluate_case(agent, case)
             record["trial"] = trial
             records.append(record)
+            output.with_suffix(".progress.json").write_text(
+                json.dumps({"complete": False, "records": records}, indent=2) + "\n",
+                encoding="utf-8",
+            )
             print(
                 f"trial={trial} id={case['id']} {'PASS' if record['passed'] else 'FAIL'} "
                 f"{record.get('failure', '')}",
@@ -227,6 +235,20 @@ def evaluate(
         "timestamp_utc": datetime.now(UTC).isoformat(),
         "suite": suite.name,
         "model": agent.settings.model,
+        "request_interval_seconds": agent.settings.request_interval,
+        "sql_attempts": agent.settings.sql_attempts,
+        "max_tool_calls": agent.settings.max_tool_calls,
+        "source_sha256": {
+            str(path.relative_to(agent.settings.source)): hashlib.sha256(
+                path.read_bytes()
+            ).hexdigest()
+            for path in sorted(agent.settings.source.glob("data/*.csv"))
+        },
+        "suite_sha256": hashlib.sha256(suite.read_bytes()).hexdigest(),
+        "runtime_sha256": {
+            path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(Path(__file__).parent.glob("*.py"))
+        },
         "cache": "disabled",
         "trials": trials,
         "split": split or "all",
@@ -241,6 +263,7 @@ def evaluate(
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    output.with_suffix(".progress.json").unlink(missing_ok=True)
     output.with_suffix(".md").write_text(
         f"# Evaluation: {suite.name}\n\n{report['passed']}/{report['total']} passed. "
         f"Routing: {report['routing_correct']}/{report['total']}. "

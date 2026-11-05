@@ -6,6 +6,7 @@ import logging
 import sys
 from pathlib import Path
 
+from google.genai import types
 from pydantic import ValidationError
 
 from portiq.agent import PortfolioAgent, render_response
@@ -101,9 +102,12 @@ def main(argv: list[str] | None = None) -> int:
             }
             if args.live:
                 backend = GeminiBackend(settings)
-                model = backend.client.models.get(model=settings.model)
-                info["live"] = f"model accessible: {model.name}"
-                info["supported_actions"] = ", ".join(model.supported_actions or [])
+                probe = backend.generate(
+                    [types.Content(role="user", parts=[types.Part.from_text(text="Reply OK.")])],
+                    types.GenerateContentConfig(temperature=0, max_output_tokens=32),
+                )
+                info["live"] = "generation succeeded"
+                info["resolved_model"] = probe.model_version or "not provided by API"
             print(json.dumps(info, indent=2))
             return 0 if integrity == "ok" and not foreign_keys else 1
         backend = GeminiBackend(settings)
@@ -150,7 +154,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             if args.command == "ask":
                 return 1 if response.status in {"error", "partial"} else 0
-    except (PortiqError, ValidationError) as exc:
+    except (PortiqError, ValidationError, ValueError) as exc:
         message = str(exc) if isinstance(exc, PortiqError) else "Invalid application configuration."
         print(f"Error: {message}", file=sys.stderr)
         return 1

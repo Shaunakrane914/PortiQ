@@ -91,6 +91,8 @@ def initialize(source: Path, destination: Path, *, rebuild: bool = False) -> dic
                             raise DataError(f"Malformed CSV in {file.name}, line {line}.")
                         try:
                             values = [_convert(row[c[1]], c[2], c[1]) for c in columns]
+                            if any(c[5] and values[i] is None for i, c in enumerate(columns)):
+                                raise ValueError("primary-key identifiers cannot be blank")
                             conn.execute(
                                 f"INSERT INTO {quote_identifier(table)} VALUES "
                                 f"({','.join('?' for _ in values)})",
