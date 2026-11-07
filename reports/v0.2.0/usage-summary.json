@@ -1,0 +1,83 @@
+{
+  "scope": "SDK invocations represented by these unique archived v0.2 reports; not provider billing or an account-wide total. Aliases, diagnostics and repeated summary files excluded. Unknown usage is not estimated.",
+  "groups": [
+    {
+      "name": "paired-complete",
+      "source": "paired-final/paired-records.json",
+      "sdk_invocations": 201,
+      "known_reported_total_tokens": 535073,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    },
+    {
+      "name": "paired-outage",
+      "source": "paired-outage/progress.json",
+      "sdk_invocations": 250,
+      "known_reported_total_tokens": 96088,
+      "unknown_usage_attempts": 214,
+      "failed_sdk_attempts": 214
+    },
+    {
+      "name": "preflight",
+      "source": "planner-preflight/paired-records.json",
+      "sdk_invocations": 3,
+      "known_reported_total_tokens": 7700,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    },
+    {
+      "name": "categorical",
+      "source": "semantic.json",
+      "sdk_invocations": 12,
+      "known_reported_total_tokens": 32234,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    },
+    {
+      "name": "ambiguity-precheck",
+      "source": "ambiguity-precheck.json",
+      "sdk_invocations": 2,
+      "known_reported_total_tokens": 5150,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    },
+    {
+      "name": "ambiguity-repeat",
+      "source": "ambiguity-regression.json",
+      "sdk_invocations": 6,
+      "known_reported_total_tokens": 15450,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    },
+    {
+      "name": "browser-development",
+      "source": "web-live.json",
+      "sdk_invocations": 2,
+      "known_reported_total_tokens": 5328,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    },
+    {
+      "name": "browser-final",
+      "source": "web-live-final.json",
+      "sdk_invocations": 2,
+      "known_reported_total_tokens": 5327,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    },
+    {
+      "name": "connectivity-probe",
+      "source": "connectivity-probe.json",
+      "sdk_invocations": 1,
+      "known_reported_total_tokens": 6,
+      "unknown_usage_attempts": 0,
+      "failed_sdk_attempts": 0
+    }
+  ],
+  "totals": {
+    "sdk_invocations": 479,
+    "known_reported_total_tokens": 702356,
+    "unknown_usage_attempts": 214,
+    "failed_sdk_attempts": 214
+  }
+}

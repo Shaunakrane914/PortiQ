@@ -1,8 +1,8 @@
 # Architecture
 
-The required path remains `CLI ? PortfolioAgent ? Gemini function calls ? SQL/exposure tools ? independent evaluator`. The SQL authorization policy and exposure formula are retained; additive timings do not alter their decisions. Nine supplied tables remain small enough for explicit schema context.
+The required path remains `CLI -> PortfolioAgent -> Gemini function calls -> SQL/exposure tools -> independent evaluator`. The SQL authorization policy and exposure formula are retained; additive timings do not alter their decisions. Nine supplied tables remain small enough for explicit schema context.
 
-`analytics.py` adds fixed read-only portfolio queries, snapshots, warnings and reconciliation. It reuses `calculate_exposure`; neither FastAPI nor JavaScript reimplements financial calculations. Recorded weights are compared with normalized `quantity ? current_price` values only when every value is valid and one known currency is present. No FX, cash plug, accrued interest or AUM scaling is inferred.
+`analytics.py` adds fixed read-only portfolio queries, snapshots, warnings and reconciliation. It reuses `calculate_exposure`; neither FastAPI nor JavaScript reimplements financial calculations. Recorded weights are compared with normalized `quantity * current_price` values only when every value is valid and one known currency is present. No FX, cash plug, accrued interest or AUM scaling is inferred.
 
 `renderer.py` renders validated results deterministically. `planning.py` adds a single typed `execute_plan` declaration: validate the entire graph, authorize SQL, execute ordered steps, resolve scalar dependencies and render. An invalid or insufficient plan can fall back to the original agent. A valid but semantically wrong query cannot be detected generally; this is why the experimental planner remains optional.
 

@@ -1,0 +1,1060 @@
+{
+  "mode": "Offline summary/diagnostic of one complete paired live experiment; no additional AI calls",
+  "runtime_revision": "2bef3c4314b6132344c1709589afe1f0cc0878de",
+  "complete": true,
+  "summaries": [
+    {
+      "suite": "supplied",
+      "strategy": "existing",
+      "total": 10,
+      "passed": 10,
+      "answer_correct": 10,
+      "routing_correct": 10,
+      "narrative_checked": 4,
+      "narrative_failed": 0,
+      "api_calls": 21,
+      "tokens": 58116,
+      "latency_ms": {
+        "analysis_e2e_ms": {
+          "mean": 14492.748189999838,
+          "median": 12943.246599999839,
+          "p95": 23113.82319999757
+        },
+        "service_ms": {
+          "mean": 6970.02197000038,
+          "median": 4131.938999998965,
+          "p95": 18102.431800001796
+        },
+        "pacing_ms": {
+          "mean": 7516.276000000653,
+          "median": 6923.973050003042,
+          "p95": 13396.591000000626
+        },
+        "backoff_ms": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "sql_validation_ms": {
+          "mean": 0.39262999962375034,
+          "median": 0.23654999858990777,
+          "p95": 1.7943999991985038
+        },
+        "sql_execution_ms": {
+          "mean": 0.9629,
+          "median": 0.8785000000000001,
+          "p95": 2.068
+        },
+        "financial_ms": {
+          "mean": 0.529,
+          "median": 0.0,
+          "p95": 3.853
+        }
+      },
+      "provider_attempt_summary": {
+        "attempts": 21,
+        "service_ms": 69700.2197000038,
+        "pacing_ms": 75162.76000000653,
+        "input_tokens": 55400,
+        "output_tokens": 2716,
+        "thinking_tokens": 0,
+        "unknown_input_attempts": 0,
+        "unknown_output_attempts": 0,
+        "unknown_usage_attempts": 0
+      },
+      "provider_failed_attempts": 0,
+      "invalid_sql_attempts": 0,
+      "fallback_questions": 0
+    },
+    {
+      "suite": "supplied",
+      "strategy": "one-call",
+      "total": 10,
+      "passed": 9,
+      "answer_correct": 9,
+      "routing_correct": 10,
+      "narrative_checked": 4,
+      "narrative_failed": 0,
+      "api_calls": 10,
+      "tokens": 25239,
+      "latency_ms": {
+        "analysis_e2e_ms": {
+          "mean": 6749.564480000481,
+          "median": 6545.664500001294,
+          "p95": 10798.944599999231
+        },
+        "service_ms": {
+          "mean": 2019.1287200006627,
+          "median": 1564.33405000098,
+          "p95": 5850.472400001308
+        },
+        "pacing_ms": {
+          "mean": 4725.394890000825,
+          "median": 4930.468800001108,
+          "p95": 5143.538000000262
+        },
+        "backoff_ms": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "sql_validation_ms": {
+          "mean": 0.3633500000432832,
+          "median": 0.21025000023655593,
+          "p95": 1.4943999995011836
+        },
+        "sql_execution_ms": {
+          "mean": 2.6088999999999998,
+          "median": 1.11,
+          "p95": 17.985
+        },
+        "financial_ms": {
+          "mean": 0.28684000026260037,
+          "median": 0.0,
+          "p95": 1.4814000023761764
+        }
+      },
+      "provider_attempt_summary": {
+        "attempts": 10,
+        "service_ms": 20191.287200006627,
+        "pacing_ms": 47253.948900008254,
+        "input_tokens": 24240,
+        "output_tokens": 999,
+        "thinking_tokens": 0,
+        "unknown_input_attempts": 0,
+        "unknown_output_attempts": 0,
+        "unknown_usage_attempts": 0
+      },
+      "provider_failed_attempts": 0,
+      "invalid_sql_attempts": 0,
+      "fallback_questions": 0
+    },
+    {
+      "suite": "extended",
+      "strategy": "existing",
+      "total": 50,
+      "passed": 50,
+      "answer_correct": 50,
+      "routing_correct": 50,
+      "narrative_checked": 6,
+      "narrative_failed": 0,
+      "api_calls": 97,
+      "tokens": 266304,
+      "latency_ms": {
+        "analysis_e2e_ms": {
+          "mean": 15379.587919999758,
+          "median": 13139.093450001383,
+          "p95": 27363.428199998452
+        },
+        "service_ms": {
+          "mean": 8263.50319000041,
+          "median": 3708.9648000019224,
+          "p95": 22857.219299999997
+        },
+        "pacing_ms": {
+          "mean": 7112.5246099998185,
+          "median": 8987.743250001586,
+          "p95": 10616.154300001654
+        },
+        "backoff_ms": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "sql_validation_ms": {
+          "mean": 0.2222720001009293,
+          "median": 0.17984999976761173,
+          "p95": 0.7336000016948674
+        },
+        "sql_execution_ms": {
+          "mean": 0.86414,
+          "median": 0.869,
+          "p95": 1.768
+        },
+        "financial_ms": {
+          "mean": 0.4153,
+          "median": 0.0,
+          "p95": 1.733
+        }
+      },
+      "provider_attempt_summary": {
+        "attempts": 97,
+        "service_ms": 413175.15950002056,
+        "pacing_ms": 355626.2304999909,
+        "input_tokens": 257120,
+        "output_tokens": 9184,
+        "thinking_tokens": 0,
+        "unknown_input_attempts": 0,
+        "unknown_output_attempts": 0,
+        "unknown_usage_attempts": 0
+      },
+      "provider_failed_attempts": 0,
+      "invalid_sql_attempts": 0,
+      "fallback_questions": 0
+    },
+    {
+      "suite": "extended",
+      "strategy": "one-call",
+      "total": 50,
+      "passed": 50,
+      "answer_correct": 50,
+      "routing_correct": 50,
+      "narrative_checked": 6,
+      "narrative_failed": 0,
+      "api_calls": 50,
+      "tokens": 124739,
+      "latency_ms": {
+        "analysis_e2e_ms": {
+          "mean": 6927.742605999956,
+          "median": 6359.49575000086,
+          "p95": 13224.016500000289
+        },
+        "service_ms": {
+          "mean": 3051.1282339995523,
+          "median": 1590.3909000007843,
+          "p95": 9113.666699999158
+        },
+        "pacing_ms": {
+          "mean": 3873.72319600021,
+          "median": 4939.60904999949,
+          "p95": 5344.987100001163
+        },
+        "backoff_ms": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "sql_validation_ms": {
+          "mean": 0.19975800008978695,
+          "median": 0.19080000129179098,
+          "p95": 0.4180000032647513
+        },
+        "sql_execution_ms": {
+          "mean": 0.7239,
+          "median": 0.8755,
+          "p95": 1.302
+        },
+        "financial_ms": {
+          "mean": 0.36726200007251464,
+          "median": 0.0,
+          "p95": 1.6203000013774727
+        }
+      },
+      "provider_attempt_summary": {
+        "attempts": 50,
+        "service_ms": 152556.41169997762,
+        "pacing_ms": 193686.1598000105,
+        "input_tokens": 121370,
+        "output_tokens": 3369,
+        "thinking_tokens": 0,
+        "unknown_input_attempts": 0,
+        "unknown_output_attempts": 0,
+        "unknown_usage_attempts": 0
+      },
+      "provider_failed_attempts": 0,
+      "invalid_sql_attempts": 0,
+      "fallback_questions": 0
+    },
+    {
+      "suite": "platform",
+      "strategy": "existing",
+      "total": 8,
+      "passed": 8,
+      "answer_correct": 8,
+      "routing_correct": 8,
+      "narrative_checked": 2,
+      "narrative_failed": 0,
+      "api_calls": 15,
+      "tokens": 40719,
+      "latency_ms": {
+        "analysis_e2e_ms": {
+          "mean": 12133.515937499851,
+          "median": 12917.840800000704,
+          "p95": 13088.322499999776
+        },
+        "service_ms": {
+          "mean": 2492.7840249997644,
+          "median": 2673.9152500013006,
+          "p95": 2967.1415999982855
+        },
+        "pacing_ms": {
+          "mean": 9637.190824999834,
+          "median": 10206.079149998914,
+          "p95": 10719.520900001953
+        },
+        "backoff_ms": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "sql_validation_ms": {
+          "mean": 0.21256250056467252,
+          "median": 0.24650000159454066,
+          "p95": 0.44239999988349155
+        },
+        "sql_execution_ms": {
+          "mean": 0.905875,
+          "median": 0.8714999999999999,
+          "p95": 1.63
+        },
+        "financial_ms": {
+          "mean": 0.384875,
+          "median": 0.0,
+          "p95": 2.273
+        }
+      },
+      "provider_attempt_summary": {
+        "attempts": 15,
+        "service_ms": 19942.272199998115,
+        "pacing_ms": 77097.52659999867,
+        "input_tokens": 39546,
+        "output_tokens": 1173,
+        "thinking_tokens": 0,
+        "unknown_input_attempts": 0,
+        "unknown_output_attempts": 0,
+        "unknown_usage_attempts": 0
+      },
+      "provider_failed_attempts": 0,
+      "invalid_sql_attempts": 0,
+      "fallback_questions": 0
+    },
+    {
+      "suite": "platform",
+      "strategy": "one-call",
+      "total": 8,
+      "passed": 7,
+      "answer_correct": 7,
+      "routing_correct": 7,
+      "narrative_checked": 2,
+      "narrative_failed": 0,
+      "api_calls": 8,
+      "tokens": 19956,
+      "latency_ms": {
+        "analysis_e2e_ms": {
+          "mean": 6566.135224999016,
+          "median": 6507.247899999129,
+          "p95": 6934.361999999965
+        },
+        "service_ms": {
+          "mean": 1377.0392375004121,
+          "median": 1375.7320500008063,
+          "p95": 1521.6113999995287
+        },
+        "pacing_ms": {
+          "mean": 5186.355087499578,
+          "median": 5121.387350000077,
+          "p95": 5564.543100001174
+        },
+        "backoff_ms": {
+          "mean": 0.0,
+          "median": 0.0,
+          "p95": 0.0
+        },
+        "sql_validation_ms": {
+          "mean": 0.1839124997786712,
+          "median": 0.23039999905449804,
+          "p95": 0.31239999952958897
+        },
+        "sql_execution_ms": {
+          "mean": 0.69075,
+          "median": 0.842,
+          "p95": 1.318
+        },
+        "financial_ms": {
+          "mean": 0.36367499978950946,
+          "median": 0.0,
+          "p95": 1.4716000005137175
+        }
+      },
+      "provider_attempt_summary": {
+        "attempts": 8,
+        "service_ms": 11016.313900003297,
+        "pacing_ms": 41490.840699996625,
+        "input_tokens": 19419,
+        "output_tokens": 537,
+        "thinking_tokens": 0,
+        "unknown_input_attempts": 0,
+        "unknown_output_attempts": 0,
+        "unknown_usage_attempts": 0
+      },
+      "provider_failed_attempts": 0,
+      "invalid_sql_attempts": 0,
+      "fallback_questions": 0
+    }
+  ],
+  "sql_planning_diagnostics": [
+    {
+      "suite": "supplied",
+      "strategy": "existing",
+      "repair_attempts": 0,
+      "dedicated_planning_questions": 1,
+      "successful_sql_traces": [
+        {
+          "id": 1,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 2,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 3,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 4,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 5,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 6,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 7,
+          "recorded_plan_attempts": 2,
+          "dedicated_planning": true,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 8,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        }
+      ],
+      "note": "The raw repair_questions field counts attempts > 1 and includes dedicated planning. This diagnostic separates the existing complex-query focused-planner step. Intermediate failure types are not independently recorded; no repair beyond the initial/focused plan occurred in this completed run."
+    },
+    {
+      "suite": "supplied",
+      "strategy": "one-call",
+      "repair_attempts": 0,
+      "dedicated_planning_questions": 0,
+      "successful_sql_traces": [
+        {
+          "id": 1,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 2,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 3,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 4,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 5,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 6,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 7,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": 8,
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        }
+      ],
+      "note": "The raw repair_questions field counts attempts > 1 and includes dedicated planning. This diagnostic separates the existing complex-query focused-planner step. Intermediate failure types are not independently recorded; no repair beyond the initial/focused plan occurred in this completed run."
+    },
+    {
+      "suite": "extended",
+      "strategy": "existing",
+      "repair_attempts": 0,
+      "dedicated_planning_questions": 0,
+      "successful_sql_traces": [
+        {
+          "id": "ext-01",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-02",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-03",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-04",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-05",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-06",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-07",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-08",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-09",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-10",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-11",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-12",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-13",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-14",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-15",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-16",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-17",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-18",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-19",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-20",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-21",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-22",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-23",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-24",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-25",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-26",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-27",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-28",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-29",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-30",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-31",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-32",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-33",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-34",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-44",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-45",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-46",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        }
+      ],
+      "note": "The raw repair_questions field counts attempts > 1 and includes dedicated planning. This diagnostic separates the existing complex-query focused-planner step. Intermediate failure types are not independently recorded; no repair beyond the initial/focused plan occurred in this completed run."
+    },
+    {
+      "suite": "extended",
+      "strategy": "one-call",
+      "repair_attempts": 0,
+      "dedicated_planning_questions": 0,
+      "successful_sql_traces": [
+        {
+          "id": "ext-01",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-02",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-03",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-04",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-05",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-06",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-07",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-08",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-09",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-10",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-11",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-12",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-13",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-14",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-15",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-16",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-17",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-18",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-19",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-20",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-21",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-22",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-23",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-24",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-25",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-26",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-27",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-28",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-29",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-30",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-31",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-32",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-33",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-34",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-44",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-45",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "ext-46",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        }
+      ],
+      "note": "The raw repair_questions field counts attempts > 1 and includes dedicated planning. This diagnostic separates the existing complex-query focused-planner step. Intermediate failure types are not independently recorded; no repair beyond the initial/focused plan occurred in this completed run."
+    },
+    {
+      "suite": "platform",
+      "strategy": "existing",
+      "repair_attempts": 0,
+      "dedicated_planning_questions": 0,
+      "successful_sql_traces": [
+        {
+          "id": "platform-01",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-02",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-03",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-04",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-05",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-06",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        }
+      ],
+      "note": "The raw repair_questions field counts attempts > 1 and includes dedicated planning. This diagnostic separates the existing complex-query focused-planner step. Intermediate failure types are not independently recorded; no repair beyond the initial/focused plan occurred in this completed run."
+    },
+    {
+      "suite": "platform",
+      "strategy": "one-call",
+      "repair_attempts": 0,
+      "dedicated_planning_questions": 0,
+      "successful_sql_traces": [
+        {
+          "id": "platform-01",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-02",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-03",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-04",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-05",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        },
+        {
+          "id": "platform-06",
+          "recorded_plan_attempts": 1,
+          "dedicated_planning": false,
+          "repair_attempts_after_initial_or_focused_plan": 0
+        }
+      ],
+      "note": "The raw repair_questions field counts attempts > 1 and includes dedicated planning. This diagnostic separates the existing complex-query focused-planner step. Intermediate failure types are not independently recorded; no repair beyond the initial/focused plan occurred in this completed run."
+    }
+  ],
+  "limitations": [
+    "One trial per case",
+    "SDK time includes transport",
+    "Shared pacing and alternating order do not isolate model inference",
+    "Raw repair_questions includes focused planning; see diagnostics",
+    "No model promotion: supplied q7 mismatch and new platform-08 ambiguity guessing"
+  ]
+}

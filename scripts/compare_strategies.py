@@ -70,11 +70,11 @@ def report(
         },
         "provider_attempt_summary": attempt_summary(attempts),
         "provider_failed_attempts": sum(a["error_kind"] is not None for a in attempts),
-        "repair_questions": sum(
+        "multi_attempt_sql_questions": sum(
             any(t["result"] and t["result"].get("attempts", 1) > 1 for t in r["actual"]["tools"])
             for r in records
         ),
-        "invalid_sql_attempts": sum(
+        "terminal_failed_sql_traces": sum(
             bool(t["error"]) and t["tool"] == "sql_query"
             for r in records
             for t in r["actual"]["tools"]
@@ -250,6 +250,10 @@ def main() -> int:
                 (args.output_dir / f"{name}-{strategy}.json").write_text(
                     json.dumps(result, indent=2) + "\n", encoding="utf-8"
                 )
+        (args.output_dir / "progress.json").write_text(
+            json.dumps({**metadata, "complete": True, "records": all_records}, indent=2) + "\n",
+            encoding="utf-8",
+        )
         (args.output_dir / "progress.json").rename(args.output_dir / "paired-records.json")
         return int(any(not r["passed"] for r in all_records))
     finally:

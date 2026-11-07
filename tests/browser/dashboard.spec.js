@@ -132,4 +132,8 @@ test("genuine Gemini analyst with visible SQL evidence",async({page})=>{
   await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
   await page.screenshot({path:shots+'/analyst-gemini-final.png',fullPage:true});
   fs.writeFileSync(evidenceRoot+'/web-live-final.json',JSON.stringify({mode:'Actual uncached Gemini request through browser and API',timestamp_utc:new Date().toISOString(),runtime_revision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),question,...payload},null,2)+'\n');
+  await page.getByRole('button',{name:'Evaluation Lab',exact:true}).click();
+  await expect(page.locator('#content')).toContainText('v0.2.0 / extended');
+  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
+  await page.screenshot({path:shots+'/evaluation-lab-verified.png',fullPage:true});
 });

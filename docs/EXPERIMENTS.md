@@ -10,7 +10,7 @@ All current live work uses `gemini-3.1-flash-lite`, genuine typed function calli
 
 The one-question preflight passed both strategies. The first broader attempt completed 131 records and stopped at its explicit 250-attempt budget after sustained provider/transport failures. Its supplied segment passed 10/10 existing and 9/10 experimental, using 21 and 11 SDK calls respectively. The experimental Technology-sector valuation query returned thirteen rows rather than eight: this is a semantic failure, not a routing-only penalty. Extended/platform failures in that operationally degraded attempt do not establish reasoning accuracy.
 
-The fresh post-circuit comparison is stored separately in `paired-final/`; use its complete per-suite reports for current scores and latency. Never combine successes across runs. The same Technology-sector valuation regression has reproduced. **Decision:** original remains default; experimental remains opt-in regardless of call reduction. Security tests reject unsafe graphs/SQL for both paths. **Limits:** one trial per question, no isolated inference timer and no controlled historical-release speedup claim.
+The complete fresh post-circuit comparison is stored separately in `paired-final/`: existing 10/10 supplied, 50/50 extended, 8/8 platform; experimental 9/10, 50/50, 7/8 respectively. It made 201 actual SDK calls with 535,073 reported tokens and no provider failures. Never combine successes across runs. The Technology-sector valuation mismatch reproduced, and platform-08 exposed an additional ambiguity failure: the experimental planner guessed Growth Equity Fund instead of preserving an ambiguous reference. **Decision:** original remains default; experimental remains opt-in regardless of call reduction. Security tests reject unsafe graphs/SQL for both paths. **Limits:** one trial per question, no isolated inference timer and no controlled historical-release speedup claim.
 
 ## Deterministic rendering versus synthesis
 
@@ -39,3 +39,15 @@ The response is a bounded consecutive-failure circuit, cooldown and client refre
 | Public deployment | Local and CI Docker smoke verified; hosted service, external identity and multi-user cost controls deferred. |
 
 Failed browser assertions, CI setup failures, the preflight and incomplete provider runs remain visible in history/evidence. Corrections are accompanied by regression checks; reports are not rewritten to look successful.
+
+
+## Measurement audit
+
+The raw completed reports retain two metadata imperfections transparently. Their `repair_questions` field counts SQL `attempts > 1`, which includes the original agent's focused complex-query planner. `paired-analysis.json` separates that one focused planning question from repairs: no additional repair was needed. The raw `invalid_sql_attempts` field counts terminal failed SQL traces, not unrecorded intermediate failures. All successful SQL traces completed at the initial/focused plan in this run, so no additional failed repair attempt is inferred.
+
+The combined `paired-records.json` was renamed from the last progress snapshot without changing its `complete: false` marker. The six per-suite reports correctly contain `complete: true`; their records, hashes and completion assertions establish the completed run. Raw evidence remains unchanged; `paired-analysis.json` identifies the completed experiment. The script now fixes the completion marker and uses explicit metric labels for future runs. No extra Gemini calls or accuracy changes were involved in this reporting correction.
+
+
+## Packaging audit
+
+A late full-context rebuild exposed that negating a parent report directory admitted local test artifacts. This was an actual packaging defect in intermediate local images, not a published container. The final context uses explicit report-file exceptions and Docker COPY names only the five read-only API artifacts per release. Build assertions reject local reports, `.env`, Node modules and nested experiment directories. A real rebuilt container contains exactly ten report files, runs as UID 10001, serves archived scores 10/10, 50/50, 6/6 and 3/3, and stops with exit code zero. Earlier smoke records remain as development evidence; `container-acceptance.json` identifies the corrected packaging hashes and image.

@@ -1,6 +1,6 @@
 # Submission and demonstration
 
-The mandatory assessment is the CLI. Review README ? CLI quick start ? frozen evaluator ? optional dashboard. Keep v0.1.1 available as the verified historical release; do not present its scores as fresh v0.2 evidence.
+The mandatory assessment is the CLI. Review README -> CLI quick start -> frozen evaluator -> optional dashboard. Keep v0.1.1 available as the verified historical release; do not present its scores as fresh v0.2 evidence.
 
 1. Clone the repository and run `uv sync --frozen`.
 2. Copy `.env.example` to `.env`, set a local Gemini key, and run `uv run portfolio-agent init-db`.

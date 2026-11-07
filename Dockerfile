@@ -7,7 +7,18 @@ RUN uv sync --frozen --no-dev --extra web --no-editable --no-cache
 COPY data ./data
 COPY database_schema.sql ground_truth_dataset.json ./
 COPY evaluation ./evaluation
-COPY reports ./reports
+COPY reports/v0.1.1/supplied.json \
+    reports/v0.1.1/extended.json \
+    reports/v0.1.1/semantic.json \
+    reports/v0.1.1/ambiguity-regression.json \
+    reports/v0.1.1/verification.json ./reports/v0.1.1/
+COPY reports/v0.2.0/supplied.json \
+    reports/v0.2.0/extended.json \
+    reports/v0.2.0/semantic.json \
+    reports/v0.2.0/ambiguity-regression.json \
+    reports/v0.2.0/verification.json ./reports/v0.2.0/
+RUN test ! -e /app/reports/local && test ! -e /app/.env \
+    && test ! -e /app/node_modules && test ! -e /app/reports/v0.2.0/paired-outage
 RUN groupadd --gid 10001 portiq && useradd --uid 10001 --gid portiq --no-create-home portiq \
     && mkdir /app/runtime && chown portiq:portiq /app/runtime
 ENV PATH="/app/.venv/bin:${PATH}" PORTIQ_DB=/app/runtime/portfolio.db \

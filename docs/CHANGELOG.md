@@ -72,7 +72,7 @@ The report index distinguishes historical `supplied-final` (16/20 pre-release) f
 paths so published v0.1.0 evidence is preserved.
 
 
-## v0.2.0 platform upgrade ? verification in progress
+## v0.2.0 platform upgrade
 
 - Preserved original inputs, tests, benchmarks, SQL authorization, exposure formula, CLI defaults and historical releases.
 - Added deterministic tool rendering, experimental typed one-call graphs with original-agent fallback, an explicit four-capability local registry and bounded exact caching.
@@ -82,3 +82,8 @@ paths so published v0.1.0 evidence is preserved.
 - Added non-root Docker packaging, key-free API/browser/container checks and separate eight-case platform regression cases.
 - Current local quality: 204 passed, two opt-in live skips, 91.80% line coverage, strict mypy/Ruff pass. A clean Python 3.11 archive install and all five current CI jobs pass. Eight offline browser checks pass; genuine uncached browser evidence is separate.
 - Kept one-call opt-in after reproduced 13-versus-eight-row Technology-sector valuation regression. Retained the incomplete 250-attempt provider-failure run and fresh-client probe transparently. Final live scores and release decision belong to the versioned evidence and acceptance audit.
+
+- Complete fresh live comparison: default 10/10 supplied, 50/50 extended, 8/8 new platform; experimental 9/10, 50/50, 7/8. Default categorical repetitions pass 6/6 and ambiguity repetitions 3/3. No provider failures in the completed paired run.
+- Final genuine browser analysis passes with two SDK calls, 5,327 reported tokens and cache disabled. A distinct capture preserves earlier evidence.
+- Final packaging audit caught an overly broad report-directory exception that admitted local developer artifacts into an intermediate image. Explicit ten-file report copies, a corrected build-context allowlist and build-time exclusion assertions fix the issue. The rebuilt non-root image passes HTTP/archive-score checks and graceful shutdown; no container image was publicly published.
+- Raw experiment reports retain their original metric/completion metadata quirks; a separate validated diagnostic explains them, and the helper fixes labels/marker for future runs without rewriting evidence.

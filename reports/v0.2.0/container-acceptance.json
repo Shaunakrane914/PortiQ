@@ -1,0 +1,63 @@
+{
+  "mode": "actual container HTTP smoke; no Gemini calls",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 2919
+    },
+    {
+      "path": "/api/portfolios",
+      "status": 200,
+      "bytes": 2817
+    },
+    {
+      "path": "/api/portfolios/4/exposure",
+      "status": 200,
+      "bytes": 308
+    },
+    {
+      "path": "/api/portfolios/4/reconciliation",
+      "status": 200,
+      "bytes": 4066
+    },
+    {
+      "path": "/api/evaluation/summary",
+      "status": 200,
+      "verified_archived_scores": {
+        "supplied": [
+          10,
+          10
+        ],
+        "extended": [
+          50,
+          50
+        ],
+        "semantic": [
+          6,
+          6
+        ],
+        "ambiguity-regression": [
+          3,
+          3
+        ]
+      }
+    },
+    {
+      "path": "/api/ask without credentials",
+      "status": 503
+    }
+  ],
+  "source_revision": "682205e9e2ada985f213fb052ecec291f685dbac",
+  "packaging_sha256": {
+    "Dockerfile": "f506de78550a45aae073133bec6a361c46fa6775b1583f8fd8d0f6321dc3088f",
+    ".dockerignore": "ad6e024b741174e907583ee4e21cd80667734d94b30097cbb20adb4e0de9ed21"
+  },
+  "image_id": "sha256:a2d800806acb0d7f728fa1c4df7f8af513545fef849fcc5f60fd3f1bc1033361",
+  "image_bytes": 328308862,
+  "health": "healthy",
+  "uid": 10001,
+  "exclusion_check": "Excluded paths absent; exactly ten allowlisted report files",
+  "graceful_shutdown_exit_code": 0,
+  "packaging_note": "Packaging hashes identify the verified uncommitted Docker fix; Python/web sources match source_revision. Exact final commit is rebuilt independently by CI."
+}

@@ -1,0 +1,1918 @@
+{
+  "timestamp_utc": "2026-11-07T12:06:21.346610+00:00",
+  "runtime_revision": "2bef3c4314b6132344c1709589afe1f0cc0878de",
+  "model": "gemini-3.1-flash-lite",
+  "prompt_sha256": "898af249772d4131901b6f9ef35652ef4b45d2b9b10fef3e919481eb569c40e4",
+  "source_sha256": {
+    "data\\benchmarks.csv": "c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62",
+    "data\\historical_prices.csv": "4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0",
+    "data\\holdings.csv": "6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc",
+    "data\\portfolio_performance.csv": "acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1",
+    "data\\portfolios.csv": "11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb",
+    "data\\risk_metrics.csv": "424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304",
+    "data\\sectors.csv": "5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010",
+    "data\\securities.csv": "973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e",
+    "data\\transactions.csv": "736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f"
+  },
+  "database_sha256": "67f1923f8398ebb835ed5494dadc29b60b8b43054dee83dc054029f6243f76a2",
+  "suite_hashes": {
+    "supplied": "7a5c9e4ea18f973d047d31aece044a84a179010e53ca06a6fb65f00ae0343244",
+    "extended": "69901d3acfd9a1ffd049ad5f68d3b7886258541190c3b70766dbc8055cf27e30",
+    "platform": "e54d7a082eadb6e62d1b5d9bbced9c6a35ecdc4c283170202c88decbc7c2fc92"
+  },
+  "narrative_rule_hashes": {
+    "evaluation\\faithfulness.json": "458dcf2cc85af6b7d2d606db9d8523419a7e6f5013fe1b768e9a1d35cae66119",
+    "evaluation\\platform_faithfulness.json": "c3d20f3ae38f6d993cea8195f87e0f87cdfb0b97844a63f83d3fe9dc96d44a3c"
+  },
+  "runtime_sha256": {
+    "__init__.py": "43f120fd08606ac485548c7b425a1998474366d9325c46ac101d881d100f76ed",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8",
+    "agent.py": "333de14f8f8f1746d060d48e363c0099cff5b2bd02360e088a556c10ba0b34d1",
+    "analytics.py": "8203b95e12a3797b621dd1ff2f4085bfbdb26279bc89976b203f4d4f48dc4160",
+    "api.py": "789f9e804dcc441af2752ee844f2e6f7162aa111ef72068299ea892b8b5c43d1",
+    "cli.py": "f724a9042141a40f3d327329880e7b0166b4a23ff39d6445ab87c1a582b8b495",
+    "config.py": "e4bd73935a5c87c04b18705ad6f243ab51d9b76927ed867271c6719ebf90c201",
+    "database.py": "c79b23c9b4983a890bad5a1fc925397bc3a260a69ec217ebf4ef0f811286c209",
+    "errors.py": "7d25e8887858dde69738db6751bf7a061d49089fc46b635a1860f530436b3d6e",
+    "evaluation.py": "5fd6fd5423d96f304128796480b7845bff36a8736018e6649fcf5fa6b1ca67f6",
+    "exposure.py": "67dbdfe6be2b2aa27647082eb8519263381fd5155e908f842e97da44047ec187",
+    "faithfulness.py": "690aa8bafbd23b1eebb1b6972fb109548a10a4b0c969c73e576ac8bdbd6d28ad",
+    "model.py": "1a100a40c2daf4c3f5aba9ad6b13b282309b6c12b07a28b9325af816938262a3",
+    "planning.py": "fbd46b46f8f83daa29caf88d38a46158cd2636273fb947f9d953054ec9a45cac",
+    "prompts.py": "898af249772d4131901b6f9ef35652ef4b45d2b9b10fef3e919481eb569c40e4",
+    "quota.py": "94905a98bd3a3c522236cb697c7f07ccad12c6ba8304d293244a2562984b7bbf",
+    "renderer.py": "502b81117f90b98c0cb3ca80aa83ba467e549a645cb853b6ecfa14ad2fe5b17c",
+    "server.py": "b45af2174323a7766100a69cc45ea0723a01cde1b2316a82ded3cde9f43bceba",
+    "service.py": "5653d4585a413b2af186d0a080487647af7ff48c169fc3b6029830c855f12dc8",
+    "sql.py": "457aa4b583cd4ce09181c6bec51e2353d86b944098cf2018b857d9cb0d57d906"
+  },
+  "request_interval_seconds": 6.5,
+  "request_budget": 250,
+  "circuit_failures": 3,
+  "circuit_seconds": 30.0,
+  "lock_sha256": "16ad295e24380ad24c5788c7ceea0a668f28658fd40bc927ee38fd4255ae3a6a",
+  "dependencies": {
+    "google-genai": "2.34.0",
+    "pydantic": "2.14.3",
+    "sqlglot": "30.29.0"
+  },
+  "evaluator_version": 2,
+  "conditions": "Alternating strategy order per paired question; one shared paced backend. CLI steady-state analysis latency excludes oracle execution. SDK service time includes transport; it is not isolated model inference time. No controlled speedup claim across historical releases.",
+  "suite_sha256": "7a5c9e4ea18f973d047d31aece044a84a179010e53ca06a6fb65f00ae0343244",
+  "complete": true,
+  "suite": "supplied",
+  "strategy": "existing",
+  "cache": "disabled; local fast path disabled",
+  "trials": 1,
+  "total": 10,
+  "passed": 10,
+  "answer_correct": 10,
+  "result_correct": 10,
+  "routing_correct": 10,
+  "narrative_checked": 4,
+  "narrative_failed": 0,
+  "api_calls": 21,
+  "tokens": 58116,
+  "mean_ms": 14492.748189999838,
+  "p95_ms": 23113.82319999757,
+  "latency_ms": {
+    "analysis_e2e_ms": {
+      "mean": 14492.748189999838,
+      "median": 12943.246599999839,
+      "p95": 23113.82319999757
+    },
+    "service_ms": {
+      "mean": 6970.02197000038,
+      "median": 4131.938999998965,
+      "p95": 18102.431800001796
+    },
+    "pacing_ms": {
+      "mean": 7516.276000000653,
+      "median": 6923.973050003042,
+      "p95": 13396.591000000626
+    },
+    "backoff_ms": {
+      "mean": 0.0,
+      "median": 0.0,
+      "p95": 0.0
+    },
+    "sql_validation_ms": {
+      "mean": 0.39262999962375034,
+      "median": 0.23654999858990777,
+      "p95": 1.7943999991985038
+    },
+    "sql_execution_ms": {
+      "mean": 0.9629,
+      "median": 0.8785000000000001,
+      "p95": 2.068
+    },
+    "financial_ms": {
+      "mean": 0.529,
+      "median": 0.0,
+      "p95": 3.853
+    }
+  },
+  "provider_attempt_summary": {
+    "attempts": 21,
+    "service_ms": 69700.2197000038,
+    "pacing_ms": 75162.76000000653,
+    "input_tokens": 55400,
+    "output_tokens": 2716,
+    "thinking_tokens": 0,
+    "unknown_input_attempts": 0,
+    "unknown_output_attempts": 0,
+    "unknown_usage_attempts": 0
+  },
+  "provider_failed_attempts": 0,
+  "repair_questions": 1,
+  "invalid_sql_attempts": 0,
+  "fallback_questions": 0,
+  "records": [
+    {
+      "id": 1,
+      "question": "How many portfolios do we have in total?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              13
+            ]
+          ],
+          "ordered": false
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "bc2ef19c-57a0-41f1-a609-cb7eae396dc3",
+        "status": "answer",
+        "answer": "There are a total of 13 portfolios in the system.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Count the total number of portfolios in the portfolios table.",
+              "sql": "SELECT COUNT(*) FROM portfolios;",
+              "question": "How many portfolios do we have in total?"
+            },
+            "result": {
+              "columns": [
+                "COUNT(*)"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) FROM portfolios;",
+              "duration_ms": 0.836,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.1816000003600493
+            },
+            "error": null,
+            "duration_ms": 8.937
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 8176.337,
+        "model_duration_ms": 8152.002,
+        "api_calls": 2,
+        "tokens": 5246,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:06:21.369080+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1275.4553000013402,
+            "pacing_ms": 0.0,
+            "input_tokens": 2519,
+            "output_tokens": 51,
+            "thinking_tokens": null,
+            "total_tokens": 2570,
+            "error_kind": null,
+            "sequence": 1
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:06:27.869577+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1661.64629999912,
+            "pacing_ms": 5214.538700001867,
+            "input_tokens": 2644,
+            "output_tokens": 32,
+            "thinking_tokens": null,
+            "total_tokens": 2676,
+            "error_kind": null,
+            "sequence": 2
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_count"
+        ],
+        "checks": [
+          {
+            "kind": "numeric_claim_present",
+            "expected": 13,
+            "actual": [
+              13.0
+            ],
+            "passed": true
+          },
+          {
+            "kind": "portfolio_count_claim",
+            "expected": 13,
+            "actual": 13,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "portfolio_count"
+        ]
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 8176.406300000963,
+      "service_ms": 2937.10160000046,
+      "pacing_ms": 5214.538700001867,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.1816000003600493,
+      "sql_execution_ms": 0.836,
+      "financial_ms": 0
+    },
+    {
+      "id": 2,
+      "question": "What are the names of all active portfolios?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Growth Equity Fund"
+            ],
+            [
+              "Conservative Income Fund"
+            ],
+            [
+              "Tech Innovation Fund"
+            ],
+            [
+              "Balanced Portfolio"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Small Cap Value Fund"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Fixed Income Plus"
+            ],
+            [
+              "Dividend Aristocrats Fund"
+            ],
+            [
+              "Emerging Markets Fund"
+            ]
+          ],
+          "ordered": false
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "4abe21d4-2231-4e78-8c70-17069316ef95",
+        "status": "answer",
+        "answer": "The active portfolios are:\n- Growth Equity Fund\n- Conservative Income Fund\n- Tech Innovation Fund\n- Balanced Portfolio\n- ESG Sustainable Fund\n- Small Cap Value Fund\n- International Equity Fund\n- Fixed Income Plus\n- Dividend Aristocrats Fund\n- Emerging Markets Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Querying the portfolios table to retrieve the names of all portfolios where the status is 'Active'.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active'",
+              "question": "What are the names of all active portfolios?"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "Conservative Income Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ],
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active'",
+              "duration_ms": 0.841,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.13000000035390258
+            },
+            "error": null,
+            "duration_ms": 1.314
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12778.572,
+        "model_duration_ms": 12775.872,
+        "api_calls": 2,
+        "tokens": 5383,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:06:47.370803+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1321.7693000005966,
+            "pacing_ms": 4990.137499997218,
+            "input_tokens": 2519,
+            "output_tokens": 65,
+            "thinking_tokens": null,
+            "total_tokens": 2584,
+            "error_kind": null,
+            "sequence": 5
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:06:53.871376+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1287.0017000022926,
+            "pacing_ms": 5176.819399999658,
+            "input_tokens": 2724,
+            "output_tokens": 75,
+            "thinking_tokens": null,
+            "total_tokens": 2799,
+            "error_kind": null,
+            "sequence": 6
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 12778.627299998334,
+      "service_ms": 2608.771000002889,
+      "pacing_ms": 10166.956899996876,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.13000000035390258,
+      "sql_execution_ms": 0.841,
+      "financial_ms": 0
+    },
+    {
+      "id": 3,
+      "question": "Which securities are in the Technology sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "symbol",
+            "company_name"
+          ],
+          "rows": [
+            [
+              "AAPL",
+              "Apple Inc."
+            ],
+            [
+              "MSFT",
+              "Microsoft Corporation"
+            ],
+            [
+              "GOOGL",
+              "Alphabet Inc."
+            ],
+            [
+              "META",
+              "Meta Platforms Inc."
+            ],
+            [
+              "NVDA",
+              "NVIDIA Corporation"
+            ],
+            [
+              "AVGO",
+              "Broadcom Inc."
+            ],
+            [
+              "CRM",
+              "Salesforce Inc."
+            ],
+            [
+              "ORCL",
+              "Oracle Corporation"
+            ]
+          ],
+          "ordered": false
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "51771166-0081-4947-938f-bea52fe152a2",
+        "status": "answer",
+        "answer": "The following securities are in the Technology sector:\n- Apple Inc. (AAPL)\n- Microsoft Corporation (MSFT)\n- Alphabet Inc. (GOOGL)\n- Meta Platforms Inc. (META)\n- NVIDIA Corporation (NVDA)\n- Broadcom Inc. (AVGO)\n- Salesforce Inc. (CRM)\n- Oracle Corporation (ORCL)",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Which securities are in the Technology sector?",
+              "sql": "SELECT s.symbol, s.company_name \nFROM securities s\nJOIN sectors sec ON s.sector_id = sec.sector_id\nWHERE sec.sector_name = 'Technology'",
+              "explanation": "Find all securities that belong to the 'Technology' sector. I will join the securities and sectors tables and filter by the sector name."
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "company_name"
+              ],
+              "rows": [
+                [
+                  "AAPL",
+                  "Apple Inc."
+                ],
+                [
+                  "MSFT",
+                  "Microsoft Corporation"
+                ],
+                [
+                  "GOOGL",
+                  "Alphabet Inc."
+                ],
+                [
+                  "META",
+                  "Meta Platforms Inc."
+                ],
+                [
+                  "NVDA",
+                  "NVIDIA Corporation"
+                ],
+                [
+                  "AVGO",
+                  "Broadcom Inc."
+                ],
+                [
+                  "CRM",
+                  "Salesforce Inc."
+                ],
+                [
+                  "ORCL",
+                  "Oracle Corporation"
+                ]
+              ],
+              "sql": "SELECT s.symbol, s.company_name \nFROM securities s\nJOIN sectors sec ON s.sector_id = sec.sector_id\nWHERE sec.sector_name = 'Technology'",
+              "duration_ms": 0.939,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.29149999681976624
+            },
+            "error": null,
+            "duration_ms": 1.687
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13115.408,
+        "model_duration_ms": 13112.535,
+        "api_calls": 2,
+        "tokens": 5536,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:07:00.372060+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 3412.3610999995435,
+            "pacing_ms": 5209.968099999969,
+            "input_tokens": 2518,
+            "output_tokens": 102,
+            "thinking_tokens": null,
+            "total_tokens": 2620,
+            "error_kind": null,
+            "sequence": 7
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:07:06.872343+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1404.4888999997056,
+            "pacing_ms": 3085.5555000016466,
+            "input_tokens": 2819,
+            "output_tokens": 97,
+            "thinking_tokens": null,
+            "total_tokens": 2916,
+            "error_kind": null,
+            "sequence": 8
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 13115.453300000809,
+      "service_ms": 4816.849999999249,
+      "pacing_ms": 8295.523600001616,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.29149999681976624,
+      "sql_execution_ms": 0.939,
+      "financial_ms": 0
+    },
+    {
+      "id": 4,
+      "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(total_aum)"
+          ],
+          "rows": [
+            [
+              85000000.0
+            ]
+          ],
+          "ordered": false
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "86f4d0b2-d6a1-46b8-9366-3a76f97c9573",
+        "status": "answer",
+        "answer": "The total Assets Under Management (AUM) for portfolios with a 'High' target risk level is $85,000,000.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT SUM(total_aum) AS total_aum_high_risk FROM portfolios WHERE target_risk_level = 'High';",
+              "question": "What is the total Assets Under Management (AUM) for portfolios with high target risk level?",
+              "explanation": "Calculating the total AUM for portfolios where the target_risk_level is 'High'. Note: The schema defines target_risk_level as a column, and I am filtering for 'High'."
+            },
+            "result": {
+              "columns": [
+                "total_aum_high_risk"
+              ],
+              "rows": [
+                [
+                  85000000.0
+                ]
+              ],
+              "sql": "SELECT SUM(total_aum) AS total_aum_high_risk FROM portfolios WHERE target_risk_level = 'High';",
+              "duration_ms": 1.199,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.1661000023887027
+            },
+            "error": null,
+            "duration_ms": 1.76
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 20450.325,
+        "model_duration_ms": 20447.277,
+        "api_calls": 2,
+        "tokens": 5444,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:07:26.373779+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 12362.776199999644,
+            "pacing_ms": 4502.1664000014425,
+            "input_tokens": 2529,
+            "output_tokens": 113,
+            "thinking_tokens": null,
+            "total_tokens": 2642,
+            "error_kind": null,
+            "sequence": 11
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:07:38.738987+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 3582.208299998456,
+            "pacing_ms": 0.0,
+            "input_tokens": 2751,
+            "output_tokens": 51,
+            "thinking_tokens": null,
+            "total_tokens": 2802,
+            "error_kind": null,
+            "sequence": 12
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "scalar"
+        ],
+        "checks": [
+          {
+            "kind": "numeric_claim_present",
+            "expected": 85000000.0,
+            "actual": [
+              85000000.0
+            ],
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "scalar"
+        ]
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 20450.37830000001,
+      "service_ms": 15944.9844999981,
+      "pacing_ms": 4502.1664000014425,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.1661000023887027,
+      "sql_execution_ms": 1.199,
+      "financial_ms": 0
+    },
+    {
+      "id": 5,
+      "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "holding_id",
+            "symbol",
+            "company_name",
+            "quantity",
+            "cost_basis"
+          ],
+          "rows": [
+            [
+              1,
+              "AAPL",
+              "Apple Inc.",
+              2500.0,
+              438000.0
+            ],
+            [
+              8,
+              "AMZN",
+              "Amazon.com Inc.",
+              100.0,
+              320000.0
+            ],
+            [
+              2,
+              "MSFT",
+              "Microsoft Corporation",
+              800.0,
+              304400.0
+            ],
+            [
+              3,
+              "NVDA",
+              "NVIDIA Corporation",
+              400.0,
+              288040.0
+            ],
+            [
+              6,
+              "CRM",
+              "Salesforce Inc.",
+              1000.0,
+              185400.0
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "c3872536-f56a-4d40-860a-a7023416a35f",
+        "status": "answer",
+        "answer": "The top 5 holdings by cost basis in the Growth Equity Fund are:\n\n1. **Apple Inc. (AAPL)**: 438,000\n2. **Amazon.com Inc. (AMZN)**: 320,000\n3. **Microsoft Corporation (MSFT)**: 304,400\n4. **NVIDIA Corporation (NVDA)**: 288,040\n5. **Salesforce Inc. (CRM)**: 185,400",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;",
+              "explanation": "Find the top 5 holdings by cost basis for the 'Growth Equity Fund'. I join holdings with securities to get the company name and symbol, filter by the portfolio name, and order by cost basis descending.",
+              "question": "Show me the top 5 holdings by cost basis in the Growth Equity Fund"
+            },
+            "result": {
+              "columns": [
+                "holding_id",
+                "symbol",
+                "company_name",
+                "quantity",
+                "cost_basis"
+              ],
+              "rows": [
+                [
+                  1,
+                  "AAPL",
+                  "Apple Inc.",
+                  2500.0,
+                  438000.0
+                ],
+                [
+                  8,
+                  "AMZN",
+                  "Amazon.com Inc.",
+                  100.0,
+                  320000.0
+                ],
+                [
+                  2,
+                  "MSFT",
+                  "Microsoft Corporation",
+                  800.0,
+                  304400.0
+                ],
+                [
+                  3,
+                  "NVDA",
+                  "NVIDIA Corporation",
+                  400.0,
+                  288040.0
+                ],
+                [
+                  6,
+                  "CRM",
+                  "Salesforce Inc.",
+                  1000.0,
+                  185400.0
+                ]
+              ],
+              "sql": "SELECT h.holding_id, s.symbol, s.company_name, h.quantity, h.cost_basis\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY h.cost_basis DESC\nLIMIT 5;",
+              "duration_ms": 2.068,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.4129999979340937
+            },
+            "error": null,
+            "duration_ms": 3.565
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12998.6,
+        "model_duration_ms": 12993.754,
+        "api_calls": 2,
+        "tokens": 5823,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:07:45.239062+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 6104.097099996579,
+            "pacing_ms": 2913.035100002162,
+            "input_tokens": 2525,
+            "output_tokens": 171,
+            "thinking_tokens": null,
+            "total_tokens": 2696,
+            "error_kind": null,
+            "sequence": 13
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:07:51.739493+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 3584.3555999999808,
+            "pacing_ms": 392.1126999994158,
+            "input_tokens": 2993,
+            "output_tokens": 134,
+            "thinking_tokens": null,
+            "total_tokens": 3127,
+            "error_kind": null,
+            "sequence": 14
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 12998.651499998232,
+      "service_ms": 9688.45269999656,
+      "pacing_ms": 3305.1478000015777,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.4129999979340937,
+      "sql_execution_ms": 2.068,
+      "financial_ms": 0
+    },
+    {
+      "id": 6,
+      "question": "What is the average current price of securities in each sector?",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "sector_name",
+            "avg_price"
+          ],
+          "rows": [
+            [
+              "Consumer Discretionary",
+              3380.0
+            ],
+            [
+              "Technology",
+              719.245
+            ],
+            [
+              "Healthcare",
+              285.17
+            ],
+            [
+              "Automotive",
+              248.5
+            ],
+            [
+              "Financials",
+              201.2125
+            ],
+            [
+              "Consumer Staples",
+              173.8625
+            ],
+            [
+              "Energy",
+              128.575
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "1592dc9c-2e5c-431a-9d61-c3b8d931e9a0",
+        "status": "answer",
+        "answer": "The average current price of securities by sector is as follows:\n\n| Sector | Average Current Price |\n| :--- | :--- |\n| Consumer Discretionary | 3,380.00 |\n| Technology | 719.25 |\n| Healthcare | 285.17 |\n| Automotive | 248.50 |\n| Financials | 201.21 |\n| Consumer Staples | 173.86 |\n| Energy | 128.58 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT s.sector_name, AVG(sec.current_price) AS average_current_price FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id GROUP BY s.sector_name ORDER BY average_current_price DESC;",
+              "question": "What is the average current price of securities in each sector?",
+              "explanation": "Calculate the average current price of securities grouped by sector name."
+            },
+            "result": {
+              "columns": [
+                "sector_name",
+                "average_current_price"
+              ],
+              "rows": [
+                [
+                  "Consumer Discretionary",
+                  3380.0
+                ],
+                [
+                  "Technology",
+                  719.245
+                ],
+                [
+                  "Healthcare",
+                  285.17
+                ],
+                [
+                  "Automotive",
+                  248.5
+                ],
+                [
+                  "Financials",
+                  201.2125
+                ],
+                [
+                  "Consumer Staples",
+                  173.8625
+                ],
+                [
+                  "Energy",
+                  128.575
+                ]
+              ],
+              "sql": "SELECT s.sector_name, AVG(sec.current_price) AS average_current_price FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id GROUP BY s.sector_name ORDER BY average_current_price DESC;",
+              "duration_ms": 0.791,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.3041000018129125
+            },
+            "error": null,
+            "duration_ms": 1.595
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 9002.375,
+        "model_duration_ms": 8999.587,
+        "api_calls": 2,
+        "tokens": 5605,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:08:11.240704+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1588.5383999993792,
+            "pacing_ms": 643.0305000030785,
+            "input_tokens": 2522,
+            "output_tokens": 104,
+            "thinking_tokens": null,
+            "total_tokens": 2626,
+            "error_kind": null,
+            "sequence": 17
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:08:17.740879+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1858.4895999993023,
+            "pacing_ms": 4909.3920000013895,
+            "input_tokens": 2841,
+            "output_tokens": 138,
+            "thinking_tokens": null,
+            "total_tokens": 2979,
+            "error_kind": null,
+            "sequence": 18
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 9002.420800003165,
+      "service_ms": 3447.0279999986815,
+      "pacing_ms": 5552.422500004468,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.3041000018129125,
+      "sql_execution_ms": 0.791,
+      "financial_ms": 0
+    },
+    {
+      "id": 7,
+      "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name",
+            "tech_value",
+            "total_value",
+            "tech_percentage"
+          ],
+          "rows": [
+            [
+              "Tech Innovation Fund",
+              1565292.5,
+              1565292.5,
+              100.0
+            ],
+            [
+              "Growth Equity Fund",
+              1866148.0,
+              2204148.0,
+              84.67
+            ],
+            [
+              "Total International Index Fund",
+              1427086.0,
+              2281686.0,
+              62.55
+            ],
+            [
+              "International Equity Fund",
+              346888.0,
+              734928.0,
+              47.2
+            ],
+            [
+              "Total Stock Market Index Fund",
+              3093520.0,
+              6622340.0,
+              46.71
+            ],
+            [
+              "Balanced Portfolio",
+              388704.0,
+              1073279.0,
+              36.22
+            ],
+            [
+              "Emerging Markets Fund",
+              339095.0,
+              1045100.0,
+              32.45
+            ],
+            [
+              "ESG Sustainable Fund",
+              272978.0,
+              1007228.0,
+              27.1
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "9f66119d-0a4b-481a-9abd-8594e7e94adf",
+        "status": "answer",
+        "answer": "The following table shows the total market value of Technology sector holdings for each portfolio, the total portfolio value, and the percentage of the portfolio represented by Technology holdings:\n\n| Portfolio Name | Technology Value | Total Portfolio Value | Technology % |\n| :--- | :--- | :--- | :--- |\n| Tech Innovation Fund | 1,565,292.50 | 1,565,292.50 | 100.00% |\n| Growth Equity Fund | 1,866,148.00 | 2,204,148.00 | 84.67% |\n| Total International Index Fund | 1,427,086.00 | 2,281,686.00 | 62.55% |\n| International Equity Fund | 346,888.00 | 734,928.00 | 47.20% |\n| Total Stock Market Index Fund | 3,093,520.00 | 6,622,340.00 | 46.71% |\n| Balanced Portfolio | 388,704.00 | 1,073,279.00 | 36.22% |\n| Emerging Markets Fund | 339,095.00 | 1,045,100.00 | 32.45% |\n| ESG Sustainable Fund | 272,978.00 | 1,007,228.00 | 27.10% |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "For each portfolio, show the total value of Technology sector holdings and what percentage it represents of the total portfolio value",
+              "sql": "WITH PortfolioValues AS (\n    SELECT \n        h.portfolio_id,\n        SUM(h.quantity * s.current_price) AS total_portfolio_value\n    FROM holdings h\n    JOIN securities s ON h.security_id = s.security_id\n    GROUP BY h.portfolio_id\n),\nTechValues AS (\n    SELECT \n        h.portfolio_id,\n        SUM(h.quantity * s.current_price) AS tech_value\n    FROM holdings h\n    JOIN securities s ON h.security_id = s.security_id\n    JOIN sectors sec ON s.sector_id = sec.sector_id\n    WHERE sec.sector_name = 'Technology'\n    GROUP BY h.portfolio_id\n)\nSELECT \n    p.portfolio_name,\n    tv.tech_value,\n    pv.total_portfolio_value,\n    ROUND((tv.tech_value / pv.total_portfolio_value) * 100, 2) AS tech_percentage\nFROM TechValues tv\nJOIN PortfolioValues pv ON tv.portfolio_id = pv.portfolio_id\nJOIN portfolios p ON tv.portfolio_id = p.portfolio_id\nORDER BY tech_percentage DESC;",
+              "explanation": "Calculate the total market value of Technology sector holdings per portfolio, the total portfolio value, and the percentage of the portfolio value represented by Technology holdings. Only portfolios with Technology holdings are included."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "tech_value",
+                "total_value",
+                "percentage_of_total"
+              ],
+              "rows": [
+                [
+                  "Tech Innovation Fund",
+                  1565292.5,
+                  1565292.5,
+                  100.0
+                ],
+                [
+                  "Growth Equity Fund",
+                  1866148.0,
+                  2204148.0,
+                  84.67
+                ],
+                [
+                  "Total International Index Fund",
+                  1427086.0,
+                  2281686.0,
+                  62.55
+                ],
+                [
+                  "International Equity Fund",
+                  346888.0,
+                  734928.0,
+                  47.2
+                ],
+                [
+                  "Total Stock Market Index Fund",
+                  3093520.0,
+                  6622340.0,
+                  46.71
+                ],
+                [
+                  "Balanced Portfolio",
+                  388704.0,
+                  1073279.0,
+                  36.22
+                ],
+                [
+                  "Emerging Markets Fund",
+                  339095.0,
+                  1045100.0,
+                  32.45
+                ],
+                [
+                  "ESG Sustainable Fund",
+                  272978.0,
+                  1007228.0,
+                  27.1
+                ]
+              ],
+              "sql": "SELECT p.portfolio_name, SUM(h.quantity * s.current_price) AS tech_value, total_portfolio.total_value, ROUND(100.0 * SUM(h.quantity * s.current_price) / total_portfolio.total_value, 2) AS percentage_of_total FROM portfolios p JOIN holdings h ON p.portfolio_id = h.portfolio_id JOIN securities s ON h.security_id = s.security_id JOIN sectors sec ON s.sector_id = sec.sector_id JOIN (SELECT portfolio_id, SUM(quantity * current_price) AS total_value FROM holdings JOIN securities USING (security_id) GROUP BY portfolio_id) AS total_portfolio ON p.portfolio_id = total_portfolio.portfolio_id WHERE sec.sector_name = 'Technology' GROUP BY p.portfolio_id, total_portfolio.total_value ORDER BY percentage_of_total DESC",
+              "duration_ms": 2.039,
+              "truncated": false,
+              "attempts": 2,
+              "validation_ms": 1.7943999991985038
+            },
+            "error": null,
+            "duration_ms": 6287.992
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 19521.791,
+        "model_duration_ms": 19512.859,
+        "api_calls": 3,
+        "tokens": 8623,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:08:24.241334+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 2226.07440000138,
+            "pacing_ms": 4637.454600000638,
+            "input_tokens": 2532,
+            "output_tokens": 357,
+            "thinking_tokens": null,
+            "total_tokens": 2889,
+            "error_kind": null,
+            "sequence": 19
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:08:30.741729+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 2007.5594000009005,
+            "pacing_ms": 4272.749499999918,
+            "input_tokens": 1650,
+            "output_tokens": 276,
+            "thinking_tokens": null,
+            "total_tokens": 1926,
+            "error_kind": null,
+            "sequence": 20
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:08:37.242441+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1882.398400000966,
+            "pacing_ms": 4486.38690000007,
+            "input_tokens": 3399,
+            "output_tokens": 409,
+            "thinking_tokens": null,
+            "total_tokens": 3808,
+            "error_kind": null,
+            "sequence": 21
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 19521.844499999133,
+      "service_ms": 6116.0322000032465,
+      "pacing_ms": 13396.591000000626,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 1.7943999991985038,
+      "sql_execution_ms": 2.039,
+      "financial_ms": 0
+    },
+    {
+      "id": 8,
+      "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics",
+      "category": "text2sql",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name",
+            "sector_count",
+            "total_holdings",
+            "diversification_ratio"
+          ],
+          "rows": [
+            [
+              "Total Stock Market Index Fund",
+              6,
+              12,
+              0.5
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "b1c85ab0-d777-49ca-a3a6-980edd503a0c",
+        "status": "answer",
+        "answer": "The following portfolio has holdings in more than 5 different sectors:\n\n| Portfolio Name | Sector Count | Total Holdings | Diversification Ratio |\n| :--- | :--- | :--- | :--- |\n| Total Stock Market Index Fund | 6 | 12 | 0.5 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT \n    p.portfolio_name, \n    COUNT(DISTINCT s.sector_id) AS sector_count, \n    COUNT(h.holding_id) AS total_holdings,\n    ROUND(CAST(COUNT(DISTINCT s.sector_id) AS REAL) / COUNT(h.holding_id), 3) AS diversification_ratio\nFROM portfolios p\nJOIN holdings h ON p.portfolio_id = h.portfolio_id\nJOIN securities s ON h.security_id = s.security_id\nGROUP BY p.portfolio_id\nHAVING sector_count > 5\nORDER BY diversification_ratio DESC;",
+              "explanation": "To find portfolios with holdings in more than 5 different sectors, I join portfolios, holdings, and securities (which links to sectors). I group by portfolio_name, count the distinct sectors and total holdings, and calculate the diversification ratio (sector_count / total_holdings). I filter for sector_count > 5 and order by the diversification ratio descending.",
+              "question": "Find portfolios that have holdings in more than 5 different sectors and show their diversification metrics (portfolio_name, distinct Stock sector_count, total_holdings, and diversification_ratio)."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "sector_count",
+                "total_holdings",
+                "diversification_ratio"
+              ],
+              "rows": [
+                [
+                  "Total Stock Market Index Fund",
+                  6,
+                  12,
+                  0.5
+                ]
+              ],
+              "sql": "SELECT \n    p.portfolio_name, \n    COUNT(DISTINCT s.sector_id) AS sector_count, \n    COUNT(h.holding_id) AS total_holdings,\n    ROUND(CAST(COUNT(DISTINCT s.sector_id) AS REAL) / COUNT(h.holding_id), 3) AS diversification_ratio\nFROM portfolios p\nJOIN holdings h ON p.portfolio_id = h.portfolio_id\nJOIN securities s ON h.security_id = s.security_id\nGROUP BY p.portfolio_id\nHAVING sector_count > 5\nORDER BY diversification_ratio DESC;",
+              "duration_ms": 0.916,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.6455999973695725
+            },
+            "error": null,
+            "duration_ms": 2.507
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12887.786,
+        "model_duration_ms": 12884.092,
+        "api_calls": 2,
+        "tokens": 5935,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:08:56.743173+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1772.3637000017334,
+            "pacing_ms": 4881.082899999456,
+            "input_tokens": 2527,
+            "output_tokens": 278,
+            "thinking_tokens": null,
+            "total_tokens": 2805,
+            "error_kind": null,
+            "sequence": 24
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:09:03.243359+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1505.8219999991707,
+            "pacing_ms": 4724.669499999436,
+            "input_tokens": 3049,
+            "output_tokens": 81,
+            "thinking_tokens": null,
+            "total_tokens": 3130,
+            "error_kind": null,
+            "sequence": 25
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 12887.841700001445,
+      "service_ms": 3278.185700000904,
+      "pacing_ms": 9605.752399998892,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.6455999973695725,
+      "sql_execution_ms": 0.916,
+      "financial_ms": 0
+    },
+    {
+      "id": 9,
+      "question": "What are the sector exposures for the Tech Innovation Fund?",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": null,
+      "expected": [
+        {
+          "tool": "exposure_calculator",
+          "portfolio_name": "Tech Innovation Fund",
+          "sectors": {
+            "Technology": 100.0
+          }
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "4e16d40f-9a3c-4630-a712-9c7b181636b6",
+        "status": "answer",
+        "answer": "The Tech Innovation Fund has a 100.00% exposure to the Technology sector.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "Tech Innovation Fund"
+            },
+            "result": {
+              "portfolio_id": 3,
+              "portfolio_name": "Tech Innovation Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Technology": "100.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 3.853
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12881.987,
+        "model_duration_ms": 12875.685,
+        "api_calls": 2,
+        "tokens": 5214,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:09:09.743585+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1367.8987000021152,
+            "pacing_ms": 4988.174999998591,
+            "input_tokens": 2521,
+            "output_tokens": 18,
+            "thinking_tokens": null,
+            "total_tokens": 2539,
+            "error_kind": null,
+            "sequence": 26
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:09:16.243661+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1392.4834999997984,
+            "pacing_ms": 5126.9706999992195,
+            "input_tokens": 2636,
+            "output_tokens": 39,
+            "thinking_tokens": null,
+            "total_tokens": 2675,
+            "error_kind": null,
+            "sequence": 27
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "exposure"
+        ],
+        "checks": [
+          {
+            "kind": "portfolio_identity",
+            "expected": "Tech Innovation Fund",
+            "actual": "Tech Innovation Fund",
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "exposure"
+        ]
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 12882.034999998723,
+      "service_ms": 2760.3822000019136,
+      "pacing_ms": 10115.14569999781,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0,
+      "sql_execution_ms": 0,
+      "financial_ms": 3.853
+    },
+    {
+      "id": 10,
+      "question": "Calculate the sector exposure breakdown for international equity",
+      "category": "exposure_calculator",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": null,
+      "expected": [
+        {
+          "tool": "exposure_calculator",
+          "portfolio_name": "International Equity Fund",
+          "sectors": {
+            "Technology": 36.0,
+            "Automotive": 15.0,
+            "Energy": 38.0,
+            "Consumer Staples": 11.0
+          }
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "123f1589-990b-45a4-8cbd-16e6e40789b7",
+        "status": "answer",
+        "answer": "The sector exposure breakdown for the International Equity Fund is as follows:\n\n*   **Energy:** 38.00%\n*   **Technology:** 36.00%\n*   **Automotive:** 15.00%\n*   **Consumer Staples:** 11.00%\n\nThese figures represent the equity-only sector weights, normalized to the portfolio's total stock weight.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "International Equity Fund"
+            },
+            "result": {
+              "portfolio_id": 7,
+              "portfolio_name": "International Equity Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Energy": "38.00",
+                "Technology": "36.00",
+                "Automotive": "15.00",
+                "Consumer Staples": "11.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 1.437
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 23113.769,
+        "model_duration_ms": 23111.062,
+        "api_calls": 2,
+        "tokens": 5307,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:09:35.744735+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 16669.196400001965,
+            "pacing_ms": 5008.515000001353,
+            "input_tokens": 2518,
+            "output_tokens": 18,
+            "thinking_tokens": null,
+            "total_tokens": 2536,
+            "error_kind": null,
+            "sequence": 30
+          },
+          {
+            "timestamp_utc": "2026-11-07T12:09:52.416006+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1433.2353999998304,
+            "pacing_ms": 0.0,
+            "input_tokens": 2664,
+            "output_tokens": 107,
+            "thinking_tokens": null,
+            "total_tokens": 2771,
+            "error_kind": null,
+            "sequence": 31
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "exposure"
+        ],
+        "checks": [
+          {
+            "kind": "portfolio_identity",
+            "expected": "International Equity Fund",
+            "actual": "International Equity Fund",
+            "passed": true
+          },
+          {
+            "kind": "sector_percentage",
+            "expected": {
+              "Technology": 36.0
+            },
+            "actual": 36.0,
+            "passed": true
+          },
+          {
+            "kind": "sector_percentage",
+            "expected": {
+              "Automotive": 15.0
+            },
+            "actual": 15.0,
+            "passed": true
+          },
+          {
+            "kind": "sector_percentage",
+            "expected": {
+              "Consumer Staples": 11.0
+            },
+            "actual": 11.0,
+            "passed": true
+          },
+          {
+            "kind": "sector_percentage",
+            "expected": {
+              "Energy": 38.0
+            },
+            "actual": 38.0,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "exposure"
+        ]
+      },
+      "suite_name": "supplied",
+      "strategy": "existing",
+      "trial": 1,
+      "analysis_e2e_ms": 23113.82319999757,
+      "service_ms": 18102.431800001796,
+      "pacing_ms": 5008.515000001353,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0,
+      "sql_execution_ms": 0,
+      "financial_ms": 1.437
+    }
+  ]
+}

@@ -1,0 +1,1189 @@
+{
+  "timestamp_utc": "2026-11-07T12:06:21.346610+00:00",
+  "runtime_revision": "2bef3c4314b6132344c1709589afe1f0cc0878de",
+  "model": "gemini-3.1-flash-lite",
+  "prompt_sha256": "898af249772d4131901b6f9ef35652ef4b45d2b9b10fef3e919481eb569c40e4",
+  "source_sha256": {
+    "data\\benchmarks.csv": "c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62",
+    "data\\historical_prices.csv": "4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0",
+    "data\\holdings.csv": "6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc",
+    "data\\portfolio_performance.csv": "acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1",
+    "data\\portfolios.csv": "11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb",
+    "data\\risk_metrics.csv": "424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304",
+    "data\\sectors.csv": "5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010",
+    "data\\securities.csv": "973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e",
+    "data\\transactions.csv": "736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f"
+  },
+  "database_sha256": "67f1923f8398ebb835ed5494dadc29b60b8b43054dee83dc054029f6243f76a2",
+  "suite_hashes": {
+    "supplied": "7a5c9e4ea18f973d047d31aece044a84a179010e53ca06a6fb65f00ae0343244",
+    "extended": "69901d3acfd9a1ffd049ad5f68d3b7886258541190c3b70766dbc8055cf27e30",
+    "platform": "e54d7a082eadb6e62d1b5d9bbced9c6a35ecdc4c283170202c88decbc7c2fc92"
+  },
+  "narrative_rule_hashes": {
+    "evaluation\\faithfulness.json": "458dcf2cc85af6b7d2d606db9d8523419a7e6f5013fe1b768e9a1d35cae66119",
+    "evaluation\\platform_faithfulness.json": "c3d20f3ae38f6d993cea8195f87e0f87cdfb0b97844a63f83d3fe9dc96d44a3c"
+  },
+  "runtime_sha256": {
+    "__init__.py": "43f120fd08606ac485548c7b425a1998474366d9325c46ac101d881d100f76ed",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8",
+    "agent.py": "333de14f8f8f1746d060d48e363c0099cff5b2bd02360e088a556c10ba0b34d1",
+    "analytics.py": "8203b95e12a3797b621dd1ff2f4085bfbdb26279bc89976b203f4d4f48dc4160",
+    "api.py": "789f9e804dcc441af2752ee844f2e6f7162aa111ef72068299ea892b8b5c43d1",
+    "cli.py": "f724a9042141a40f3d327329880e7b0166b4a23ff39d6445ab87c1a582b8b495",
+    "config.py": "e4bd73935a5c87c04b18705ad6f243ab51d9b76927ed867271c6719ebf90c201",
+    "database.py": "c79b23c9b4983a890bad5a1fc925397bc3a260a69ec217ebf4ef0f811286c209",
+    "errors.py": "7d25e8887858dde69738db6751bf7a061d49089fc46b635a1860f530436b3d6e",
+    "evaluation.py": "5fd6fd5423d96f304128796480b7845bff36a8736018e6649fcf5fa6b1ca67f6",
+    "exposure.py": "67dbdfe6be2b2aa27647082eb8519263381fd5155e908f842e97da44047ec187",
+    "faithfulness.py": "690aa8bafbd23b1eebb1b6972fb109548a10a4b0c969c73e576ac8bdbd6d28ad",
+    "model.py": "1a100a40c2daf4c3f5aba9ad6b13b282309b6c12b07a28b9325af816938262a3",
+    "planning.py": "fbd46b46f8f83daa29caf88d38a46158cd2636273fb947f9d953054ec9a45cac",
+    "prompts.py": "898af249772d4131901b6f9ef35652ef4b45d2b9b10fef3e919481eb569c40e4",
+    "quota.py": "94905a98bd3a3c522236cb697c7f07ccad12c6ba8304d293244a2562984b7bbf",
+    "renderer.py": "502b81117f90b98c0cb3ca80aa83ba467e549a645cb853b6ecfa14ad2fe5b17c",
+    "server.py": "b45af2174323a7766100a69cc45ea0723a01cde1b2316a82ded3cde9f43bceba",
+    "service.py": "5653d4585a413b2af186d0a080487647af7ff48c169fc3b6029830c855f12dc8",
+    "sql.py": "457aa4b583cd4ce09181c6bec51e2353d86b944098cf2018b857d9cb0d57d906"
+  },
+  "request_interval_seconds": 6.5,
+  "request_budget": 250,
+  "circuit_failures": 3,
+  "circuit_seconds": 30.0,
+  "lock_sha256": "16ad295e24380ad24c5788c7ceea0a668f28658fd40bc927ee38fd4255ae3a6a",
+  "dependencies": {
+    "google-genai": "2.34.0",
+    "pydantic": "2.14.3",
+    "sqlglot": "30.29.0"
+  },
+  "evaluator_version": 2,
+  "conditions": "Alternating strategy order per paired question; one shared paced backend. CLI steady-state analysis latency excludes oracle execution. SDK service time includes transport; it is not isolated model inference time. No controlled speedup claim across historical releases.",
+  "suite_sha256": "e54d7a082eadb6e62d1b5d9bbced9c6a35ecdc4c283170202c88decbc7c2fc92",
+  "complete": true,
+  "suite": "platform",
+  "strategy": "one-call",
+  "cache": "disabled; local fast path disabled",
+  "trials": 1,
+  "total": 8,
+  "passed": 7,
+  "answer_correct": 7,
+  "result_correct": 6,
+  "routing_correct": 7,
+  "narrative_checked": 2,
+  "narrative_failed": 0,
+  "api_calls": 8,
+  "tokens": 19956,
+  "mean_ms": 6566.135224999016,
+  "p95_ms": 6934.361999999965,
+  "latency_ms": {
+    "analysis_e2e_ms": {
+      "mean": 6566.135224999016,
+      "median": 6507.247899999129,
+      "p95": 6934.361999999965
+    },
+    "service_ms": {
+      "mean": 1377.0392375004121,
+      "median": 1375.7320500008063,
+      "p95": 1521.6113999995287
+    },
+    "pacing_ms": {
+      "mean": 5186.355087499578,
+      "median": 5121.387350000077,
+      "p95": 5564.543100001174
+    },
+    "backoff_ms": {
+      "mean": 0.0,
+      "median": 0.0,
+      "p95": 0.0
+    },
+    "sql_validation_ms": {
+      "mean": 0.1839124997786712,
+      "median": 0.23039999905449804,
+      "p95": 0.31239999952958897
+    },
+    "sql_execution_ms": {
+      "mean": 0.69075,
+      "median": 0.842,
+      "p95": 1.318
+    },
+    "financial_ms": {
+      "mean": 0.36367499978950946,
+      "median": 0.0,
+      "p95": 1.4716000005137175
+    }
+  },
+  "provider_attempt_summary": {
+    "attempts": 8,
+    "service_ms": 11016.313900003297,
+    "pacing_ms": 41490.840699996625,
+    "input_tokens": 19419,
+    "output_tokens": 537,
+    "thinking_tokens": 0,
+    "unknown_input_attempts": 0,
+    "unknown_output_attempts": 0,
+    "unknown_usage_attempts": 0
+  },
+  "provider_failed_attempts": 0,
+  "repair_questions": 0,
+  "invalid_sql_attempts": 0,
+  "fallback_questions": 0,
+  "records": [
+    {
+      "id": "platform-01",
+      "question": "List the names of portfolios whose listed current_weight sum is less than 0.99, alphabetically.",
+      "category": "data_quality",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "49b9df69-2694-4c3a-9fbe-8b39e287646e",
+        "status": "answer",
+        "answer": "portfolio_name: Total Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "tool": "sql_query",
+              "sql": "SELECT p.portfolio_name FROM portfolios p JOIN holdings h ON p.portfolio_id = h.portfolio_id GROUP BY p.portfolio_id HAVING SUM(h.current_weight) < 0.99 ORDER BY p.portfolio_name ASC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT p.portfolio_name FROM portfolios p JOIN holdings h ON p.portfolio_id = h.portfolio_id GROUP BY p.portfolio_id HAVING SUM(h.current_weight) < 0.99 ORDER BY p.portfolio_name ASC;",
+              "duration_ms": 0.849,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.31239999952958897
+            },
+            "error": null,
+            "duration_ms": 1.2010999998892657
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6934.315099999367,
+        "model_duration_ms": 6931.593100001919,
+        "api_calls": 1,
+        "tokens": 2520,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:28:48.071254+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1366.9786999998905,
+            "pacing_ms": 5564.543100001174,
+            "input_tokens": 2433,
+            "output_tokens": 87,
+            "thinking_tokens": null,
+            "total_tokens": 2520,
+            "error_kind": null,
+            "sequence": 181
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": 0.004999998054699972,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6934.361999999965,
+      "service_ms": 1366.9786999998905,
+      "pacing_ms": 5564.543100001174,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.31239999952958897,
+      "sql_execution_ms": 0.849,
+      "financial_ms": 0
+    },
+    {
+      "id": "platform-02",
+      "question": "List the distinct currencies recorded for securities, alphabetically.",
+      "category": "currency",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "currency"
+          ],
+          "rows": [
+            [
+              "USD"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "daeef148-9ee2-48f3-8aa5-165369e79a87",
+        "status": "answer",
+        "answer": "currency: USD",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "tool": "sql_query",
+              "sql": "SELECT DISTINCT currency FROM securities ORDER BY currency ASC;"
+            },
+            "result": {
+              "columns": [
+                "currency"
+              ],
+              "rows": [
+                [
+                  "USD"
+                ]
+              ],
+              "sql": "SELECT DISTINCT currency FROM securities ORDER BY currency ASC;",
+              "duration_ms": 1.025,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.13050000052317046
+            },
+            "error": null,
+            "duration_ms": 1.2117999976908322
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6503.080200000113,
+        "model_duration_ms": 6500.177899997652,
+        "api_calls": 1,
+        "tokens": 2463,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:28:54.571750+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1376.6943000009633,
+            "pacing_ms": 5123.389500000485,
+            "input_tokens": 2421,
+            "output_tokens": 42,
+            "thinking_tokens": null,
+            "total_tokens": 2463,
+            "error_kind": null,
+            "sequence": 182
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": 0.004999998054699972,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6503.134099999443,
+      "service_ms": 1376.6943000009633,
+      "pacing_ms": 5123.389500000485,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.13050000052317046,
+      "sql_execution_ms": 1.025,
+      "financial_ms": 0
+    },
+    {
+      "id": "platform-03",
+      "question": "Which portfolios have no recorded risk metric observations? List only their names alphabetically.",
+      "category": "missing_data",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Dividend Aristocrats Fund"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Emerging Markets Fund"
+            ],
+            [
+              "Fixed Income Plus"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Small Cap Value Fund"
+            ],
+            [
+              "Total Bond Market Index Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "106532f2-2e96-4033-a236-a41a7f213d22",
+        "status": "answer",
+        "answer": "portfolio_name\nDividend Aristocrats Fund\nESG Sustainable Fund\nEmerging Markets Fund\nFixed Income Plus\nInternational Equity Fund\nSmall Cap Value Fund\nTotal Bond Market Index Fund\nTotal International Index Fund\nTotal Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "tool": "sql_query",
+              "sql": "SELECT p.portfolio_name FROM portfolios p LEFT JOIN risk_metrics r ON p.portfolio_id = r.portfolio_id WHERE r.risk_id IS NULL ORDER BY p.portfolio_name ASC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "Total Bond Market Index Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ],
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT p.portfolio_name FROM portfolios p LEFT JOIN risk_metrics r ON p.portfolio_id = r.portfolio_id WHERE r.risk_id IS NULL ORDER BY p.portfolio_name ASC;",
+              "duration_ms": 0.835,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.2721999990171753
+            },
+            "error": null,
+            "duration_ms": 1.152099997852929
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6154.60019999955,
+        "model_duration_ms": 6151.510700001381,
+        "api_calls": 1,
+        "tokens": 2502,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:29:27.073401+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1074.7683000008692,
+            "pacing_ms": 5076.674299998558,
+            "input_tokens": 2426,
+            "output_tokens": 76,
+            "thinking_tokens": null,
+            "total_tokens": 2502,
+            "error_kind": null,
+            "sequence": 187
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": 0.011499996617203578,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6154.647200000909,
+      "service_ms": 1074.7683000008692,
+      "pacing_ms": 5076.674299998558,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.2721999990171753,
+      "sql_execution_ms": 0.835,
+      "financial_ms": 0
+    },
+    {
+      "id": "platform-04",
+      "question": "For Balanced Portfolio, return the recorded sum of current_weight as a single value.",
+      "category": "recorded_weights",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(h.current_weight)"
+          ],
+          "rows": [
+            [
+              1.0
+            ]
+          ],
+          "ordered": false
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "e5f7aa65-5b11-4fb7-9f0b-d07e4e5a09e7",
+        "status": "answer",
+        "answer": "SUM(current_weight): 1",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "tool": "sql_query",
+              "sql": "SELECT SUM(current_weight) FROM holdings JOIN portfolios ON holdings.portfolio_id = portfolios.portfolio_id WHERE portfolios.portfolio_name = 'Balanced Portfolio'"
+            },
+            "result": {
+              "columns": [
+                "SUM(current_weight)"
+              ],
+              "rows": [
+                [
+                  1.0
+                ]
+              ],
+              "sql": "SELECT SUM(current_weight) FROM holdings JOIN portfolios ON holdings.portfolio_id = portfolios.portfolio_id WHERE portfolios.portfolio_name = 'Balanced Portfolio'",
+              "duration_ms": 0.885,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.20899999799439684
+            },
+            "error": null,
+            "duration_ms": 1.135200000135228
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6878.333900000143,
+        "model_duration_ms": 6875.973300000624,
+        "api_calls": 1,
+        "tokens": 2494,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:29:33.573961+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1459.4512000003306,
+            "pacing_ms": 5416.418599997996,
+            "input_tokens": 2428,
+            "output_tokens": 66,
+            "thinking_tokens": null,
+            "total_tokens": 2494,
+            "error_kind": null,
+            "sequence": 188
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": 0.01300000076298602,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "scalar"
+        ],
+        "checks": [
+          {
+            "kind": "numeric_claim_present",
+            "expected": 1.0,
+            "actual": [
+              1.0
+            ],
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "scalar"
+        ]
+      },
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6878.383699997357,
+      "service_ms": 1459.4512000003306,
+      "pacing_ms": 5416.418599997996,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.20899999799439684,
+      "sql_execution_ms": 0.885,
+      "financial_ms": 0
+    },
+    {
+      "id": "platform-05",
+      "question": "Use both tools: show Growth Equity Fund equity sector exposure and separately return its recorded sum of holding current_weight as a single value.",
+      "category": "hybrid",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "exposure_calculator",
+          "portfolio_name": "Growth Equity Fund",
+          "sectors": {
+            "Technology": 93.0,
+            "Consumer Discretionary": 7.0
+          }
+        },
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(h.current_weight)"
+          ],
+          "rows": [
+            [
+              1.0
+            ]
+          ],
+          "ordered": false
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "c4ea47c1-6c34-4e05-aa98-0350e4fafb8e",
+        "status": "answer",
+        "answer": "Growth Equity Fund \u2014 equity-only sector exposure\nTechnology: 93.00%\nConsumer Discretionary: 7.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded.\n\nSUM(current_weight): 1",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "tool": "exposure_calculator",
+              "portfolio": "Growth Equity Fund"
+            },
+            "result": {
+              "portfolio_id": 1,
+              "portfolio_name": "Growth Equity Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Technology": "93.00",
+                "Consumer Discretionary": "7.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 1.4716000005137175
+          },
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "tool": "sql_query",
+              "sql": "SELECT SUM(current_weight) FROM holdings JOIN portfolios ON holdings.portfolio_id = portfolios.portfolio_id WHERE portfolios.portfolio_name = 'Growth Equity Fund';"
+            },
+            "result": {
+              "columns": [
+                "SUM(current_weight)"
+              ],
+              "rows": [
+                [
+                  1.0
+                ]
+              ],
+              "sql": "SELECT SUM(current_weight) FROM holdings JOIN portfolios ON holdings.portfolio_id = portfolios.portfolio_id WHERE portfolios.portfolio_name = 'Growth Equity Fund';",
+              "duration_ms": 0.614,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.29540000105043873
+            },
+            "error": null,
+            "duration_ms": 0.9425999996892642
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6665.412000002107,
+        "model_duration_ms": 6661.745999997947,
+        "api_calls": 1,
+        "tokens": 2521,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:30:06.075308+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1501.9726999998966,
+            "pacing_ms": 5159.691799999564,
+            "input_tokens": 2438,
+            "output_tokens": 83,
+            "thinking_tokens": null,
+            "total_tokens": 2521,
+            "error_kind": null,
+            "sequence": 193
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": 0.01939999856404029,
+        "stages_ms": {}
+      },
+      "analytical_calls": 2,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            },
+            {
+              "tool_index": 1,
+              "matched": false,
+              "error": "Different tool type."
+            }
+          ]
+        },
+        {
+          "reference_index": 1,
+          "matched_tool_index": 1,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": false,
+              "error": "Different tool type."
+            },
+            {
+              "tool_index": 1,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "exposure"
+        ],
+        "checks": [
+          {
+            "kind": "portfolio_identity",
+            "expected": "Growth Equity Fund",
+            "actual": "Growth Equity Fund",
+            "passed": true
+          },
+          {
+            "kind": "sector_percentage",
+            "expected": {
+              "Technology": 93.0
+            },
+            "actual": 93.0,
+            "passed": true
+          },
+          {
+            "kind": "sector_percentage",
+            "expected": {
+              "Consumer Discretionary": 7.0
+            },
+            "actual": 7.0,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "exposure"
+        ]
+      },
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6665.46599999856,
+      "service_ms": 1501.9726999998966,
+      "pacing_ms": 5159.691799999564,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.29540000105043873,
+      "sql_execution_ms": 0.614,
+      "financial_ms": 1.4716000005137175
+    },
+    {
+      "id": "platform-06",
+      "question": "Return the latest recorded NAV for Balanced Portfolio, along with its observation date. Use only these two columns.",
+      "category": "historical",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "nav",
+            "performance_date"
+          ],
+          "rows": [
+            [
+              117.78,
+              "2023-10-09"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "3b6c3a44-e86e-424e-8941-13cc1da59011",
+        "status": "answer",
+        "answer": "nav | performance_date\n117.78 | 2023-10-09",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "tool": "sql_query",
+              "sql": "SELECT nav, performance_date FROM portfolio_performance WHERE portfolio_id = (SELECT portfolio_id FROM portfolios WHERE portfolio_name = 'Balanced Portfolio') ORDER BY performance_date DESC LIMIT 1;"
+            },
+            "result": {
+              "columns": [
+                "nav",
+                "performance_date"
+              ],
+              "rows": [
+                [
+                  117.78,
+                  "2023-10-09"
+                ]
+              ],
+              "sql": "SELECT nav, performance_date FROM portfolio_performance WHERE portfolio_id = (SELECT portfolio_id FROM portfolios WHERE portfolio_name = 'Balanced Portfolio') ORDER BY performance_date DESC LIMIT 1;",
+              "duration_ms": 1.318,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.25180000011459924
+            },
+            "error": null,
+            "duration_ms": 1.616099998500431
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6511.305200001516,
+        "model_duration_ms": 6508.42399999965,
+        "api_calls": 1,
+        "tokens": 2505,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:30:12.575498+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1521.6113999995287,
+            "pacing_ms": 4986.721299999772,
+            "input_tokens": 2432,
+            "output_tokens": 73,
+            "thinking_tokens": null,
+            "total_tokens": 2505,
+            "error_kind": null,
+            "sequence": 194
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": 0.01720000000204891,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6511.361699998815,
+      "service_ms": 1521.6113999995287,
+      "pacing_ms": 4986.721299999772,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0.25180000011459924,
+      "sql_execution_ms": 1.318,
+      "financial_ms": 0
+    },
+    {
+      "id": "platform-07",
+      "question": "Forecast the exact return of Growth Equity Fund next year.",
+      "category": "unsupported",
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": null,
+      "status_correct": true,
+      "sql_valid": null,
+      "expected": [],
+      "failures": [],
+      "actual": {
+        "request_id": "dacaecec-2e07-45a4-a24b-1e6d23a38e28",
+        "status": "unsupported",
+        "answer": "I cannot forecast future returns for the Growth Equity Fund. My capabilities are limited to analyzing historical data and current portfolio metrics, and I do not provide investment advice or predictive modeling.",
+        "tools": [],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6419.766299997718,
+        "model_duration_ms": 6418.901100001676,
+        "api_calls": 1,
+        "tokens": 2479,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:30:38.577008+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1374.7698000006494,
+            "pacing_ms": 5044.016899999406,
+            "input_tokens": 2422,
+            "output_tokens": 57,
+            "thinking_tokens": null,
+            "total_tokens": 2479,
+            "error_kind": null,
+            "sequence": 198
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": null,
+        "stages_ms": {}
+      },
+      "analytical_calls": 0,
+      "reference_checks": [],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [],
+        "reason": "No factual answer was produced; narrative assertions not applicable."
+      },
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6419.818899998063,
+      "service_ms": 1374.7698000006494,
+      "pacing_ms": 5044.016899999406,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0,
+      "sql_execution_ms": 0,
+      "financial_ms": 0
+    },
+    {
+      "id": "platform-08",
+      "question": "Calculate sector exposure for the equity fund.",
+      "category": "ambiguity",
+      "split": "supplied",
+      "passed": false,
+      "routing_correct": false,
+      "answer_correct": false,
+      "result_correct": null,
+      "status_correct": false,
+      "sql_valid": null,
+      "expected": [],
+      "failures": [
+        {
+          "dimension": "status",
+          "message": "Expected clarification; actual answer: Growth Equity Fund \u2014 equity-only sector exposure\nTechnology: 93.00%\nConsumer Discretionary: 7.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+        },
+        {
+          "dimension": "routing",
+          "message": "Expected tools []; got ['exposure_calculator']."
+        }
+      ],
+      "actual": {
+        "request_id": "d7f3360a-e635-4709-abe3-9b7319fde7a3",
+        "status": "answer",
+        "answer": "Growth Equity Fund \u2014 equity-only sector exposure\nTechnology: 93.00%\nConsumer Discretionary: 7.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "tool": "exposure_calculator",
+              "portfolio": "Growth Equity Fund"
+            },
+            "result": {
+              "portfolio_id": 1,
+              "portfolio_name": "Growth Equity Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Technology": "93.00",
+                "Consumer Discretionary": "7.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 1.4377999978023581
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6461.84920000087,
+        "model_duration_ms": 6459.564699998737,
+        "api_calls": 1,
+        "tokens": 2472,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "one-call",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-07T12:30:45.077435+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1340.0675000011688,
+            "pacing_ms": 5119.38519999967,
+            "input_tokens": 2419,
+            "output_tokens": 53,
+            "thinking_tokens": null,
+            "total_tokens": 2472,
+            "error_kind": null,
+            "sequence": 199
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "deterministic tool rendering",
+        "planning_events": [],
+        "rendering_ms": 0.01309999788645655,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "failure": "status: Expected clarification; actual answer: Growth Equity Fund \u2014 equity-only sector exposure\nTechnology: 93.00%\nConsumer Discretionary: 7.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded. | routing: Expected tools []; got ['exposure_calculator'].",
+      "suite_name": "platform",
+      "strategy": "one-call",
+      "trial": 1,
+      "analysis_e2e_ms": 6461.908199999016,
+      "service_ms": 1340.0675000011688,
+      "pacing_ms": 5119.38519999967,
+      "backoff_ms": 0.0,
+      "sql_validation_ms": 0,
+      "sql_execution_ms": 0,
+      "financial_ms": 1.4377999978023581
+    }
+  ]
+}

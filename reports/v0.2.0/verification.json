@@ -8,8 +8,8 @@
     "failures": "0",
     "skipped": "2",
     "tests": "206",
-    "time": "14.478",
-    "timestamp": "2026-11-07T17:35:28.144574+05:30",
+    "time": "14.143",
+    "timestamp": "2026-11-07T18:10:00.539493+05:30",
     "hostname": "Shaunak"
   },
   "coverage": {
@@ -23,18 +23,18 @@
   "warning": "Starlette TestClient deprecates its httpx adapter; warning retained, not suppressed",
   "ci": [
     {
-      "id": 42370987514,
+      "id": 42372281115,
       "name": "Python quality",
       "conclusion": "success",
       "jobs": 4,
-      "head": "2bef3c4314b6132344c1709589afe1f0cc0878de"
+      "head": "682205e9e2ada985f213fb052ecec291f685dbac"
     },
     {
-      "id": 42370987446,
+      "id": 42372281088,
       "name": "Platform smoke",
       "conclusion": "success",
       "jobs": 1,
-      "head": "2bef3c4314b6132344c1709589afe1f0cc0878de"
+      "head": "682205e9e2ada985f213fb052ecec291f685dbac"
     }
   ],
   "pytest": {
@@ -43,5 +43,56 @@
     "skipped": 2,
     "errors": 0,
     "failures": 0
-  }
+  },
+  "source_ui_revision": "682205e9e2ada985f213fb052ecec291f685dbac",
+  "final_ci_pending": true,
+  "live_results": {
+    "supplied": [
+      10,
+      10
+    ],
+    "extended": [
+      50,
+      50
+    ],
+    "platform": [
+      8,
+      8
+    ],
+    "categorical": [
+      6,
+      6
+    ],
+    "ambiguity": [
+      3,
+      3
+    ]
+  },
+  "experimental_results": {
+    "supplied": [
+      9,
+      10
+    ],
+    "extended": [
+      50,
+      50
+    ],
+    "platform": [
+      7,
+      8
+    ]
+  },
+  "browser": {
+    "offline_passed": 8,
+    "offline_live_skipped": 1,
+    "genuine_live_passed": 1,
+    "live_sdk_calls": 2,
+    "live_tokens": 5327
+  },
+  "preservation": {
+    "protected_files": 78,
+    "changed": 0,
+    "original_test_files_unchanged": 10
+  },
+  "scope": "Final audit metadata may be updated to link exact candidate CI; source runtime/report evidence is immutable."
 }
