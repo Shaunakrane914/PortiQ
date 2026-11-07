@@ -88,6 +88,17 @@ test("navigation clears stale content while a new dataset view loads",async({pag
   await expect(page.locator('#content')).not.toContainText('v0.1.1 / extended');
   await expect(page.getByText('Portfolio universe',{exact:true})).toBeVisible();
 });
+test("name fragments switch follow-up context to the actual portfolio",async({page})=>{
+  await page.goto('/#analyst');
+  const input=page.getByRole('textbox',{name:'Ask PortiQ'});
+  await input.fill('Show holdings for Tech Innovation');
+  await page.getByRole('button',{name:'Analyze →'}).click();
+  await expect(page.getByRole('combobox',{name:'Selected portfolio'})).toHaveValue('3');
+  await input.fill('What is its sector exposure?');
+  await page.getByRole('button',{name:'Analyze →'}).click();
+  await expect(page.locator('.message .answer').last()).toContainText('Tech Innovation Fund');
+  await expect(page.locator('.message .answer').last()).toContainText('100.00%');
+});
 test("genuine Gemini analyst with visible SQL evidence",async({page})=>{
   test.skip(process.env.PORTIQ_WEB_LIVE!=="1","Opt in to real Gemini calls with PORTIQ_WEB_LIVE=1");
   await page.goto('/#analyst');

@@ -68,6 +68,7 @@ class AgentResponse(BaseModel):
     backoff_ms: float = 0
     context_portfolio: int | None = None
     error_kind: str | None = None
+    error_retry_after: float | None = None
     rendering: str = "model synthesis with authoritative tool evidence"
     planning_events: list[str] = Field(default_factory=list)
     rendering_ms: float | None = None
@@ -260,6 +261,7 @@ class PortfolioAgent:
             except ModelError as exc:
                 failed_response = finish("error", str(exc))
                 failed_response.error_kind = exc.kind
+                failed_response.error_retry_after = exc.retry_after
                 return failed_response
             if not response.candidates or not response.candidates[0].content:
                 return finish("error", "Gemini returned no usable candidate.")

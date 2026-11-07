@@ -45,6 +45,7 @@ def test_reconciliation_independent_arithmetic_and_duplicates() -> None:
     assert r.rows[0].difference_pp == "-25.0000"
     assert r.rows[1].symbol == r.rows[0].symbol  # Rows retain holding identities.
     assert r.unrepresented_percent == "20.0000"
+    assert r.largest_discrepancies[0].holding_id == 2
     assert {n.code for n in r.warnings} >= {"bond_quotes", "valuation_dates", "weight_total"}
     assert sum(Decimal(s["reconstructed_percent"]) for s in r.sectors) == 100
 
@@ -319,3 +320,90 @@ def test_data_quality_kinds_distinguish_absent_and_invalid() -> None:
     invalid = reconcile([holding(quantity=-1)])
     assert next(w for w in missing.warnings if w.code == "market_values").kind == "incomplete"
     assert next(w for w in invalid.warnings if w.code == "market_values").kind == "invalid"
+
+
+def test_fragment_and_id_selection_propagates_correct_context(database: Path) -> None:
+    s = AnalysisService(Settings(database=database))
+    first, sid = s.ask("Show holdings for Tech Innovation", selected=4, conversation=True)
+    assert first.context_portfolio == 3
+    follow, _ = s.ask("What is its sector exposure?", session_id=sid, conversation=True)
+    assert follow.tools[0].result["portfolio_name"] == "Tech Innovation Fund"
+    changed, _ = s.ask("Calculate sector exposure for 4", session_id=sid, conversation=True)
+    assert changed.context_portfolio == 4
+    balanced, _ = s.ask("What is its sector exposure?", session_id=sid, conversation=True)
+    assert balanced.tools[0].result["portfolio_name"] == "Balanced Portfolio"
+
+
+def test_missing_stock_classification_is_reported(database: Path) -> None:
+    with closing(sqlite3.connect(database)) as conn, conn:
+        conn.execute("UPDATE securities SET sector_id=NULL WHERE asset_type='Stock'")
+    snapshot = PortfolioService(database).snapshot(1)
+    assert snapshot.exposure is None
+    assert any(w.code == "classification" and w.kind == "invalid" for w in snapshot.warnings)
+
+
+def test_clarification_is_available_to_a_metric_followup(database: Path) -> None:
+    backend = FakeBackend(
+        [
+            call(
+                "respond", status="clarification", answer="Largest by quantity or recorded weight?"
+            ),
+            call(
+                "sql_query",
+                question="Largest recorded holding",
+                sql=(
+                    "SELECT symbol FROM holdings h JOIN securities s "
+                    "ON s.security_id=h.security_id WHERE portfolio_id=4 "
+                    "ORDER BY current_weight DESC LIMIT 1"
+                ),
+                explanation="Rank recorded weights",
+            ),
+            call("respond", status="answer", answer="The result is shown in the tool table."),
+        ]
+    )
+    service = AnalysisService(Settings(database=database), backend)
+    first, sid = service.ask("Which is the largest?", selected=4, conversation=True, local=False)
+    assert first.status == "clarification"
+    second, _ = service.ask("By recorded weight", session_id=sid, conversation=True, local=False)
+    assert second.status == "answer"
+    context = backend.requests[1][0][0].parts[0].text
+    assert "Balanced Portfolio" in context and "quantity or recorded weight" in context
+
+
+def test_one_call_rejects_multivalued_dependency(database: Path) -> None:
+    backend = FakeBackend(
+        [
+            call(
+                "execute_plan",
+                status="answer",
+                steps=[
+                    {
+                        "tool": "sql_query",
+                        "sql": (
+                            "SELECT portfolio_name FROM portfolios ORDER BY portfolio_name LIMIT 2"
+                        ),
+                    },
+                    {"tool": "exposure_calculator", "from_step": 0},
+                ],
+            )
+        ]
+    )
+    result = OneCallAgent(Settings(database=database), backend).answer("Use the selected name")
+    assert result.status == "clarification" and "unambiguous" in result.answer
+
+
+def test_unsafe_plan_cannot_mutate_database(database: Path) -> None:
+    before = database.read_bytes()
+    backend = FakeBackend(
+        [
+            call(
+                "execute_plan",
+                status="answer",
+                steps=[{"tool": "sql_query", "sql": "DELETE FROM holdings"}],
+            )
+        ]
+    )
+    result = OneCallAgent(Settings(database=database), backend, fallback=False).answer(
+        "Delete holdings"
+    )
+    assert result.status == "error" and database.read_bytes() == before

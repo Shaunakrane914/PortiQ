@@ -2,7 +2,9 @@
 
 import hmac
 import json
+import math
 import os
+import sqlite3
 import threading
 import time
 from collections import OrderedDict, deque
@@ -27,6 +29,7 @@ from portiq.config import Settings
 from portiq.database import connect_readonly
 from portiq.errors import ModelError, PortfolioError, PortiqError
 from portiq.exposure import ExposureResult, calculate_exposure
+from portiq.quota import RequestBudget
 from portiq.service import AnalysisService
 
 
@@ -88,6 +91,11 @@ class Status(BaseModel):
     version: str
     model_configured: bool
     model: str
+    local_tools: list[str]
+    daily_request_limit: int
+    requests_used: int | None
+    budget_scope: str
+    request_interval_seconds: float
     deployment: str = "single-worker local demo; static assessment dataset"
 
 
@@ -141,6 +149,7 @@ def create_app(
     @app.middleware("http")
     async def security(request: Request, call_next: Any) -> Any:
         request_id = str(uuid4())
+        request.state.request_id = request_id
         response = None
         if request.url.path.startswith("/api/") and request.url.path != "/api/health":
             authorization = request.headers.get("authorization", "")
@@ -213,7 +222,15 @@ def create_app(
 
     @app.exception_handler(Exception)
     async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:
-        return JSONResponse({"detail": "Internal request failure; consult the request ID."}, 500)
+        return JSONResponse(
+            {"detail": "Internal request failure; consult the request ID."},
+            500,
+            headers={
+                "X-Request-ID": getattr(request.state, "request_id", str(uuid4())),
+                "Cache-Control": "no-store",
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
 
     @app.get("/api/health")
     def health() -> JSONResponse:
@@ -226,11 +243,32 @@ def create_app(
 
     @app.get("/api/about", response_model=Status)
     def about() -> Status:
+        budget = getattr(analysis.backend, "budget", None)
+        used: int | None = budget.used() if isinstance(budget, RequestBudget) else 0
+        if budget is None and settings.quota_path is not None:
+            try:
+                ledger = RequestBudget(settings.daily_requests, settings.quota_path)
+                used = ledger.used()
+                ledger.close()
+            except (OSError, sqlite3.Error):
+                used = None
         return Status(
             status="ready",
             version=__version__,
             model_configured=bool(settings.api_key.get_secret_value()),
             model=settings.model,
+            local_tools=[
+                "Portfolio count",
+                "Equity sector exposure",
+                "Portfolio holdings",
+                "Portfolio metadata",
+            ],
+            daily_request_limit=settings.daily_requests,
+            requests_used=used,
+            budget_scope="Shared SQLite file, UTC day"
+            if settings.quota_path
+            else "This backend instance, UTC day; not globally distributed",
+            request_interval_seconds=settings.request_interval,
         )
 
     @app.get("/api/overview")
@@ -306,7 +344,13 @@ def create_app(
                     if result.error_kind in {"rate_limit", "daily_quota", "local_budget"}
                     else 503
                 )
-                return JSONResponse(envelope.model_dump(mode="json"), status)
+                headers = (
+                    {"Retry-After": str(math.ceil(result.error_retry_after))}
+                    if result.error_retry_after is not None
+                    and math.isfinite(result.error_retry_after)
+                    else None
+                )
+                return JSONResponse(envelope.model_dump(mode="json"), status, headers=headers)
             return envelope
         finally:
             model_slot.release()
@@ -340,8 +384,20 @@ def create_app(
                 path = settings.source / "reports" / version / (name + ".json")
                 if path.is_file():
                     report = json.loads(path.read_text(encoding="utf-8"))
+                    verification_path = settings.source / "reports" / version / "verification.json"
+                    verification = (
+                        json.loads(verification_path.read_text(encoding="utf-8"))
+                        if verification_path.is_file()
+                        else {}
+                    )
                     outputs.append(
                         {
+                            "runtime_revision": report.get(
+                                "runtime_revision", verification.get("runtime_commit")
+                            ),
+                            "verification": {
+                                k: verification.get(k) for k in ("pytest", "coverage", "ci")
+                            },
                             "release": version,
                             "name": name,
                             "execution": "archived fresh Gemini regression; not a live check",

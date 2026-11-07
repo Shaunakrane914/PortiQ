@@ -102,3 +102,28 @@ def test_frontend_assets_csp_and_missing_credentials(client: TestClient) -> None
     )
     assert answer.status_code == 503 and "Set GEMINI_API_KEY" in answer.text
     assert client.get("/api/../../.env").status_code != 200
+
+
+def test_usage_status_and_response_bounds(database: Path) -> None:
+    with TestClient(create_app(Settings(database=database, max_rows=2))) as client:
+        about = client.get("/api/about").json()
+        assert about["daily_request_limit"] == 200 and about["requests_used"] == 0
+        assert "Equity sector exposure" in about["local_tools"]
+        response = client.get("/api/portfolios/4/holdings?limit=2")
+        assert len(response.json()["records"]) == 2 and response.json()["total"] > 2
+        assert client.get("/api/portfolios/4").status_code == 400
+
+
+def test_unexpected_errors_are_redacted_with_request_id(
+    database: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    app = create_app(Settings(database=database))
+
+    def fail():
+        raise RuntimeError("private-provider-payload")
+
+    monkeypatch.setattr(app.state.analysis.portfolios, "overview", fail)
+    with TestClient(app, raise_server_exceptions=False) as client:
+        response = client.get("/api/overview")
+        assert response.status_code == 500 and response.headers["x-request-id"]
+        assert "private-provider" not in response.text

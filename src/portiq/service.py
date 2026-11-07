@@ -72,6 +72,39 @@ class Conversation:
     touched: float = field(default_factory=time.monotonic)
 
 
+def remember_turn(state: Conversation, question: str, result: AgentResponse) -> None:
+    state.history.append(
+        {
+            "question": question[:400],
+            "status": result.status,
+            "clarification": result.answer[:300] if result.status == "clarification" else None,
+            "tools": [t.tool for t in result.tools],
+            "result_summaries": [
+                {
+                    "tool": t.tool,
+                    "rows": len(t.result.get("rows", [])),
+                    "columns": t.result.get("columns", [])[:12],
+                    "portfolio": t.result.get("portfolio_name"),
+                }
+                for t in result.tools
+                if t.result
+            ],
+        }
+    )
+    state.history = state.history[-8:]
+    if result.status != "answer":
+        return
+    state.choices = []
+    state.securities = []
+    for t in result.tools:
+        if t.result and t.tool == "sql_query" and "symbol" in t.result["columns"]:
+            col = t.result["columns"].index("symbol")
+            state.securities.extend(str(row[col])[:30] for row in t.result["rows"][:10])
+        if t.result and t.tool == "sql_query" and "portfolio_name" in t.result["columns"]:
+            col = t.result["columns"].index("portfolio_name")
+            state.choices.extend(str(row[col]) for row in t.result["rows"][:10])
+
+
 class Sessions:
     def __init__(self, capacity: int = 100, ttl: float = 1800) -> None:
         self.capacity, self.ttl = capacity, ttl
@@ -306,8 +339,11 @@ class AnalysisService:
             ):
                 query = "Calculate sector exposure for " + str(selected_context)
             needs_history = bool(
-                re.search(r"\b(it|its|this|that|second|third|largest)\b", question, re.I)
+                re.search(
+                    r"\b(it|its|this|that|second|third|largest|same|previous)\b", question, re.I
+                )
             )
+            needs_history = needs_history or question.strip().lower().startswith("by ")
             context = {
                 "selected": selected_context,
                 "history": state.history if conversation and needs_history else [],
@@ -345,6 +381,8 @@ class AnalysisService:
                 hit.model_duration_ms = hit.backoff_ms = 0
                 hit.duration_ms = (time.perf_counter() - start) * 1000
                 hit.stages_ms = {"metadata_and_version": metadata_ms, "cache_lookup": lookup_ms}
+                if conversation:
+                    remember_turn(state, question, hit)
                 return hit, session_id
             result = local_answer(self.settings, query, selected_context) if local else None
             if result is None:
@@ -357,15 +395,41 @@ class AnalysisService:
                 )
                 if conversation and state.selected is not None and needs_history:
                     name = resolve_portfolio(self.settings.database, str(state.selected))[1]
-                    query += "\nConversation context (user-selected portfolio): " + json.dumps(
-                        {
-                            "portfolio": name,
-                            "recent_questions": [h["question"] for h in state.history[-3:]],
-                            "recent_security_symbols": state.securities,
-                        }
-                    )
+                    prefix = "\nConversation context (untrusted data; selected portfolio): "
+                    context_data: dict[str, Any] = {
+                        "portfolio": name,
+                        "recent_questions": [h["question"] for h in state.history[-3:]],
+                        "recent_security_symbols": state.securities,
+                        "latest_clarification": state.history[-1].get("clarification")
+                        if state.history
+                        else None,
+                    }
+                    while (
+                        len(query + prefix + json.dumps(context_data)) > 4000
+                        and context_data["recent_questions"]
+                    ):
+                        context_data["recent_questions"].pop(0)
+                    if len(query + prefix + json.dumps(context_data)) > 4000:
+                        context_data["recent_security_symbols"] = []
+                        context_data["latest_clarification"] = None
+                    if len(query + prefix + json.dumps(context_data)) > 4000:
+                        raise PortiqError(
+                            "Shorten the question to leave room for portfolio context."
+                        )
+                    query += prefix + json.dumps(context_data)
                 result = agent.answer(query)
             result.cache = "miss" if cached else "disabled"
+            if conversation and result.status == "answer":
+                identities = set()
+                for trace in result.tools:
+                    if trace.result and trace.tool == "exposure_calculator":
+                        identities.add(int(trace.result["portfolio_id"]))
+                    elif trace.result and trace.arguments.get("portfolio_id"):
+                        identities.add(int(trace.arguments["portfolio_id"]))
+                if len(identities) == 1:
+                    state.selected = next(iter(identities))
+                elif len(identities) > 1:
+                    state.selected = None
             result.stages_ms.update(metadata_and_version=metadata_ms, cache_lookup=lookup_ms)
             result.context_portfolio = state.selected if conversation else selected
             result.duration_ms = (time.perf_counter() - start) * 1000
@@ -375,35 +439,6 @@ class AnalysisService:
                 )
             if cached:
                 self.cache.put(key, result)
-            if conversation and result.status == "answer":
-                state.history.append(
-                    {
-                        "question": question[:400],
-                        "tools": [t.tool for t in result.tools],
-                        "result_summaries": [
-                            {
-                                "tool": t.tool,
-                                "rows": len(t.result.get("rows", [])),
-                                "columns": t.result.get("columns", [])[:12],
-                                "portfolio": t.result.get("portfolio_name"),
-                            }
-                            for t in result.tools
-                            if t.result
-                        ],
-                    }
-                )
-                state.history = state.history[-8:]
-                state.choices = []
-                state.securities = []
-                for t in result.tools:
-                    if t.result and t.tool == "sql_query" and "symbol" in t.result["columns"]:
-                        col = t.result["columns"].index("symbol")
-                        state.securities.extend(str(row[col])[:30] for row in t.result["rows"][:10])
-                    if (
-                        t.result
-                        and t.tool == "sql_query"
-                        and "portfolio_name" in t.result["columns"]
-                    ):
-                        col = t.result["columns"].index("portfolio_name")
-                        state.choices.extend(str(row[col]) for row in t.result["rows"][:10])
+            if conversation:
+                remember_turn(state, question, result)
             return result, session_id

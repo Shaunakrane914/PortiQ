@@ -24,6 +24,7 @@ class Backend(Protocol):
 class GeminiBackend:
     def __init__(self, settings: Settings, budget: RequestBudget | None = None) -> None:
         key = settings.require_key()
+        self.settings = settings
         self.model = settings.model
         self.request_interval = settings.request_interval
         self.last_request = 0.0
@@ -33,6 +34,8 @@ class GeminiBackend:
         self.attempts: list[dict[str, Any]] = []
         self.attempt_sequence = 0
         self.suppressed_kind: str | None = None
+        self.consecutive_failures = 0
+        self.circuit_until = 0.0
         self.client = genai.Client(
             api_key=key,
             http_options=types.HttpOptions(
@@ -49,15 +52,33 @@ class GeminiBackend:
     def _generate(
         self, contents: list[types.Content], config: types.GenerateContentConfig
     ) -> types.GenerateContentResponse:
+        if self.circuit_until:
+            remaining = self.circuit_until - time.monotonic()
+            if remaining > 0:
+                raise ModelError(
+                    "Provider temporarily unavailable; retry after cooldown.",
+                    kind="circuit_open",
+                    retry_after=remaining,
+                )
+            self.client.close()
+            self.client = genai.Client(
+                api_key=self.settings.require_key(),
+                http_options=types.HttpOptions(
+                    timeout=30000, retry_options=types.HttpRetryOptions(attempts=1)
+                ),
+            )
+            self.circuit_until = 0
         if self.suppressed_kind:
             raise ModelError(
                 "Model disabled until backend restart after " + self.suppressed_kind + ".",
                 kind=self.suppressed_kind,
             )
-        pacing_start = time.perf_counter()
+        pacing_ms = 0.0
         remaining = self.request_interval - (time.monotonic() - self.last_request)
         if remaining > 0:
+            pacing_start = time.perf_counter()
             time.sleep(remaining)
+            pacing_ms = (time.perf_counter() - pacing_start) * 1000
         self.last_request = time.monotonic()
         if not self.budget.reserve():
             raise ModelError("Local daily request budget exhausted.", kind="local_budget")
@@ -66,9 +87,10 @@ class GeminiBackend:
             "timestamp_utc": datetime.now(UTC).isoformat(),
             "model": self.model,
             "service_ms": 0.0,
-            "pacing_ms": (start - pacing_start) * 1000,
+            "pacing_ms": pacing_ms,
             "input_tokens": None,
             "output_tokens": None,
+            "thinking_tokens": None,
             "total_tokens": None,
             "error_kind": None,
         }
@@ -82,19 +104,20 @@ class GeminiBackend:
                 usage = response.usage_metadata
                 entry.update(
                     input_tokens=usage.prompt_token_count,
-                    output_tokens=(
-                        (usage.candidates_token_count or 0) + (usage.thoughts_token_count or 0)
-                    )
-                    if usage.candidates_token_count is not None
-                    or usage.thoughts_token_count is not None
-                    else None,
+                    output_tokens=usage.candidates_token_count,
+                    thinking_tokens=usage.thoughts_token_count,
                     total_tokens=usage.total_token_count,
                 )
+            self.consecutive_failures = 0
             return response
         except (errors.APIError, httpx.HTTPError, ValueError) as exc:
             # Never interpolate SDK errors: request URLs or provider payloads may contain secrets.
             code = getattr(exc, "code", None)
             kind, retryable, delay = classify(exc)
+            if kind in {"connection", "timeout", "provider_transient"}:
+                self.consecutive_failures += 1
+                if self.consecutive_failures >= self.settings.circuit_failures:
+                    self.circuit_until = time.monotonic() + self.settings.circuit_seconds
             entry["error_kind"] = kind
             self.suppressed_kind = (
                 kind if kind in {"daily_quota", "authentication", "unsupported_model"} else None
@@ -154,7 +177,7 @@ class MeteredBackend:
                     delay = (
                         exc.retry_after
                         if exc.retry_after is not None
-                        else 1 + random.uniform(0, 0.25)
+                        else 2**attempt + random.uniform(0, 0.25)
                     )
                     if delay > 60:
                         raise

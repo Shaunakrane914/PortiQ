@@ -399,6 +399,13 @@ async function explorer() {
   );
   grid.append(ex, comp);
   root.append(grid);
+  const concentration=card("Concentration at a glance","EXPLICIT WEIGHT BASES");
+  concentration.append(el("p","Largest equity sector(s), at displayed precision: "+
+    (Object.entries(s.largest_equity_sectors).map(([name,value])=>name+" "+value+"%").join("; ")||"Not available")),
+    el("p","Largest recorded holding(s), including bonds: "+
+      (s.largest_recorded_holdings.map(h=>h.symbol+" (#"+h.holding_id+") "+fmt(h.current_weight*100)+"%").join("; ")||"Not available")),
+    el("p","Equity sectors use total Stock weight. Holding rank uses recorded current_weight across all listed assets.","caption"));
+  root.append(concentration);
   const h = card("Holdings", "SOURCE: HOLDINGS + SECURITIES");
   h.append(
     table(
@@ -519,6 +526,11 @@ async function reconciliation() {
     ),
   );
   root.append(sectors);
+  const largest=card("Largest allocation differences","ABSOLUTE PERCENTAGE POINTS");
+  if(r.largest_discrepancies.length)largest.append(table(r.largest_discrepancies,
+    [["holding_id","Holding ID"],["symbol","Symbol"],["recorded_percent","Recorded %"],["reconstructed_percent","Reconstructed %"],["difference_pp","Difference pp"]]));
+  else largest.append(el("p","No defensible reconstructed difference is available.","empty"));
+  root.append(largest);
   const holdings = card("Holding-level review", "IDENTIFIED BY HOLDING ID");
   holdings.append(
     table(
@@ -567,6 +579,10 @@ async function reconciliation() {
   return root;
 }
 const messages = [];
+function remember(message,log){
+  messages.push(message);log.append(message);
+  while(messages.length>50){messages.shift();log.firstChild?.remove()}
+}
 async function analyst() {
   const root = el("div"),
     c = card("A conversation with evidence", "SESSION MEMORY · MAX 8 TURNS");
@@ -650,8 +666,7 @@ async function analyst() {
     reset.disabled = true;
     const user = el("div", null, "message user");
     user.append(el("div", "YOU", "kicker"), el("p", question));
-    messages.push(user);
-    log.append(user);
+    remember(user,log);
     input.value = "";
     try {
       const d = await api("/api/conversation", {
@@ -712,12 +727,10 @@ async function analyst() {
           );
         block.append(details);
       }
-      messages.push(block);
-      log.append(block);
+      remember(block,log);
     } catch (e) {
       const n = notice(e.message, "error");
-      messages.push(n);
-      log.append(n);
+      remember(n,log);
     } finally {
       send.disabled = false;
       reset.disabled = false;
@@ -754,7 +767,7 @@ async function evaluation() {
       m,
       el(
         "p",
-        `${r.timestamp_utc} · ${r.model} · cache ${r.cache} · mean ${(r.mean_ms / 1000).toFixed(2)}s (pacing included)`,
+        `${r.timestamp_utc} · ${r.model} · runtime ${r.runtime_revision?.slice(0,12)||"not recorded"} · cache ${r.cache} · mean ${(r.mean_ms / 1000).toFixed(2)}s (pacing included)`,
         "caption",
       ),
     );

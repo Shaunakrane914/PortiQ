@@ -186,7 +186,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "chat":
             print(
                 f"PortiQ | database: {settings.database} | model: {settings.model}\n"
-                "Static demonstration data. Type help or exit. Context is opt-in with --context."
+                "Static demonstration data. Type help or exit. Each question is independent "
+                "by default; --context enables bounded follow-ups."
             )
         session_id: str | None = None
         while True:
@@ -196,7 +197,8 @@ def main(argv: list[str] | None = None) -> int:
             if args.command == "chat" and question.lower() == "help":
                 print(
                     "Ask about portfolio metadata, holdings, market values or sector exposures. "
-                    "Use a portfolio name. Each question starts fresh. Type exit to leave."
+                    "Use a portfolio name; --context enables bounded follow-ups. "
+                    "Type exit to leave."
                 )
                 continue
             if not question:

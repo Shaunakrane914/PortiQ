@@ -8,6 +8,7 @@ import statistics
 import subprocess
 import time
 from datetime import UTC, datetime
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any
 
@@ -147,6 +148,10 @@ def main() -> int:
         "runtime_sha256": runtime_hashes,
         "request_interval_seconds": 6.5,
         "request_budget": args.request_budget,
+        "circuit_failures": settings.circuit_failures,
+        "circuit_seconds": settings.circuit_seconds,
+        "lock_sha256": digest(Path("uv.lock")),
+        "dependencies": {name: version(name) for name in ["google-genai", "pydantic", "sqlglot"]},
         "evaluator_version": 2,
         "conditions": "Alternating strategy order per paired question; one shared paced backend. "
         "CLI steady-state analysis latency excludes oracle execution. SDK service time includes "
@@ -216,6 +221,7 @@ def main() -> int:
                         "authentication",
                         "unsupported_model",
                         "suppressed",
+                        "circuit_open",
                     }:
                         print(
                             "Stopped on exhausted quota/budget; partial evidence retained. "

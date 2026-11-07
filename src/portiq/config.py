@@ -23,6 +23,8 @@ class Settings(BaseModel):
     daily_requests: int = Field(default=200, ge=1, le=10000)
     quota_path: Path | None = None
     fallback_models: tuple[str, ...] = Field(default=(), max_length=2)
+    circuit_failures: int = Field(default=3, ge=1, le=10)
+    circuit_seconds: float = Field(default=30, ge=1, le=300)
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -40,6 +42,8 @@ class Settings(BaseModel):
             fallback_models=tuple(
                 m.strip() for m in os.getenv("PORTIQ_FALLBACK_MODELS", "").split(",") if m.strip()
             ),
+            circuit_failures=int(os.getenv("PORTIQ_CIRCUIT_FAILURES", "3")),
+            circuit_seconds=float(os.getenv("PORTIQ_CIRCUIT_SECONDS", "30")),
         )
 
     def require_key(self) -> str:

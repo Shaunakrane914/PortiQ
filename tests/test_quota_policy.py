@@ -166,3 +166,44 @@ def test_container_probe_handles_startup_disconnect(monkeypatch: pytest.MonkeyPa
     monkeypatch.setattr(module.time, "sleep", lambda _: None)
     module.wait_for_health("http://localhost:8000")
     assert len(calls) == 2
+
+
+def test_circuit_limits_attempts_and_refreshes_after_cooldown(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    clock = [100.0]
+    calls = []
+    clients = []
+    closed = []
+    monkeypatch.setattr("portiq.model.time.monotonic", lambda: clock[0])
+
+    def generate(**kwargs):
+        calls.append(1)
+        if len(calls) <= 3:
+            raise httpx.ConnectError("secret-in-provider-url")
+        return types.GenerateContentResponse()
+
+    def factory(**kwargs):
+        clients.append(1)
+        return SimpleNamespace(
+            models=SimpleNamespace(generate_content=generate), close=lambda: closed.append(1)
+        )
+
+    monkeypatch.setattr("portiq.model.genai.Client", factory)
+    backend = GeminiBackend(Settings(api_key=SecretStr("test"), request_interval=0))
+    try:
+        for _ in range(3):
+            with pytest.raises(ModelError):
+                backend.generate([], types.GenerateContentConfig())
+        with pytest.raises(ModelError) as error:
+            backend.generate([], types.GenerateContentConfig())
+        assert error.value.kind == "circuit_open" and backend.budget.used() == 3
+        assert len(calls) == 3
+        clock[0] += 31
+        backend.generate([], types.GenerateContentConfig())
+        assert (
+            len(clients) == 2 and backend.budget.used() == 4 and backend.consecutive_failures == 0
+        )
+    finally:
+        backend.close()
+    assert len(closed) == 2

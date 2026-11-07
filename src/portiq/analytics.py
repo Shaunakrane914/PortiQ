@@ -8,7 +8,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from portiq.database import connect_readonly
-from portiq.errors import PortfolioError
+from portiq.errors import DataError, PortfolioError
 from portiq.exposure import ExposureResult, calculate_exposure, resolve_portfolio
 
 
@@ -44,6 +44,7 @@ class AllocationRow(BaseModel):
 
 class Reconciliation(BaseModel):
     rows: list[AllocationRow]
+    largest_discrepancies: list[AllocationRow]
     sectors: list[dict[str, str | None]]
     recorded_total_percent: str | None
     unrepresented_percent: str | None
@@ -80,6 +81,8 @@ class Snapshot(BaseModel):
     risk: list[dict[str, Any]]
     prices: list[dict[str, Any]]
     composition_percent: dict[str, str]
+    largest_equity_sectors: dict[str, str]
+    largest_recorded_holdings: list[Holding]
     warnings: list[Notice]
 
 
@@ -254,6 +257,11 @@ def reconcile(holdings: list[Holding]) -> Reconciliation:
     ]
     return Reconciliation(
         rows=rows,
+        largest_discrepancies=sorted(
+            [r for r in rows if r.difference_pp is not None],
+            key=lambda r: abs(Decimal(r.difference_pp or "0")),
+            reverse=True,
+        )[:5],
         sectors=sectors,
         recorded_total_percent=display(recorded * 100 if recorded is not None else None),
         unrepresented_percent=display(
@@ -309,7 +317,7 @@ class PortfolioService:
             )
         try:
             exposure = calculate_exposure(self.path, str(portfolio_id))
-        except PortfolioError as exc:
+        except (PortfolioError, DataError) as exc:
             exposure = None
             warnings.append(Notice(kind="incomplete", code="equity_denominator", message=str(exc)))
         performance = records(
@@ -359,6 +367,25 @@ class PortfolioService:
             risk=risk,
             prices=prices,
             composition_percent={k: str(v) for k, v in composition.items()},
+            largest_equity_sectors={
+                k: v
+                for k, v in exposure.sectors.items()
+                if Decimal(v) == max(Decimal(n) for n in exposure.sectors.values())
+            }
+            if exposure
+            else {},
+            largest_recorded_holdings=[
+                h
+                for h in holdings
+                if h.current_weight
+                == max(x.current_weight for x in holdings if x.current_weight is not None)
+            ]
+            if holdings
+            and all(
+                h.current_weight is not None and not invalid_number(h.current_weight, weight=True)
+                for h in holdings
+            )
+            else [],
             warnings=warnings,
         )
 

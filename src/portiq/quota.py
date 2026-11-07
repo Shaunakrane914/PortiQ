@@ -22,11 +22,11 @@ class RequestBudget:
         if path:
             path.parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(str(path) if path else ":memory:", check_same_thread=False)
+        self.finalize = weakref.finalize(self, self.conn.close)
         self.conn.execute(
             "CREATE TABLE IF NOT EXISTS usage(day TEXT PRIMARY KEY, attempts INTEGER NOT NULL)"
         )
         self.conn.commit()
-        self.finalize = weakref.finalize(self, self.conn.close)
 
     def reserve(self) -> bool:
         day = datetime.now(UTC).date().isoformat()
@@ -103,5 +103,8 @@ def attempt_summary(attempts: list[dict[str, Any]]) -> dict[str, Any]:
         "pacing_ms": sum(a["pacing_ms"] for a in attempts),
         "input_tokens": sum(a.get("input_tokens") or 0 for a in attempts),
         "output_tokens": sum(a.get("output_tokens") or 0 for a in attempts),
+        "thinking_tokens": sum(a.get("thinking_tokens") or 0 for a in attempts),
+        "unknown_input_attempts": sum(a.get("input_tokens") is None for a in attempts),
+        "unknown_output_attempts": sum(a.get("output_tokens") is None for a in attempts),
         "unknown_usage_attempts": sum(a.get("total_tokens") is None for a in attempts),
     }

@@ -203,6 +203,7 @@ class OneCallAgent:
         except ModelError as exc:
             failed = response("error", str(exc))
             failed.error_kind = exc.kind
+            failed.error_retry_after = exc.retry_after
             return failed
         except (ValueError, TypeError, PortiqError):
             return recover()
