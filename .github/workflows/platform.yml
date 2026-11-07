@@ -26,6 +26,7 @@ jobs:
       - run: uv sync --frozen --extra dev --extra web
       - run: npm ci
       - run: npx playwright install --with-deps chromium
+      - run: uv run portfolio-agent init-db
       - run: npm run check:web
       - run: npm run test:web
       - run: docker build --tag portiq:ci .
