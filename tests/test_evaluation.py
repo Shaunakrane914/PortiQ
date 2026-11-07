@@ -272,3 +272,31 @@ def test_nonfinite_exposure_fails_reference_scoring(database: Path, source: Path
         answer,
     )
     assert not result["result_correct"] and "percentage mismatch" in result["failure"]
+
+
+def test_provider_error_is_not_a_numerical_narrative_claim(database: Path, source: Path) -> None:
+    result = score_answer(
+        Settings(database=database, source=source),
+        {
+            "id": "price",
+            "question": "What is the price?",
+            "ground_truth": {"sql_query": "SELECT 185.5"},
+        },
+        AgentResponse(
+            request_id="provider-error",
+            status="error",
+            answer="Gemini request failed (status=429).",
+            tools=[],
+            model="test",
+            model_versions=[],
+            duration_ms=0,
+            model_duration_ms=0,
+            api_calls=1,
+            tokens=0,
+        ),
+        narrative_rules=["scalar"],
+    )
+    assert not result["passed"] and not result["answer_correct"]
+    assert result["faithfulness"]["status"] == "not_checked"
+    assert result["faithfulness"]["configured_rules"] == ["scalar"]
+    assert {f["dimension"] for f in result["failures"]} == {"status", "routing", "result"}

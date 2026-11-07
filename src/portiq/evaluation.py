@@ -276,10 +276,15 @@ def score_answer(
     record["faithfulness"] = faithfulness = check_faithfulness(
         answer.answer,
         expected,
-        narrative_rules or [],
+        (narrative_rules or []) if answer.status == "answer" else [],
         names,
         sectors,
     )
+    faithfulness["configured_rules"] = narrative_rules or []
+    if answer.status != "answer":
+        faithfulness["reason"] = (
+            "No factual answer was produced; narrative assertions not applicable."
+        )
     if faithfulness["status"] == "failed":
         fail("faithfulness", "; ".join(faithfulness["failures"]))
     record["answer_correct"] = (
