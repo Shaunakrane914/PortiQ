@@ -1,0 +1,47 @@
+name: Platform smoke
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  platform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.26'
+          python-version: '3.13'
+          enable-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: uv sync --frozen --extra dev --extra web
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check:web
+      - run: npm run test:web
+      - run: docker build --tag portiq:ci .
+      - run: docker run --detach --name portiq-ci --publish 127.0.0.1:8001:8000 portiq:ci
+      - run: uv run python scripts/container_smoke.py --url http://127.0.0.1:8001
+      - name: Verify non-root runtime and secret exclusions
+        run: |
+          test "$(docker exec portiq-ci id -u)" = "10001"
+          docker exec portiq-ci python -c "from pathlib import Path; assert not Path('/app/.env').exists()"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: platform-smoke
+          path: |
+            reports/local/browser-results.json
+            reports/local/screenshots
+            reports/local/container.json
+      - if: always()
+        run: docker rm --force portiq-ci
