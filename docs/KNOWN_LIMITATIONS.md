@@ -1,34 +1,14 @@
 # Known limitations
 
-- This is a local take-home implementation, not a production financial advice or trading service.
-- Gemini model access and quotas are external dependencies. Earlier runs reached both minute
-  and daily free-tier limits. The configured model and pacing must fit the reviewer's account.
-- A successful SQL execution is not proof of semantic correctness. The supplied reference
-  has stricter projections, ordering and sector-presence semantics than some natural-language
-  readings; the independent evaluator intentionally exposes such failures.
-- Exposure is normalized within equities, which differs from whole-portfolio sector allocation.
-  Both the formula and raw equity weight are returned. Bonds without equities produce an error.
-- Reported AUM, prices, holdings and 2023 historical snapshots are not reconciled or updated.
-  Bond face values/accrued interest and currency conversion are not defined by the assignment.
-- Generated prose is separate from authoritative structured evidence. Automatic scoring does
-  not validate every sentence; a narrative may misstate or add unsupported interpretation.
-  v0.1.1 adds opt-in numerical, identity and contradiction assertions on a defined subset;
-  they are deterministic patterns, not a universal semantic verifier. Reports expose coverage.
-- Exposure name resolution validates the argument it receives. Gemini must preserve the
-  user's original reference; a guessed full name can conceal original ambiguity. The schema
-  contract and repeated live checks reduce this observed failure, without guaranteeing all
-  future model identity interpretations.
-- Result comparison permits column aliases but uses positional projection semantics. Ordered
-  ties and empty results have limitations described in EVALUATION.md.
-- Strict routing scoring penalizes successful extra analytical calls, including discovery.
-- The additional 50 questions were authored by the implementer. Their split does not establish
-  an independently blind or externally validated generalization score.
-- There is no persistent chat memory, answer cache, multi-user authentication or isolated worker.
-  The SQLite execution boundary is defense in depth for local use, not a hard memory sandbox.
-- Schema, portfolio catalogue and classification domains are captured when an agent starts.
-  Restart chat after a database rebuild so its metadata context reflects the new database. Complex-planning
-  selection is a structural heuristic (five joins or two CTEs), not a semantic proof.
-- The wheel excludes source datasets; install from a checkout and set PORTIQ_SOURCE when needed.
-- Dashboard and REST API enhancements are deliberately deferred. The mandatory CLI is independent.
-
-The acceptance record distinguishes completed local checks from live results and remote CI.
+- The experimental one-call planner has produced a valid but wrong Technology-sector valuation query (13 rows versus the reference eight). The original planner remains default. Finite regression scores do not establish general natural-language accuracy.
+- Historical v0.1.1 scores are historical. Fresh v0.2 runs and partial failures are separately indexed; failed runs are never stitched into a successful run.
+- Provider service and transport vary. One comparison suffered sustained 503/504/connection failures and reached its 250-attempt local budget. A fresh-client probe subsequently succeeded; the cause is unproven. A bounded circuit now limits consecutive failures. Availability is not guaranteed.
+- The quota counter counts SDK invocations, not confirmed provider receipt or billing. Unknown token usage remains unknown. UTC-day accounting may differ from provider reset times. In-memory budgets reset on restart; shared SQLite coordination requires the same configured file and limit. Pacing/circuit state is local. No distributed quota scheduler is claimed.
+- No hedging, automatic model discovery or billing changes. Explicit fallback models are optional and account-dependent; live alternate-model comparison is deferred.
+- Data is static and sparse. Individual AUM values have unspecified currencies; aggregate AUM is unavailable. Quote values lack a consistent valuation date and complete bond conventions. No FX conversion, inferred cash, AUM rescaling or live market feed is supplied.
+- Reconstructed weights require valid values in one known currency. Recorded weights and equity-only exposure have different denominators. Weight gaps are disclosed, not filled. Missing history is an empty series, not zero performance.
+- Local routing intentionally covers only four explicit capabilities. It is not a general NLP replacement. Failed responses are not cached; exact cache hits may last up to 300 seconds unless data/code identity changes or the cache is cleared.
+- Conversation is opt-in for CLI chat, bounded and ephemeral. An opaque session capability isolates state but is not multi-tenant authentication. Browser state disappears on reload; server state expires. SQL tool summaries are bounded rather than full history.
+- The API is a local/small-demo service: one worker, one concurrent analysis and socket-client rate limiting. A reverse proxy, external identity, per-user quotas, process isolation and durable audit policy are needed for hostile public deployment. No public deployment is claimed.
+- SQL safeguards bound normal analytical execution; they are not an OS sandbox. The model can misunderstand a question or misstate a valid tool result. Deterministic tables are authoritative; narrative assertions cover a declared subset only.
+- One Starlette TestClient deprecation warning remains for the installed httpx adapter; tests pass. It is recorded rather than suppressed. Container/browser tests exercise the actual server separately.

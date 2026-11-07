@@ -102,3 +102,18 @@ can acquire CRLF in Windows checkouts. The versioned verification manifest there
 includes both exact generation-byte hashes and canonical published Git-blob hashes for
 the final reports. Use the latter with `git show <release>:<path>` to verify a download;
 line-ending normalization alone does not change the recorded questions or results.
+
+
+## v0.2 experiments and new cases
+
+The frozen supplied/extended/categorical/ambiguity files and all historical reports remain unchanged. `evaluation/platform.json` is a separate author-created eight-case regression set; its sidecar declares two narrative contracts. It tests missing observations, distinct currencies, recorded allocation, a hybrid exposure/weight question, latest dated NAV, unsupported prediction and ambiguous references. References are independently executed by the existing scorer. These cases are observed development/regression cases, not an unseen validation claim.
+
+`scripts/compare_strategies.py` runs both strategies against the same cases with alternating order and a shared 6.5-second-paced backend. Cache/local paths and fallback models are disabled. It measures SDK service, actual deliberate pacing, retry backoff and Python analysis wall time separately. Source, database, suite and rule hashes are checked for changes at completion. Tokens distinguish reported input, candidate output and thinking counts; missing usage is disclosed rather than inferred.
+
+The first full comparison attempt reached its explicit 250-SDK-invocation budget after 131 records. It is retained in `paired-outage/progress.json` with `complete: false`: 36 successful provider calls, 27 transient failures, one timeout and 186 connection errors. Its supplied segment shows a real one-call Technology-sector valuation error; its failed extended/platform segments are not a useful measure of model reasoning ability. No partial results are stitched into later runs.
+
+A subsequent fresh-client connectivity probe succeeded. Cause is unproven. A new circuit stops repeated transient/transport calls and refreshes the client after cooldown; mocked policy tests verify the bound, while later fresh live results remain separately recorded. The original planner stays default regardless of lower one-call request counts.
+
+`scripts/platform_benchmark.py` independently derives references from CSVs and checks four local capabilities over 20 paired repeats: local execution versus exact cache hit. It makes zero provider calls. It measures warm Python service time, not public API or browser latency. Browser tests exercise real local HTTP/data with no key; a separate explicit `PORTIQ_WEB_LIVE=1` test performs genuine uncached Gemini analysis.
+
+Versioned manifests identify complete runs, source revisions and CI. The historical report index is preserved; [v0.2 evidence](../reports/v0.2.0/README.md) is separate. Ordinary CI never runs paid/live evaluations.

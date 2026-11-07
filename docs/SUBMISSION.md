@@ -1,53 +1,24 @@
-# Reviewer quick start
+# Submission and demonstration
 
-Repository: https://github.com/Shaunakrane914/PortiQ
+The mandatory assessment is the CLI. Review README ? CLI quick start ? frozen evaluator ? optional dashboard. Keep v0.1.1 available as the verified historical release; do not present its scores as fresh v0.2 evidence.
 
-The mandatory deliverable is the independent Python CLI. The original assignment is
-preserved in `docs/assignment/README.md`. Runtime version is 0.1.1.
+1. Clone the repository and run `uv sync --frozen`.
+2. Copy `.env.example` to `.env`, set a local Gemini key, and run `uv run portfolio-agent init-db`.
+3. Run `exposure "Balanced Portfolio"`, a read-only `sql` query, and `ask "List the names of Passive portfolios, alphabetically." --show-sql`.
+4. Run `evaluate --output reports/local/supplied.json`; use `--suite extended` for the separate 50-question regression. These are genuine model calls; allow quota and service time.
+5. Optionally run `uv sync --frozen --extra web` and `uv run portfolio-agent serve`, then open http://127.0.0.1:8000. Show reconciliation bases and warnings, a zero-call local answer, a cache hit, and an uncached genuine Gemini answer with visible SQL.
 
-From a fresh clone, with Python 3.11+ and uv:
+`chat --context --local --cache` demonstrates selected-portfolio follow-ups. Bare `chat` retains independent-question behavior. `--strategy one-call` is experimental and deliberately not default because of observed semantic regression.
 
-```powershell
-uv sync --frozen --extra dev
-Copy-Item .env.example .env
-# Add your own GEMINI_API_KEY to .env; do not commit it.
-uv run portfolio-agent init-db
-uv run portfolio-agent doctor --live
-uv run portfolio-agent ask "How many portfolios do we have in total?" --show-sql
-uv run portfolio-agent exposure "Balanced Portfolio"
-uv run portfolio-agent chat
-```
-
-On Linux/macOS substitute `cp .env.example .env`. Environment variables can be used
-instead of a file. Run `--help` for configurable database/source/model paths.
-
-Review in this order:
-
-1. `src/portiq/agent.py`: genuine Gemini function calling and bounded orchestration.
-2. `src/portiq/sql.py`: parsed SQL, authorizer and read-only resource boundary.
-3. `src/portiq/exposure.py`: deterministic equity weight normalization and rounding.
-4. `src/portiq/database.py`: validated, atomic source ingestion.
-5. `src/portiq/evaluation.py` and `faithfulness.py`: independent references and limited prose assertions.
-6. `tests/`, the [report index](../reports/README.md), versioned reports and acceptance notes.
-
-Use `reports/v0.1.1/` for this patch's fresh measurements: 10/10 supplied, 50/50 extended,
-6/6 categorical and 3/3 targeted ambiguity checks. Historical v0.1.0 release trials
-scored 20/20 supplied and 49/50 extended. Its remaining failure selected the wrong column
-and falsely claimed that no Passive portfolios existed. This patch derives classification
-domains from SQLite and independently reports answer correctness, routing efficiency and
-limited narrative assertions. The report index preserves unsuccessful runs and clearly
-labels `supplied-final` as pre-release evidence. Assertions cover selected claims, not every
-sentence; additional questions are author-created regression cases, not blind validation.
-
-Run local checks without API credentials:
+For a credential-free container demo:
 
 ```powershell
-uv run ruff check .
-uv run ruff format --check .
-uv run mypy
-uv run pytest --cov=portiq
+docker build -t portiq:0.2 .
+docker run --rm --name portiq-demo -p 127.0.0.1:8000:8000 portiq:0.2
 ```
 
-Live evaluations consume API quota and can take several minutes due to deliberate request
-pacing. See README and EVALUATION.md for exact commands, model/configuration and limitations.
-No web server, frontend or prebuilt database is needed. Optional dashboard/API work is deferred.
+For model access, pass a private runtime env file containing `GEMINI_API_KEY`, `PORTIQ_DEMO_TOKEN` and account-appropriate limits. Enter the demo token through System Status. Use a writable `/app/runtime` volume if a persistent quota ledger is required. Never publish `.env` or expose an unauthenticated model endpoint.
+
+Public hosting is deferred. A real deployment needs an account, TLS/reverse proxy, explicit hosts/origins, external identity and per-user cost controls. No hosted URL or availability claim is supplied.
+
+The [v0.2 evidence index](../reports/v0.2.0/README.md) identifies source revisions, complete and partial runs, actual requests/tokens, browser captures, Docker checks and final verification. The acceptance audit determines release readiness; do not infer it from a screenshot or a historical score.

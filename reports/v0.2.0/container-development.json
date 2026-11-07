@@ -1,0 +1,29 @@
+{
+  "mode": "actual container HTTP smoke; no Gemini calls",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 2805
+    },
+    {
+      "path": "/api/portfolios",
+      "status": 200,
+      "bytes": 2817
+    },
+    {
+      "path": "/api/portfolios/4/exposure",
+      "status": 200,
+      "bytes": 308
+    },
+    {
+      "path": "/api/portfolios/4/reconciliation",
+      "status": 200,
+      "bytes": 3091
+    },
+    {
+      "path": "/api/ask without credentials",
+      "status": 503
+    }
+  ]
+}

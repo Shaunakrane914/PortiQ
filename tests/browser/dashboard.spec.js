@@ -49,6 +49,8 @@ test("reconciliation export, archived evidence and mobile layout",async({page})=
   await page.getByRole('button',{name:'Evaluation Lab'}).click();
   await expect(page.locator('#content')).toContainText('not a live');
   await expect(page.locator('#content')).toContainText('v0.1.1 / extended');
+  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
+  await page.screenshot({path:shots+'/evaluation-lab.png',fullPage:true});
   await page.setViewportSize({width:390,height:844});
   await page.getByRole('button',{name:'Overview'}).click();
   await expect(page.getByRole('heading',{name:'Portfolio overview'})).toBeVisible();
@@ -56,6 +58,14 @@ test("reconciliation export, archived evidence and mobile layout",async({page})=
   await expect(page.getByText('Portfolio universe',{exact:true})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   await page.screenshot({path:shots+'/overview-mobile.png',fullPage:true});
+});
+test("system status shows real configuration and bounded local services",async({page})=>{
+  await page.goto('/#status');
+  await expect(page.locator('#content')).toContainText('UTC');
+  await expect(page.locator('#content')).toContainText('gemini-3.1-flash-lite');
+  await expect(page.locator('#content')).toContainText('Portfolio count');
+  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
+  await page.screenshot({path:shots+'/system-status.png',fullPage:true});
 });
 test("demo token restores dataset controls",async({page})=>{
   await page.goto('http://127.0.0.1:8011/#status');

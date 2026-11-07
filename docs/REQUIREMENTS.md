@@ -16,7 +16,7 @@ The root README documents the implementation; `pyproject.toml` and `uv.lock` def
 | Hybrid tools (Optional Enhancements) | bounded function-call loop | mock multi-tool and extended hybrid cases | implemented; see live reports |
 | CI and typed code (user brief) | Ruff, strict mypy, pytest, Actions matrix | local quality gates; remote status must be checked separately | configured |
 | Extended independent benchmark (user brief) | frozen `evaluation/extended.json` | 50 author-created cases with original SQL/CSV oracles | available; see evaluation results |
-| Dashboard / API (optional in both sources) | deferred | core CLI is self-contained | intentionally deferred |
+| Dashboard / API (optional in both sources) | `api.py`, shared services, `web/` | typed HTTP tests, actual Playwright and Docker smoke | implemented as optional extra |
 
 No benchmark IDs or expected queries are loaded by `agent.py`, `prompts.py`, or the tools.
 Evaluation is imported lazily only by the CLI's `evaluate` command.

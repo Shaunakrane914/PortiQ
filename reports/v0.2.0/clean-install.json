@@ -1,0 +1,96 @@
+{
+  "revision": "2bef3c4314b6132344c1709589afe1f0cc0878de",
+  "mode": "Fresh Git archive; isolated Python 3.11; no .env or Gemini key",
+  "commands": [
+    {
+      "command": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--python",
+        "3.11"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "portfolio-agent",
+        "init-db"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "portfolio-agent",
+        "doctor"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "portfolio-agent",
+        "exposure",
+        "Balanced Portfolio"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "python",
+        "-c",
+        "import importlib.util; assert importlib.util.find_spec('fastapi') is None; print('Base CLI works without FastAPI')"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--python",
+        "3.11",
+        "--extra",
+        "dev"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "pytest",
+        "--junitxml=clean-tests.xml"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "ruff",
+        "check",
+        "src",
+        "tests",
+        "scripts"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "mypy",
+        "src"
+      ],
+      "exit_code": 0
+    }
+  ]
+}

@@ -70,3 +70,15 @@ failures remain visible instead of being combined into a reconstructed score.
 The report index distinguishes historical `supplied-final` (16/20 pre-release) from
 `supplied-release` (20/20 v0.1.0 release). Helper defaults write to local or versioned
 paths so published v0.1.0 evidence is preserved.
+
+
+## v0.2.0 platform upgrade ? verification in progress
+
+- Preserved original inputs, tests, benchmarks, SQL authorization, exposure formula, CLI defaults and historical releases.
+- Added deterministic tool rendering, experimental typed one-call graphs with original-agent fallback, an explicit four-capability local registry and bounded exact caching.
+- Added recorded/quote allocation reconciliation, snapshots, concentration summaries, actual historical observations and explicit data-quality/currency warnings.
+- Added actual SDK attempt/token/service/pacing metrics, atomic optional shared request budget, error-aware retries, optional sequential fallback and a bounded failure circuit following observed transport failures.
+- Added bounded opt-in conversation context, thin FastAPI endpoints and an original six-view static dashboard with safe DOM/CSV export.
+- Added non-root Docker packaging, key-free API/browser/container checks and separate eight-case platform regression cases.
+- Current local quality: 204 passed, two opt-in live skips, 91.80% line coverage, strict mypy/Ruff pass. A clean Python 3.11 archive install and all five current CI jobs pass. Eight offline browser checks pass; genuine uncached browser evidence is separate.
+- Kept one-call opt-in after reproduced 13-versus-eight-row Technology-sector valuation regression. Retained the incomplete 250-attempt provider-failure run and fresh-client probe transparently. Final live scores and release decision belong to the versioned evidence and acceptance audit.

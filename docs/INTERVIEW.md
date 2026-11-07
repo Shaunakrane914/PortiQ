@@ -36,4 +36,11 @@
   controlled before/after experiment.
 - With two more weeks: externally authored blind questions, mutation datasets, semantic
   column contracts, tied-order comparison, narrative citation checks, isolated worker
-  resource limits, richer live API fault tests, and a small UI sharing the same services.
+  resource limits, richer live API fault tests, and external multi-user identity/cost controls.
+
+
+- v0.2 preserves the four mandatory CLI components and adds optional shared services. The dashboard does not own financial formulas. Local capability execution and cache hits are labeled zero-call paths, while fresh model evaluation bypasses both.
+- One-call planning reduces calls on many cases but reproduced a semantic Technology-sector valuation error. It remains experimental. Explain why SQL validity, faithful rendering and correct routing do not establish question understanding.
+- Reconciliation compares recorded weights with quote-value weights; it does not repair allocations. Unknown AUM currency, valuation dates and bond conventions prevent an asserted corrected NAV or aggregate AUM. Mixed currencies disable combined quote weights rather than silently add them.
+- Quota accounting counts actual SDK invocations even on delivery-unknown failures. A shared SQLite file can coordinate a UTC-day counter; it is not a globally distributed provider quota scheduler. The outage circuit and optional sequential fallback have explicit limits; hedging was deferred to conserve quota.
+- A local demo token and opaque sessions are not multi-tenant authorization. Public deployment requires identity, per-user budgets, TLS/proxy configuration and worker isolation. Genuine local container/browser checks do not constitute a public hosted service.

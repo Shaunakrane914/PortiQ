@@ -1,75 +1,27 @@
-# v0.1.1 acceptance record
+# v0.2 engineering acceptance audit
 
-This patch addresses the semantic-column error and evaluation blind spot identified in
-the v0.1.0 review. Financial calculations, SQL authorization, dataset and frozen reference
-suites remain unchanged. Runtime source revision: `03e9585`. Release evidence is indexed
-in [reports/README.md](../reports/README.md).
+Runtime source: `2bef3c4314b6132344c1709589afe1f0cc0878de`. Final evidence/release revision is recorded separately in the verification manifest. The original v0.1.1 release remains historical evidence, not a score inherited by changed code.
 
-| Review requirement | Implemented evidence | Verification |
-|---|---|---|
-| Fix Passive/status semantics without a question shortcut | SQLite-derived distinct values for portfolio status and strategy, exposed to routing and focused planning | Dynamic-context tests move values between columns; fresh categorical and extended runs |
-| Score correctness and routing independently | Evaluator v2 checks all reference candidates even after routing mismatch; records every failure dimension | Both historical ext-02 traces fail result, routing and narrative checks; correct-result/extra-call control test |
-| Clarify confusing report names without altering evidence | Report index labels supplied-final as pre-release 16/20 and supplied-release as v0.1.0's 20/20 release | Original report hashes and v0.1.0 tag preserved; helper defaults write local/versioned outputs |
-| Test limited answer faithfulness | Separate evaluation-only rules for numerical claims, portfolio identities, sector percentages and contradictions | Wrong-number/identity/empty-claim tests, legitimate rounding tests, explicit not_checked coverage |
+| Area | Evidence and decision |
+|---|---|
+| Preserve assessment | 78 baseline-protected files match canonical Git blobs; every original test file and original four-job workflow unchanged; v0.1.1 annotated tag unchanged. |
+| Mandatory CLI | Fresh isolated Python 3.11 install initializes data, runs doctor/exposure with no key and no FastAPI; all original tests retained. Genuine Gemini evaluated separately. |
+| SQL safety | Existing policy unchanged; additive timings only. Read-only/authorizer/parser/resource tests plus malicious one-call graph checks pass. |
+| Financial correctness | Shared original stock-only exposure; independent CSV reconciliation checks across all thirteen portfolios and malformed/mixed-currency cases. No inferred FX/cash/AUM basis. |
+| Rendering | Deterministic scalar/table/list/exposure/hybrid output from validated results; original synthesis still available; authority remains structured tools. |
+| Efficient planning | Experimental one-call implemented and measured; reproduced Technology-sector valuation error means it remains opt-in. Valid SQL is insufficient for semantic promotion. |
+| Local/cache | Explicit four-capability registry; 160 independent CSV checks pass with zero SDK calls. Cache TTL/LRU/deep-copy/context/data/rebuild isolation tests pass; model evaluation bypasses both paths. |
+| Provider resilience | Actual SDK invocations charged, reported usage separated from unknowns, bounded retries/hints and optional fallback; atomic shared-file reservations tested across connections. Consecutive-failure circuit tested. No global provider-quota claim. |
+| Conversation | Opt-in bounded history, validated selected portfolio, clarification/ordinal handling and session isolation; browser fragment-switch/follow-up regression passes. Ephemeral capability sessions are not user authentication. |
+| API | Typed bounds, token/origin/host/rate/request IDs, generic redacted errors and allowlisted reports; key-free HTTP tests pass. Single-worker demo scope explicit. |
+| Dashboard | Eight offline Playwright checks pass; all six views captured from real local backend. Malicious labels remain text, mobile view has no page overflow, stale view and token restoration regressions covered. Genuine model/browser evidence is separately labeled. |
+| Docker | Actual image built and healthy; UID 10001; no embedded `.env`; dashboard, portfolios, exposure/reconciliation and missing-key 503 verified over HTTP. Public deployment deferred. |
+| Quality | 204 tests passed, two live skips; 91.80% line coverage; Ruff and strict mypy clean. One TestClient deprecation warning remains. Four Python/OS CI jobs plus platform browser/container job pass at runtime source. |
+| Live acceptance | Fresh paired run and categorical/ambiguity checks must finish before a release decision. Partial operational-failure evidence is retained and never stitched. |
+| Documentation | Assignment-first README, CLI/API/dashboard/Docker commands, experiments, security, performance and limitations updated; historical report index remains unchanged. |
 
-## Verified local quality
+Coverage declined from 94.04% to 91.80% as optional API/server/services were added; no old test was deleted or weakened. Browser/container checks cover integration paths outside unit line coverage. This is a disclosed measurement, not proof of completeness.
 
-- 148 ordinary tests pass; two opt-in live tests are skipped in the normal suite.
-- Overall line coverage is 94.04%; exposure and narrative-assertion modules have 100%
-  line coverage, and the SQL boundary has 93.67%. Line coverage is not a claim of complete
-  security or universal narrative understanding.
-- Ruff formatting/linting and strict mypy pass.
-- A separate Python 3.11.15 environment installs from the frozen lockfile, passes 148 tests
-  and static checks without API credentials, rebuilds all nine CSVs, and reports valid
-  SQLite integrity and foreign keys on the exact runtime revision.
-- All four runtime CI jobs pass: Windows/Linux, Python 3.11/3.13.
-- All original CSVs, schema, ground truth, frozen 50-case suite and archived assignment
-  README remain unchanged. Every v0.1.0 report's committed Git blob is preserved
-  byte-for-byte; Windows checkouts can normalize working-copy line endings.
+The first comparison's extended failures were dominated by provider/transport errors, while its supplied one-call error was genuinely semantic. A fresh-client probe succeeded; cause remains unproven. The new circuit is a conservative bounded response. The final live audit must distinguish operational failures, wrong results, routing penalties and unchecked prose.
 
-See [verification.json](../reports/v0.1.1/verification.json) for measured counts, source
-revision, original report hashes, coverage and hosted CI link.
-
-## Live evidence
-
-The final frozen runtime passes the supplied benchmark 10/10, including four configured
-narrative assertion cases, and the three categorical development questions twice (6/6),
-with exact routing and zero assertion failures. The full extended regression result is
-recorded separately in [extended.json](../reports/v0.1.1/extended.json): **50/50**. The
-targeted ambiguity case also passes all three fresh trials. Full-suite scores are not
-reconstructed by combining retries or development runs. Offline replay independently
-reconciles all 65 successful tool results from these final-runtime reports with zero mismatches.
-
-These are real Gemini calls using `gemini-3.1-flash-lite`, 6.5-second request pacing and
-no answer cache. Reports expose actual invocations, token totals, source/suite/rule hashes,
-model versions and per-case evidence. End-to-end latency includes deliberate pacing and
-any bounded transport retries. Narrative checks cover a declared subset, not all prose.
-
-## Retained failures and correction
-
-The v0.1.0 extended failure was more than an extra SQL call: it queried the wrong column
-and falsely concluded that the requested portfolios did not exist. The old release summary
-understated that error. New offline diagnostics re-score the exact old traces and show all
-three failing dimensions without changing their original files or claiming a fresh model run.
-
-The first v0.1.1 context expansion included unrelated industry aliases and caused regressions
-(7/10 supplied). Limiting context to portfolio classifications restored those cases but
-exposed an implicit-order mismatch (9/10). Existing projection/ordering conventions were
-made explicit in the SQL argument schema. All development reports and the interrupted
-partial run remain labeled in the report index; none is presented as the final release score.
-The previous extended attempt passed its first 34 cases before daily quota exhaustion;
-its remaining 16 HTTP 429 failures are retained separately. An evaluator regression test
-now ensures provider status codes are not misclassified as financial narrative claims.
-An earlier full run scored 48/50 due to HTTP 503/504. Its separate retry recovered the
-hybrid case but exposed a genuine ambiguity error: the model replaced an ambiguous user
-fragment with a guessed full portfolio name. The exposure argument contract now explicitly
-preserves the original reference so the existing deterministic resolver can reject ambiguity.
-Both the failed trace and new repeated ambiguity checks are retained in the report index.
-
-## Scope and remaining limits
-
-The 50 additional questions and three categorical regressions are author-created and
-already observed. Their v0.1.1 results are regression evidence, not externally blind
-generalization. Limited prose patterns do not certify every statement or interpretation.
-Model availability/quotas remain external dependencies. Optional UI/API work stays deferred.
-The release is intended for technical review, not as a production financial advice service.
+Deferred: public deployment, multi-user identity/per-user quotas, hedging, alternative-model live comparison, isolated schema-context ablations and externally authored blind questions. These do not replace the mandatory assessment. No release readiness is declared until fresh core live targets, final CI and evidence preservation are checked.

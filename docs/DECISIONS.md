@@ -30,7 +30,7 @@ truncation matter. Exposure references read CSVs independently. The evaluator pe
 but requires the reference projection's positional meaning and values. Empty results have
 limited discriminatory power; stronger metamorphic datasets are a future improvement.
 
-**No cache or frontend for this release.** Fresh results keep model reliability measurable.
+**Historical v0.1.x decision: no cache or frontend.** Fresh results keep model reliability measurable.
 Optional visualization and APIs would increase install scope while the core assessment is
 CLI-first. Core tools return structured data that a later UI can reuse without duplication.
 
@@ -58,3 +58,18 @@ universal guarantee that a model will never infer an unsupported identity.
 availability: a listed historical model returned 404, a latest alias timed out, and the first
 working preview hit daily quota. The selected stable Flash-Lite model is configurable and
 the report records both configured and provider-reported versions.
+
+
+## v0.2 platform decisions
+
+**Keep the original default.** A typed single-call graph reduces calls on many questions, but a measured Technology-sector valuation result regressed. Valid SQL is not proof of semantic equivalence. The experimental strategy remains opt-in and can fall back to the original orchestration for invalid/insufficient plans. Deterministic rendering uses authoritative tool results; original model synthesis remains available in the original strategy.
+
+**Small shared modules.** A single analytics service and explicit four-capability registry are sufficient for thirteen portfolios. FastAPI and the static dashboard consume the same calculations as CLI extensions. No vector database, retrieval framework, LangGraph, frontend framework or duplicate financial engine is justified by this dataset.
+
+**Different financial bases stay visible.** Recorded allocation, stock-only sector exposure and quote-value reconstruction answer different questions. Missing AUM currency, dates, bond conventions or weights produce notices rather than inferred values. Unknown histories remain absent.
+
+**Bounded exact caching and context.** An exact cache is easier to audit than semantic similarity. Database bytes plus rebuild identity prevent stale answers even after an identical rebuild. Bounded ephemeral sessions support follow-ups while preserving independent CLI behavior and evaluation bypass. No persistent chat store was needed.
+
+**Conservative outage handling.** Actual failed SDK calls consume the local budget. Structured quota details determine whether a retry is useful; waits are bounded. After repeated transport/transient failures, a cooldown and fresh client provide bounded recovery. This follows observed operational failure, not an unmeasured latency claim. Sequential explicitly configured fallback is supported; parallel hedging is deferred because it spends additional quota.
+
+**Optional local platform.** Plain browser assets and an optional Python web extra keep core installation independent. The non-root image is verified locally and in CI. Public hosting and multi-user identity remain separate work rather than implied by Docker readiness.

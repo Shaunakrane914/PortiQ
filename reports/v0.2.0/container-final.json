@@ -1,0 +1,35 @@
+{
+  "mode": "actual container HTTP smoke; no Gemini calls",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 2919
+    },
+    {
+      "path": "/api/portfolios",
+      "status": 200,
+      "bytes": 2817
+    },
+    {
+      "path": "/api/portfolios/4/exposure",
+      "status": 200,
+      "bytes": 308
+    },
+    {
+      "path": "/api/portfolios/4/reconciliation",
+      "status": 200,
+      "bytes": 4066
+    },
+    {
+      "path": "/api/ask without credentials",
+      "status": 503
+    }
+  ],
+  "runtime_revision": "2bef3c4314b6132344c1709589afe1f0cc0878de",
+  "image_id": "sha256:5c50a0d108e31560071f1b526d0dadf27ba4c22a043178ca36f1455925d69165",
+  "image_bytes": 334054247,
+  "uid": 10001,
+  "health": "healthy",
+  "env_file_excluded": true
+}
