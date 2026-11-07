@@ -95,3 +95,10 @@ suite and narrative-rule hashes, configuration/budgets, per-case evidence, all f
 API calls, token totals, pacing-inclusive mean/p95 latency and timestamp. SDK automatic retries
 are disabled; bounded application transport retries count every backend invocation. Mock tests
 and offline re-scoring are never counted as fresh live AI accuracy.
+
+Hashes inside a live report describe the exact bytes used or produced at capture time.
+Git preserves the original assessment bytes and forces Python LF, while new JSON files
+can acquire CRLF in Windows checkouts. The versioned verification manifest therefore
+includes both exact generation-byte hashes and canonical published Git-blob hashes for
+the final reports. Use the latter with `git show <release>:<path>` to verify a download;
+line-ending normalization alone does not change the recorded questions or results.

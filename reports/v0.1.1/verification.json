@@ -43,7 +43,6 @@
   "live_reports": {
     "semantic": {
       "file": "reports\\v0.1.1\\semantic.json",
-      "sha256": "40e87ff3657afb522a52c444cc3e4f8aa0d6a3b8b1bd468801fb98030b63327b",
       "total": 6,
       "passed": 6,
       "answer_correct": 6,
@@ -53,11 +52,12 @@
       "api_calls": 12,
       "tokens": 32106,
       "mean_ms": 15761.255333333334,
-      "p95_ms": 31466.021
+      "p95_ms": 31466.021,
+      "generation_bytes_sha256": "40e87ff3657afb522a52c444cc3e4f8aa0d6a3b8b1bd468801fb98030b63327b",
+      "git_blob_sha256": "2e4f04a3a8fb93d3939fb635b1a96ad44b70572f9b51701b48876593ba2d03cc"
     },
     "supplied": {
       "file": "reports\\v0.1.1\\supplied.json",
-      "sha256": "32b6091ae9cdbe09ec0a4271d1c20fe0b56a64c7b5024f54857a7ae86f74422f",
       "total": 10,
       "passed": 10,
       "answer_correct": 10,
@@ -67,11 +67,12 @@
       "api_calls": 21,
       "tokens": 57977,
       "mean_ms": 16907.3148,
-      "p95_ms": 23817.067
+      "p95_ms": 23817.067,
+      "generation_bytes_sha256": "32b6091ae9cdbe09ec0a4271d1c20fe0b56a64c7b5024f54857a7ae86f74422f",
+      "git_blob_sha256": "3fdadf96ae2971893d3e60d52b078cf87132a140b9f76a22572e25175edfc0ab"
     },
     "extended": {
       "file": "reports\\v0.1.1\\extended.json",
-      "sha256": "389dac61fb3eafa386681dd0b282b3f3806be8e73bd1049c66057bfaa99ab328",
       "total": 50,
       "passed": 50,
       "answer_correct": 50,
@@ -81,11 +82,12 @@
       "api_calls": 97,
       "tokens": 265499,
       "mean_ms": 13565.0937,
-      "p95_ms": 23705.666
+      "p95_ms": 23705.666,
+      "generation_bytes_sha256": "389dac61fb3eafa386681dd0b282b3f3806be8e73bd1049c66057bfaa99ab328",
+      "git_blob_sha256": "633acf1ca5917398c4c71167e2c562e0e6be5bfc128e0aa57576dafe60c76572"
     },
     "ambiguity-regression": {
       "file": "reports\\v0.1.1\\ambiguity-regression.json",
-      "sha256": "d4cd6e8d77dae24deae962632ea2dd390095b32eb49c019a3a6e17eebabdc3a2",
       "total": 3,
       "passed": 3,
       "answer_correct": 3,
@@ -95,7 +97,9 @@
       "api_calls": 6,
       "tokens": 15450,
       "mean_ms": 18391.837,
-      "p95_ms": 34573.583
+      "p95_ms": 34573.583,
+      "generation_bytes_sha256": "d4cd6e8d77dae24deae962632ea2dd390095b32eb49c019a3a6e17eebabdc3a2",
+      "git_blob_sha256": "189bf3825a0bae217001231965a3105e36e2cf83d7f602cf21214584f8bb7279"
     }
   },
   "preserved_inputs": [
@@ -203,5 +207,11 @@
       }
     }
   },
-  "secrets": "Current API key absent from tracked files and new report artifacts; .env ignored."
+  "secrets": "Current API key absent from tracked files and new report artifacts; .env ignored.",
+  "hash_conventions": {
+    "generation_bytes_sha256": "Exact report output bytes at capture on Windows, including CRLF.",
+    "git_blob_sha256": "Canonical published Git blob bytes; verify with git show <release>:<path>.",
+    "report_internal_hashes": "Runtime, source, suite and rule hashes record exact input bytes seen by that live run. Git preserves original assessment bytes and forces Python LF; new JSON checkout line endings may vary by OS.",
+    "replay_report_hashes": "Replay report_sha256 values refer to exact Windows working-copy report bytes."
+  }
 }
