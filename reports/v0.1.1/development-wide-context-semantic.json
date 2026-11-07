@@ -1,0 +1,960 @@
+{
+  "evaluator_version": 2,
+  "timestamp_utc": "2026-11-05T19:14:08.242328+00:00",
+  "suite": "semantic_regression.json",
+  "model": "gemini-3.1-flash-lite",
+  "request_interval_seconds": 6.5,
+  "sql_attempts": 3,
+  "max_tool_calls": 6,
+  "source_sha256": {
+    "data\\benchmarks.csv": "c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62",
+    "data\\historical_prices.csv": "4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0",
+    "data\\holdings.csv": "6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc",
+    "data\\portfolio_performance.csv": "acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1",
+    "data\\portfolios.csv": "11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb",
+    "data\\risk_metrics.csv": "424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304",
+    "data\\sectors.csv": "5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010",
+    "data\\securities.csv": "973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e",
+    "data\\transactions.csv": "736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f"
+  },
+  "suite_sha256": "5a410519ad42765e623732f93ad9b53e4c940f826243500d057af4abd37f6e72",
+  "narrative_rules_sha256": "6ca1a07a0d74528f28714907cb38b34d9c602f0526faa8742f1841ea5c3b40e5",
+  "runtime_sha256": {
+    "__init__.py": "b19e18e5d5ac7902bf23adc346419c0433ff934496f5e1acf6fffba75beb620e",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8",
+    "agent.py": "47bbcb215cffb43d3131311199336a71aa3488a825921f524866a875f6e31a64",
+    "cli.py": "7b1dd46e96c1ad2a826f0dbaca2d073eeb7ed5da2b585ce2fb9bdefcb0c51a6c",
+    "config.py": "783a5345b103312ef2ef755644a67475ec4c1b86b15e59c05bf1f5d02849bbdd",
+    "database.py": "0826a89c218546ffcb67342d72deca695f3fa4ca33b56fc3a9cf888859f36ccb",
+    "errors.py": "04fb320c6e7a6aec194f20599e53b7f315819564e25f138f8ba98af097216d16",
+    "evaluation.py": "4138df1c3d756ccd5c5d8e843e23feea91b157fddcfe2ad3e079e8604724c55e",
+    "exposure.py": "45854cf77093240491754586f3a1cc1c0b109d14e84d4d8b834b212fc74f028d",
+    "faithfulness.py": "690aa8bafbd23b1eebb1b6972fb109548a10a4b0c969c73e576ac8bdbd6d28ad",
+    "model.py": "3ea8332cbd0cb215e8c7abf060ef69e8693a89cf374bf401aa35232808e8a873",
+    "prompts.py": "26b5acad02284bfe44562bb1a93ef1890eebca7a9cf93447ae2780955e5ddc1c",
+    "sql.py": "e4d60f04922d13b94bc8c70b90a89e6c9bebc24ace4fab5b88727468710fdf47"
+  },
+  "cache": "disabled",
+  "trials": 2,
+  "split": "all",
+  "total": 6,
+  "passed": 6,
+  "answer_correct": 6,
+  "result_correct": 6,
+  "result_checked": 6,
+  "routing_correct": 6,
+  "narrative_checked": 6,
+  "narrative_failed": 0,
+  "mean_ms": 16419.898833333333,
+  "p95_ms": 19133.773,
+  "api_calls": 12,
+  "tokens": 33007,
+  "records": [
+    {
+      "id": "sem-passive",
+      "question": "List the names of Passive portfolios, alphabetically.",
+      "category": null,
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Total Bond Market Index Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "1c290ca9-f02a-4f7f-af36-c1a9bd5334be",
+        "status": "answer",
+        "answer": "The passive portfolios are:\n- Total Bond Market Index Fund\n- Total International Index Fund\n- Total Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "List the names of Passive portfolios, alphabetically.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC;",
+              "explanation": "Retrieve the names of all portfolios with a status of 'Passive', ordered alphabetically."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Total Bond Market Index Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ],
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC;",
+              "duration_ms": 0.902,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 8.177
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 19127.268,
+        "model_duration_ms": 19104.968,
+        "api_calls": 2,
+        "tokens": 5466,
+        "cache": "disabled"
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_names"
+        ],
+        "checks": [
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Bond Market Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total International Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Stock Market Index Fund",
+            "actual": true,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified."
+      },
+      "duration_ms": 19133.773,
+      "trial": 1
+    },
+    {
+      "id": "sem-active",
+      "question": "Which portfolios have Active status? Return only portfolio names alphabetically.",
+      "category": null,
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Balanced Portfolio"
+            ],
+            [
+              "Conservative Income Fund"
+            ],
+            [
+              "Dividend Aristocrats Fund"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Emerging Markets Fund"
+            ],
+            [
+              "Fixed Income Plus"
+            ],
+            [
+              "Growth Equity Fund"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Small Cap Value Fund"
+            ],
+            [
+              "Tech Innovation Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "facef9ef-f25b-429a-b012-0b88366a0c56",
+        "status": "answer",
+        "answer": "The portfolios with 'Active' status are:\n- Balanced Portfolio\n- Conservative Income Fund\n- Dividend Aristocrats Fund\n- ESG Sustainable Fund\n- Emerging Markets Fund\n- Fixed Income Plus\n- Growth Equity Fund\n- International Equity Fund\n- Small Cap Value Fund\n- Tech Innovation Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Retrieve the names of all portfolios with an 'Active' status, ordered alphabetically.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active' ORDER BY portfolio_name ASC;",
+              "question": "Which portfolios have Active status? Return only portfolio names alphabetically."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "Conservative Income Fund"
+                ],
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active' ORDER BY portfolio_name ASC;",
+              "duration_ms": 1.812,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.355
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 16933.406,
+        "model_duration_ms": 16928.875,
+        "api_calls": 2,
+        "tokens": 5552,
+        "cache": "disabled"
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_names"
+        ],
+        "checks": [
+          {
+            "kind": "required_portfolio",
+            "expected": "Balanced Portfolio",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Conservative Income Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Dividend Aristocrats Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "ESG Sustainable Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Emerging Markets Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Fixed Income Plus",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Growth Equity Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "International Equity Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Small Cap Value Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Tech Innovation Fund",
+            "actual": true,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified."
+      },
+      "duration_ms": 16937.162,
+      "trial": 1
+    },
+    {
+      "id": "sem-index",
+      "question": "List the portfolio names with the Index strategy, alphabetically.",
+      "category": null,
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Total Bond Market Index Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "1a6b5a8b-4add-49f1-8db8-bdaf2a448371",
+        "status": "answer",
+        "answer": "The portfolios with the 'Index' strategy are:\n- Total Bond Market Index Fund\n- Total International Index Fund\n- Total Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT portfolio_name FROM portfolios WHERE strategy_type = 'Index' ORDER BY portfolio_name ASC;",
+              "explanation": "Retrieve the names of all portfolios with the 'Index' strategy, ordered alphabetically.",
+              "question": "List the portfolio names with the Index strategy, alphabetically."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Total Bond Market Index Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ],
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE strategy_type = 'Index' ORDER BY portfolio_name ASC;",
+              "duration_ms": 1.532,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.3
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 15306.681,
+        "model_duration_ms": 15301.881,
+        "api_calls": 2,
+        "tokens": 5485,
+        "cache": "disabled"
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_names"
+        ],
+        "checks": [
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Bond Market Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total International Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Stock Market Index Fund",
+            "actual": true,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified."
+      },
+      "duration_ms": 15312.175,
+      "trial": 1
+    },
+    {
+      "id": "sem-passive",
+      "question": "List the names of Passive portfolios, alphabetically.",
+      "category": null,
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Total Bond Market Index Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "9c5784bb-edd8-4dbc-8a9f-a449bdddfa6a",
+        "status": "answer",
+        "answer": "The passive portfolios are:\n- Total Bond Market Index Fund\n- Total International Index Fund\n- Total Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "List the names of Passive portfolios, alphabetically.",
+              "explanation": "Retrieve the names of all portfolios with a status of 'Passive', ordered alphabetically.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Total Bond Market Index Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ],
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC;",
+              "duration_ms": 1.514,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.267
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12353.352,
+        "model_duration_ms": 12348.579,
+        "api_calls": 2,
+        "tokens": 5466,
+        "cache": "disabled"
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_names"
+        ],
+        "checks": [
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Bond Market Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total International Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Stock Market Index Fund",
+            "actual": true,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified."
+      },
+      "duration_ms": 12355.951,
+      "trial": 2
+    },
+    {
+      "id": "sem-active",
+      "question": "Which portfolios have Active status? Return only portfolio names alphabetically.",
+      "category": null,
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Balanced Portfolio"
+            ],
+            [
+              "Conservative Income Fund"
+            ],
+            [
+              "Dividend Aristocrats Fund"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Emerging Markets Fund"
+            ],
+            [
+              "Fixed Income Plus"
+            ],
+            [
+              "Growth Equity Fund"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Small Cap Value Fund"
+            ],
+            [
+              "Tech Innovation Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "7c3be2bc-7194-425e-8d49-dd47bfbaa2e0",
+        "status": "answer",
+        "answer": "The following portfolios have an 'Active' status:\n- Balanced Portfolio\n- Conservative Income Fund\n- Dividend Aristocrats Fund\n- ESG Sustainable Fund\n- Emerging Markets Fund\n- Fixed Income Plus\n- Growth Equity Fund\n- International Equity Fund\n- Small Cap Value Fund\n- Tech Innovation Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Which portfolios have Active status? Return only portfolio names alphabetically.",
+              "explanation": "Retrieve the names of all portfolios with an 'Active' status, ordered alphabetically.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active' ORDER BY portfolio_name ASC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "Conservative Income Fund"
+                ],
+                [
+                  "Dividend Aristocrats Fund"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Emerging Markets Fund"
+                ],
+                [
+                  "Fixed Income Plus"
+                ],
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Small Cap Value Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Active' ORDER BY portfolio_name ASC;",
+              "duration_ms": 1.718,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.632
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 16451.415,
+        "model_duration_ms": 16446.203,
+        "api_calls": 2,
+        "tokens": 5553,
+        "cache": "disabled"
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_names"
+        ],
+        "checks": [
+          {
+            "kind": "required_portfolio",
+            "expected": "Balanced Portfolio",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Conservative Income Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Dividend Aristocrats Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "ESG Sustainable Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Emerging Markets Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Fixed Income Plus",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Growth Equity Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "International Equity Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Small Cap Value Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Tech Innovation Fund",
+            "actual": true,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified."
+      },
+      "duration_ms": 16456.36,
+      "trial": 2
+    },
+    {
+      "id": "sem-index",
+      "question": "List the portfolio names with the Index strategy, alphabetically.",
+      "category": null,
+      "split": "supplied",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Total Bond Market Index Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "11cedf6c-78ce-4593-bfa2-fd3367fc6966",
+        "status": "answer",
+        "answer": "The portfolios with the 'Index' strategy are:\n- Total Bond Market Index Fund\n- Total International Index Fund\n- Total Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Retrieve the names of all portfolios with the 'Index' strategy, ordered alphabetically.",
+              "question": "List the portfolio names with the Index strategy, alphabetically.",
+              "sql": "SELECT portfolio_name FROM portfolios WHERE strategy_type = 'Index' ORDER BY portfolio_name ASC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Total Bond Market Index Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ],
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE strategy_type = 'Index' ORDER BY portfolio_name ASC;",
+              "duration_ms": 1.518,
+              "truncated": false,
+              "attempts": 1
+            },
+            "error": null,
+            "duration_ms": 2.305
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 18318.916,
+        "model_duration_ms": 18314.475,
+        "api_calls": 2,
+        "tokens": 5485,
+        "cache": "disabled"
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_names"
+        ],
+        "checks": [
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Bond Market Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total International Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Stock Market Index Fund",
+            "actual": true,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified."
+      },
+      "duration_ms": 18323.972,
+      "trial": 2
+    }
+  ]
+}

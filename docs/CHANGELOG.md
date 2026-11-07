@@ -37,3 +37,36 @@ accepted valid case-insensitive `main` qualification; new tests caught and fixed
 authorizer case-sensitivity issue. Its local suite passes 116 tests. Offline replay
 reconciled all 70 recorded release tool results with zero mismatches. No additional
 live accuracy claim is inferred from that replay.
+
+## v0.1.1 review corrections
+
+- `b0514c8` added database-derived categorical context for routing and planning, with
+  regression tests that change the database values rather than matching question text.
+- `11bd796` separated answer, reference-result, routing and limited narrative dimensions.
+  Both old `ext-02` traces now expose the wrong column and false conclusion independently
+  of their extra-call failure. Original evidence is preserved.
+- `076600d` restricted classification context to portfolio status and strategy after a
+  broader version exposed unrelated industry aliases and regressed supplied cases (7/10).
+  The narrower context scored 9/10, with an implicit ordering mismatch.
+- `b5e27a9` exposed the existing projection/ordering contract in the SQL argument schema.
+  Fresh checks passed 10/10 supplied and 6/6 categorical cases. A subsequent extended
+  attempt passed 34 cases then reached the provider's daily quota; all 16 HTTP 429 failures
+  remain in the preflight report, without being counted as model capability evidence.
+- `25c0dd5` prevents non-answer error messages from being treated as numerical claims.
+  Its full live run scored 48/50 after two provider failures. A separate retry scored
+  1/2 and exposed an ambiguity error in the other case; both records remain unchanged.
+  Offline quality checks pass 148 tests, with two opt-in live tests skipped.
+- `03e9585` makes the exposure argument's original-reference contract explicit: the model
+  must not replace an ambiguous fragment with a guessed full name or ID. The optional
+  live regression now checks both categorical semantics and ambiguity handling. Fresh
+  repeated ambiguity checks and a new full release run validate this final runtime.
+
+The final runtime's fresh release run passed 10/10 supplied, 50/50 extended and 6/6
+categorical cases. Its separate ambiguity check passed 3/3. All 65 successful recorded
+tool results were replayed offline with zero mismatches. The exact runtime passes the
+four hosted CI jobs and a clean Python 3.11 installation with 148 tests; historical
+failures remain visible instead of being combined into a reconstructed score.
+
+The report index distinguishes historical `supplied-final` (16/20 pre-release) from
+`supplied-release` (20/20 v0.1.0 release). Helper defaults write to local or versioned
+paths so published v0.1.0 evidence is preserved.

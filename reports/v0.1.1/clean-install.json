@@ -1,0 +1,101 @@
+{
+  "runtime_commit": "03e9585adae9582a603a8783b9af105500d84352",
+  "workspace": "C:\\Users\\SHAUNA~1\\AppData\\Local\\Temp\\portiq-v011-final-588md0ca",
+  "credentials": "No .env copied; GEMINI_API_KEY removed from child environment",
+  "commands": [
+    {
+      "command": [
+        "uv",
+        "sync",
+        "--frozen",
+        "--extra",
+        "dev",
+        "--python",
+        "3.11"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\nUsing CPython 3.11.15\nCreating virtual environment at: .venv\n   Building portiq @ file:///C:/Users/SHAUNA~1/AppData/Local/Temp/portiq-v011-final-588md0ca\n      Built portiq @ file:///C:/Users/SHAUNA~1/AppData/Local/Temp/portiq-v011-final-588md0ca\nPrepared 1 package in 2.06s\nInstalled 41 packages in 2.07s\n + annotated-types==0.8.0\n + anyio==4.16.0\n + certifi==2026.10.23\n + cffi==2.1.1\n + charset-normalizer==3.5.2\n + colorama==0.4.6\n + coverage==7.17.2\n + cryptography==50.0.2\n + distro==1.9.0\n + google-auth==2.62.1\n + google-genai==2.34.0\n + h11==0.16.0\n + httpcore==1.0.9\n + httpx==0.28.1\n + idna==3.20\n + iniconfig==2.3.1\n + librt==0.16.0\n + mypy==1.20.2\n + mypy-extensions==1.2.0\n + packaging==26.3\n + pathspec==1.1.1\n + pluggy==1.7.0\n + portiq==0.1.1 (from file:///C:/Users/SHAUNA~1/AppData/Local/Temp/portiq-v011-final-588md0ca)\n + pyasn1==0.6.5\n + pyasn1-modules==0.4.2\n + pycparser==3.12\n + pydantic==2.14.3\n + pydantic-core==2.50.4\n + pygments==2.21.0\n + pytest==9.2.0\n + pytest-cov==7.1.0\n + python-dotenv==1.2.4\n + requests==2.34.2\n + ruff==0.17.3\n + sniffio==1.3.1\n + sqlglot==30.29.0\n + tenacity==9.1.4\n + typing-extensions==4.16.0\n + typing-inspection==0.4.5\n + urllib3==2.8.0\n + websockets==17.4\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "ruff",
+        "format",
+        "--check",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "27 files already formatted\n",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "mypy"
+      ],
+      "exit_code": 0,
+      "stdout": "Success: no issues found in 13 source files\n",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "stdout": "........................................................................ [ 48%]\n..........................................ss............................ [ 96%]\n......                                                                   [100%]\n148 passed, 2 skipped in 11.03s\n",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "portfolio-agent",
+        "init-db"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"rows\": {\n    \"sectors\": 10,\n    \"securities\": 30,\n    \"benchmarks\": 13,\n    \"portfolios\": 13,\n    \"holdings\": 95,\n    \"transactions\": 24,\n    \"historical_prices\": 330,\n    \"portfolio_performance\": 44,\n    \"risk_metrics\": 44\n  },\n  \"source_sha256\": {\n    \"database_schema.sql\": \"e685fdff7d28e5b7018b72f3e1806641dd2d957a367219877fb89cf8011c62b2\",\n    \"data/sectors.csv\": \"5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010\",\n    \"data/securities.csv\": \"973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e\",\n    \"data/benchmarks.csv\": \"c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62\",\n    \"data/portfolios.csv\": \"11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb\",\n    \"data/holdings.csv\": \"6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc\",\n    \"data/transactions.csv\": \"736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f\",\n    \"data/historical_prices.csv\": \"4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0\",\n    \"data/portfolio_performance.csv\": \"acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1\",\n    \"data/risk_metrics.csv\": \"424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304\"\n  },\n  \"foreign_keys\": \"ok\",\n  \"integrity\": \"ok\"\n}\n",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "portfolio-agent",
+        "doctor"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"database\": \"portfolio_database.db\",\n  \"integrity\": \"ok\",\n  \"foreign_key_errors\": 0,\n  \"model\": \"gemini-3.1-flash-lite\",\n  \"key_configured\": false,\n  \"live\": \"not requested\"\n}\n",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\n"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "portfolio-agent",
+        "exposure",
+        "Balanced Portfolio"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"portfolio_id\": 4,\n  \"portfolio_name\": \"Balanced Portfolio\",\n  \"equity_weight\": \"0.36\",\n  \"sectors\": {\n    \"Technology\": \"61.11\",\n    \"Financials\": \"22.22\",\n    \"Healthcare\": \"16.67\"\n  },\n  \"basis\": \"Stock current_weight / sum(Stock current_weight) * 100\",\n  \"rounding\": \"2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding\"\n}\n",
+      "stderr": "warning: `VIRTUAL_ENV=C:\\Users\\Shaunak Rane\\Desktop\\PL Capital\\.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead\n"
+    }
+  ]
+}

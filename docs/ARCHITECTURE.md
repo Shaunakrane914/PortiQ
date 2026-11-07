@@ -29,6 +29,13 @@ values explicitly labeled as data. This gives the model name grounding without i
 benchmark answers or repeatedly asking broad discovery queries. Schema, catalogue and
 conventions are built once per agent instance.
 
+v0.1.1 additionally snapshots bounded distinct values for `portfolios.status` and
+`portfolios.strategy_type`. These values come from SQLite, not a benchmark lookup or fixed
+enum. At most 16 values of 80 characters each are included, with an explicit completeness
+flag. Keeping this context limited to the reviewed portfolio-classification problem avoids
+introducing unrelated sector/industry aliases into model planning. Both routing and the
+focused SQL planner receive the same context.
+
 Each request has a fresh conversation. Model response content, including provider thought
 signatures, is retained only while that request runs. Function response IDs are preserved.
 Trace output contains arguments, results and operational metadata, never hidden reasoning.

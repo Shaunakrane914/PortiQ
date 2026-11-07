@@ -2,9 +2,14 @@
 
 `uv run python scripts/benchmark.py` measures 200 repetitions each of Balanced Portfolio
 exposure and a portfolio COUNT query, with correctness assertions and no answer cache.
-The committed `reports/performance.json` contains all samples, mean, median, p95, timestamp
+The v0.1.1 sample is `reports/v0.1.1/performance.json`; the unchanged
+`reports/performance.json` is historical v0.1.0 evidence. Reports contain samples, mean, median, p95, timestamp
 and tracemalloc peak. OS filesystem cache is uncontrolled. These are local microbenchmarks,
 not concurrency/load tests or portable service guarantees.
+
+The v0.1.1 run measured 1.496 ms mean exposure time and 1.047 ms mean SQL time.
+These separate samples do not establish a statistically controlled speed improvement.
+The helper defaults to `reports/local/performance.json` to preserve published evidence.
 
 The supplied indexes were retained. The actual exposure query plan uses
 `idx_holdings_portfolio` to locate holdings and INTEGER PRIMARY KEY lookups for securities

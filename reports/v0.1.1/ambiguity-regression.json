@@ -1,0 +1,210 @@
+{
+  "evaluator_version": 2,
+  "timestamp_utc": "2026-11-07T07:25:47.218330+00:00",
+  "suite": "ambiguity-regression-suite.json",
+  "model": "gemini-3.1-flash-lite",
+  "request_interval_seconds": 6.5,
+  "sql_attempts": 3,
+  "max_tool_calls": 6,
+  "source_sha256": {
+    "data\\benchmarks.csv": "c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62",
+    "data\\historical_prices.csv": "4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0",
+    "data\\holdings.csv": "6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc",
+    "data\\portfolio_performance.csv": "acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1",
+    "data\\portfolios.csv": "11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb",
+    "data\\risk_metrics.csv": "424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304",
+    "data\\sectors.csv": "5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010",
+    "data\\securities.csv": "973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e",
+    "data\\transactions.csv": "736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f"
+  },
+  "suite_sha256": "c618f3969bb3937ea4e9263da54bd7d5dec91e16a4dacb02a9f4cf46311a589f",
+  "narrative_rules_sha256": "6ca1a07a0d74528f28714907cb38b34d9c602f0526faa8742f1841ea5c3b40e5",
+  "runtime_sha256": {
+    "__init__.py": "b19e18e5d5ac7902bf23adc346419c0433ff934496f5e1acf6fffba75beb620e",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8",
+    "agent.py": "406e8f70e0ae2e6724f2b0608c898d1aaf78effcbc8709bcdba79ded57299253",
+    "cli.py": "7b1dd46e96c1ad2a826f0dbaca2d073eeb7ed5da2b585ce2fb9bdefcb0c51a6c",
+    "config.py": "783a5345b103312ef2ef755644a67475ec4c1b86b15e59c05bf1f5d02849bbdd",
+    "database.py": "c79b23c9b4983a890bad5a1fc925397bc3a260a69ec217ebf4ef0f811286c209",
+    "errors.py": "04fb320c6e7a6aec194f20599e53b7f315819564e25f138f8ba98af097216d16",
+    "evaluation.py": "78d088d93b9f54c8bef8b117f648b6526618b047a1252f21bf20fc11adf3ec1b",
+    "exposure.py": "67dbdfe6be2b2aa27647082eb8519263381fd5155e908f842e97da44047ec187",
+    "faithfulness.py": "690aa8bafbd23b1eebb1b6972fb109548a10a4b0c969c73e576ac8bdbd6d28ad",
+    "model.py": "3ea8332cbd0cb215e8c7abf060ef69e8693a89cf374bf401aa35232808e8a873",
+    "prompts.py": "898af249772d4131901b6f9ef35652ef4b45d2b9b10fef3e919481eb569c40e4",
+    "sql.py": "e4d60f04922d13b94bc8c70b90a89e6c9bebc24ace4fab5b88727468710fdf47"
+  },
+  "cache": "disabled",
+  "trials": 3,
+  "split": "all",
+  "total": 3,
+  "passed": 3,
+  "answer_correct": 3,
+  "result_correct": 0,
+  "result_checked": 0,
+  "routing_correct": 3,
+  "narrative_checked": 0,
+  "narrative_failed": 0,
+  "mean_ms": 18391.837,
+  "p95_ms": 34573.583,
+  "api_calls": 6,
+  "tokens": 15450,
+  "records": [
+    {
+      "id": "ext-47",
+      "question": "Show equity sector exposure for the equity fund.",
+      "category": "handling",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": null,
+      "status_correct": true,
+      "sql_valid": null,
+      "expected": [],
+      "failures": [],
+      "actual": {
+        "request_id": "6bb53825-eb50-40e5-9a3b-e86521a3ea6a",
+        "status": "clarification",
+        "answer": "The portfolio name \"equity fund\" is ambiguous. Please specify if you are referring to the \"Growth Equity Fund\" or the \"International Equity Fund\".",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "equity fund"
+            },
+            "result": null,
+            "error": "Ambiguous portfolio; choose one of: Growth Equity Fund, International Equity Fund",
+            "duration_ms": 0.898
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 8038.953,
+        "model_duration_ms": 8023.248,
+        "api_calls": 2,
+        "tokens": 5150,
+        "cache": "disabled"
+      },
+      "analytical_calls": 0,
+      "reference_checks": [],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [],
+        "reason": "No factual answer was produced; narrative assertions not applicable."
+      },
+      "duration_ms": 8039.578,
+      "trial": 1
+    },
+    {
+      "id": "ext-47",
+      "question": "Show equity sector exposure for the equity fund.",
+      "category": "handling",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": null,
+      "status_correct": true,
+      "sql_valid": null,
+      "expected": [],
+      "failures": [],
+      "actual": {
+        "request_id": "20bdc5c0-c4ba-4978-902e-feaf1b9dfc51",
+        "status": "clarification",
+        "answer": "The portfolio name \"equity fund\" is ambiguous. Please specify if you are referring to the \"Growth Equity Fund\" or the \"International Equity Fund\".",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "equity fund"
+            },
+            "result": null,
+            "error": "Ambiguous portfolio; choose one of: Growth Equity Fund, International Equity Fund",
+            "duration_ms": 0.872
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12561.844,
+        "model_duration_ms": 12559.682,
+        "api_calls": 2,
+        "tokens": 5150,
+        "cache": "disabled"
+      },
+      "analytical_calls": 0,
+      "reference_checks": [],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [],
+        "reason": "No factual answer was produced; narrative assertions not applicable."
+      },
+      "duration_ms": 12562.35,
+      "trial": 2
+    },
+    {
+      "id": "ext-47",
+      "question": "Show equity sector exposure for the equity fund.",
+      "category": "handling",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": null,
+      "status_correct": true,
+      "sql_valid": null,
+      "expected": [],
+      "failures": [],
+      "actual": {
+        "request_id": "82aa5b2e-2ab1-4da7-8bb9-6af157e04647",
+        "status": "clarification",
+        "answer": "The portfolio name \"equity fund\" is ambiguous. Please specify if you are referring to the \"Growth Equity Fund\" or the \"International Equity Fund\".",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "equity fund"
+            },
+            "result": null,
+            "error": "Ambiguous portfolio; choose one of: Growth Equity Fund, International Equity Fund",
+            "duration_ms": 0.943
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 34572.071,
+        "model_duration_ms": 34569.667,
+        "api_calls": 2,
+        "tokens": 5150,
+        "cache": "disabled"
+      },
+      "analytical_calls": 0,
+      "reference_checks": [],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [],
+        "reason": "No factual answer was produced; narrative assertions not applicable."
+      },
+      "duration_ms": 34573.583,
+      "trial": 3
+    }
+  ]
+}

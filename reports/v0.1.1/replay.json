@@ -1,0 +1,12 @@
+{
+  "mode": "offline deterministic replay; not a new Gemini accuracy measurement",
+  "runtime_commit": "03e9585adae9582a603a8783b9af105500d84352",
+  "report_sha256": {
+    "reports\\v0.1.1\\supplied.json": "32b6091ae9cdbe09ec0a4271d1c20fe0b56a64c7b5024f54857a7ae86f74422f",
+    "reports\\v0.1.1\\semantic.json": "40e87ff3657afb522a52c444cc3e4f8aa0d6a3b8b1bd468801fb98030b63327b",
+    "reports\\v0.1.1\\extended.json": "389dac61fb3eafa386681dd0b282b3f3806be8e73bd1049c66057bfaa99ab328",
+    "reports\\v0.1.1\\ambiguity-regression.json": "d4cd6e8d77dae24deae962632ea2dd390095b32eb49c019a3a6e17eebabdc3a2"
+  },
+  "checked_tools": 65,
+  "failures": []
+}

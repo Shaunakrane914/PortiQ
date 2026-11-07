@@ -1,0 +1,28 @@
+{
+  "purpose": "Targeted retry of provider-error cases from the full extended run; not a new full-suite score.",
+  "questions": [
+    {
+      "category": "hybrid",
+      "question": "Use both analytical tools: calculate equity sector exposure for International Equity Fund, and separately query the current_price of NVDA as a single value.",
+      "references": [
+        {
+          "parameters": {
+            "portfolio_name": "International Equity Fund"
+          }
+        },
+        {
+          "sql_query": "SELECT current_price FROM securities WHERE symbol='NVDA'"
+        }
+      ],
+      "id": "ext-46",
+      "split": "development"
+    },
+    {
+      "category": "handling",
+      "question": "Show equity sector exposure for the equity fund.",
+      "expected_status": "clarification",
+      "id": "ext-47",
+      "split": "validation"
+    }
+  ]
+}

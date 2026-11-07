@@ -1,69 +1,97 @@
-# Evaluation methodology
+# Evaluation methodology — v0.1.1
 
-The supplied ten questions are development material. Production modules do not import
-their answers, SQL or identifiers. Prompt conventions were refined after genuine failures
-on that supplied development set; scores on it do not establish unseen generalization.
-Earlier unsuccessful runs are retained, including API-quota failures.
+Production modules never import benchmark questions, IDs, expected SQL, or narrative rules.
+The supplied ten and additional fifty remain unchanged. See the [report index](../reports/README.md)
+for release evidence and clearly labeled historical runs. All fresh runs are uncached.
 
-SQL scoring executes trusted reference SQL using an independent SQLite connection,
-re-executes generated SQL through the safety boundary, and reconciles the actual returned
-rows with that execution. The reference projection width must match. Values are positional;
-alias spelling is not scored. Numeric cells use relative tolerance 1e-7 and absolute tolerance
-1e-6. NULL differs from zero and strings do not equal numbers.
+## Independent dimensions
 
-Top-level ORDER BY in the reference makes row order mandatory. Unordered output uses a
-maximum bipartite match of complete rows so duplicate multiplicities and tolerance overlap
-are handled correctly. Ties in ordered queries currently follow reference execution order;
-an equally valid alternative tie order may fail. Extra, missing and truncated rows fail.
-An empty result with the correct projection has limited ability to reveal semantic mistakes.
+- `status_correct`: answer/clarification/unsupported status agrees with the case contract.
+- `result_correct`: all independent reference results match distinct successful tool results.
+  It is null for subjective handling cases without a reference result.
+- `routing_correct`: the successful analytical tool multiset exactly matches the required
+  multiset. Extra discovery calls fail this strict efficiency contract. For clarification
+  and unsupported cases, the existing status-based handling contract is preserved.
+- `faithfulness`: passed/failed/not_checked for explicitly configured, finite narrative assertions.
+- `answer_correct`: correct status, correct reference evidence where applicable, and no
+  failed configured narrative assertion. This operational measure does not certify unchecked prose.
+- `passed`: `answer_correct AND routing_correct`. No incorrect route is forgiven to improve
+  the strict score. Configured narrative assertions can make this stricter than evaluator v1.
 
-Exposure expectations read the original CSV files directly, join using Python dictionaries,
-and calculate unrounded Decimal references without calling the production resolver or
-calculator. Every sector and its numerical value must agree within 0.005001 percentage
-points, allowing the production tool's two-decimal rounding. Portfolio identity must match.
+Every dimension is evaluated even when routing is wrong. Per-reference candidate comparisons,
+expected and actual data, and all dimension-specific failures are retained. A case with a
+harmless extra discovery call can have correct results but incorrect routing. A valid SQL
+query against the wrong column can have `sql_valid=true` and `result_correct=false`.
 
-Routing is deliberately strict: the multiset of successful analytical calls must match
-the case's required calls. Extra discovery calls count as a routing mismatch, even if they
-are harmless. This distinguishes routing efficiency from result validity, but can penalize
-a defensible alternative workflow. There is no automatic prose-faithfulness score; the
-reported accuracy measures structured evidence plus status/routing, not every final sentence.
+For answers with extra calls, correctness requires an injective assignment of all reference
+results to matching tool evidence, rather than blindly taking the first or last call. This
+does not prove that every extra query is useful; strict routing still fails. Additional
+narrative assertions prevent some false conclusions from hiding behind correct intermediate data.
 
-The 50 additional questions were authored in this project and frozen in Git before their
-first live evaluation. They include 34 SQL questions, 9 exposure questions, 3 hybrid questions,
-2 clarification cases and 2 unsupported/security cases. The split is 17 development,
-17 validation and 16 heldout. They are held out from runtime prompts, but not externally
-authored or blind to the implementation author. Exact projections/order are specified in
-many questions to avoid confusing underspecification with SQL competence.
+## Structured result comparison
 
-Subjective handling cases score explicit status (clarification/unsupported), not exact prose.
-They complement deterministic security tests and do not prove resistance to every injection.
-Mock orchestration tests are never counted as live model accuracy.
+Trusted reference SQL executes on an independent read-only connection. Every generated query
+is independently re-executed through the safety boundary, and its result must agree with
+the recorded tool result. Claimed columns, truncation, projection width, rows and numerical
+values are checked. Aliases may differ from the reference, but projection position matters.
 
-Each live report includes per-case expected/actual data, status, routing, SQL validity where
-applicable, failures, latency, SDK call count, provider token counts, model versions and
-cache status. New reports also include source, suite and runtime hashes and pacing/budgets.
-SDK automatic retries are disabled. The application retries transient transport failures
-and HTTP 408/500/502/503/504 once; every actual backend invocation increments the reported
-API count. Authentication, validation and quota errors are not automatically retried.
-No persistent answer cache is used.
+Numeric cells use relative tolerance 1e-7 and absolute tolerance 1e-6. NULL differs from zero;
+strings do not equal numbers. Top-level reference ORDER BY requires ordered comparison.
+Unordered rows use a maximum bipartite match to preserve duplicates and handle tolerance
+overlap. Ordered ties currently follow reference execution order, which can penalize another
+valid tied order. Empty results have limited discriminatory power.
 
-The release script runs two uncached supplied trials, then one complete extended regression trial.
-Latency includes intentional quota pacing as well as model/network time; it should not be
-presented as unthrottled model latency. Comparison runs across models are separate artifacts,
-not interchangeable samples of one configuration.
+Exposure references read original CSVs and join with Python dictionaries independently of
+the production calculator and resolver. Sector sets, portfolio identity, finite values and
+every percentage must match within 0.005001 percentage points. NaN/Infinity cannot pass.
 
-Results are recorded in the committed JSON/Markdown files in `reports/`; read the acceptance
-record for the final measured outcome. A failed run is not replaced by a fictional target score.
+## Limited narrative assertions
 
-`extended-final.json` is the first frozen-suite run. `extended-regression.json` is a later
-rerun after changes informed by supplied development questions; it must not be labeled a
-new unseen evaluation. `transport-interrupted.json` is explicitly incomplete and preserves
-the interrupted run that motivated bounded transport retries. Development diagnostics are
-also labeled separately and are never merged into a full-suite score.
+`evaluation/faithfulness.json` defines additional contracts separately from the unchanged
+reference suites. The sidecar is loaded only by evaluation; it never enters a runtime prompt.
+The configured subset covers total portfolio count, selected scalar financial answers,
+portfolio-name lists, single-portfolio exposure claims, and one hybrid case.
 
-The measured live release revision is `b51a242`. Subsequent revision `8d88898` changes
-corrupt-file error translation and case-insensitive main-database qualification, leaving
-the live prompt and financial conventions unchanged. `scripts/replay_reports.py` replays
-all recorded successful tool outputs under the updated boundary; its 70 reconciliations
-are compatibility checks, not 70 additional live AI answers. The original report hashes
-remain intact rather than being rewritten to imply a new model run.
+Assertions check numerical presence and contradictory portfolio counts; required/mismatched
+portfolio identities; stated canonical sector percentages; and explicit "no portfolios/no
+results" claims that contradict a nonempty reference. Scalar amounts support commas and
+thousand/million/billion abbreviations. Declared decimal precision determines rounding
+tolerance; portfolio counts require the exact count. Percentage checks permit rounding to
+the number of decimals actually stated. Unknown canonical sectors with claimed exposure fail.
+
+This is not an LLM judge or a complete natural-language verifier. It does not certify
+unsupported recommendations, all synonyms/negations, arbitrary new entity names, every
+table layout, or all prose. A configured exposure case with no recognizable identity or
+percentage claims can remain `not_checked`. Exact name-list contracts require every name.
+There can be false positives for complex contextual comparisons or negations. Reports expose
+every actual assertion and count checked/failed cases; unchecked cases are not advertised
+as narrative-faithfulness successes. CI includes wrong numbers, wrong identities, invented
+sector percentages, contradictions, missing coverage, legitimate rounding and invalid contracts.
+Non-answer statuses receive `not_checked` with the configured rules retained for audit;
+provider error codes are never interpreted as factual numerical claims.
+
+## The original ext-02 failure
+
+Both v0.1.0 extended report Git blobs remain byte-for-byte unchanged. Their 49/50 failure involved
+wrong semantics: the agent filtered `strategy_type` for a value stored under `status`, then
+claimed no relevant portfolios existed. Evaluator v1 stopped at the extra-call failure.
+`scripts/review_diagnostics.py` re-scores those exact traces offline with independent references
+and reports routing, result and narrative failures. This is diagnostic re-scoring, not a new
+Gemini run. The old release description understated the error and has been corrected.
+
+## Fresh validation and provenance
+
+The 50 author-created cases were frozen before their first v0.1.0 run: 34 SQL, 9 exposure,
+3 hybrid, 2 clarification and 2 unsupported/security cases. Splits remain 17 development,
+17 validation, 16 heldout. All have now been observed, so v0.1.1 reruns are regression tests,
+not new unseen validation. The three categorical regressions are explicit development cases.
+
+`scripts/release_evaluation.py` runs the categorical suite twice, the supplied set once by
+default (configurable), and all 50 extended cases. Output defaults to ignored local reports;
+`--output-dir reports/v0.1.1` publishes a versioned release evidence set without overwriting v0.1.0.
+
+Reports include evaluator version, model/provider versions, categorical runtime source hashes,
+suite and narrative-rule hashes, configuration/budgets, per-case evidence, all failure dimensions,
+API calls, token totals, pacing-inclusive mean/p95 latency and timestamp. SDK automatic retries
+are disabled; bounded application transport retries count every backend invocation. Mock tests
+and offline re-scoring are never counted as fresh live AI accuracy.

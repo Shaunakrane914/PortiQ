@@ -1,5 +1,15 @@
 # Interview notes
 
+- v0.1.0's Passive-portfolio failure was valid SQL with the wrong semantics: the value
+  belonged to `status`, not `strategy_type`. v0.1.1 exposes both fields' actual distinct
+  values rather than adding an exact-question shortcut. A test moves the value between
+  columns to prove that context follows the data. An initially broader metadata expansion
+  caused sector/industry confusion and was narrowed based on a retained failed live run.
+- Result correctness and routing efficiency are separate. Historical ext-02 fails both,
+  and the new name/contradiction assertions also flag its false narrative. An extra useful
+  discovery query can instead have correct results and inefficient routing. Limited prose
+  assertions do not certify every statement or replace exact SQL/financial comparison.
+
 - Gemini function calling exposes explicit typed choices; the model, not a keyword table,
   chooses tools. Tool calls are dispatched manually so SQL validation cannot be bypassed.
 - Sector exposure uses stored fractional stock weights divided by total stock weight. Bonds
@@ -17,7 +27,9 @@
   They do not prove external generalization or independent reviewer validation.
 - Mocked Gemini responses establish orchestration/error-path behavior, not live model
   accuracy. Live reports include every attempted question, including quota failures.
-- Ambiguous names produce candidates and clarification, never a silent arbitrary match.
+- The resolver rejects ambiguous references with candidates. The model is instructed to
+  preserve the original reference; a retained failure shows why guessing a full name before
+  calling the resolver can bypass that protection. Repeated live checks cover this contract.
   Unsupported predictions are separate from factual queries against the static dataset.
 - Performance is dominated by network and quota pacing; local exposure and SQL timings are
   measured separately. No index improvement or speedup percentage is claimed without a

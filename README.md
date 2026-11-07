@@ -25,17 +25,19 @@ requirements include optional UI/scientific packages that this CLI does not need
 
 ## What works
 
-Verified release evidence: **20/20 supplied cases across two fresh trials** (10/10 each),
-**49/50 on both the first frozen extended run and the later regression run**, and
-**116 automated tests passed** with one opt-in live test skipped. Overall line coverage
-is 92.95% (93% rounded); exposure coverage
-is 100% and the SQL boundary is 94% rounded. Ruff, strict mypy and all four hosted CI jobs
-pass. The first extended score predates the final planning/name-grounding changes; the
-separate extended regression report measures the updated runtime.
+v0.1.1 grounds portfolio status and strategy filters in their actual database values.
+The evaluator now reports reference-result correctness, routing efficiency, and limited
+narrative assertions independently. See the [report index](reports/README.md) for current
+release measurements and clearly labeled historical runs.
 
-Live accuracy was measured on runtime revision `b51a242`. Later error-handling and valid
-`main`-namespace fixes passed the expanded test suite and an offline replay of all 70
-recorded tool results with zero mismatches. The replay is not another live model score.
+Fresh v0.1.1 regression results: **10/10 supplied**, **50/50 extended**, **6/6 categorical**
+and **3/3 targeted ambiguity checks**. Local verification passes 148 tests with two opt-in
+live tests skipped; all four CI matrix jobs pass. These are observed regression results,
+not a universal accuracy guarantee. Limited narrative assertions cover a declared subset.
+
+**Correction to the v0.1.0 summary:** its extended `ext-02` failure used the wrong column
+and gave a false answer; it was more than a duplicate SQL call. Both original traces remain
+unchanged. New offline diagnostics expose result, routing and narrative failures separately.
 
 - Atomic schema-aware CSV ingestion, reproducible rebuilds, FK and data validation.
 - Genuine Gemini function calling with manual typed dispatch and multiple analytical tools.
@@ -43,6 +45,7 @@ recorded tool results with zero mismatches. The replay is not another live model
 - Stock-only sector exposure from `current_weight`, Decimal arithmetic and explicit normalization.
 - Bounded SQL repair, duplicate-failure detection, model errors and ambiguous-name clarification.
 - Independent supplied and extended evaluation, fresh calls, JSON/Markdown reports and traces.
+- Bounded database-derived classification domains and explicit, limited narrative assertions.
 - Key-free automated tests, Ruff, strict mypy and GitHub Actions.
 
 There is no benchmark lookup in runtime code. The CLI works independently of a frontend.
@@ -120,12 +123,17 @@ uv run portfolio-agent evaluate --suite extended --split heldout --output report
 uv run python scripts/release_evaluation.py
 ```
 
-The release script runs two supplied trials followed by all 50 extended regression questions with
-one backend and 6.5-second pacing. The evaluator executes reference SQL independently,
+The release script runs the three categorical regressions twice, the supplied set once
+by default, and all 50 extended questions with one backend and 6.5-second pacing. Use
+`--supplied-trials 2` to repeat the supplied suite and `--suites` to select suites. Its
+default output is `reports/local/v0.1.1`; `--output-dir reports/v0.1.1` records release evidence.
+The evaluator executes reference SQL independently,
 re-executes generated SQL, and checks full results, projection width, duplicate rows,
 ordering and numeric tolerances. Exposure references read the original CSVs independently
-of the production calculator. Extra, missing or truncated results fail. Tool routing is
-scored separately. Alias spelling is allowed; projection position and values must agree.
+of the production calculator. Extra, missing or truncated results fail. Tool routing and
+answer correctness are scored independently even when one fails. Strict pass requires
+both and no failed configured narrative assertion. Alias spelling is allowed; projection
+position and values must agree. Unchecked model prose is not certified.
 
 The extended suite was authored here and frozen before its first live run. Its 17
 development, 17 validation and 16 heldout cases are not an externally blind benchmark.

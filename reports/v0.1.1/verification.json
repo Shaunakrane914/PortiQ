@@ -1,0 +1,207 @@
+{
+  "timestamp_utc": "2026-11-07T07:41:58.320636+00:00",
+  "runtime_commit": "03e9585adae9582a603a8783b9af105500d84352",
+  "python": "3.14.0",
+  "platform": "Windows",
+  "pytest": {
+    "tests": 150,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 2,
+    "passed": 148
+  },
+  "coverage": {
+    "lines-covered": "837",
+    "lines-valid": "890",
+    "line-rate": "0.9404",
+    "modules": {
+      "src/portiq/__init__.py": 1.0,
+      "src/portiq/__main__.py": 0.0,
+      "src/portiq/agent.py": 0.9615,
+      "src/portiq/cli.py": 0.8522,
+      "src/portiq/config.py": 1.0,
+      "src/portiq/database.py": 0.9508,
+      "src/portiq/errors.py": 1.0,
+      "src/portiq/evaluation.py": 0.9202,
+      "src/portiq/exposure.py": 1.0,
+      "src/portiq/faithfulness.py": 1.0,
+      "src/portiq/model.py": 1.0,
+      "src/portiq/prompts.py": 1.0,
+      "src/portiq/sql.py": 0.9367
+    }
+  },
+  "ruff_check": "passed",
+  "ruff_format": "passed",
+  "strict_mypy": "passed",
+  "clean_install": "clean-install.json; exact runtime revision; no key or prebuilt DB",
+  "ci": {
+    "url": "https://github.com/Shaunakrane914/PortiQ/actions/runs/42351185044",
+    "runtime_commit": "03e9585adae9582a603a8783b9af105500d84352",
+    "conclusion": "success",
+    "matrix_jobs": 4
+  },
+  "live_reports": {
+    "semantic": {
+      "file": "reports\\v0.1.1\\semantic.json",
+      "sha256": "40e87ff3657afb522a52c444cc3e4f8aa0d6a3b8b1bd468801fb98030b63327b",
+      "total": 6,
+      "passed": 6,
+      "answer_correct": 6,
+      "routing_correct": 6,
+      "narrative_checked": 6,
+      "narrative_failed": 0,
+      "api_calls": 12,
+      "tokens": 32106,
+      "mean_ms": 15761.255333333334,
+      "p95_ms": 31466.021
+    },
+    "supplied": {
+      "file": "reports\\v0.1.1\\supplied.json",
+      "sha256": "32b6091ae9cdbe09ec0a4271d1c20fe0b56a64c7b5024f54857a7ae86f74422f",
+      "total": 10,
+      "passed": 10,
+      "answer_correct": 10,
+      "routing_correct": 10,
+      "narrative_checked": 4,
+      "narrative_failed": 0,
+      "api_calls": 21,
+      "tokens": 57977,
+      "mean_ms": 16907.3148,
+      "p95_ms": 23817.067
+    },
+    "extended": {
+      "file": "reports\\v0.1.1\\extended.json",
+      "sha256": "389dac61fb3eafa386681dd0b282b3f3806be8e73bd1049c66057bfaa99ab328",
+      "total": 50,
+      "passed": 50,
+      "answer_correct": 50,
+      "routing_correct": 50,
+      "narrative_checked": 6,
+      "narrative_failed": 0,
+      "api_calls": 97,
+      "tokens": 265499,
+      "mean_ms": 13565.0937,
+      "p95_ms": 23705.666
+    },
+    "ambiguity-regression": {
+      "file": "reports\\v0.1.1\\ambiguity-regression.json",
+      "sha256": "d4cd6e8d77dae24deae962632ea2dd390095b32eb49c019a3a6e17eebabdc3a2",
+      "total": 3,
+      "passed": 3,
+      "answer_correct": 3,
+      "routing_correct": 3,
+      "narrative_checked": 0,
+      "narrative_failed": 0,
+      "api_calls": 6,
+      "tokens": 15450,
+      "mean_ms": 18391.837,
+      "p95_ms": 34573.583
+    }
+  },
+  "preserved_inputs": [
+    "data",
+    "database_schema.sql",
+    "ground_truth_dataset.json",
+    "requirements.txt",
+    "docs/assignment/README.md",
+    "evaluation/extended.json"
+  ],
+  "historical_report_preservation": {
+    "basis": "Canonical committed Git bytes; working-copy line endings may vary by OS.",
+    "reports": {
+      "reports/catalogue-development.json": {
+        "git_blob": "2cccd51b68b30c43b3b27ba4cd4ce192eb382a56",
+        "git_blob_sha256": "4cc0416e3a407fa6cb031d32e902e5c40c4000bb674c4408ad59938d905fc600"
+      },
+      "reports/extended-final.json": {
+        "git_blob": "baf6da53a4d658cef19d058ec2dfb9ffe30d93d4",
+        "git_blob_sha256": "f4d749f0c914da960fec9220618d8c1a8f7f1200d6b51b1bd054abb1475d847f"
+      },
+      "reports/extended-final.md": {
+        "git_blob": "65178f33a42588a9fdad49d714623cdf7001a738",
+        "git_blob_sha256": "f227407af52797621aa91efbc1096317b99dd83ca94aba7356cd514b92dcf6f6"
+      },
+      "reports/extended-regression.json": {
+        "git_blob": "d1544598ae6c0970846000f76e5f4c4a35c9a38f",
+        "git_blob_sha256": "edce2799d989c6b0f96523b38d12f83393f21241b7916be5263256b757888b6d"
+      },
+      "reports/extended-regression.md": {
+        "git_blob": "65178f33a42588a9fdad49d714623cdf7001a738",
+        "git_blob_sha256": "f227407af52797621aa91efbc1096317b99dd83ca94aba7356cd514b92dcf6f6"
+      },
+      "reports/performance.json": {
+        "git_blob": "5ed791cedd9f21fa8ffcddbfc94ddc383eb27705",
+        "git_blob_sha256": "176aebbda9b3a03ef21678dc1b9828ea2e7282216de310c7671146e746835f01"
+      },
+      "reports/planner-development.json": {
+        "git_blob": "ef4c46d4c9d3ebb8bbae59ff7ad765577dc7b7c8",
+        "git_blob_sha256": "225d25ca26eac6cc40f097f71488c05e5b10d009ff0dddc50f6c257ba9e8f70a"
+      },
+      "reports/replay.json": {
+        "git_blob": "129602883c3ab4ddef5665c8d1ee207d0d036c24",
+        "git_blob_sha256": "e2bf6b67961d3826835cd4a9ed7e8f6d6b52116d48a16cb0d824f7c76cd04de6"
+      },
+      "reports/sql-planner-development.json": {
+        "git_blob": "f8c8ee10d5e954eb98a0838fec0ad9807493a5c7",
+        "git_blob_sha256": "c10c8ba385cf03d3397cf96af87de1aed01477bab36853eb5306426933042583"
+      },
+      "reports/supplied-final.json": {
+        "git_blob": "7c837c3eeff04330db3a64ae67a734f01701e475",
+        "git_blob_sha256": "2c30b4017b05ef4a5aa6dde959cbc05db92fe046b608319978a7a48b0dd01f10"
+      },
+      "reports/supplied-final.md": {
+        "git_blob": "f74cf187f046e7f616863fc5ec007b2f0eb32d5b",
+        "git_blob_sha256": "ae43b486fd67a26468029673f384afc7b7a61b36938fed7658272d368f5f970c"
+      },
+      "reports/supplied-flash-lite.json": {
+        "git_blob": "3061c134ed54220a26b518bbb87ffc4c8bd89b2d",
+        "git_blob_sha256": "7f7aad221e21055d83749f2ff422b46b7d85478bf1ca9e4e8ae618f7936db5c8"
+      },
+      "reports/supplied-flash-lite.md": {
+        "git_blob": "5344feb7875c9b30e1affe4fdac16b28b322ec63",
+        "git_blob_sha256": "afaca219b5124c9764baab02b1516a1a5f8a43fcfb23fb33a0d692402caedb53"
+      },
+      "reports/supplied-flash36.json": {
+        "git_blob": "c7f5207dd1b0abaafb0a3b139af74897162d266d",
+        "git_blob_sha256": "fb1514a0ab053a3d52c2e2474ad47cd16fa2c61e5b0c2677bf79cad35c430686"
+      },
+      "reports/supplied-flash36.md": {
+        "git_blob": "426bb601211ff0463597c53dfdb4be459178bdfe",
+        "git_blob_sha256": "a193550fd7591702e9a03a50ff23d69d02139371331b8827f81a10a577f725f0"
+      },
+      "reports/supplied-initial.json": {
+        "git_blob": "16c75719c85d8a04e1c2a05b61f5a9657f868926",
+        "git_blob_sha256": "597e3242031f63c407de9d951761c59f64e09087673278ed87161fad12b50f35"
+      },
+      "reports/supplied-initial.md": {
+        "git_blob": "45a093fcdbda2939bbbacad9decf69f91f4cf00b",
+        "git_blob_sha256": "7113868e9dd4c9a64fdc2d15385fecbc4888ad95fbbde828ab47fbcee74e0cd5"
+      },
+      "reports/supplied-paced.json": {
+        "git_blob": "2285996cefb9aeb86b53c98873227d72248a93c2",
+        "git_blob_sha256": "f324b513cfb193a5a6c3501f9a0434ae1be70db8a9d7f4e9309011eccb205a99"
+      },
+      "reports/supplied-paced.md": {
+        "git_blob": "2f10c77e72fdb3261c6768af99aa2f3dbb87bb1b",
+        "git_blob_sha256": "e08a180658a085912f89d795acb83c0e87040fc0a0e29bc6dcb5ca83d534d7ce"
+      },
+      "reports/supplied-release.json": {
+        "git_blob": "a196a77b1f30945d0dd85cbf8d67f7b03fc34d8d",
+        "git_blob_sha256": "5df650c6e721e3c9dba424526e9d77de10931a320da571c86219bff8c1ab8273"
+      },
+      "reports/supplied-release.md": {
+        "git_blob": "9cd47d2d3a16a022029f19660dc05c34c2dc22e8",
+        "git_blob_sha256": "38b3e3f092f8a6e44a1e131e6a639793846749d49f66b2f57d4f5abbe8893bfa"
+      },
+      "reports/transport-interrupted.json": {
+        "git_blob": "e8fd11095f40847adb1adb81dbfddf272b098b00",
+        "git_blob_sha256": "7fdacd54f8b1b59f01e181fcbc4447d64e1b199144f53f6ad57730a4ba5daff9"
+      },
+      "reports/verification.json": {
+        "git_blob": "7a98d675ec126138459191c972bed6a2d02f7aab",
+        "git_blob_sha256": "4708ca9769235f720bc22a67e2c06c3fa5f4cf9c4cfba94d5c7900e2a39b929d"
+      }
+    }
+  },
+  "secrets": "Current API key absent from tracked files and new report artifacts; .env ignored."
+}
