@@ -13,7 +13,15 @@ from portiq.errors import DataError, PortfolioError
 
 class ExposureInput(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    portfolio: str = Field(min_length=1, max_length=200)
+    portfolio: str = Field(
+        min_length=1,
+        max_length=200,
+        description=(
+            "Portfolio name, name fragment or numeric ID as supplied in the user's request. "
+            "Preserve the original reference; never replace an ambiguous fragment with a guessed "
+            "full name or ID. The tool resolves unique partial names and rejects ambiguous ones."
+        ),
+    )
 
 
 class ExposureResult(BaseModel):

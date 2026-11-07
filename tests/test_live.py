@@ -18,14 +18,16 @@ def test_live_categorical_column_semantics() -> None:
 
     settings = Settings.from_env()
     cases = json.loads((settings.source / "evaluation/extended.json").read_text())["questions"]
-    case = next(c for c in cases if c["id"] == "ext-02")
     backend = GeminiBackend(settings)
     try:
-        result = evaluate_case(
-            PortfolioAgent(settings, backend), case, narrative_rules=["portfolio_names"]
-        )
-        assert result["result_correct"] and result["routing_correct"] and result["answer_correct"]
-        assert result["faithfulness"]["status"] == "passed"
+        agent = PortfolioAgent(settings, backend)
+        for case in (c for c in cases if c["id"] in {"ext-02", "ext-47"}):
+            result = evaluate_case(
+                agent, case, narrative_rules=["portfolio_names"] if case["id"] == "ext-02" else []
+            )
+            assert result["routing_correct"] and result["answer_correct"]
+            if case["id"] == "ext-02":
+                assert result["result_correct"] and result["faithfulness"]["status"] == "passed"
     finally:
         backend.close()
 
