@@ -1,5 +1,6 @@
 """Verify current deterministic tools preserve recorded live evidence; no new AI score."""
 
+import argparse
 import hashlib
 import json
 import subprocess
@@ -12,13 +13,24 @@ from portiq.sql import execute
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="Offline replay of recorded tool evidence")
+    parser.add_argument(
+        "--reports",
+        type=Path,
+        nargs="+",
+        default=[
+            Path("reports/v0.1.1/supplied.json"),
+            Path("reports/v0.1.1/extended.json"),
+        ],
+    )
+    parser.add_argument("--output", type=Path, default=Path("reports/local/replay.json"))
+    args = parser.parse_args()
     settings = Settings.from_env()
     checked = 0
     failures = []
     hashes = {}
-    for name in ("supplied-release", "extended-regression"):
-        path = Path("reports") / f"{name}.json"
-        hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    for path in args.reports:
+        hashes[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
         report = json.loads(path.read_text(encoding="utf-8"))
         for record in report["records"]:
             for tool in record.get("actual", {}).get("tools", []):
@@ -38,7 +50,7 @@ def main() -> int:
                     ).model_dump()
                     error = None if current_exposure == stored else "Exposure evidence changed."
                 if error:
-                    failures.append({"suite": name, "id": record["id"], "error": error})
+                    failures.append({"suite": str(path), "id": record["id"], "error": error})
     result = {
         "mode": "offline deterministic replay; not a new Gemini accuracy measurement",
         "runtime_commit": subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().strip(),
@@ -46,7 +58,8 @@ def main() -> int:
         "checked_tools": checked,
         "failures": failures,
     }
-    Path("reports/replay.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(f"{checked} recorded tool results checked; {len(failures)} mismatches.")
     return int(bool(failures))
 

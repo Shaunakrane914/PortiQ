@@ -1,5 +1,6 @@
 """Offline microbenchmark with raw samples; no invented before/after improvements."""
 
+import argparse
 import json
 import statistics
 import time
@@ -12,6 +13,9 @@ from portiq.sql import execute
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Offline financial-tool microbenchmark")
+    parser.add_argument("--output", type=Path, default=Path("reports/local/performance.json"))
+    args = parser.parse_args()
     path = Path("portfolio_database.db")
     measurements: dict[str, list[float]] = {"exposure_ms": [], "sql_ms": []}
     tracemalloc.start()
@@ -41,8 +45,8 @@ def main() -> None:
         },
         "samples": measurements,
     }
-    output = Path("reports/performance.json")
-    output.parent.mkdir(exist_ok=True)
+    output = args.output
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report["summary"], indent=2))
 
