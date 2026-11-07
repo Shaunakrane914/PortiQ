@@ -126,12 +126,24 @@ def main() -> int:
     source_hashes = {str(p): digest(p) for p in sorted(Path("data").glob("*.csv"))}
     runtime_hashes = {p.name: digest(p) for p in sorted(Path("src/portiq").glob("*.py"))}
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    database_hash = digest(settings.database)
+    suite_hashes = {name: digest(paths[name]) for name in args.sets}
+    rules_hashes = {
+        str(p): digest(p)
+        for p in [
+            Path("evaluation/faithfulness.json"),
+            Path("evaluation/platform_faithfulness.json"),
+        ]
+    }
     metadata = {
         "timestamp_utc": datetime.now(UTC).isoformat(),
         "runtime_revision": revision,
         "model": settings.model,
         "prompt_sha256": digest(Path("src/portiq/prompts.py")),
         "source_sha256": source_hashes,
+        "database_sha256": database_hash,
+        "suite_hashes": suite_hashes,
+        "narrative_rule_hashes": rules_hashes,
         "runtime_sha256": runtime_hashes,
         "request_interval_seconds": 6.5,
         "request_budget": args.request_budget,
@@ -214,6 +226,10 @@ def main() -> int:
         assert runtime_hashes == {
             p.name: digest(p) for p in sorted(Path("src/portiq").glob("*.py"))
         }, "Runtime changed during experiment."
+        assert database_hash == digest(settings.database), "Database changed during experiment."
+        assert suite_hashes == {name: digest(paths[name]) for name in args.sets}
+        assert source_hashes == {str(p): digest(p) for p in sorted(Path("data").glob("*.csv"))}
+        assert rules_hashes == {p: digest(Path(p)) for p in rules_hashes}
         for name in args.sets:
             for strategy in agents:
                 rows = [

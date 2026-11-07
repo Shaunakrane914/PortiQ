@@ -1,7 +1,8 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("node:fs");
 const {execFileSync}=require("node:child_process");
-const shots="reports/v0.2.0/screenshots";
+const evidenceRoot=process.env.PORTIQ_CAPTURE_RELEASE==='1'?'reports/v0.2.0':'reports/local';
+const shots=evidenceRoot+'/screenshots';
 test.beforeAll(()=>fs.mkdirSync(shots,{recursive:true}));
 test("overview and real recorded portfolio exploration",async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
@@ -107,5 +108,5 @@ test("genuine Gemini analyst with visible SQL evidence",async({page})=>{
   await page.getByText('sql_query · validated result',{exact:true}).click();
   await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
   await page.screenshot({path:shots+'/analyst-gemini.png',fullPage:true});
-  fs.writeFileSync('reports/v0.2.0/web-live.json',JSON.stringify({mode:'Actual uncached Gemini request through browser and API',timestamp_utc:new Date().toISOString(),runtime_revision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),question,...payload},null,2)+'\n');
+  fs.writeFileSync(evidenceRoot+'/web-live.json',JSON.stringify({mode:'Actual uncached Gemini request through browser and API',timestamp_utc:new Date().toISOString(),runtime_revision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),question,...payload},null,2)+'\n');
 });
