@@ -73,6 +73,7 @@ class QueryResult(BaseModel):
     duration_ms: float
     truncated: bool = False
     attempts: int = 1
+    validation_ms: float = 0
 
 
 class SQLPlan(BaseModel):
@@ -132,7 +133,9 @@ def execute(
     max_rows: int = 1000,
     seconds: float = 2.0,
 ) -> QueryResult:
+    validation_start = time.perf_counter()
     validate_sql(sql)
+    validation_ms = (time.perf_counter() - validation_start) * 1000
     start = time.perf_counter()
     with connect_readonly(path) as conn:
         tables = {
@@ -191,4 +194,5 @@ def execute(
         sql=sql,
         truncated=len(rows) > max_rows,
         duration_ms=round((time.perf_counter() - start) * 1000, 3),
+        validation_ms=validation_ms,
     )

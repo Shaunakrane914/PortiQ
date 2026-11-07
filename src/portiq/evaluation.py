@@ -14,7 +14,7 @@ from typing import Any
 
 import sqlglot
 
-from portiq.agent import AgentResponse, PortfolioAgent
+from portiq.agent import AgentResponse, AnswerAgent
 from portiq.config import Settings
 from portiq.database import connect_readonly
 from portiq.errors import PortiqError
@@ -301,7 +301,7 @@ def score_answer(
 
 
 def evaluate_case(
-    agent: PortfolioAgent, case: dict[str, Any], *, narrative_rules: list[str] | None = None
+    agent: AnswerAgent, case: dict[str, Any], *, narrative_rules: list[str] | None = None
 ) -> dict[str, Any]:
     start = time.perf_counter()
     try:
@@ -317,7 +317,7 @@ def evaluate_case(
 
 
 def evaluate(
-    agent: PortfolioAgent,
+    agent: AnswerAgent,
     suite: Path,
     output: Path,
     *,
@@ -354,6 +354,9 @@ def evaluate(
     durations = sorted(r["duration_ms"] for r in records)
     report = {
         "evaluator_version": 2,
+        "execution_strategy": "one-call" if type(agent).__name__ == "OneCallAgent" else "existing",
+        "fallback_models": list(agent.settings.fallback_models),
+        "generation_mode": "Live Gemini; local routing and answer caching disabled",
         "timestamp_utc": datetime.now(UTC).isoformat(),
         "suite": suite.name,
         "model": agent.settings.model,

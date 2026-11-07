@@ -3,18 +3,22 @@
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 
 from google.genai import types
 from pydantic import ValidationError
 
-from portiq.agent import PortfolioAgent, render_response
+from portiq.agent import AnswerAgent, PortfolioAgent, render_response
+from portiq.analytics import PortfolioService
 from portiq.config import Settings
 from portiq.database import connect_readonly, initialize
 from portiq.errors import PortiqError
 from portiq.exposure import calculate_exposure
 from portiq.model import GeminiBackend
+from portiq.planning import OneCallAgent
+from portiq.service import AnalysisService, FallbackBackend
 from portiq.sql import execute
 
 
@@ -38,6 +42,22 @@ def parser() -> argparse.ArgumentParser:
         )
         sub.add_argument("--trace", action="store_true")
         sub.add_argument("--show-sql", action="store_true")
+        sub.add_argument("--strategy", choices=["existing", "one-call"], default="existing")
+        sub.add_argument(
+            "--local", action="store_true", help="Enable the explicit local capability registry"
+        )
+        sub.add_argument("--cache", action="store_true", help="Enable session-scoped exact caching")
+        sub.add_argument(
+            "--context", action="store_true", help="Opt in to bounded conversation context"
+        )
+    for name in ("snapshot", "reconcile"):
+        analytic_command = commands.add_parser(
+            name, help="Local recorded-data analytics; no API key"
+        )
+        analytic_command.add_argument("portfolio")
+    serve = commands.add_parser("serve", help="Launch the optional FastAPI dashboard")
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", type=int, default=8000)
     exposure = commands.add_parser("exposure", help="Deterministic exposure; no API key required")
     exposure.add_argument("portfolio")
     sql = commands.add_parser("sql", help="Execute explicit read-only SQL; no API key required")
@@ -52,6 +72,7 @@ def parser() -> argparse.ArgumentParser:
     evaluation.add_argument("--trials", type=int, choices=range(1, 6), default=1)
     evaluation.add_argument("--split", choices=["development", "validation", "heldout"])
     evaluation.add_argument("--limit", type=int)
+    evaluation.add_argument("--strategy", choices=["existing", "one-call"], default="existing")
     return root
 
 
@@ -64,7 +85,8 @@ def main(argv: list[str] | None = None) -> int:
     # SDK/http transport loggers can include URLs; never enable them for --verbose.
     logging.getLogger("httpx").setLevel(logging.ERROR)
     logging.getLogger("google").setLevel(logging.ERROR)
-    backend: GeminiBackend | None = None
+    backend: GeminiBackend | FallbackBackend | None = None
+    analysis: AnalysisService | None = None
     try:
         settings = Settings.from_env()
         overrides = {
@@ -88,6 +110,28 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "sql":
             print(execute(settings.database, args.query).model_dump_json(indent=2))
             return 0
+        if args.command in {"snapshot", "reconcile"}:
+            from portiq.exposure import resolve_portfolio
+
+            identity = resolve_portfolio(settings.database, args.portfolio)[0]
+            snapshot = PortfolioService(settings.database).snapshot(identity)
+            print(
+                (
+                    snapshot if args.command == "snapshot" else snapshot.reconciliation
+                ).model_dump_json(indent=2)
+            )
+            return 0
+        if args.command == "serve":
+            try:
+                import uvicorn
+
+                from portiq.api import create_app
+            except ImportError as exc:
+                raise PortiqError("Install the web extra: uv sync --extra web") from exc
+            if args.host not in {"127.0.0.1", "localhost"} and not os.getenv("PORTIQ_DEMO_TOKEN"):
+                raise PortiqError("Set PORTIQ_DEMO_TOKEN before binding outside loopback.")
+            uvicorn.run(create_app(settings), host=args.host, port=args.port, proxy_headers=False)
+            return 0
         if args.command == "doctor":
             with connect_readonly(settings.database) as conn:
                 integrity = conn.execute("PRAGMA integrity_check").fetchone()[0]
@@ -110,10 +154,22 @@ def main(argv: list[str] | None = None) -> int:
                 info["resolved_model"] = probe.model_version or "not provided by API"
             print(json.dumps(info, indent=2))
             return 0 if integrity == "ok" and not foreign_keys else 1
-        backend = GeminiBackend(settings)
-        agent = PortfolioAgent(settings, backend)
+        agent: AnswerAgent | None = None
+        if args.command in {"ask", "chat"} and (args.local or args.cache or args.context):
+            analysis = AnalysisService(settings)
+        else:
+            backend = (
+                FallbackBackend(settings) if settings.fallback_models else GeminiBackend(settings)
+            )
+            agent = (
+                OneCallAgent(settings, backend)
+                if args.strategy == "one-call"
+                else PortfolioAgent(settings, backend)
+            )
         if args.command == "evaluate":
             from portiq.evaluation import evaluate
+
+            assert agent is not None
 
             suite = settings.source / (
                 "ground_truth_dataset.json"
@@ -130,8 +186,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "chat":
             print(
                 f"PortiQ | database: {settings.database} | model: {settings.model}\n"
-                "Static demonstration data. Type help or exit. Each question is independent."
+                "Static demonstration data. Type help or exit. Context is opt-in with --context."
             )
+        session_id: str | None = None
         while True:
             question = args.question if args.command == "ask" else input("\nYou: ").strip()
             if args.command == "chat" and question.lower() in {"exit", "quit"}:
@@ -146,7 +203,18 @@ def main(argv: list[str] | None = None) -> int:
                 if args.command == "chat":
                     continue
                 raise PortiqError("Question cannot be empty.")
-            response = agent.answer(question)
+            if analysis is not None:
+                response, session_id = analysis.ask(
+                    question,
+                    session_id=session_id,
+                    conversation=args.context,
+                    strategy=args.strategy,
+                    local=args.local,
+                    cached=args.cache,
+                )
+            else:
+                assert agent is not None
+                response = agent.answer(question)
             print(
                 response.model_dump_json(indent=2)
                 if args.json
@@ -170,6 +238,8 @@ def main(argv: list[str] | None = None) -> int:
     finally:
         if backend is not None:
             backend.close()
+        if analysis is not None:
+            analysis.close()
 
 
 if __name__ == "__main__":

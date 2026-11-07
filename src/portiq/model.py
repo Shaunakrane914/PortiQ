@@ -1,7 +1,10 @@
 """Small injectable boundary around the maintained Google GenAI SDK."""
 
+import random
+import threading
 import time
-from typing import Protocol
+from datetime import UTC, datetime
+from typing import Any, Protocol
 
 import httpx
 from google import genai
@@ -9,6 +12,7 @@ from google.genai import errors, types
 
 from portiq.config import Settings
 from portiq.errors import ModelError
+from portiq.quota import RequestBudget, classify
 
 
 class Backend(Protocol):
@@ -18,12 +22,19 @@ class Backend(Protocol):
 
 
 class GeminiBackend:
-    def __init__(self, settings: Settings) -> None:
+    def __init__(self, settings: Settings, budget: RequestBudget | None = None) -> None:
+        key = settings.require_key()
         self.model = settings.model
         self.request_interval = settings.request_interval
         self.last_request = 0.0
+        self.budget = budget or RequestBudget(settings.daily_requests, settings.quota_path)
+        self.owns_budget = budget is None
+        self.lock = threading.RLock()
+        self.attempts: list[dict[str, Any]] = []
+        self.attempt_sequence = 0
+        self.suppressed = False
         self.client = genai.Client(
-            api_key=settings.require_key(),
+            api_key=key,
             http_options=types.HttpOptions(
                 timeout=30000, retry_options=types.HttpRetryOptions(attempts=1)
             ),
@@ -32,28 +43,79 @@ class GeminiBackend:
     def generate(
         self, contents: list[types.Content], config: types.GenerateContentConfig
     ) -> types.GenerateContentResponse:
+        with self.lock:
+            return self._generate(contents, config)
+
+    def _generate(
+        self, contents: list[types.Content], config: types.GenerateContentConfig
+    ) -> types.GenerateContentResponse:
+        if self.suppressed:
+            raise ModelError(
+                "Model temporarily disabled after daily quota or authentication failure.",
+                kind="suppressed",
+            )
+        pacing_start = time.perf_counter()
+        remaining = self.request_interval - (time.monotonic() - self.last_request)
+        if remaining > 0:
+            time.sleep(remaining)
+        self.last_request = time.monotonic()
+        if not self.budget.reserve():
+            raise ModelError("Local daily request budget exhausted.", kind="local_budget")
+        start = time.perf_counter()
+        entry: dict[str, Any] = {
+            "timestamp_utc": datetime.now(UTC).isoformat(),
+            "model": self.model,
+            "service_ms": 0.0,
+            "pacing_ms": (start - pacing_start) * 1000,
+            "input_tokens": None,
+            "output_tokens": None,
+            "total_tokens": None,
+            "error_kind": None,
+        }
         try:
-            remaining = self.request_interval - (time.monotonic() - self.last_request)
-            if remaining > 0:
-                time.sleep(remaining)
-            self.last_request = time.monotonic()
-            return self.client.models.generate_content(
+            response = self.client.models.generate_content(
                 model=self.model,
                 contents=contents,
                 config=config,
             )
+            if response.usage_metadata:
+                usage = response.usage_metadata
+                entry.update(
+                    input_tokens=usage.prompt_token_count,
+                    output_tokens=(
+                        (usage.candidates_token_count or 0) + (usage.thoughts_token_count or 0)
+                    )
+                    if usage.candidates_token_count is not None
+                    or usage.thoughts_token_count is not None
+                    else None,
+                    total_tokens=usage.total_token_count,
+                )
+            return response
         except (errors.APIError, httpx.HTTPError, ValueError) as exc:
             # Never interpolate SDK errors: request URLs or provider payloads may contain secrets.
             code = getattr(exc, "code", None)
+            kind, retryable, delay = classify(exc)
+            entry["error_kind"] = kind
+            self.suppressed = kind in {"daily_quota", "authentication", "unsupported_model"}
             raise ModelError(
                 f"Gemini request failed ({type(exc).__name__}, status={code}). "
                 "Check model availability, credentials, network, and quota.",
-                retryable=isinstance(exc, httpx.TransportError)
-                or code in {408, 500, 502, 503, 504},
+                retryable=retryable,
+                kind=kind,
+                retry_after=delay,
             ) from exc
+        finally:
+            self.attempt_sequence += 1
+            entry["sequence"] = self.attempt_sequence
+            entry["service_ms"] = (time.perf_counter() - start) * 1000
+            self.attempts.append(entry)
+            if len(self.attempts) > 1000:
+                del self.attempts[:-1000]
 
     def close(self) -> None:
         self.client.close()
+        if self.owns_budget:
+            self.budget.close()
 
 
 class MeteredBackend:
@@ -65,6 +127,14 @@ class MeteredBackend:
         self.tokens = 0
         self.duration_ms = 0.0
         self.versions: set[str] = set()
+        self.attempt_start = getattr(backend, "attempt_sequence", 0)
+        self.backoff_ms = 0.0
+
+    @property
+    def metrics(self) -> list[dict[str, Any]]:
+        return [
+            a for a in getattr(self.backend, "attempts", []) if a["sequence"] > self.attempt_start
+        ]
 
     def generate(
         self, contents: list[types.Content], config: types.GenerateContentConfig
@@ -79,6 +149,15 @@ class MeteredBackend:
                 except ModelError as exc:
                     if not exc.retryable or attempt == 1:
                         raise
+                    delay = (
+                        exc.retry_after
+                        if exc.retry_after is not None
+                        else 1 + random.uniform(0, 0.25)
+                    )
+                    if delay > 60:
+                        raise
+                    time.sleep(delay)
+                    self.backoff_ms += delay * 1000
         finally:
             self.duration_ms += (time.perf_counter() - start) * 1000
         if response.model_version:

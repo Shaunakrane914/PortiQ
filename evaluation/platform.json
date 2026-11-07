@@ -1,0 +1,72 @@
+{
+  "purpose": "Original v0.2 capability regression, frozen before live execution; not externally blind.",
+  "questions": [
+    {
+      "id": "platform-01",
+      "question": "List the names of portfolios whose listed current_weight sum is less than 0.99, alphabetically.",
+      "category": "data_quality",
+      "ground_truth": {
+        "sql_query": "SELECT p.portfolio_name FROM portfolios p JOIN holdings h ON h.portfolio_id=p.portfolio_id GROUP BY p.portfolio_id HAVING SUM(h.current_weight)<0.99 ORDER BY p.portfolio_name"
+      }
+    },
+    {
+      "id": "platform-02",
+      "question": "List the distinct currencies recorded for securities, alphabetically.",
+      "category": "currency",
+      "ground_truth": {
+        "sql_query": "SELECT DISTINCT currency FROM securities ORDER BY currency"
+      }
+    },
+    {
+      "id": "platform-03",
+      "question": "Which portfolios have no recorded risk metric observations? List only their names alphabetically.",
+      "category": "missing_data",
+      "ground_truth": {
+        "sql_query": "SELECT portfolio_name FROM portfolios p WHERE NOT EXISTS(SELECT 1 FROM risk_metrics r WHERE r.portfolio_id=p.portfolio_id) ORDER BY portfolio_name"
+      }
+    },
+    {
+      "id": "platform-04",
+      "question": "For Balanced Portfolio, return the recorded sum of current_weight as a single value.",
+      "category": "recorded_weights",
+      "ground_truth": {
+        "sql_query": "SELECT SUM(h.current_weight) FROM holdings h JOIN portfolios p ON p.portfolio_id=h.portfolio_id WHERE p.portfolio_name='Balanced Portfolio'"
+      }
+    },
+    {
+      "id": "platform-05",
+      "question": "Use both tools: show Growth Equity Fund equity sector exposure and separately return its recorded sum of holding current_weight as a single value.",
+      "category": "hybrid",
+      "references": [
+        {
+          "parameters": {
+            "portfolio_name": "Growth Equity Fund"
+          }
+        },
+        {
+          "sql_query": "SELECT SUM(h.current_weight) FROM holdings h JOIN portfolios p ON p.portfolio_id=h.portfolio_id WHERE p.portfolio_name='Growth Equity Fund'"
+        }
+      ]
+    },
+    {
+      "id": "platform-06",
+      "question": "Return the latest recorded NAV for Balanced Portfolio, along with its observation date. Use only these two columns.",
+      "category": "historical",
+      "ground_truth": {
+        "sql_query": "SELECT nav,performance_date FROM portfolio_performance r JOIN portfolios p ON p.portfolio_id=r.portfolio_id WHERE p.portfolio_name='Balanced Portfolio' ORDER BY performance_date DESC LIMIT 1"
+      }
+    },
+    {
+      "id": "platform-07",
+      "question": "Forecast the exact return of Growth Equity Fund next year.",
+      "category": "unsupported",
+      "expected_status": "unsupported"
+    },
+    {
+      "id": "platform-08",
+      "question": "Calculate sector exposure for the equity fund.",
+      "category": "ambiguity",
+      "expected_status": "clarification"
+    }
+  ]
+}

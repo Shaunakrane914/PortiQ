@@ -20,6 +20,9 @@ class Settings(BaseModel):
     max_tool_calls: int = Field(default=6, ge=1, le=12)
     sql_attempts: int = Field(default=3, ge=1, le=4)
     request_interval: float = Field(default=13.0, ge=0, le=60)
+    daily_requests: int = Field(default=200, ge=1, le=10000)
+    quota_path: Path | None = None
+    fallback_models: tuple[str, ...] = Field(default=(), max_length=2)
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -30,6 +33,13 @@ class Settings(BaseModel):
             model=os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite"),
             api_key=SecretStr(os.getenv("GEMINI_API_KEY", "")),
             request_interval=float(os.getenv("PORTIQ_REQUEST_INTERVAL", "13")),
+            daily_requests=int(os.getenv("PORTIQ_DAILY_REQUESTS", "200")),
+            quota_path=Path(os.environ["PORTIQ_QUOTA_DB"])
+            if os.getenv("PORTIQ_QUOTA_DB")
+            else None,
+            fallback_models=tuple(
+                m.strip() for m in os.getenv("PORTIQ_FALLBACK_MODELS", "").split(",") if m.strip()
+            ),
         )
 
     def require_key(self) -> str:

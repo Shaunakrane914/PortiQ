@@ -1,0 +1,11 @@
+{
+  "name": "portiq-browser-verification",
+  "private": true,
+  "scripts": {
+    "test:web": "playwright test",
+    "check:web": "node --check src/portiq/web/app.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0"
+  }
+}

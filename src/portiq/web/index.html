@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PortiQ · Portfolio Intelligence</title>
+    <meta
+      name="description"
+      content="A transparent research workspace for the PL Capital portfolio dataset."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to workspace</a>
+    <aside class="rail">
+      <a class="brand" href="#overview"
+        ><span class="mark">P<span>iQ</span></span
+        ><span>PortiQ<small>PORTFOLIO INTELLIGENCE</small></span></a
+      >
+      <div class="rail-label">RESEARCH WORKSPACE</div>
+      <nav aria-label="Workspace">
+        <button data-page="overview" aria-current="page">
+          <span aria-hidden="true">01</span>Overview
+        </button>
+        <button data-page="explorer"><span aria-hidden="true">02</span>Portfolio Explorer</button>
+        <button data-page="analyst"><span aria-hidden="true">03</span>AI Analyst</button>
+        <button data-page="reconciliation">
+          <span aria-hidden="true">04</span>Reconciliation
+        </button>
+        <button data-page="evaluation"><span aria-hidden="true">05</span>Evaluation Lab</button>
+        <button data-page="status"><span aria-hidden="true">06</span>System Status</button>
+      </nav>
+      <div class="rail-footer">
+        <span class="dot"></span> Static assessment dataset
+        <p>Built for the PL Capital<br />AI Engineering Assessment.</p>
+        <small>Local analytics · Traceable answers</small>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <span class="breadcrumb">RESEARCH / <b id="crumb">OVERVIEW</b></span
+        ><span class="tag">RECORDED DATA · NOT LIVE</span>
+      </header>
+      <main id="main">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow">PORTiQ / ANALYTICS</div>
+            <h1 id="title">Portfolio overview</h1>
+            <p id="subtitle">See the allocation. Understand the basis.</p>
+          </div>
+          <label class="portfolio-picker"
+            >Selected portfolio<select
+              id="portfolio"
+              aria-label="Selected portfolio"
+            >
+              <option value="">Choose a portfolio</option>
+            </select></label
+          >
+        </div>
+        <div id="error" class="notice error" role="alert" hidden></div>
+        <div id="loading" role="status" hidden>Loading recorded data…</div>
+        <section id="content" aria-live="polite"></section>
+        <footer class="footer">
+          <span>PORTiQ / Source-backed research</span
+          ><span
+            >Demonstration data. No live prices or investment
+            recommendations.</span
+          >
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

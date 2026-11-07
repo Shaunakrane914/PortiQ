@@ -3,7 +3,7 @@
 import json
 import logging
 import time
-from typing import Any, Literal
+from typing import Any, Literal, Protocol
 from uuid import uuid4
 
 from google.genai import types
@@ -62,6 +62,22 @@ class AgentResponse(BaseModel):
     api_calls: int
     tokens: int
     cache: str = "disabled"
+    execution_source: str = "Gemini planned analysis"
+    strategy: str = "existing"
+    provider_metrics: list[dict[str, Any]] = Field(default_factory=list)
+    backoff_ms: float = 0
+    context_portfolio: int | None = None
+    error_kind: str | None = None
+    rendering: str = "model synthesis with authoritative tool evidence"
+    planning_events: list[str] = Field(default_factory=list)
+    rendering_ms: float | None = None
+    stages_ms: dict[str, float] = Field(default_factory=dict)
+
+
+class AnswerAgent(Protocol):
+    settings: Settings
+
+    def answer(self, question: str) -> AgentResponse: ...
 
 
 def user_content(text: str) -> types.Content:
@@ -206,8 +222,10 @@ class PortfolioAgent:
                 model_versions=sorted(meter.versions),
                 duration_ms=round((time.perf_counter() - start) * 1000, 3),
                 model_duration_ms=round(meter.duration_ms, 3),
-                api_calls=meter.calls,
+                api_calls=len(meter.metrics) if hasattr(self.backend, "attempts") else meter.calls,
                 tokens=meter.tokens,
+                provider_metrics=meter.metrics,
+                backoff_ms=meter.backoff_ms,
             )
             logger.info(
                 "request=%s status=%s model=%s tools=%s api_calls=%s duration_ms=%s",
@@ -240,7 +258,9 @@ class PortfolioAgent:
                     ),
                 )
             except ModelError as exc:
-                return finish("error", str(exc))
+                failed_response = finish("error", str(exc))
+                failed_response.error_kind = exc.kind
+                return failed_response
             if not response.candidates or not response.candidates[0].content:
                 return finish("error", "Gemini returned no usable candidate.")
             # Preserve original content and thought signatures without logging them.
