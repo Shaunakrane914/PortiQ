@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("node:fs");
 const {execFileSync}=require("node:child_process");
-const evidenceRoot=process.env.PORTIQ_CAPTURE_RELEASE==='1'?'reports/v0.2.0':'reports/local';
+const evidenceRoot=process.env.PORTIQ_CAPTURE_RELEASE==='1'?(process.env.PORTIQ_CAPTURE_DIR||'reports/v0.2.0'):'reports/local';
 const shots=evidenceRoot+'/screenshots';
 test.beforeAll(()=>fs.mkdirSync(shots,{recursive:true}));
 test("overview and real recorded portfolio exploration",async({page})=>{
@@ -11,6 +11,7 @@ test("overview and real recorded portfolio exploration",async({page})=>{
   await expect(page.getByText('Portfolio universe',{exact:true})).toBeVisible();
   await expect(page.getByText('Aggregate AUM',{exact:true})).toBeVisible();
   await expect(page.locator('#content')).toContainText('Unavailable');
+  await expect(page.getByRole('columnheader',{name:'Stock recorded %'})).toBeVisible();
   await page.screenshot({path:shots+'/overview-desktop.png',fullPage:true});
   await page.getByRole('button',{name:'Portfolio Explorer'}).click();
   await expect(page.getByRole('heading',{name:'Holdings',exact:true})).toBeVisible();
@@ -49,6 +50,7 @@ test("reconciliation export, archived evidence and mobile layout",async({page})=
   await page.getByRole('button',{name:'Evaluation Lab'}).click();
   await expect(page.locator('#content')).toContainText('not a live');
   await expect(page.locator('#content')).toContainText('v0.1.1 / extended');
+  await expect(page.getByText('Archived tests, coverage and CI evidence',{exact:true}).first()).toBeVisible();
   await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
   await page.screenshot({path:shots+'/evaluation-lab.png',fullPage:true});
   await page.setViewportSize({width:390,height:844});
@@ -128,6 +130,6 @@ test("genuine Gemini analyst with visible SQL evidence",async({page})=>{
   for(const name of expected)await expect(page.locator('.message .answer').last()).toContainText(name);
   await page.getByText('sql_query · validated result',{exact:true}).click();
   await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
-  await page.screenshot({path:shots+'/analyst-gemini.png',fullPage:true});
-  fs.writeFileSync(evidenceRoot+'/web-live.json',JSON.stringify({mode:'Actual uncached Gemini request through browser and API',timestamp_utc:new Date().toISOString(),runtime_revision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),question,...payload},null,2)+'\n');
+  await page.screenshot({path:shots+'/analyst-gemini-final.png',fullPage:true});
+  fs.writeFileSync(evidenceRoot+'/web-live-final.json',JSON.stringify({mode:'Actual uncached Gemini request through browser and API',timestamp_utc:new Date().toISOString(),runtime_revision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),question,...payload},null,2)+'\n');
 });

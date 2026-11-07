@@ -1,0 +1,38 @@
+{
+  "capture_revision": "3bff6490199ebd94eb3a2dd199da83e7e2e28c7d",
+  "python_runtime_revision": "2bef3c4314b6132344c1709589afe1f0cc0878de",
+  "mode": "Real Chromium/local HTTP/database; Gemini key disabled",
+  "stats": {
+    "startTime": "2026-11-07T12:21:15.339Z",
+    "duration": 9319.56,
+    "expected": 8,
+    "skipped": 1,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "asset_sha256": {
+    "src\\portiq\\web\\app.js": "2a8522ee1172ca7c22b15a4a8aa459bf21a6a24ef695b9465acb3a03eb1b1ea3",
+    "src\\portiq\\web\\index.html": "2a9e4dbbd0cb73d7761eecf8e58c9f49d0f6d1175747e734390599c036b30d50",
+    "src\\portiq\\web\\styles.css": "fed879cbd24e5745b9c05b90ee6f1141e65651a284103c707de6f3154751c183"
+  },
+  "checks": [
+    "overview and real recorded portfolio exploration",
+    "local analyst, exact cache and portfolio follow-up",
+    "reconciliation export, archived evidence and mobile layout",
+    "system status shows real configuration and bounded local services",
+    "demo token restores dataset controls",
+    "database labels render as text instead of HTML",
+    "navigation clears stale content while a new dataset view loads",
+    "name fragments switch follow-up context to the actual portfolio",
+    "genuine Gemini analyst with visible SQL evidence"
+  ],
+  "screenshots": [
+    "analyst-local.png",
+    "evaluation-lab.png",
+    "explorer-desktop.png",
+    "overview-desktop.png",
+    "overview-mobile.png",
+    "reconciliation.png",
+    "system-status.png"
+  ]
+}

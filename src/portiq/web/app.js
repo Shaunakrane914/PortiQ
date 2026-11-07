@@ -332,17 +332,24 @@ async function overview() {
   const universe = card("The portfolio universe", "RECORDED MANDATES");
   universe.append(
     table(
-      d.portfolios,
+      d.portfolios.map(p=>{
+        const composition=d.composition.find(c=>c.name===p.portfolio_name)||{};
+        return {...p,recorded_stock_percent:composition.Stock??null,
+          recorded_bond_percent:composition.Bond??null};
+      }),
       [
         ["portfolio_name", "Portfolio"],
         ["status", "Status"],
         ["strategy_type", "Strategy"],
         ["target_risk_level", "Target risk"],
         ["total_aum", "Recorded AUM · currency unknown"],
+        ["recorded_stock_percent", "Stock recorded %"],
+        ["recorded_bond_percent", "Bond recorded %"],
       ],
       { search: true, sort: true },
     ),
   );
+  universe.append(el("p","Stock and bond percentages use the recorded whole-portfolio weight denominator (1.0). An absent asset-class entry is shown as unavailable; no cash allocation is inferred.","caption"));
   root.append(universe);
   return root;
 }
@@ -783,7 +790,10 @@ async function evaluation() {
         ),
       ),
     );
-    c.append(detail);
+    const checks=el("details");
+    checks.append(el("summary","Archived tests, coverage and CI evidence"),
+      el("pre",JSON.stringify(r.verification,null,2)));
+    c.append(detail,checks);
     root.append(c);
   }
   return root;

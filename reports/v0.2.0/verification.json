@@ -1,0 +1,47 @@
+{
+  "runtime_revision": "2bef3c4314b6132344c1709589afe1f0cc0878de",
+  "mode": "Actual local unit/integration tests, fake SDKs for policy failures; no live provider calls",
+  "python": "3.14.0",
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "2",
+    "tests": "206",
+    "time": "14.478",
+    "timestamp": "2026-11-07T17:35:28.144574+05:30",
+    "hostname": "Shaunak"
+  },
+  "coverage": {
+    "lines-covered": "1701",
+    "lines-valid": "1853",
+    "line-rate": "0.918"
+  },
+  "ruff": "passed",
+  "format": "passed",
+  "strict_mypy": "passed",
+  "warning": "Starlette TestClient deprecates its httpx adapter; warning retained, not suppressed",
+  "ci": [
+    {
+      "id": 42370987514,
+      "name": "Python quality",
+      "conclusion": "success",
+      "jobs": 4,
+      "head": "2bef3c4314b6132344c1709589afe1f0cc0878de"
+    },
+    {
+      "id": 42370987446,
+      "name": "Platform smoke",
+      "conclusion": "success",
+      "jobs": 1,
+      "head": "2bef3c4314b6132344c1709589afe1f0cc0878de"
+    }
+  ],
+  "pytest": {
+    "tests": 206,
+    "passed": 204,
+    "skipped": 2,
+    "errors": 0,
+    "failures": 0
+  }
+}

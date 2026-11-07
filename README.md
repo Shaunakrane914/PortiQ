@@ -66,7 +66,7 @@ uv run portfolio-agent serve
 
 Open **http://127.0.0.1:8000**. Overview, Explorer, Reconciliation, Evaluation Lab and System Status work without a Gemini key. AI Analyst labels local calculation, cached answers and genuine model analysis. Its default local/cache settings are visible; turn both off to demonstrate genuine Gemini analysis. Enter an optional demo access token through System Status; it remains in browser memory.
 
-![Portfolio overview](reports/v0.2.0/screenshots/overview-desktop.png)
+![Portfolio overview](reports/v0.2.0/final-ui/screenshots/overview-desktop.png)
 
 The UI uses original HTML/CSS/JavaScript, system fonts and local assets. There is no frontend build requirement. Charts show actual observations and missing-data notices; they do not imply live market coverage.
 
