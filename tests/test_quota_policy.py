@@ -116,6 +116,38 @@ def test_http_retry_after() -> None:
     )
 
 
+def test_auth_suppression_retains_reason_without_trying_backup(
+    database: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    actual = []
+
+    def generate(**kwargs):
+        actual.append(kwargs["model"])
+        raise errors.ClientError(403, {"message": "secret-credential"})
+
+    monkeypatch.setattr(
+        "portiq.model.genai.Client",
+        lambda **kw: SimpleNamespace(
+            models=SimpleNamespace(generate_content=generate), close=lambda: None
+        ),
+    )
+    settings = Settings(
+        database=database,
+        api_key=SecretStr("test"),
+        model="primary",
+        fallback_models=("backup",),
+        request_interval=0,
+    )
+    backend = FallbackBackend(settings)
+    try:
+        for _ in range(2):
+            result = PortfolioAgent(settings, backend).answer("Count portfolios")
+            assert result.error_kind == "authentication"
+        assert actual == ["primary"] and backend.budget.used() == 1
+    finally:
+        backend.close()
+
+
 def test_container_probe_handles_startup_disconnect(monkeypatch: pytest.MonkeyPatch) -> None:
     spec = importlib.util.spec_from_file_location(
         "smoke", Path(__file__).parents[1] / "scripts/container_smoke.py"

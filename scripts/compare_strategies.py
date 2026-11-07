@@ -198,7 +198,13 @@ def main() -> int:
                         f"calls={answer.api_calls} {row.get('failure', '')}",
                         flush=True,
                     )
-                    if answer.error_kind in {"daily_quota", "local_budget", "suppressed"}:
+                    if answer.error_kind in {
+                        "daily_quota",
+                        "local_budget",
+                        "authentication",
+                        "unsupported_model",
+                        "suppressed",
+                    }:
                         print(
                             "Stopped on exhausted quota/budget; partial evidence retained. "
                             "A later run must use a new directory.",

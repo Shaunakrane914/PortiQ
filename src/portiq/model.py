@@ -32,7 +32,7 @@ class GeminiBackend:
         self.lock = threading.RLock()
         self.attempts: list[dict[str, Any]] = []
         self.attempt_sequence = 0
-        self.suppressed = False
+        self.suppressed_kind: str | None = None
         self.client = genai.Client(
             api_key=key,
             http_options=types.HttpOptions(
@@ -49,10 +49,10 @@ class GeminiBackend:
     def _generate(
         self, contents: list[types.Content], config: types.GenerateContentConfig
     ) -> types.GenerateContentResponse:
-        if self.suppressed:
+        if self.suppressed_kind:
             raise ModelError(
-                "Model temporarily disabled after daily quota or authentication failure.",
-                kind="suppressed",
+                "Model disabled until backend restart after " + self.suppressed_kind + ".",
+                kind=self.suppressed_kind,
             )
         pacing_start = time.perf_counter()
         remaining = self.request_interval - (time.monotonic() - self.last_request)
@@ -96,7 +96,9 @@ class GeminiBackend:
             code = getattr(exc, "code", None)
             kind, retryable, delay = classify(exc)
             entry["error_kind"] = kind
-            self.suppressed = kind in {"daily_quota", "authentication", "unsupported_model"}
+            self.suppressed_kind = (
+                kind if kind in {"daily_quota", "authentication", "unsupported_model"} else None
+            )
             raise ModelError(
                 f"Gemini request failed ({type(exc).__name__}, status={code}). "
                 "Check model availability, credentials, network, and quota.",
