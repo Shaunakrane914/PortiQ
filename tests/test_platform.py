@@ -6,15 +6,14 @@ from pathlib import Path
 
 import pytest
 from google.genai import errors
-from pydantic import ValidationError
 from test_agent import FakeBackend, call
 
+from portiq.agent import _financial as financial
+from portiq.agent import render_tools
 from portiq.analytics import Holding, PortfolioService, reconcile
 from portiq.config import Settings
-from portiq.errors import ModelError, PortiqError
-from portiq.planning import OneCallAgent, Plan
+from portiq.errors import PortiqError
 from portiq.quota import RequestBudget, classify
-from portiq.renderer import financial, render_tools
 from portiq.service import AnalysisService, ExactCache, Sessions, local_answer
 
 
@@ -140,67 +139,6 @@ def test_renderer_preserves_nulls_duplicates_and_bounds(database: Path) -> None:
     text = render_tools(r.tools, max_rows=2)
     assert text.count("Not available | 0") == 2 and "Showing" in text
     assert "USD" not in text
-
-
-def test_one_call_hybrid_dependency(database: Path) -> None:
-    backend = FakeBackend(
-        [
-            call(
-                "execute_plan",
-                status="answer",
-                steps=[
-                    {
-                        "tool": "sql_query",
-                        "sql": "SELECT portfolio_name FROM portfolios WHERE portfolio_id=3",
-                    },
-                    {"tool": "exposure_calculator", "from_step": 0},
-                ],
-            )
-        ]
-    )
-    r = OneCallAgent(Settings(database=database), backend).answer(
-        "Identify portfolio 3 and calculate exposure"
-    )
-    assert r.status == "answer" and r.api_calls == 1 and len(r.tools) == 2
-    assert r.tools[1].result["sectors"] == {"Technology": "100.00"}
-    assert "Tech Innovation Fund" in r.answer
-
-
-@pytest.mark.parametrize(
-    "steps",
-    [
-        [{"tool": "sql_query", "sql": "DROP TABLE holdings"}],
-        [{"tool": "exposure_calculator", "from_step": 0}],
-        [{"tool": "exposure_calculator", "portfolio": "3", "from_step": 0}],
-        [{"tool": "unexpected"}],
-    ],
-)
-def test_plan_validation(steps: list) -> None:
-    with pytest.raises((ValidationError, PortiqError)):
-        Plan.model_validate({"status": "answer", "steps": steps})
-
-
-def test_invalid_plan_falls_back_and_accounts_request(database: Path) -> None:
-    backend = FakeBackend(
-        [
-            call("execute_plan", status="answer", steps=[]),
-            call(
-                "sql_query",
-                question="Count",
-                sql="SELECT COUNT(*) FROM portfolios",
-                explanation="count",
-            ),
-            call("respond", status="answer", answer="13 portfolios."),
-        ]
-    )
-    r = OneCallAgent(Settings(database=database), backend).answer("Count portfolios")
-    assert r.api_calls == 3 and "fallback" in r.strategy and r.status == "answer"
-
-
-def test_one_call_provider_failure_no_unbounded_fallback(database: Path) -> None:
-    b = FakeBackend([ModelError("Daily limit", kind="daily_quota")])
-    r = OneCallAgent(Settings(database=database), b).answer("Count portfolios")
-    assert r.status == "error" and r.api_calls == 1
 
 
 def test_atomic_budget_across_connections(tmp_path: Path) -> None:
@@ -368,42 +306,3 @@ def test_clarification_is_available_to_a_metric_followup(database: Path) -> None
     assert second.status == "answer"
     context = backend.requests[1][0][0].parts[0].text
     assert "Balanced Portfolio" in context and "quantity or recorded weight" in context
-
-
-def test_one_call_rejects_multivalued_dependency(database: Path) -> None:
-    backend = FakeBackend(
-        [
-            call(
-                "execute_plan",
-                status="answer",
-                steps=[
-                    {
-                        "tool": "sql_query",
-                        "sql": (
-                            "SELECT portfolio_name FROM portfolios ORDER BY portfolio_name LIMIT 2"
-                        ),
-                    },
-                    {"tool": "exposure_calculator", "from_step": 0},
-                ],
-            )
-        ]
-    )
-    result = OneCallAgent(Settings(database=database), backend).answer("Use the selected name")
-    assert result.status == "clarification" and "unambiguous" in result.answer
-
-
-def test_unsafe_plan_cannot_mutate_database(database: Path) -> None:
-    before = database.read_bytes()
-    backend = FakeBackend(
-        [
-            call(
-                "execute_plan",
-                status="answer",
-                steps=[{"tool": "sql_query", "sql": "DELETE FROM holdings"}],
-            )
-        ]
-    )
-    result = OneCallAgent(Settings(database=database), backend, fallback=False).answer(
-        "Delete holdings"
-    )
-    assert result.status == "error" and database.read_bytes() == before

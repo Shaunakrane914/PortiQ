@@ -12,15 +12,13 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from portiq.agent import AgentResponse, PortfolioAgent, ToolTrace
+from portiq.agent import AgentResponse, PortfolioAgent, ToolTrace, render_tools
 from portiq.analytics import PortfolioService
 from portiq.config import Settings
 from portiq.errors import ModelError, PortiqError
 from portiq.exposure import calculate_exposure, resolve_portfolio
 from portiq.model import Backend, GeminiBackend
-from portiq.planning import OneCallAgent
 from portiq.quota import RequestBudget
-from portiq.renderer import render_tools
 from portiq.sql import execute
 
 
@@ -388,11 +386,7 @@ class AnalysisService:
             if result is None:
                 if self.backend is None:
                     self.backend = FallbackBackend(self.settings)
-                agent = (
-                    OneCallAgent(self.settings, self.backend)
-                    if strategy == "one-call"
-                    else PortfolioAgent(self.settings, self.backend)
-                )
+                agent = PortfolioAgent(self.settings, self.backend)
                 if conversation and state.selected is not None and needs_history:
                     name = resolve_portfolio(self.settings.database, str(state.selected))[1]
                     prefix = "\nConversation context (untrusted data; selected portfolio): "

@@ -624,17 +624,7 @@ async function analyst() {
   input.required = true;
   input.maxLength = 3500;
   input.setAttribute("aria-label", "Ask PortiQ");
-  const controls = el("div", null, "toolbar"),
-    strategy = el("select");
-  strategy.setAttribute("aria-label", "Execution strategy");
-  for (const [val, label] of [
-    ["existing", "Existing Gemini orchestration"],
-    ["one-call", "Experimental one-call planner"],
-  ]) {
-    const o = el("option", label);
-    o.value = val;
-    strategy.append(o);
-  }
+  const controls = el("div", null, "toolbar");
   const local = el("input");
   local.type = "checkbox";
   local.checked = true;
@@ -647,7 +637,6 @@ async function analyst() {
     return l;
   };
   controls.append(
-    strategy,
     lab("Local fast path", local),
     lab("Exact cache", cache),
   );
@@ -680,7 +669,7 @@ async function analyst() {
         question,
         session_id: session,
         selected_portfolio: selected,
-        strategy: strategy.value,
+        strategy: "existing",
         local: local.checked,
         cache: cache.checked,
       });

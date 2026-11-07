@@ -17,7 +17,6 @@ from portiq.database import connect_readonly, initialize
 from portiq.errors import PortiqError
 from portiq.exposure import calculate_exposure
 from portiq.model import GeminiBackend
-from portiq.planning import OneCallAgent
 from portiq.service import AnalysisService, FallbackBackend
 from portiq.sql import execute
 
@@ -42,7 +41,6 @@ def parser() -> argparse.ArgumentParser:
         )
         sub.add_argument("--trace", action="store_true")
         sub.add_argument("--show-sql", action="store_true")
-        sub.add_argument("--strategy", choices=["existing", "one-call"], default="existing")
         sub.add_argument(
             "--local", action="store_true", help="Enable the explicit local capability registry"
         )
@@ -72,7 +70,6 @@ def parser() -> argparse.ArgumentParser:
     evaluation.add_argument("--trials", type=int, choices=range(1, 6), default=1)
     evaluation.add_argument("--split", choices=["development", "validation", "heldout"])
     evaluation.add_argument("--limit", type=int)
-    evaluation.add_argument("--strategy", choices=["existing", "one-call"], default="existing")
     return root
 
 
@@ -161,11 +158,7 @@ def main(argv: list[str] | None = None) -> int:
             backend = (
                 FallbackBackend(settings) if settings.fallback_models else GeminiBackend(settings)
             )
-            agent = (
-                OneCallAgent(settings, backend)
-                if args.strategy == "one-call"
-                else PortfolioAgent(settings, backend)
-            )
+            agent = PortfolioAgent(settings, backend)
         if args.command == "evaluate":
             from portiq.evaluation import evaluate
 
@@ -210,7 +203,6 @@ def main(argv: list[str] | None = None) -> int:
                     question,
                     session_id=session_id,
                     conversation=args.context,
-                    strategy=args.strategy,
                     local=args.local,
                     cached=args.cache,
                 )

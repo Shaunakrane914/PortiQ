@@ -354,7 +354,7 @@ def evaluate(
     durations = sorted(r["duration_ms"] for r in records)
     report = {
         "evaluator_version": 2,
-        "execution_strategy": "one-call" if type(agent).__name__ == "OneCallAgent" else "existing",
+        "execution_strategy": "orchestrated",
         "fallback_models": list(agent.settings.fallback_models),
         "generation_mode": "Live Gemini; local routing and answer caching disabled",
         "timestamp_utc": datetime.now(UTC).isoformat(),

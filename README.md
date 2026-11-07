@@ -28,7 +28,7 @@ uv run portfolio-agent chat
 
 On macOS/Linux use `cp .env.example .env`. A pip alternative is `python -m pip install -e .`; `uv.lock` is the canonical tested resolution. The CLI does not require FastAPI, Node or a browser. A clone with the supplied data is required; wheels do not bundle the assessment dataset. Global `--model`, `--db`, `--source` options precede the subcommand.
 
-`ask` and `chat` use the original orchestration by default. `chat --context` enables bounded conversation history; independent questions remain the default. `ask --local` and `chat --local --cache --context` explicitly enable the small local capability registry and in-memory exact cache. `--strategy one-call` selects the **experimental** typed planner. It has shown result and ambiguity regressions and is not promoted to the default.
+`ask` and `chat` use the original orchestration by default. `chat --context` enables bounded conversation history; independent questions remain the default. `ask --local` and `chat --local --cache --context` explicitly enable the small local capability registry and in-memory exact cache.
 
 ```powershell
 uv run portfolio-agent snapshot "Balanced Portfolio"
@@ -48,11 +48,9 @@ These commands consume real Gemini quota. Evaluation bypasses local routing and 
 ```powershell
 uv run portfolio-agent evaluate --output reports/local/supplied.json
 uv run portfolio-agent evaluate --suite extended --output reports/local/extended.json
-uv run portfolio-agent evaluate --strategy one-call --output reports/local/one-call.json
-uv run python scripts/compare_strategies.py --output-dir reports/local/paired-new
 ```
 
-The paired script uses the same frozen questions, alternating strategy order, one paced backend and independent oracles. It refuses to overwrite an output directory. [Evaluation details](docs/EVALUATION.md) distinguish complete runs, partial failures, mocked tests and deterministic checks. Fresh v0.2 default-planner results are **10/10 supplied, 50/50 extended and 8/8 platform**. Historical v0.1.1 results remain separately preserved. The experimental planner scored **9/10 supplied, 50/50 extended and 7/8 platform**; it is not the default. Current evidence is indexed in [v0.2.0 reports](reports/v0.2.0/README.md).
+Evaluation uses the same frozen questions, a paced backend and independent oracles. [Evaluation details](docs/EVALUATION.md) distinguish complete runs, partial failures, mocked tests and deterministic checks. Fresh v0.2 results are **10/10 supplied, 50/50 extended and 8/8 platform**. Historical v0.1.1 results remain separately preserved. Current evidence is indexed in [v0.2.0 reports](reports/v0.2.0/README.md).
 
 ## Optional API and dashboard
 
@@ -127,7 +125,7 @@ flowchart LR
   CLI --> Service[Shared analysis service]
   Web[HTML dashboard] --> API[FastAPI] --> Service
   Service --> Cache[Exact cache / local capabilities]
-  Service --> Agent[Original agent / experimental planner]
+  Service --> Agent[Original agent]
   Agent --> Gemini[Gemini typed function calls]
   Agent --> SQL[Validated read-only SQL]
   Service --> Finance[Shared exposure / reconciliation]
