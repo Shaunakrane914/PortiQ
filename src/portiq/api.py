@@ -118,14 +118,14 @@ def create_app(
     )
     app.state.analysis = analysis
     app.add_middleware(BodyLimit)
+    extra_hosts = [h.strip() for h in os.getenv("PORTIQ_ALLOWED_HOSTS", "").split(",") if h.strip()]
+    if "*" in extra_hosts or (not extra_hosts and os.getenv("PORTIQ_ALLOW_ANONYMOUS") == "1"):
+        allowed_hosts = ["*"]
+    else:
+        allowed_hosts = ["localhost", "127.0.0.1", "testserver", *extra_hosts]
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=[
-            "localhost",
-            "127.0.0.1",
-            "testserver",
-            *[h.strip() for h in os.getenv("PORTIQ_ALLOWED_HOSTS", "").split(",") if h.strip()],
-        ],
+        allowed_hosts=allowed_hosts,
     )
     if origins:
         app.add_middleware(

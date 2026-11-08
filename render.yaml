@@ -10,9 +10,14 @@ services:
         value: 0.0.0.0
       - key: PORTIQ_ALLOW_ANONYMOUS
         value: "1"
+      - key: PORTIQ_ALLOWED_HOSTS
+        value: "*"
       - key: PORTIQ_REQUEST_INTERVAL
         value: "6.5"
+      - key: PORTIQ_REQUESTS_PER_MINUTE
+        value: "14"
       - key: GEMINI_API_KEY
         sync: false
       - key: PORTIQ_DEMO_TOKEN
         sync: false
+
