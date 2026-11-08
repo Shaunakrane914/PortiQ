@@ -68,6 +68,46 @@ def _sector_claims(text: str, sector: str) -> list[re.Match[str]]:
     ]
 
 
+def _labelled_numbers(label: str, text: str) -> list[str]:
+    """Explicit label/value pairs in bullets, tables or value-before-label prose."""
+    name = r"(?<!\w)" + re.escape(label) + r"(?!\w)"
+    separators = r"[ \t]*(?:[:|=][ \t]*|(?:is|are|has|have)[ \t]*)?[$€£]?[ \t]*"
+    number = NUMBER.pattern.replace(r"\s", r"[ \t]")
+    matches = [
+        *re.finditer(name + separators + number, text, re.I),
+        *re.finditer(number + r"[ \t]+" + name, text, re.I),
+    ]
+    return [match["number"] + (" " + match["scale"] if match["scale"] else "") for match in matches]
+
+
+def _prose_row(row: list[Any], columns: list[str], text: str) -> bool:
+    if len(row) == 2 and isinstance(row[0], str) and isinstance(row[1], (int, float)):
+        claims = _labelled_numbers(row[0], text)
+        return bool(claims) and all(_value_present(row[1], claim) for claim in claims)
+    # Explicit labelled aggregate pairs, e.g. "minimum ... 28.95, maximum ... 3380".
+    aliases = {
+        "min": r"min(?:imum)?",
+        "max": r"max(?:imum)?",
+        "avg": r"averag(?:e)?",
+        "sum": r"total",
+        "count": r"count",
+    }
+    for column, value in zip(columns, row, strict=True):
+        kind = re.match(r"(?i)^(min|max|avg|sum|count)\s*\(", column)
+        if kind is None or not isinstance(value, (int, float)):
+            return False
+        claims = [
+            part
+            for part in re.split(r"\n|;|,(?!\d)|\band\b", text, flags=re.I)
+            if re.search(r"\b" + aliases[kind[1].lower()] + r"\b", part, re.I)
+        ]
+        if not claims or not all(
+            len(_numbers(claim)) == 1 and _value_present(value, claim) for claim in claims
+        ):
+            return False
+    return True
+
+
 def verify_answer(
     text: str,
     expected: list[dict[str, Any]],
@@ -131,7 +171,8 @@ def verify_answer(
     empty_claim = bool(
         NO_ROWS.search(plain)
         or re.search(
-            r"\bno (?:active |matching |technology |equity |stock |bond )*"
+            r"(?:\bthere (?:are|is|were)\s+|^)no "
+            r"(?:active |matching |technology |equity |stock |bond )*"
             r"(?:portfolios?|securities|holdings?|rows?|results?)\b",
             plain,
             re.I,
@@ -204,7 +245,7 @@ def verify_answer(
                 if int(count) != len(rows):
                     failures.append(f"{label}: conflicting result count {count}.")
         table_rows = []
-        for line in clean.splitlines():
+        for line in scalar_text.splitlines():
             if "|" not in line:
                 continue
             cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
@@ -213,6 +254,11 @@ def verify_answer(
         used: set[int] = set()
         for row in rows:
             checks += 1
+            if len(row) == 2 and isinstance(row[0], str) and isinstance(row[1], (int, float)):
+                claims = _labelled_numbers(row[0], scalar_text)
+                if any(not _value_present(row[1], claim) for claim in claims):
+                    failures.append(f"{label}: conflicting labelled value for {row[0]}.")
+                    continue
             matched = next(
                 (
                     i
@@ -228,6 +274,8 @@ def verify_answer(
                 used.add(matched)
                 continue
             if width == 1 and _value_present(row[0], _plain(scalar_text)):
+                continue
+            if _prose_row(row, reference["columns"], scalar_text):
                 continue
             # Bullet lists can express string projections, e.g. company name (symbol).
             if all(isinstance(value, str) for value in row) and any(

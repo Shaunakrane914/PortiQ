@@ -13,6 +13,9 @@
 - Live follow-ups exposed a missing selected-portfolio binding. Explicit selected/current
   portfolio references now resolve through their own session, or clarify without a model
   guess when no selection exists. The first failed live protocol is retained separately.
+- Extended replay exposed six valid formats still rejected by the earlier table-only
+  contract. Added bound label/value and min/max prose support, with swapped/contradictory
+  claim tests, and corrected "sectors with no securities" empty-result detection.
 
 ## BM25 retrieval removed from active architecture — 9 November 2026
 

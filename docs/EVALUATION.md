@@ -29,8 +29,10 @@ dimensions. Correct reference data alone cannot make an incorrect final answer p
   arithmetic. Correct portfolio identity, sector sets and finite percentages must match
   within 0.005001 percentage points.
 - `answer_verification` infers explicit scalar/list/table/exposure coverage from references.
-  All required result rows/fields or sector percentages must be stated. Multi-column numeric
-  answers use tables in tool-column order. Wrong scalars, missing rows, swapped table values,
+  All required result rows/fields or sector percentages must be stated. Tables retain tool
+  column order; explicit label/value pairs and named min/max aggregate prose are also
+  supported, with each value bound to its own label and conflicting claims rejected.
+  Wrong scalars, missing rows, swapped table values,
   conflicting list counts and clear empty-result contradictions fail even without a configured
   narrative rule. All ten supplied question formats have positive and adversarial tests.
 - Additional focused assertions in [faithfulness.json](../evaluation/faithfulness.json) remain
@@ -63,6 +65,7 @@ Handling cases have no factual answer contract and are not counted as successful
 verification. No LLM judge or extra judge SDK calls are used.
 Multiple independent scalar references or overlapping exposure narratives can still require
 explicit separable formatting; this is not an unrestricted natural-language entailment judge.
+Descriptions such as "sectors with no securities" do not imply an empty overall result.
 
 Reports identify evaluator version, data/suite/runtime hashes, configured model, actual SDK
 metrics and generation mode. Injected fake backends are explicitly labeled non-live. Missing

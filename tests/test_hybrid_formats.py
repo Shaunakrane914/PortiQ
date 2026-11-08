@@ -39,3 +39,13 @@ def test_hybrid_portfolio_list_does_not_conflict_with_exposure_identity():
         verify_answer(answer + " Fund C.", expected, ["Fund A", "Fund B", "Fund C"])["status"]
         == "failed"
     )
+
+
+def test_sql_labelled_values_do_not_consume_exposure_percentages_with_the_same_label():
+    expected = [
+        {"portfolio_name": "Fund A", "sectors": {"Technology": 60.0, "Energy": 40.0}},
+        {"columns": ["sector_name", "avg_price"], "rows": [["Technology", 99.5]]},
+    ]
+    answer = "Technology: 60%; Energy: 40%.\n\nAverage prices:\n|Technology|99.5|"
+    assert verify_answer(answer, expected, ["Fund A"])["status"] == "passed"
+    assert verify_answer(answer.replace("99.5", "60"), expected, ["Fund A"])["status"] == "failed"

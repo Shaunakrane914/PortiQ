@@ -10,7 +10,8 @@ mandatory and optional requirements to implementations.
 - Evaluator v4 verifies explicit scalar, list, table and exposure representations. Missing
   required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
   checker does not prove arbitrary English entailment, advice or additional unstructured claims.
-- Numeric tables use tool column order. Reordered prose columns or alternative tied ordering
+- Numeric tables use tool column order; explicit labelled pairs and aggregate prose are supported.
+  Reordered arbitrary prose columns or alternative tied ordering
   can be penalized. A correct tool result alone does not certify the final narrative.
 - Default SQLite progress callbacks measure VM work. Optional `--profile-io` counts pager
   hits + misses using APSW on fresh private caches; physical device I/O is not measured.
