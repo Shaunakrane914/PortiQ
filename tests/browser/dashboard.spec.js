@@ -66,6 +66,8 @@ test("home opens AI Analyst, supports chat and returns through the brand", async
       .first(),
   ).toHaveText(/AI Analyst/);
   await expect(page.getByRole("button", { name: "Analyze →" })).toBeVisible();
+  await page.getByRole("checkbox", { name: "Local fast path" }).check();
+  await page.getByRole("checkbox", { name: "Exact cache" }).check();
   const input = page.getByRole("textbox", { name: "Ask PortiQ" });
   await input.fill("Count all portfolios");
   await page.getByRole("button", { name: "Analyze →" }).click();
@@ -218,6 +220,7 @@ test("name fragments switch follow-up context to the actual portfolio", async ({
   page,
 }) => {
   await page.goto("/#analyst");
+  await page.getByRole("checkbox", { name: "Local fast path" }).check();
   const input = page.getByRole("textbox", { name: "Ask PortiQ" });
   await input.fill("Show holdings for Tech Innovation");
   await page.getByRole("button", { name: "Analyze →" }).click();
