@@ -1,4 +1,4 @@
-"""Opt-in deterministic checks of specific narrative claims, not a general prose judge."""
+"""Deterministic result-format verification plus optional focused narrative assertions."""
 
 import math
 import re
@@ -19,6 +19,174 @@ NO_ROWS = re.compile(
 
 def _plain(text: str) -> str:
     return " ".join(text.replace("*", "").replace("`", "").split())
+
+
+def _numbers(text: str) -> list[tuple[float, float]]:
+    values = []
+    for match in NUMBER.finditer(text):
+        raw = match["number"].replace(",", "")
+        scale = SCALES.get((match["scale"] or "").lower(), 1)
+        number = float(raw) * scale
+        tolerance = 0.5 * 10 ** -len(raw.partition(".")[2]) * scale
+        if math.isfinite(number):
+            values.append((number, tolerance))
+    return values
+
+
+def _value_present(value: Any, text: str) -> bool:
+    if value is None:
+        return bool(re.search(r"\b(null|not available|undefined)\b", text, re.I))
+    if isinstance(value, (int, float)):
+        return any(
+            abs(number - value) <= (0 if isinstance(value, int) else tolerance) + 1e-6
+            for number, tolerance in _numbers(text)
+        )
+    return bool(re.search(r"(?<!\w)" + re.escape(_plain(str(value))) + r"(?!\w)", text, re.I))
+
+
+def _table_cell(value: Any, text: str) -> bool:
+    if isinstance(value, (int, float)):
+        return (
+            len(_numbers(text)) == 1
+            and not re.search(r"\bnot\b", text, re.I)
+            and _value_present(value, text)
+        )
+    return _value_present(value, text)
+
+
+def verify_answer(
+    text: str,
+    expected: list[dict[str, Any]],
+    portfolio_names: list[str],
+    sector_names: list[str] | None = None,
+) -> dict[str, Any]:
+    """Fail closed on incomplete scalar/list/table/exposure answers; no LLM judge.
+
+    This verifies explicit result representations, not arbitrary English entailment.
+    Multi-column Markdown tables retain column positions, preventing swapped metrics.
+    """
+    failures = []
+    checks = 0
+    clean = text.replace("*", "").replace("`", "")
+    plain = _plain(text)
+    empty_claim = bool(
+        NO_ROWS.search(plain)
+        or re.search(
+            r"\bno (?:active |matching |technology |equity |stock |bond )*"
+            r"(?:portfolios?|securities|holdings?|rows?|results?)\b",
+            plain,
+            re.I,
+        )
+    )
+    for index, reference in enumerate(expected):
+        label = f"Reference {index}"
+        if "sectors" in reference:
+            sectors = reference["sectors"]
+            for sector in sector_names or []:
+                if sector not in sectors and re.search(
+                    re.escape(sector) + r"[^\d\n]{0,30}[\d.]+\s*%", clean, re.I
+                ):
+                    failures.append(f"{label}: unexpected sector percentage for {sector}.")
+            for name in portfolio_names:
+                if name != reference["portfolio_name"] and _value_present(name, plain):
+                    failures.append(f"{label}: unexpected portfolio identity {name}.")
+            for sector, percentage in sectors.items():
+                matches = re.findall(
+                    r"(?<!\w)"
+                    + re.escape(sector)
+                    + r"(?!\w)[^\d%+\-\n]{0,60}([+-]?\d+(?:\.\d+)?)\s*%",
+                    clean,
+                    re.I,
+                )
+                checks += 1
+                if not matches or not all(_value_present(percentage, claim) for claim in matches):
+                    failures.append(f"{label}: missing or incorrect percentage for {sector}.")
+            if NO_ROWS.search(plain):
+                failures.append(f"{label}: an empty-result claim contradicts the exposure.")
+            continue
+        rows = reference["rows"]
+        if not rows:
+            checks += 1
+            if not empty_claim and not re.search(r"\bnone\b", plain, re.I):
+                failures.append(f"{label}: the answer must state that no rows matched.")
+            continue
+        if empty_claim and rows not in [[[0]], [[None]]]:
+            failures.append(f"{label}: an empty-result claim contradicts nonempty results.")
+        width = len(reference["columns"])
+        if len(rows) == width == 1:
+            checks += 1
+            value = rows[0][0]
+            if value == 0 and empty_claim:
+                continue
+            if not _value_present(value, plain):
+                failures.append(f"{label}: scalar value is missing or incorrect.")
+            if re.search(r"\b(?:not|isn't|aren't)\s+[$€£]?\s*\d", plain, re.I):
+                failures.append(f"{label}: negated scalar claim.")
+            if isinstance(value, (int, float)) and any(
+                abs(number - value) > (0 if isinstance(value, int) else tolerance) + 1e-6
+                for number, tolerance in _numbers(plain)
+            ):
+                failures.append(f"{label}: conflicting numerical scalar claim.")
+            continue
+        entity = (
+            "portfolios?"
+            if reference["columns"] == ["portfolio_name"]
+            else "securities"
+            if reference["columns"][:1] == ["symbol"]
+            else None
+        )
+        if entity:
+            for count in re.findall(
+                r"\b(\d+)\s+(?:(?:active|matching|technology|total)\s+)?" + entity + r"\b",
+                plain,
+                re.I,
+            ):
+                if int(count) != len(rows):
+                    failures.append(f"{label}: conflicting result count {count}.")
+        table_rows = []
+        for line in clean.splitlines():
+            if "|" not in line:
+                continue
+            cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+            if len(cells) == width:
+                table_rows.append(cells)
+        used: set[int] = set()
+        for row in rows:
+            checks += 1
+            matched = next(
+                (
+                    i
+                    for i, cells in enumerate(table_rows)
+                    if i not in used
+                    and all(
+                        _table_cell(value, cell) for value, cell in zip(row, cells, strict=True)
+                    )
+                ),
+                None,
+            )
+            if matched is not None:
+                used.add(matched)
+                continue
+            if width == 1 and _value_present(row[0], plain):
+                continue
+            # Bullet lists can express string projections, e.g. company name (symbol).
+            if all(isinstance(value, str) for value in row) and any(
+                all(_value_present(value, _plain(line)) for value in row)
+                for line in clean.splitlines()
+            ):
+                continue
+            failures.append(f"{label}: missing or incorrect complete row {row}.")
+        if reference["columns"] == ["portfolio_name"]:
+            names = {row[0] for row in rows}
+            for name in portfolio_names:
+                if name not in names and _value_present(name, plain):
+                    failures.append(f"{label}: unexpected portfolio {name}.")
+    return {
+        "status": "failed" if failures else "passed" if checks else "not_checked",
+        "checks": checks,
+        "failures": failures,
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment.",
+    }
 
 
 def check_faithfulness(

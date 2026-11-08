@@ -38,6 +38,10 @@ Finish with respond (answer/clarification/unsupported). Answers require successf
 evidence in this request; preserve exact figures, units and rounding. Tool tables are
 authoritative. Never claim failed tools succeeded. Clarify ambiguous references; explain
 unsupported data requests. At most six analytical calls; keep answers concise.
+For data answers, include explicit scalar values, all exposure sector percentages, and
+complete rows/fields for result lists. Use Markdown tables for multi-column numeric results
+in tool column order. Preserve supplied sector/portfolio/company names. Do not add unrelated
+numerical claims. If results are truncated, explicitly disclose the incomplete output.
 """
     + CONVENTIONS
 )

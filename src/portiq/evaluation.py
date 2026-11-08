@@ -19,7 +19,9 @@ from portiq.config import Settings
 from portiq.database import connect_readonly
 from portiq.errors import PortiqError
 from portiq.exposure import ExposureResult
-from portiq.faithfulness import check_faithfulness
+from portiq.faithfulness import check_faithfulness, verify_answer
+from portiq.model import GeminiBackend
+from portiq.service import FallbackBackend
 from portiq.sql import QueryResult, execute
 
 
@@ -118,6 +120,7 @@ def _record(case: dict[str, Any]) -> dict[str, Any]:
         "result_correct": None,
         "status_correct": False,
         "sql_valid": None,
+        "narrative_status": "not_checked",
         "expected": [],
         "failures": [],
     }
@@ -137,6 +140,7 @@ def _expectations(settings: Settings, case: dict[str, Any]) -> list[dict[str, An
                     "columns": columns,
                     "rows": rows,
                     "ordered": bool(sqlglot.parse_one(sql, read="sqlite").args.get("order")),
+                    "sql": sql,
                 }
             )
         else:
@@ -214,7 +218,7 @@ def score_answer(
         try:
             if tool.tool == "sql_query":
                 actual = QueryResult.model_validate(tool.result)
-                query = execute(settings.database, actual.sql, max_rows=5000)
+                query = execute(settings.database, actual.sql, max_rows=5000, profile=True)
                 sql_validity.append(True)
                 candidate["result"] = query.model_dump(mode="json")
                 if actual.truncated or query.truncated:
@@ -285,14 +289,55 @@ def score_answer(
         faithfulness["reason"] = (
             "No factual answer was produced; narrative assertions not applicable."
         )
-    if faithfulness["status"] == "failed":
-        fail("faithfulness", "; ".join(faithfulness["failures"]))
+    record["answer_verification"] = verification = verify_answer(
+        answer.answer, expected if answer.status == "answer" else [], names, sectors
+    )
+    prose_failures = faithfulness["failures"] + verification["failures"]
+    record["narrative_status"] = (
+        "failed"
+        if prose_failures
+        else "passed"
+        if "passed" in {verification["status"], faithfulness["status"]}
+        else "not_checked"
+    )
+    if prose_failures:
+        fail("faithfulness", "; ".join(prose_failures))
     record["answer_correct"] = (
         record["status_correct"]
         and record["result_correct"] is not False
         and faithfulness["status"] != "failed"
+        and verification["status"] != "failed"
     )
     record["passed"] = record["answer_correct"] and record["routing_correct"]
+    record["sql_efficiency"] = []
+    if assignment is not None:
+        for index, reference in enumerate(expected):
+            if reference["tool"] != "sql_query":
+                continue
+            baseline = execute(settings.database, reference["sql"], max_rows=5000, profile=True)
+            generated = candidates[assignment[index]]["result"]
+            reference_steps = baseline.vm_steps or 0
+            actual_steps = generated["vm_steps"] or 0
+            record["sql_efficiency"].append(
+                {
+                    "reference_vm_steps": reference_steps,
+                    "generated_vm_steps": actual_steps,
+                    "reference_query_plan": baseline.query_plan,
+                    "generated_query_plan": generated["query_plan"],
+                    "score": round(100 * min(1, reference_steps / max(actual_steps, 1)), 2)
+                    if record["passed"]
+                    else 0.0,
+                    "metric": "SQLite VM progress callbacks at interval 1; lower work is preferred",
+                    "logical_page_reads": None,
+                }
+            )
+    record["efficiency_score"] = (
+        statistics.mean(item["score"] for item in record["sql_efficiency"])
+        if record["sql_efficiency"]
+        else 0.0
+        if any(e["tool"] == "sql_query" for e in expected)
+        else None
+    )
     if record["failures"]:
         record["failure"] = " | ".join(
             f"{f['dimension']}: {f['message']}" for f in record["failures"]
@@ -353,10 +398,14 @@ def evaluate(
             )
     durations = sorted(r["duration_ms"] for r in records)
     report = {
-        "evaluator_version": 2,
+        "evaluator_version": 3,
         "execution_strategy": "orchestrated",
         "fallback_models": list(agent.settings.fallback_models),
-        "generation_mode": "Live Gemini; local routing and answer caching disabled",
+        "generation_mode": (
+            "Live Gemini; local routing and answer caching disabled"
+            if isinstance(getattr(agent, "backend", None), (GeminiBackend, FallbackBackend))
+            else "Injected backend; not a live Gemini evaluation"
+        ),
         "timestamp_utc": datetime.now(UTC).isoformat(),
         "suite": suite.name,
         "model": agent.settings.model,
@@ -387,10 +436,23 @@ def evaluate(
         "result_checked": sum(r["result_correct"] is not None for r in records),
         "routing_correct": sum(r["routing_correct"] for r in records),
         "narrative_checked": sum(
-            r.get("faithfulness", {}).get("status") in {"passed", "failed"} for r in records
+            r.get("answer_verification", {}).get("status") in {"passed", "failed"}
+            or r.get("faithfulness", {}).get("status") in {"passed", "failed"}
+            for r in records
         ),
         "narrative_failed": sum(
-            r.get("faithfulness", {}).get("status") == "failed" for r in records
+            r.get("answer_verification", {}).get("status") == "failed"
+            or r.get("faithfulness", {}).get("status") == "failed"
+            for r in records
+        ),
+        "sql_efficiency_mean": statistics.mean(
+            r["efficiency_score"] for r in records if r.get("efficiency_score") is not None
+        )
+        if any(r.get("efficiency_score") is not None for r in records)
+        else None,
+        "sql_efficiency_scope": (
+            "Correctness-gated work score relative to reference; SQLite VM callbacks, not "
+            "logical disk/page I/O. Scores do not change answer correctness."
         ),
         "mean_ms": statistics.mean(durations) if durations else None,
         "p95_ms": durations[max(0, math.ceil(len(durations) * 0.95) - 1)] if durations else None,
@@ -405,7 +467,7 @@ def evaluate(
         f"# Evaluation: {suite.name}\n\n{report['passed']}/{report['total']} passed. "
         f"Answer correctness: {report['answer_correct']}/{report['total']}. "
         f"Routing: {report['routing_correct']}/{report['total']}. "
-        f"Limited narrative checks: {report['narrative_checked']} cases, "
+        f"Deterministic answer checks: {report['narrative_checked']} cases, "
         f"{report['narrative_failed']} failures. Unchecked prose is not certified. "
         f"Model: `{report['model']}`. Cache disabled. Trials: {trials}.\n\n"
         "| Trial | ID | Strict pass | Answer | Routing | Narrative | Failure |\n"
@@ -413,7 +475,7 @@ def evaluate(
         + "\n".join(
             f"| {r['trial']} | {r['id']} | {r['passed']} | "
             f"{r['answer_correct']} | {r['routing_correct']} | "
-            f"{r.get('faithfulness', {}).get('status', 'not_checked')} | "
+            f"{r['narrative_status']} | "
             f"{str(r.get('failure', '')).replace('|', '/')} |"
             for r in records
         )

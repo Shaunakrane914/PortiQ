@@ -1,32 +1,18 @@
-"""PortiQ interactive CLI entry point.
-
-Run directly to start asking questions in the terminal:
-    python main.py
-    python run_cli.py
-
-Or ask a single question immediately:
-    python main.py "Show holdings for Conservative Income Fund"
-
-Or run any sub-command:
-    python main.py exposure "Balanced Portfolio"
-    python main.py doctor
-"""
+"""Terminal shortcut: python main.py, python main.py "question", or any CLI subcommand."""
 
 import sys
 from pathlib import Path
 
-# Ensure src/ is on sys.path for direct execution without prior installation
 ROOT_DIR = Path(__file__).resolve().parent
-SRC_DIR = ROOT_DIR / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(SRC_DIR))
+sys.path.insert(0, str(ROOT_DIR / "src"))
 
 from portiq.cli import main as cli_main  # noqa: E402
+from portiq.cli import parser  # noqa: E402
 from portiq.config import Settings  # noqa: E402
 from portiq.database import initialize  # noqa: E402
 from portiq.errors import PortiqError  # noqa: E402
 
-KNOWN_COMMANDS = {
+COMMANDS = {
     "ask",
     "chat",
     "exposure",
@@ -36,44 +22,55 @@ KNOWN_COMMANDS = {
     "init-db",
     "doctor",
     "serve",
+    "gui",
     "evaluate",
 }
 
 
-def bootstrap() -> None:
-    """Ensure database exists and dispatch to the interactive CLI chat."""
-    settings = Settings.from_env()
+def dispatch(arguments: list[str]) -> list[str]:
+    """Preserve global options before selecting a subcommand; never enable hidden modes."""
+    prefix: list[str] = []
+    rest = arguments.copy()
+    while rest:
+        option = rest[0].split("=", 1)[0]
+        if option == "--verbose":
+            prefix.append(rest.pop(0))
+        elif option in {"--db", "--source", "--model"}:
+            flag = rest.pop(0)
+            prefix.append(flag)
+            if "=" not in flag:
+                if not rest:
+                    return prefix
+                prefix.append(rest.pop(0))
+        else:
+            break
+    if rest and rest[0] in COMMANDS | {"-h", "--help"}:
+        return prefix + rest
+    if not rest or rest[0].startswith("-"):
+        return prefix + ["chat"] + rest
+    return prefix + ["ask"] + rest
 
-    # Automatically initialize the database from CSVs if not present
-    if not settings.database.exists():
-        print(f"Initializing portfolio database at {settings.database} from CSV inputs...")
-        initialize(settings.source, settings.database)
-        print("Database initialized successfully.\n")
 
-    args = sys.argv[1:]
-
-    # Default: launch interactive chat session
-    if not args:
-        sys.exit(cli_main(["chat", "--local", "--context"]))
-
-    first = args[0]
-    if first in KNOWN_COMMANDS:
-        sys.exit(cli_main(args))
-
-    # Flags without a subcommand: default to chat with those flags
-    if first.startswith("-") and first not in {"-h", "--help"}:
-        sys.exit(cli_main(["chat", "--local", "--context", *args]))
-
-    # Raw question passed directly: python main.py "What is Balanced Portfolio exposure?"
-    sys.exit(cli_main(["ask", *args, "--local", "--context"]))
+def bootstrap() -> int:
+    arguments = dispatch(sys.argv[1:])
+    args = parser().parse_args(arguments)
+    try:
+        if args.command in {"ask", "chat"}:
+            settings = Settings.from_env()
+            database = args.db if args.db is not None else settings.database
+            source = args.source if args.source is not None else settings.source
+            if not database.exists():
+                initialize(source, database)
+        return cli_main(arguments)
+    except (PortiqError, OSError, ValueError) as exc:
+        message = (
+            str(exc) if isinstance(exc, PortiqError) else "Check configuration and input paths."
+        )
+        print(f"Error: {message}", file=sys.stderr)
+        return 1
+    except KeyboardInterrupt:
+        return 130
 
 
 if __name__ == "__main__":
-    try:
-        bootstrap()
-    except KeyboardInterrupt:
-        print("\nSession ended.")
-        sys.exit(0)
-    except PortiqError as exc:
-        print(f"Error: {exc}", file=sys.stderr)
-        sys.exit(1)
+    raise SystemExit(bootstrap())

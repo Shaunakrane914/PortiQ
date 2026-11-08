@@ -1,5 +1,17 @@
 # Change history
 
+## Optional enhancements and evaluator v3 — 8 November 2026
+
+- Added local BM25 metadata retrieval with schema provenance, an optional Streamlit chat,
+  bounded concurrent model-client pooling, shared quota reservations and a production
+  configuration/Compose profile with liveness/readiness.
+- Added correctness-gated SQLite VM-work/query-plan scoring. This does not measure disk I/O.
+- Final-answer verification now covers explicit scalar/list/table/exposure formats without
+  per-case opt-in, including the false active-portfolio example. Historical scores stay tied
+  to evaluator v2 and are not silently upgraded.
+- Fixed shortcut CLI help/global flags and made local/context modes explicit. Corrected
+  deleted-report links and removed instructions for deleted helper scripts.
+
 Source tags, original assessment inputs, frozen suites and captured evaluation reports are not rewritten. The [pre-cleanup snapshot](https://github.com/Shaunakrane914/PortiQ/tree/ace58054c7a778817d68a7c1d81386b7dffd95e8) retains removed experiments and detailed development evidence.
 
 ## Adaptive sliding-window quota controller - 8 November 2026

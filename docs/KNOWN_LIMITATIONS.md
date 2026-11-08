@@ -1,20 +1,37 @@
 # Known limitations
 
-These distinguish the mandatory CLI assessment from optional platform work. The [assignment checklist](SUBMISSION.md#assignment-requirements) maps implemented and deferred features directly to the original brief.
+The [assignment checklist](SUBMISSION.md) and [enhancement guide](ENHANCEMENTS.md) map the
+mandatory and optional requirements to implementations.
 
-- **Finite regression evidence.** The published CLI-only extended run passed 50/50 on `4b49d95`; those cases were already observed. It is not blind validation or a guarantee for unseen language. Supplied-ten 10/10 captures are historical, not a new run on that revision. Six extended cases have automated prose assertions; unchecked prose is not certified.
-- **Semantic errors remain possible.** Read-only valid SQL can answer the wrong question. The model can misinterpret a reference or misstate tool output. Structured evidence is authoritative. Ambiguity should be clarified rather than guessed.
-- **Guarded scalar shortcut.** Supported explicit scalar-only wording can skip synthesis after one successful, non-truncated, single-cell SQL result. Compound-word checks are a bounded heuristic, not a general intent proof. Gemini still generates the SQL. Repairs/retries can increase calls; one-call behavior is not guaranteed for every scalar question.
-- **Provider variability.** Service includes network transport and can vary or fail. Smaller prompts reduced reported tokens but did not establish a general service-time improvement for lists/exposure in the small paired comparison. An adaptive 60-second rolling quota controller (`AdaptiveRateLimiter`) with a 12 RPM safety ceiling governs SDK calls with 0s default pacing; provider network transit and Google service latency can still vary.
-- **Separate quota scopes.** Local daily counts track SDK invocations, including delivery-unknown failures, not provider receipt/billing. Unknown token fields remain unknown. The local day is UTC; Google reset rules differ. Memory resets on restart; shared file coordination requires compatible settings, and other applications/hosted instances may use different ledgers. No remaining Google request/token balance is inferred.
-- **Bounded resilience.** Application retries, SQL repairs, explicit sequential fallback and a transient-failure circuit are bounded. Daily/authentication failures stop retries and can require a backend restart after resolution. No hedging, automatic model discovery, billing changes or project-wide distributed quota scheduler is implemented.
-- **Data conventions.** Static observations, unspecified AUM currencies and incomplete bond/valuation-date conventions limit economic interpretation. Raw AUM sums are computable for assessment queries; a comparable aggregate AUM is not established, so its dashboard card is omitted. No FX, inferred cash, live prices or AUM rescaling is supplied.
-- **Different allocation bases.** Required exposure is within equities. Recorded weights and optional reconstructed quote-value weights have different denominators. Reconstruction needs valid values in one known currency. Weight gaps/missing history are disclosed, not filled with invented cash or zero performance.
-- **Database choice.** The brief's setup hint mentions in-memory SQLite, while its example uses a file. This implementation uses a persistent file for process sharing/read-only access; no separate in-memory mode is provided.
-- **Explicit local registry/cache.** Local routing covers portfolio counts, unambiguous exposure, holdings and metadata only. It is not general NLP. Exact successful-answer caching has a 300-second TTL and versioned keys; failures are not cached. Evaluation bypasses both.
-- **Ephemeral context.** CLI conversation is opt-in. Sessions are bounded, in-memory and expire; browser state disappears on reload. Session capabilities separate state but do not authenticate users. Compact tool summaries are not full durable chat history.
-- **Small hosted demo.** Render is publicly demonstrated with anonymous opt-in. One server worker and one analytical request at a time are supported. Per-user identity/cost controls, distributed limiting, durable audits, process isolation and availability guarantees are not implemented. Host wildcard configuration, proxy-shared socket limits and hostname-based Origin fallback without strict scheme/port matching do not constitute production multi-user security.
-- **Deferred optional enhancements.** RAG/GraphRAG, Streamlit specifically, general concurrent multi-user execution and logical-I/O-based evaluation scoring are not implemented. The alternative optional UI uses FastAPI/static HTML. Nine tables did not justify metadata retrieval infrastructure.
-- **SQL resource limits.** SQLite authorization/progress bounds are not an OS sandbox or a bound on every possible parser/native allocation. Hostile multi-tenant execution requires stronger isolation than this assessment tool.
-- **Historical evidence.** The failed experimental planner was removed in `122dee6`; its speed/results are not current features. Versioned model-evaluation failure reports remain distinct from completed runs. GitHub Actions failed-run history was separately cleaned at the owner's request; it is not model-accuracy evidence.
-- **Known development warning.** The installed Starlette TestClient/httpx adapter emits one deprecation warning in key-free Python tests. It is not suppressed. Actual browser/container tests exercise the server separately.
+- Historical 50/50 extended results belong to their recorded source and evaluator version.
+  The suite has been observed and is regression evidence, not blind validation.
+- Evaluator v3 verifies explicit scalar, list, table and exposure representations. Missing
+  required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
+  checker does not prove arbitrary English entailment, advice or additional unstructured claims.
+- Numeric tables use tool column order. Reordered prose columns or alternative tied ordering
+  can be penalized. A correct tool result alone does not certify the final narrative.
+- SQLite progress callbacks measure VM work approximately, not logical page reads or physical
+  I/O. Performance scores are relative to the reference on the same small database and are
+  correctness gated. They are not a general query optimizer or large-data benchmark.
+- Metadata RAG retrieves schema descriptions locally with BM25 and retains full DDL. It uses
+  no embeddings, external documents or GraphRAG. Retrieval usefulness on unseen large schemas
+  has not been established by the supplied ten-question suite.
+- One process supports bounded parallel analyses with separate model clients and per-session
+  locks. Multiple processes would have separate sessions/RPM/capacity state. A retained SQLite
+  ledger coordinates daily usage only; distributed deployment needs external coordination.
+- Random session IDs are bearer capabilities, not user identities. The production profile
+  uses the existing shared bearer token, not individual accounts, roles or per-user budgets.
+- The public Render demo remains anonymous. Production must be explicitly configured and
+  deployed with TLS, secrets, retained storage and monitoring. No availability SLA or security
+  certification is claimed. The local Streamlit interface is not the production serving path.
+- SDK calls can fail from network/provider quota and may exceed interactive latency expectations.
+  Local counters are not Google's quota meter. A multi-step answer can exhaust a rate window
+  between calls; it returns a retryable failure instead of inventing results.
+- The local/cache registry covers four explicit capabilities. CLI/UI/Streamlit opt in; raw API
+  request fields still default to true when omitted. Evaluation bypasses both.
+- Source data has no reliable cross-portfolio currency/valuation basis. No inferred FX, live
+  prices, recommendations or total-AUM comparability is claimed. Bond-only exposure is undefined.
+- SQLite is file-backed rather than implementing the brief's in-memory setup hint. The brief
+  also provides a file-backed example. Runtime database changes require an explicit rebuild.
+- The repository and supplied data remain public by the owner's choice. Removing website
+  pages does not remove copies in Git history. Secrets remain private runtime configuration.

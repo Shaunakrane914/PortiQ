@@ -49,7 +49,7 @@ SQLite is file-backed so separate CLI invocations and the optional API can share
 
 Exposure normalizes only `Stock` `current_weight` and excludes bonds. Reconciliation compares recorded allocations with illustrative `quantity * current_price` allocations only when values are complete and one known currency permits a denominator. No FX, inferred cash, accrued interest or AUM rescaling is introduced. [Data conventions](DATA_ASSUMPTIONS.md) explain the supplied reference contracts.
 
-The evaluator independently re-executes generated SQL and reference SQL. Exposure references use original CSVs rather than the production calculator/resolver. SQL safety and result correctness are separate checks; [evaluation scope](EVALUATION.md) describes the limited narrative assertions.
+The evaluator independently re-executes generated SQL and reference SQL. Exposure references use original CSVs rather than the production calculator/resolver. Evaluator v3 also verifies explicit scalar/list/table/exposure answer content and records correctness-gated SQLite VM-work scores. SQL safety and result correctness remain separate checks; [evaluation scope](EVALUATION.md) documents the format contract and its limits.
 
 ## Provider accounting and failure handling
 
@@ -71,7 +71,9 @@ The local registry covers four anchored capabilities: portfolio count, unambiguo
 
 The exact cache holds up to 64 successful, deep-copied responses for 300 seconds. Keys include exact trimmed question, database bytes/rebuild identity, runtime code, model/fallback configuration, strategy and session context. Errors are not cached. Sessions keep eight turns and bounded tool/reference summaries, with up to 100 sessions and a 30-minute TTL. Random session IDs are bearer capabilities, not authenticated user identities. Browser transcripts stay in page memory.
 
-The API supports one worker and one analytical request at a time; a concurrent analysis is rejected as busy. Its existing socket-client HTTP rate limit is separate from Gemini pacing. General multi-user concurrent execution, distributed scheduling and per-user cost accounting are not implemented.
+One API process supports four concurrent analyses by default. A reusable client pool shares its daily ledger and RPM reservations, while per-conversation locks serialize only turns in the same session. Excess analyses receive 503 and Retry-After. The socket-client HTTP limit is separate. Distributed scheduling and per-user cost accounting are not implemented.
+
+Metadata RAG builds documents from live schema columns and foreign keys, ranks them with local BM25 and adds the top three to each question's model context. Source IDs are recorded in the response; the complete schema remains available for join coverage. Runtime retrieval never reads evaluator fixtures or reference answers. Streamlit is an optional extra and uses the same analysis service.
 
 ## Packaging and platform
 

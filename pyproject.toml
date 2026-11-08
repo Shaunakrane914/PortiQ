@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 web = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1"]
+gui = ["streamlit>=1.40,<2"]
 dev = ["pytest>=8,<10", "pytest-cov>=6,<8", "ruff>=0.12,<1", "mypy>=1.15,<2", "fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.28,<1"]
 
 [project.scripts]
@@ -37,6 +38,12 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 python_version = "3.11"
 strict = true
 files = ["src/portiq"]
+
+[[tool.mypy.overrides]]
+module = ["streamlit", "streamlit.*", "numpy", "numpy.*", "pandas", "pandas.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

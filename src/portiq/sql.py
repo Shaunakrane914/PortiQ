@@ -74,6 +74,8 @@ class QueryResult(BaseModel):
     truncated: bool = False
     attempts: int = 1
     validation_ms: float = 0
+    vm_steps: int | None = None
+    query_plan: list[str] = Field(default_factory=list)
 
 
 class SQLPlan(BaseModel):
@@ -132,6 +134,7 @@ def execute(
     *,
     max_rows: int = 1000,
     seconds: float = 2.0,
+    profile: bool = False,
 ) -> QueryResult:
     validation_start = time.perf_counter()
     validate_sql(sql)
@@ -165,12 +168,25 @@ def execute(
             return sqlite3.SQLITE_DENY
 
         conn.set_authorizer(authorize)
-        conn.set_progress_handler(lambda: int(time.perf_counter() - start > seconds), 1000)
+        vm_steps = 0
+
+        def progress() -> int:
+            nonlocal vm_steps
+            vm_steps += 1
+            return int(time.perf_counter() - start > seconds)
+
+        conn.set_progress_handler(progress, 1 if profile else 1000)
         conn.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 1_000_000)
         conn.setlimit(sqlite3.SQLITE_LIMIT_SQL_LENGTH, 20000)
         conn.setlimit(sqlite3.SQLITE_LIMIT_EXPR_DEPTH, 100)
         conn.setlimit(sqlite3.SQLITE_LIMIT_COMPOUND_SELECT, 20)
         try:
+            plan = (
+                [str(row[3]) for row in conn.execute("EXPLAIN QUERY PLAN " + sql, parameters)]
+                if profile
+                else []
+            )
+            vm_steps = 0
             cursor = conn.execute(sql, parameters)
             columns = [c[0] for c in cursor.description or []]
             rows = []
@@ -195,4 +211,6 @@ def execute(
         truncated=len(rows) > max_rows,
         duration_ms=round((time.perf_counter() - start) * 1000, 3),
         validation_ms=validation_ms,
+        vm_steps=vm_steps if profile else None,
+        query_plan=plan,
     )

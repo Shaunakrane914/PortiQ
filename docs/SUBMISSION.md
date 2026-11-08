@@ -27,12 +27,14 @@ The setup hint mentions in-memory loading, while the sample opens `portfolio_dat
 |---|---|
 | SQL safety, parameterized queries, errors, logging, input validation | Implemented. Fixed queries bind parameters; generated SQL is parsed/authorized/read-only, rather than universally parameterized. |
 | Caching | Explicit exact cache; disabled during live evaluation. |
-| Graphical interface | Optional static HTML/CSS/JS with FastAPI, rather than Streamlit. |
-| RAG / GraphRAG for metadata | Deferred. Nine tables use compact schema, domains and catalogue context. |
-| REST API | Implemented for a local/hosted demo; production identity, isolation and per-user budget controls are not claimed. |
-| Concurrent multi-user execution | Deferred. One worker and one analytical request at a time. |
-| Evaluation favoring lower logical I/O | Deferred. Timings, calls and tokens are recorded; no logical-I/O score or cost optimizer. |
+| Graphical interface | Existing HTML/JS dashboard plus optional Streamlit chat (`gui`). |
+| RAG / GraphRAG for metadata | Local BM25 retrieval over live schema/foreign-key documents; source IDs in responses. Full schema remains available. |
+| REST API | Production configuration profile, liveness/readiness, bounded requests, safe logging and hardened retained-volume Compose recipe. |
+| Concurrent multi-user execution | Default four analyses, separate reusable clients, shared quota guards and per-session turn locks. |
+| Performance-aware evaluation | Correctness-gated relative SQLite VM-work scoring and query plans. Logical page I/O is not measured. |
 | Hybrid questions using both tools | Implemented; three cases in the extended regression. |
+
+See [enhancement implementation, verification and production scope](ENHANCEMENTS.md).
 
 ## Fresh-clone CLI demonstration
 
@@ -93,6 +95,8 @@ A Gemini key is required only for genuine model questions. Deterministic SQL/exp
 | `PORTIQ_ALLOWED_HOSTS` | local hosts | Extra hosts; `*` supported. Anonymous module mode without an explicit list also allows any host. Render sets `*`. |
 | `PORTIQ_CORS_ORIGINS` | empty | Explicit cross-origin allowlist; `*` is rejected |
 | `PORTIQ_RATE_LIMIT` | 60/minute | Socket-client HTTP rate limit, separate from Gemini RPM/SDK pacing |
+| `PORTIQ_MAX_CONCURRENT_ANALYSES` | 4 | Concurrent analyses/client pool bound, range 1–32 |
+| `PORTIQ_ENV` | `demo` | Explicit `production` profile validates token/hosts/persistent ledger and uses exact origins |
 
 The local ledger is not Google's quota meter. It counts SDK attempts, including delivery-unknown failures, only among processes sharing its file/settings. In-memory ledgers reset on backend restart. Container disk may be ephemeral; persistent counters require a writable retained volume. Conflicting process caps are unsupported. The local day resets at 00:00 UTC (05:30 IST). Google's quota/reset behavior is separate and must be checked in AI Studio. The local counter cannot reveal a remaining Google token balance.
 
@@ -124,7 +128,7 @@ docker run --rm --name portiq-demo -p 127.0.0.1:8000:8000 portiq:0.2
 
 The credential-free non-root container initializes its database and serves deterministic views. Model questions fail cleanly without a key. For AI, supply a private runtime env file with `GEMINI_API_KEY` plus either `PORTIQ_DEMO_TOKEN` or explicit `PORTIQ_ALLOW_ANONYMOUS=1`. Never bake secrets into the image. UID 10001 needs write permission on a retained `/app/runtime` volume.
 
-[render.yaml](../render.yaml) configures the public [Render demo](https://portiq-b9u7.onrender.com) with anonymous opt-in, wildcard accepted hosts and a 6.5-second SDK interval. Health uses `/api/health` (GET/HEAD). Keys stay in runtime secrets; a configured token still applies. This is a single-worker review demo, with static data and no production multi-user or availability guarantee. Hosting startup/redeploy behavior is outside the CLI assessment.
+[render.yaml](../render.yaml) configures the public [Render demo](https://portiq-b9u7.onrender.com) with anonymous opt-in, wildcard accepted hosts and adaptive pacing. Health uses `/api/health` (GET/HEAD). Keys stay in runtime secrets; a configured token still applies. A single process supports bounded concurrent analyses. The separate [production profile](ENHANCEMENTS.md#production-deployment-profile) is an explicit operator choice, not a change to the anonymous demo. Hosting startup/redeploy behavior is outside the CLI assessment.
 
 Reports, evaluation fixtures, `.env` and developer files are excluded from the image; run live evaluations from the repository, not the web-only image. Source CSVs/schema are bundled for initialization and are public on GitHub. Removing website pages does not make those repository copies private.
 

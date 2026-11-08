@@ -1,9 +1,11 @@
 """Independent command-line interface; no web server or UI dependencies."""
 
 import argparse
+import importlib.util
 import json
 import logging
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -56,6 +58,8 @@ def parser() -> argparse.ArgumentParser:
     serve = commands.add_parser("serve", help="Launch the optional FastAPI dashboard")
     serve.add_argument("--host", default="127.0.0.1")
     serve.add_argument("--port", type=int, default=8000)
+    gui = commands.add_parser("gui", help="Launch the optional Streamlit interface on loopback")
+    gui.add_argument("--port", type=int, default=8501)
     exposure = commands.add_parser("exposure", help="Deterministic exposure; no API key required")
     exposure.add_argument("portfolio")
     sql = commands.add_parser("sql", help="Execute explicit read-only SQL; no API key required")
@@ -101,6 +105,24 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             return 0
+        if args.command == "gui":
+            if importlib.util.find_spec("streamlit") is None:
+                raise PortiqError("Install the GUI extra: uv sync --extra gui")
+            if not 1 <= args.port <= 65535:
+                raise PortiqError("Use a port between 1 and 65535.")
+            return subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "streamlit",
+                    "run",
+                    str(Path(__file__).with_name("streamlit_app.py")),
+                    "--server.address=127.0.0.1",
+                    f"--server.port={args.port}",
+                    "--browser.gatherUsageStats=false",
+                ],
+                check=False,
+            ).returncode
         if args.command == "exposure":
             print(calculate_exposure(settings.database, args.portfolio).model_dump_json(indent=2))
             return 0

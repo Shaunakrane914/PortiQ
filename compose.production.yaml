@@ -1,0 +1,32 @@
+services:
+  portiq:
+    build: .
+    init: true
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      PORTIQ_ENV: production
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?Set GEMINI_API_KEY privately}
+      PORTIQ_DEMO_TOKEN: ${PORTIQ_DEMO_TOKEN:?Set a random token of at least 32 characters}
+      PORTIQ_ALLOWED_HOSTS: ${PORTIQ_ALLOWED_HOSTS:?Set explicit deployment hostnames}
+      PORTIQ_CORS_ORIGINS: ${PORTIQ_CORS_ORIGINS:-}
+      PORTIQ_DAILY_REQUESTS: ${PORTIQ_DAILY_REQUESTS:-200}
+      PORTIQ_MAX_CONCURRENT_ANALYSES: ${PORTIQ_MAX_CONCURRENT_ANALYSES:-4}
+      PORTIQ_REQUEST_INTERVAL: ${PORTIQ_REQUEST_INTERVAL:-0}
+      PORTIQ_RPM_LIMIT: ${PORTIQ_RPM_LIMIT:-12}
+    volumes:
+      - portiq-runtime:/app/runtime
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1.0
+
+volumes:
+  portiq-runtime:

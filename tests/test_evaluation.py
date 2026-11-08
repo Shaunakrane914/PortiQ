@@ -133,8 +133,8 @@ def test_report_artifacts(database: Path, source: Path, tmp_path: Path) -> None:
     )
     assert report["passed"] == report["total"] == 1
     assert report["answer_correct"] == report["routing_correct"] == 1
-    assert report["evaluator_version"] == 2
-    assert report["narrative_checked"] == 0  # No contract for this custom suite.
+    assert report["evaluator_version"] == 3
+    assert report["narrative_checked"] == 1
     assert output.exists() and output.with_suffix(".md").exists()
 
 

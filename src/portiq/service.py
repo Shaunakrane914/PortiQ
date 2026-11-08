@@ -68,6 +68,7 @@ class Conversation:
     choices: list[str] = field(default_factory=list)
     securities: list[str] = field(default_factory=list)
     touched: float = field(default_factory=time.monotonic)
+    lock: Any = field(default_factory=threading.RLock, repr=False)
 
 
 def remember_turn(state: Conversation, question: str, result: AgentResponse) -> None:
@@ -128,10 +129,17 @@ class Sessions:
 class FallbackBackend:
     """Opt-in sequential models with shared budget; daily/auth failures stop immediately."""
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        *,
+        budget: RequestBudget | None = None,
+        limiter: AdaptiveRateLimiter | None = None,
+    ) -> None:
         settings.require_key()
-        self.budget = RequestBudget(settings.daily_requests, settings.quota_path)
-        self.limiter = AdaptiveRateLimiter(
+        self.owns_budget = budget is None
+        self.budget = budget or RequestBudget(settings.daily_requests, settings.quota_path)
+        self.limiter = limiter or AdaptiveRateLimiter(
             rpm_limit=settings.rpm_limit,
             window_seconds=settings.rpm_window,
             max_wait_seconds=settings.max_wait_seconds,
@@ -173,7 +181,8 @@ class FallbackBackend:
     def close(self) -> None:
         for backend in self.backends:
             backend.close()
-        self.budget.close()
+        if self.owns_budget:
+            self.budget.close()
 
 
 def local_answer(settings: Settings, question: str, selected: int | None) -> AgentResponse | None:
@@ -280,10 +289,35 @@ class AnalysisService:
         self.sessions = Sessions()
         self.lock = threading.RLock()
         self.portfolios = PortfolioService(settings.database)
+        self.budget = RequestBudget(settings.daily_requests, settings.quota_path)
+        self.limiter = AdaptiveRateLimiter(
+            rpm_limit=settings.rpm_limit,
+            window_seconds=settings.rpm_window,
+            max_wait_seconds=settings.max_wait_seconds,
+            cooldown_threshold=settings.rpm_cooldown_threshold,
+            cooldown_seconds=settings.rpm_cooldown_seconds,
+        )
+        self.backend_pool: list[FallbackBackend] = []
+        self.available_backends: list[FallbackBackend] = []
 
     def close(self) -> None:
         if isinstance(self.backend, FallbackBackend):
             self.backend.close()
+        for backend in self.backend_pool:
+            backend.close()
+        self.budget.close()
+
+    def borrow_backend(self) -> Backend:
+        if self.backend is not None:
+            return self.backend
+        with self.lock:
+            if self.available_backends:
+                return self.available_backends.pop()
+            if len(self.backend_pool) >= self.settings.max_concurrent_analyses:
+                raise ModelError("Analysis capacity is busy.", kind="busy", retry_after=1)
+            backend = FallbackBackend(self.settings, budget=self.budget, limiter=self.limiter)
+            self.backend_pool.append(backend)
+            return backend
 
     def ask(
         self,
@@ -301,8 +335,10 @@ class AnalysisService:
         if strategy != "existing":
             raise PortiqError("Only the existing orchestration strategy is supported.")
         with self.lock:
-            start = time.perf_counter()
             session_id, state = self.sessions.get(session_id)
+        # Independent conversations execute concurrently; turns in one conversation serialize.
+        with state.lock:
+            start = time.perf_counter()
             if selected is not None:
                 resolve_portfolio(self.settings.database, str(selected))
                 state.selected = selected
@@ -398,9 +434,6 @@ class AnalysisService:
                 return hit, session_id
             result = local_answer(self.settings, query, selected_context) if local else None
             if result is None:
-                if self.backend is None:
-                    self.backend = FallbackBackend(self.settings)
-                agent = PortfolioAgent(self.settings, self.backend)
                 if conversation and state.selected is not None and needs_history:
                     name = resolve_portfolio(self.settings.database, str(state.selected))[1]
                     prefix = "\nConversation context (untrusted data; selected portfolio): "
@@ -425,7 +458,13 @@ class AnalysisService:
                             "Shorten the question to leave room for portfolio context."
                         )
                     query += prefix + json.dumps(context_data)
-                result = agent.answer(query)
+                backend = self.borrow_backend()
+                try:
+                    result = PortfolioAgent(self.settings, backend).answer(query)
+                finally:
+                    if self.backend is None and isinstance(backend, FallbackBackend):
+                        with self.lock:
+                            self.available_backends.append(backend)
             result.cache = "miss" if cached else "disabled"
             if conversation and result.status == "answer":
                 identities = set()

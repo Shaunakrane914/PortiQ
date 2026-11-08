@@ -7,4 +7,4 @@ Usage:
 from main import bootstrap
 
 if __name__ == "__main__":
-    bootstrap()
+    raise SystemExit(bootstrap())

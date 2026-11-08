@@ -10,15 +10,13 @@ PortiQ implements the four deliverables in the original [PL Capital assignment](
 Use Python 3.11+ from a clone of this repository. [uv](https://docs.astral.sh/uv/getting-started/installation/) is the recommended installer; `uv.lock` is the tested dependency resolution.
 
 ```powershell
-# Quickstart: starts the interactive CLI chat immediately (auto-initializes database if missing)
-python main.py
-
-# Or via uv:
 uv sync --frozen
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 # Set GEMINI_API_KEY in .env locally. Never commit the key.
 uv run portfolio-agent init-db
 uv run portfolio-agent chat
+# Shortcut after installing dependencies; initializes a missing database:
+uv run python main.py
 ```
 
 Run `init-db` once on a fresh checkout. It validates and loads all nine CSVs; it will not replace an existing database without `--rebuild`. On macOS/Linux, create the environment file with `test -f .env || cp .env.example .env`. A pip alternative is `python -m pip install -e .` in an activated virtual environment, then use `portfolio-agent` directly. The supplied `requirements.txt` is preserved reference material; current runtime dependencies are in `pyproject.toml`.
@@ -29,7 +27,7 @@ In `chat`, type a question directly, then type `exit` when finished. Example que
 - What are the names of all active portfolios?
 - Calculate sector exposure for Balanced Portfolio.
 
-Bare `chat` treats questions independently. `uv run portfolio-agent chat --context` enables bounded follow-ups. Neither the base CLI nor its evaluator needs FastAPI, Node, a browser, or a running server.
+Bare `chat` and `main.py` treat questions independently and use genuine Gemini by default. `--context`, `--local` and `--cache` are explicit opt-ins. Global flags work before the command: `uv run python main.py --db portfolio_database.db exposure "Balanced Portfolio"`. Neither the base CLI nor its evaluator needs FastAPI, Node, a browser, or a running server.
 
 ```powershell
 # Natural-language SQL: Gemini generates and locally validates the query.
@@ -69,6 +67,20 @@ The supplied suite's published **10/10** results are historical captures at thei
 
 See [architecture](docs/ARCHITECTURE.md), [data conventions](docs/DATA_ASSUMPTIONS.md) and [engineering decisions](docs/ENGINEERING_NOTES.md).
 
+All optional assignment bullets now have implementations: metadata RAG, a Streamlit chat,
+concurrent model requests, SQL-efficiency scoring and a separate production deployment
+profile extend the existing safety, logging, validation, caching and hybrid support.
+See the [enhancement checklist and deployment guide](docs/ENHANCEMENTS.md).
+
+```powershell
+uv sync --frozen --extra gui
+uv run --extra gui portfolio-agent gui
+```
+
+Streamlit opens on http://127.0.0.1:8501. Metadata retrieval runs locally over live schema
+documents and adds source references to model context. Efficiency scoring measures SQLite
+VM work, not disk reads. The production profile is separate from the anonymous Render demo.
+
 ## Optional dashboard and hosted demo
 
 ```powershell
@@ -85,11 +97,11 @@ The deployment explicitly permits anonymous demo access. An optional configured 
 ## Key-free verification
 
 ```powershell
-uv sync --frozen --extra dev
+uv sync --frozen --extra dev --extra gui
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy
-uv run pytest --cov=portiq
+uv run --extra gui pytest --cov=portiq
 # Node 22 is used in browser CI; only needed for development verification.
 npm ci
 npx playwright install chromium

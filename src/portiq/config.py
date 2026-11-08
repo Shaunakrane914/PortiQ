@@ -30,6 +30,8 @@ class Settings(BaseModel):
     fallback_models: tuple[str, ...] = Field(default=(), max_length=2)
     circuit_failures: int = Field(default=3, ge=1, le=10)
     circuit_seconds: float = Field(default=30, ge=1, le=300)
+    max_concurrent_analyses: int = Field(default=4, ge=1, le=32)
+    environment: str = Field(default="demo", pattern="^(demo|production)$")
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -54,6 +56,8 @@ class Settings(BaseModel):
             ),
             circuit_failures=int(os.getenv("PORTIQ_CIRCUIT_FAILURES", "3")),
             circuit_seconds=float(os.getenv("PORTIQ_CIRCUIT_SECONDS", "30")),
+            max_concurrent_analyses=int(os.getenv("PORTIQ_MAX_CONCURRENT_ANALYSES", "4")),
+            environment=os.getenv("PORTIQ_ENV", "demo"),
         )
 
     def require_key(self) -> str:

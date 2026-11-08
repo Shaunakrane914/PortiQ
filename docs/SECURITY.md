@@ -25,13 +25,20 @@ Gemini receives schema/catalogue/domain context, user questions and necessary to
 
 FastAPI accepts strict typed JSON, rejects extra fields and bounds POST bodies to 16 KiB, including chunked bodies. POST requests require JSON. Origin validation accepts an exact base/allowlisted origin or a hostname match to the base URL/Host header to support TLS-terminating proxies. The hostname fallback does not strictly compare scheme and port, so it is not full origin isolation. Configured CORS origins must be explicit; wildcard CORS is rejected. A configured bearer token uses constant-time comparison. Browser-facing validation/provider/filesystem errors are sanitized; request IDs support troubleshooting.
 
-The API rate limiter uses actual socket clients and ignores forwarded-client headers. Behind a proxy, clients can share a socket identity/limit. A semaphore admits one analytical request at a time and rejects concurrent analysis as busy. One worker is supported. Rate limiting, the circuit and in-memory cache/session state are not distributed controls. A shared SQLite file coordinates local daily attempt counts only among compatible processes.
+The API rate limiter uses actual socket clients and ignores forwarded-client headers. Behind a proxy, clients can share a socket identity/limit. A bounded semaphore admits four analyses by default and returns 503/Retry-After when full. Separate reusable model clients share atomic daily accounting and RPM reservations; per-session locks isolate turns. One process is supported. Rate limiting, the circuit and in-memory cache/session state are not distributed controls. A shared SQLite file coordinates daily attempt counts only among compatible processes.
 
 CLI `serve` requires a demo token for a bind address other than `127.0.0.1` or `localhost`. The module/container entry point alternatively permits explicit `PORTIQ_ALLOW_ANONYMOUS=1` for networked model access without a token. A token, if configured, is still checked; the anonymous flag does not disable it. Host wildcard and anonymous-host defaults are described in [configuration](SUBMISSION.md#configuration).
 
 ## Hosted frontend and deployment choices
 
-The public [Render demo](https://portiq-b9u7.onrender.com) is configured through [render.yaml](../render.yaml) with anonymous opt-in, wildcard accepted hosts and a 6.5-second SDK interval. It is a small review demonstration, not production multi-user identity, authorization, per-user budgets, audit retention or availability. No additional password wall is imposed on ordinary browsing.
+The public [Render demo](https://portiq-b9u7.onrender.com) is configured through [render.yaml](../render.yaml) with anonymous opt-in, wildcard accepted hosts and adaptive pacing. It is a review demonstration, not individual user identity, per-user budgets, audit retention or an availability guarantee. No additional password wall is imposed on ordinary browsing.
+
+The explicit `PORTIQ_ENV=production` profile requires a >=32-character existing bearer token,
+explicit hostnames and a persistent quota ledger. It uses exact origin matching; public HTTPS
+origins must be allowed explicitly behind TLS proxies. The separate hardened
+[Compose recipe](../compose.production.yaml) retains runtime data, drops capabilities and
+uses a read-only root filesystem. TLS, token rotation, backups and monitoring remain operator
+responsibilities; see [deployment scope](ENHANCEMENTS.md#production-deployment-profile).
 
 The four views are AI Analyst (landing page), Overview, Portfolio Explorer and Reconciliation. Assessment branding, Evaluation Lab, System Status and internal configuration/report pages are removed. `/api/about`, `/api/evaluation/summary`, cache-management and public OpenAPI/docs routes are unavailable. Static serving is restricted to `web/`; `.env`, assignment documents, reports and project files are not served by those routes.
 

@@ -1,6 +1,7 @@
-"""Thin single-worker FastAPI demo; all analytics and agent execution use shared services."""
+"""Bounded concurrent FastAPI service with optional production configuration checks."""
 
 import hmac
+import logging
 import math
 import os
 import threading
@@ -29,6 +30,8 @@ from portiq.database import connect_readonly, initialize
 from portiq.errors import DataError, ModelError, PortfolioError, PortiqError, QueryError
 from portiq.exposure import ExposureResult, calculate_exposure
 from portiq.service import AnalysisService
+
+logger = logging.getLogger(__name__)
 
 
 class BodyLimit:
@@ -95,14 +98,13 @@ def create_app(
     rate_limit = rate_limit if rate_limit is not None else int(os.getenv("PORTIQ_RATE_LIMIT", "60"))
     if not 1 <= rate_limit <= 10000:
         raise ValueError("API rate limit must be 1–10000.")
-    analysis = service or AnalysisService(settings)
     demo_token = token if token is not None else os.getenv("PORTIQ_DEMO_TOKEN", "")
     origins = [o.strip() for o in os.getenv("PORTIQ_CORS_ORIGINS", "").split(",") if o.strip()]
     if "*" in origins:
         raise ValueError("Explicit CORS origins are required.")
     clients: OrderedDict[str, deque[float]] = OrderedDict()
     rate_lock = threading.Lock()
-    model_slot = threading.BoundedSemaphore(1)
+    model_slot = threading.BoundedSemaphore(settings.max_concurrent_analyses)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> Any:
@@ -117,9 +119,17 @@ def create_app(
         docs_url=None,
         redoc_url=None,
     )
-    app.state.analysis = analysis
     app.add_middleware(BodyLimit)
     extra_hosts = [h.strip() for h in os.getenv("PORTIQ_ALLOWED_HOSTS", "").split(",") if h.strip()]
+    if settings.environment == "production":
+        if not demo_token or len(demo_token) < 32:
+            raise ValueError("Production API requires a token of at least 32 characters.")
+        if not extra_hosts or "*" in extra_hosts:
+            raise ValueError("Production API requires explicit allowed hosts.")
+        if settings.quota_path is None:
+            raise ValueError("Production API requires a persistent quota ledger.")
+    analysis = service or AnalysisService(settings)
+    app.state.analysis = analysis
     if "*" in extra_hosts or (not extra_hosts and os.getenv("PORTIQ_ALLOW_ANONYMOUS") == "1"):
         allowed_hosts = ["*"]
     else:
@@ -139,9 +149,14 @@ def create_app(
     @app.middleware("http")
     async def security(request: Request, call_next: Any) -> Any:
         request_id = str(uuid4())
+        started = time.perf_counter()
         request.state.request_id = request_id
         response = None
-        if request.url.path.startswith("/api/") and request.url.path != "/api/health":
+        if request.url.path.startswith("/api/") and request.url.path not in {
+            "/api/health",
+            "/api/live",
+            "/api/ready",
+        }:
             authorization = request.headers.get("authorization", "")
             if demo_token and not hmac.compare_digest(authorization, "Bearer " + demo_token):
                 response = JSONResponse({"detail": "Demo access token required."}, 401)
@@ -151,7 +166,7 @@ def create_app(
             if origin:
                 if origin == own_origin or origin in origins:
                     is_same_origin = True
-                else:
+                elif settings.environment != "production":
                     parsed_origin = urlparse(origin)
                     parsed_base = urlparse(own_origin)
                     host_header = request.headers.get("host", "").split(":")[0]
@@ -198,6 +213,14 @@ def create_app(
                 " 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-"
                 "uri 'none'; form-action 'self'",
             }
+        )
+        logger.info(
+            "request=%s method=%s path=%s status=%s duration_ms=%.3f",
+            request_id,
+            request.method,
+            request.url.path,
+            response.status_code,
+            (time.perf_counter() - started) * 1000,
         )
         return response
 
@@ -246,10 +269,16 @@ def create_app(
     def health() -> JSONResponse:
         try:
             with connect_readonly(settings.database) as conn:
-                conn.execute("SELECT 1").fetchone()
+                conn.execute("SELECT portfolio_id FROM portfolios LIMIT 1").fetchone()
             return JSONResponse({"status": "ok"})
         except PortiqError:
             return JSONResponse({"status": "database unavailable"}, 503)
+
+    @app.get("/api/live")
+    def live() -> dict[str, str]:
+        return {"status": "alive"}
+
+    app.add_api_route("/api/ready", health, methods=["GET", "HEAD"])
 
     @app.get("/api/overview")
     def overview() -> dict[str, Any]:
@@ -306,7 +335,11 @@ def create_app(
 
     def answer(body: Ask, conversational: bool) -> AskResult | JSONResponse:
         if not model_slot.acquire(blocking=False):
-            raise ModelError("Another analysis is running; retry shortly.", kind="busy")
+            return JSONResponse(
+                {"detail": "Analysis capacity is busy; retry shortly."},
+                503,
+                headers={"Retry-After": "1"},
+            )
         try:
             result, session_id = analysis.ask(
                 body.question,
@@ -358,6 +391,9 @@ def main() -> None:
     """Container entry point; optional web dependencies stay outside the base CLI."""
     import uvicorn
 
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s %(message)s")
+    logging.getLogger("httpx").setLevel(logging.ERROR)
+    logging.getLogger("google").setLevel(logging.ERROR)
     settings = Settings.from_env()
     host = os.getenv("PORTIQ_HOST", "127.0.0.1")
     if (

@@ -67,7 +67,9 @@ class AdaptiveRateLimiter:
             current = self.clock() if now is None else now
             self._evict_expired(current)
             if len(self.timestamps) >= self.rpm_limit:
-                recovery = self.window_seconds - (current - self.timestamps[0])
+                recovery = self.window_seconds - (
+                    current - self.timestamps[len(self.timestamps) - self.rpm_limit]
+                )
                 if recovery > self.max_wait_seconds:
                     wait_s = math.ceil(recovery)
                     raise ModelError(
@@ -97,14 +99,17 @@ class AdaptiveRateLimiter:
             self._evict_expired(current)
 
             interval_delay = 0.0
-            if request_interval > 0 and last_request > 0:
-                elapsed = current - last_request
+            previous = max(last_request, self.timestamps[-1] if self.timestamps else 0)
+            if request_interval > 0 and previous > 0:
+                elapsed = current - previous
                 if elapsed < request_interval:
                     interval_delay = request_interval - elapsed
 
             window_delay = 0.0
             if len(self.timestamps) >= self.rpm_limit:
-                recovery = self.window_seconds - (current - self.timestamps[0])
+                recovery = self.window_seconds - (
+                    current - self.timestamps[len(self.timestamps) - self.rpm_limit]
+                )
                 if recovery > self.max_wait_seconds:
                     wait_s = math.ceil(recovery)
                     raise ModelError(
@@ -116,8 +121,11 @@ class AdaptiveRateLimiter:
                 window_delay = max(0.0, recovery)
 
             delay = max(interval_delay, window_delay)
-            self.timestamps.append(current + delay)
-            return delay
+            # Reservations include future starts; every queued slot has its own expiry.
+            # Preserve chronological order when different requests have different intervals.
+            reserved = max(current + delay, self.timestamps[-1] if self.timestamps else current)
+            self.timestamps.append(reserved)
+            return reserved - current
 
     def current_usage(self, now: float | None = None) -> int:
         with self.lock:

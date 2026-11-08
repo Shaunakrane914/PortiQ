@@ -28,7 +28,8 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - run: uv sync --frozen --extra dev --extra web
+      - run: uv sync --frozen --extra dev --extra web --extra gui
+      - run: uv run --extra gui pytest tests/test_enhancements.py -q
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: uv run portfolio-agent init-db
