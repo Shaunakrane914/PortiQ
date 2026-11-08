@@ -17,6 +17,7 @@ def client(database: Path, source: Path):
 
 def test_browsing_without_api_key(client: TestClient) -> None:
     assert client.get("/api/health").json()["status"] == "ok"
+    assert client.head("/api/health").status_code == 200
     portfolios = client.get("/api/portfolios").json()
     assert portfolios["total"] == 13
     for path in [

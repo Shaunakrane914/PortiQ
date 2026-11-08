@@ -231,7 +231,7 @@ def create_app(
             },
         )
 
-    @app.get("/api/health")
+    @app.api_route("/api/health", methods=["GET", "HEAD"])
     def health() -> JSONResponse:
         try:
             with connect_readonly(settings.database) as conn:
