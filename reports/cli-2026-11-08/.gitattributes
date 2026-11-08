@@ -1,1 +1,2 @@
-* -text
+* -text whitespace=cr-at-eol
+cli-transcript.txt whitespace=-blank-at-eol,cr-at-eol
