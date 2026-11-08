@@ -55,6 +55,8 @@ A separate fresh-browser scalar check, with local/cache disabled, returned the c
 
 A separate fresh extended regression passed **50/50** with the optimized orchestrator, bypassing local routing and caching. It includes complex SQL, exposure, hybrid, ambiguity and malicious-input cases; the full response/evidence report is retained locally in `reports/local/model-latency-20261108/extended.json`. All 78 frozen input/historical-report Git blobs still matched the baseline. This finite suite does not establish general natural-language correctness.
 
+The later [CLI-only 50-question run](../reports/cli-2026-11-08/README.md) on `4b49d95` also passed **50/50**, using 92 SDK invocations and 201,404 reported tokens with zero provider failures. Its 46 data cases and four handling cases passed; all six configured narrative contracts passed. Raw evidence, complete answers, per-question timing/usage, transcript and immutable capture hashes are now versioned. All 603 database rows matched the supplied CSVs. The 300-attempt exception applied only to that CLI process and retained the shared ledger. These artifacts describe their capture revision and are separate from the earlier Python/browser measurements.
+
 ## Verification and reviewer path
 
 Start with [README](../README.md), demonstrate `chat`, `ask --show-sql`, `exposure` and the supplied evaluator, then show the optional dashboard. Full-result comparison checks projection, ordering, duplicates and numeric values; limited narrative assertions declare their coverage. Mock policy tests, offline replay and fresh model runs are separate kinds of evidence.

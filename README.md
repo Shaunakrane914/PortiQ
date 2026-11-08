@@ -38,6 +38,8 @@ On macOS/Linux use `cp .env.example .env`. A pip alternative is `python -m pip i
 
 For an explicit scalar-only request such as `How many securities are classified as Bond? Return just the count.`, Gemini still generates the SQL. After successful validation/execution, a single-cell result can be rendered directly without a second Gemini call to restate it. Compound requests, truncated results and other answer formats retain model synthesis. Structured responses identify this as `deterministic scalar rendering after Gemini SQL`; it is separate from the optional local registry and exact cache.
 
+The [8 November CLI-only regression](reports/cli-2026-11-08/README.md) passed **50/50** with **92 actual Gemini calls and 201,404 reported tokens**. Complete answers, generated SQL, independent references, timings, usage and the actual CLI transcript are preserved. The same frozen suite's archived original run also passed 50/50 with 266,304 tokens; the 24.37% reduction showed no regression on these cases, without establishing accuracy on unseen questions.
+
 ```powershell
 uv run portfolio-agent snapshot "Balanced Portfolio"
 uv run portfolio-agent reconcile "Balanced Portfolio"

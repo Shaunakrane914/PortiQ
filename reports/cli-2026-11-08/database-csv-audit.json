@@ -1,0 +1,59 @@
+{
+  "mode": "Read-only independent CSV-to-SQLite row/type comparison",
+  "checks": [
+    {
+      "table": "benchmarks",
+      "csv_rows": 13,
+      "db_rows": 13,
+      "exact_match": true
+    },
+    {
+      "table": "historical_prices",
+      "csv_rows": 330,
+      "db_rows": 330,
+      "exact_match": true
+    },
+    {
+      "table": "holdings",
+      "csv_rows": 95,
+      "db_rows": 95,
+      "exact_match": true
+    },
+    {
+      "table": "portfolio_performance",
+      "csv_rows": 44,
+      "db_rows": 44,
+      "exact_match": true
+    },
+    {
+      "table": "portfolios",
+      "csv_rows": 13,
+      "db_rows": 13,
+      "exact_match": true
+    },
+    {
+      "table": "risk_metrics",
+      "csv_rows": 44,
+      "db_rows": 44,
+      "exact_match": true
+    },
+    {
+      "table": "sectors",
+      "csv_rows": 10,
+      "db_rows": 10,
+      "exact_match": true
+    },
+    {
+      "table": "securities",
+      "csv_rows": 30,
+      "db_rows": 30,
+      "exact_match": true
+    },
+    {
+      "table": "transactions",
+      "csv_rows": 24,
+      "db_rows": 24,
+      "exact_match": true
+    }
+  ]
+}
