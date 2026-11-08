@@ -141,6 +141,141 @@ def test_renderer_preserves_nulls_duplicates_and_bounds(database: Path) -> None:
     assert "USD" not in text
 
 
+def test_compact_model_schema_preserves_sql_structure_and_constraints(database: Path) -> None:
+    import sqlglot
+
+    from portiq.database import connect_readonly, schema_context
+
+    with closing(sqlite3.connect(database)) as conn, conn:
+        conn.execute(
+            'CREATE TABLE "extra table" (id INTEGER PRIMARY KEY, name TEXT DEFAULT '
+            "'Mixed Case' CHECK(length(name)>0), UNIQUE(name))"
+        )
+    with connect_readonly(database) as conn:
+        original = [
+            r[0]
+            for r in conn.execute(
+                "SELECT sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+            )
+        ]
+    compact = schema_context(database, compact=True)
+    assert len(compact) < len(schema_context(database))
+    assert len(compact.splitlines()) == len(original)
+    for full, short in zip(original, compact.splitlines(), strict=True):
+        assert sqlglot.parse_one(full, read="sqlite") == sqlglot.parse_one(short, read="sqlite")
+
+
+@pytest.mark.parametrize("value", ["0", "NULL", "-2", "13"])
+def test_explicit_scalar_format_uses_gemini_sql_without_synthesis(
+    database: Path, value: str
+) -> None:
+    from portiq.agent import PortfolioAgent
+
+    backend = FakeBackend(
+        [
+            call(
+                "sql_query",
+                question="Value",
+                sql=f"SELECT {value} AS value FROM portfolios LIMIT 1",
+                explanation="Read one scalar",
+            ),
+        ]
+    )
+    answer = PortfolioAgent(Settings(database=database), backend).answer(
+        "Read a recorded value. Return a single value."
+    )
+    assert answer.status == "answer" and answer.api_calls == 1
+    assert answer.execution_source == "Gemini planned analysis"
+    assert answer.rendering == "deterministic scalar rendering after Gemini SQL"
+    assert ("Not available" if value == "NULL" else value) in answer.answer
+    assert len(backend.requests) == 1 and len(answer.tools) == 1
+
+
+@pytest.mark.parametrize(
+    "question,sql",
+    [
+        ("Count all portfolios", "SELECT COUNT(*) FROM portfolios"),
+        (
+            "Count portfolios and show exposure. Return just the count.",
+            "SELECT COUNT(*) FROM portfolios",
+        ),
+        ("Show names. Return a single value.", "SELECT portfolio_name FROM portfolios"),
+        (
+            "Show count and average. Return one value.",
+            "SELECT COUNT(*),AVG(total_aum) FROM portfolios",
+        ),
+    ],
+)
+def test_non_scalar_or_compound_requests_keep_model_synthesis(
+    database: Path,
+    question: str,
+    sql: str,
+) -> None:
+    from portiq.agent import PortfolioAgent
+
+    backend = FakeBackend(
+        [
+            call("sql_query", question=question, sql=sql, explanation="Read requested data"),
+            call("respond", status="answer", answer="Grounded model summary"),
+        ]
+    )
+    answer = PortfolioAgent(Settings(database=database), backend).answer(question)
+    assert answer.api_calls == 2 and answer.answer == "Grounded model summary"
+    assert answer.rendering == "model synthesis with authoritative tool evidence"
+
+
+def test_truncated_scalar_shaped_results_keep_synthesis(database: Path) -> None:
+    from portiq.agent import PortfolioAgent
+
+    backend = FakeBackend(
+        [
+            call(
+                "sql_query",
+                question="Names",
+                sql="SELECT portfolio_name FROM portfolios",
+                explanation="Read names",
+            ),
+            call("respond", status="answer", answer="The result is truncated."),
+        ]
+    )
+    answer = PortfolioAgent(Settings(database=database, max_rows=1), backend).answer(
+        "List names. Return one value."
+    )
+    assert answer.tools[0].result["truncated"] and answer.api_calls == 2
+
+
+def test_parallel_analytical_calls_are_not_discarded_by_scalar_format(database: Path) -> None:
+    from google.genai import types
+
+    from portiq.agent import PortfolioAgent
+
+    first = call(
+        "sql_query",
+        question="Portfolios",
+        sql="SELECT COUNT(*) FROM portfolios",
+        explanation="Count portfolios",
+    )
+    first.candidates[0].content.parts.append(
+        types.Part(
+            function_call=types.FunctionCall(
+                name="sql_query",
+                id="second",
+                args={
+                    "question": "Securities",
+                    "sql": "SELECT COUNT(*) FROM securities",
+                    "explanation": "Count securities",
+                },
+            )
+        )
+    )
+    backend = FakeBackend([first, call("respond", status="answer", answer="Both results shown.")])
+    answer = PortfolioAgent(Settings(database=database), backend).answer(
+        "Read the summary. Return one value."
+    )
+    assert len(answer.tools) == 2 and answer.api_calls == 2
+    assert len(backend.requests[-1][0][-1].parts) == 2
+
+
 def test_atomic_budget_across_connections(tmp_path: Path) -> None:
     a = RequestBudget(10, tmp_path / "budget.db")
     b = RequestBudget(10, tmp_path / "budget.db")

@@ -12,6 +12,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+import sqlglot
+
 from portiq.errors import DataError
 
 
@@ -146,11 +148,13 @@ def initialize(source: Path, destination: Path, *, rebuild: bool = False) -> dic
     return {"rows": counts, "source_sha256": hashes, "foreign_keys": "ok", "integrity": "ok"}
 
 
-def schema_context(path: Path) -> str:
+def schema_context(path: Path, *, compact: bool = False) -> str:
     """Read schema from the database, never from evaluation answers."""
     with connect_readonly(path) as conn:
         return "\n".join(
-            r[0]
+            sqlglot.parse_one(r[0], read="sqlite").sql(dialect="sqlite", comments=False)
+            if compact
+            else r[0]
             for r in conn.execute(
                 "SELECT sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
             )

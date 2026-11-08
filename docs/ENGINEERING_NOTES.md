@@ -37,6 +37,24 @@ An earlier interrupted comparison exhausted its explicit 250-SDK-attempt budget 
 
 Alternative-model live comparisons, schema-context ablations, hedging and public deployment were deferred rather than assigned predicted results. Nine tables did not justify a retrieval framework or vector database.
 
+## Model latency follow-up (2026-11-08)
+
+The supported orchestrator now uses shorter instructions and compact SQL schema formatting. SQL schema compaction preserves parsed structure, including keys, constraints and types. Live categorical domains, the portfolio catalogue, SQL authorization, focused complex-query planning, repairs and exposure formulas remain. Explicit scalar-only requests can render one successful, non-truncated, single-cell SQL result without a second model call to restate the value. Gemini still plans that SQL. Compound wording, multiple tool calls and other result shapes retain model synthesis. Responses disclose deterministic scalar rendering separately from local/cache execution.
+
+A fresh comparison alternated original/optimized order across three frozen cases on one reused Gemini backend. Local routing and caching were bypassed. Existing 6.5-second request spacing was unchanged; no rolling-minute limiter was retained. Raw responses and per-attempt timings are retained locally in `reports/local/model-latency-20261108/paired.json`.
+
+| Case | Original SDK calls / tokens | Optimized SDK calls / tokens | Original / optimized SDK service time |
+|---|---:|---:|---:|
+| Bond count (`ext-01`) | 2 / 5,284 | 1 / 2,023 | 4.160 / 1.215 s |
+| Passive portfolio names (`ext-02`) | 2 / 5,328 | 2 / 4,220 | 2.695 / 2.781 s |
+| Balanced exposure (`ext-37`) | 2 / 5,280 | 2 / 4,163 | 2.189 / 2.643 s |
+
+All six answers passed existing result checks and configured narrative contracts. These are single trials, not a general speed guarantee. SDK service includes transport but excludes deliberate pacing. The scalar case removed an actual generation call; the smaller prompts did not demonstrate a consistent service-time improvement for the other cases. Median complete question time did not improve in this sequential comparison (12.841 / 13.128 s), because it includes pacing carried over from the previous question. Historical reports were not overwritten, and this comparison is not a full-suite score.
+
+A separate fresh-browser scalar check, with local/cache disabled, returned the correct Bond count in 1.518 seconds of API analysis (1.606 seconds observed in the browser), one SDK invocation, 2,023 reported tokens and zero pacing wait. Raw response and screenshot are retained locally beside the paired comparison. Offline verification passed 212 tests with two opt-in live skips, eight browser tests, Ruff/format/mypy and the actual non-root container HTTP smoke check.
+
+A separate fresh extended regression passed **50/50** with the optimized orchestrator, bypassing local routing and caching. It includes complex SQL, exposure, hybrid, ambiguity and malicious-input cases; the full response/evidence report is retained locally in `reports/local/model-latency-20261108/extended.json`. All 78 frozen input/historical-report Git blobs still matched the baseline. This finite suite does not establish general natural-language correctness.
+
 ## Verification and reviewer path
 
 Start with [README](../README.md), demonstrate `chat`, `ask --show-sql`, `exposure` and the supplied evaluator, then show the optional dashboard. Full-result comparison checks projection, ordering, duplicates and numeric values; limited narrative assertions declare their coverage. Mock policy tests, offline replay and fresh model runs are separate kinds of evidence.

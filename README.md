@@ -36,6 +36,8 @@ On macOS/Linux use `cp .env.example .env`. A pip alternative is `python -m pip i
 
 `ask` and `chat` use the original orchestration by default. `chat --context` enables bounded conversation history; independent questions remain the default. `ask --local` and `chat --local --cache --context` explicitly enable the small local capability registry and in-memory exact cache.
 
+For an explicit scalar-only request such as `How many securities are classified as Bond? Return just the count.`, Gemini still generates the SQL. After successful validation/execution, a single-cell result can be rendered directly without a second Gemini call to restate it. Compound requests, truncated results and other answer formats retain model synthesis. Structured responses identify this as `deterministic scalar rendering after Gemini SQL`; it is separate from the optional local registry and exact cache.
+
 ```powershell
 uv run portfolio-agent snapshot "Balanced Portfolio"
 uv run portfolio-agent reconcile "Balanced Portfolio"

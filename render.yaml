@@ -14,8 +14,6 @@ services:
         value: "*"
       - key: PORTIQ_REQUEST_INTERVAL
         value: "6.5"
-      - key: PORTIQ_REQUESTS_PER_MINUTE
-        value: "14"
       - key: GEMINI_API_KEY
         sync: false
       - key: PORTIQ_DEMO_TOKEN
