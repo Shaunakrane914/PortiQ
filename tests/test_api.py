@@ -76,6 +76,15 @@ def test_auth_origin_body_limit_and_rate(database: Path) -> None:
             ).status_code
             == 403
         )
+        # Verify TLS-terminating reverse proxy forwards HTTPS origin to testserver without 403
+        assert (
+            c.post(
+                "/api/ask",
+                headers={**headers, "Origin": "https://testserver"},
+                json={"question": "Count all portfolios"},
+            ).status_code
+            != 403
+        )
         assert c.post("/api/ask", headers=headers, content="x" * 17000).status_code in {413, 415}
         c.get("/api/overview", headers=headers)
         assert (

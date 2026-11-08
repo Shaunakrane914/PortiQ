@@ -9,6 +9,7 @@ from collections import OrderedDict, deque
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlparse
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
@@ -146,12 +147,22 @@ def create_app(
                 response = JSONResponse({"detail": "Demo access token required."}, 401)
             origin = request.headers.get("origin")
             own_origin = str(request.base_url).rstrip("/")
-            if (
-                request.method == "POST"
-                and origin
-                and origin != own_origin
-                and origin not in origins
-            ):
+            is_same_origin = False
+            if origin:
+                if origin == own_origin or origin in origins:
+                    is_same_origin = True
+                else:
+                    parsed_origin = urlparse(origin)
+                    parsed_base = urlparse(own_origin)
+                    host_header = request.headers.get("host", "").split(":")[0]
+                    origin_hostname = parsed_origin.hostname or ""
+                    # Behind TLS-terminating proxies (e.g. Render/Cloudflare),
+                    # compare hostname with base URL or Host header.
+                    if origin_hostname and (
+                        origin_hostname == parsed_base.hostname or origin_hostname == host_header
+                    ):
+                        is_same_origin = True
+            if request.method == "POST" and origin and not is_same_origin:
                 response = JSONResponse({"detail": "Origin not allowed."}, 403)
             if request.method == "POST" and not request.headers.get("content-type", "").startswith(
                 "application/json"
