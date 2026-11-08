@@ -28,7 +28,7 @@ A small original/optimized comparison alternated order on one reused 6.5-second-
 
 Service includes transport. The prompt reduction did not show a consistent service-time gain for the list/exposure cases. Sequential end-to-end medians were 12.841/13.128 seconds because they included pacing inherited from prior requests. A separate fresh-browser scalar check recorded 1.518 seconds of API analysis and one SDK call; a hosted probe recorded 1.939 seconds. These isolated captures do not guarantee future latency. Raw paired/browser observations remain local; the later full CLI evidence above is versioned.
 
-No rolling-minute Gemini scheduler or unrelated local security-count/UI shortcut was retained. The existing HTTP socket-client rate limit is a separate control.
+An adaptive 60-second rolling quota controller (`AdaptiveRateLimiter`) with a 12 RPM safety ceiling governs SDK calls with 0s default pacing and question-level cooldown, reducing live hosted latency on Render to ~1.8–2.6s. The existing HTTP socket-client rate limit is a separate control.
 
 ## Historical experiments and cleanup
 

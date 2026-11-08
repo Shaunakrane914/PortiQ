@@ -10,6 +10,10 @@ PortiQ implements the four deliverables in the original [PL Capital assignment](
 Use Python 3.11+ from a clone of this repository. [uv](https://docs.astral.sh/uv/getting-started/installation/) is the recommended installer; `uv.lock` is the tested dependency resolution.
 
 ```powershell
+# Quickstart: starts the interactive CLI chat immediately (auto-initializes database if missing)
+python main.py
+
+# Or via uv:
 uv sync --frozen
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 # Set GEMINI_API_KEY in .env locally. Never commit the key.

@@ -2,6 +2,16 @@
 
 Source tags, original assessment inputs, frozen suites and captured evaluation reports are not rewritten. The [pre-cleanup snapshot](https://github.com/Shaunakrane914/PortiQ/tree/ace58054c7a778817d68a7c1d81386b7dffd95e8) retains removed experiments and detailed development evidence.
 
+## Adaptive sliding-window quota controller - 8 November 2026
+
+- Replaced rigid, fixed-interval SDK sleeps (`PORTIQ_REQUEST_INTERVAL`) with an adaptive sliding-window quota controller (`AdaptiveRateLimiter`) tracking actual Gemini attempts in a 60-second rolling window.
+- Set an application safety cap of 12 RPM under Google's 15 RPM free tier limit with a default 0.0s artificial delay, reducing live two-turn agent response latency on Render from ~11s down to ~1.8–2.6s.
+- Eliminated artificial pacing between internal tool execution steps (SQL generation and response synthesis) within the same user question.
+- Introduced a gentle 1.5-second cooldown before starting a new question when usage approaches the quota ceiling (>= 8 attempts in 60s).
+- Implemented exact capacity recovery calculation and fail-fast behavior: returns an immediate HTTP 429 with `Retry-After` when recovery exceeds 10.0 seconds, preventing worker thread stalls and UI freezes.
+- Updated `render.yaml` and `.env.example` defaults (`PORTIQ_REQUEST_INTERVAL=0`, `PORTIQ_RPM_LIMIT=12`).
+- Added comprehensive unit and integration test coverage for all rate limiter state transitions in `tests/test_quota_policy.py`.
+
 ## Documentation alignment - 8 November 2026
 
 - Reorganized the run guide and reviewer checklist around the assignment's four required CLI components.

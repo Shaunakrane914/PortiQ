@@ -12,7 +12,7 @@ The original [assignment](assignment/README.md) requires SQL translation, equity
 | SQL execution | [sql.py](../src/portiq/sql.py) | Parse, authorize, bound and execute read-only queries |
 | Required exposure calculator | [exposure.py](../src/portiq/exposure.py) | Resolve one portfolio and normalize stock weights by stock sector |
 | Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, evidence comparison, limited narrative contracts |
-| Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, actual usage, pacing, local budget, safe retry/circuit handling |
+| Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, adaptive sliding-window limiter, local budget, safe retry/circuit handling |
 | Optional service | [service.py](../src/portiq/service.py) | Explicit local capabilities, exact cache, context and sequential fallback |
 | Optional analytics | [analytics.py](../src/portiq/analytics.py) | Snapshots, quote-value reconciliation and data-quality notices |
 | Optional platform | [api.py](../src/portiq/api.py), [web/](../src/portiq/web/) | Single-worker REST adapter and four-view static interface |
@@ -55,7 +55,15 @@ The evaluator independently re-executes generated SQL and reference SQL. Exposur
 
 SDK automatic function calling and automatic request retries are disabled. Application orchestration owns the tool loop and bounded retries. Every actual SDK invocation reserves a local daily attempt, including delivery-unknown failures. Per-call metrics separate provider/network service from deliberate pacing; question metrics also expose backoff and end-to-end time. Missing usage stays unknown.
 
-The default minimum SDK-start interval is 13 seconds; the captured CLI run and Render blueprint use 6.5 seconds. No rolling-minute Gemini scheduler is implemented. Daily/authentication failures stop automatic retries; transient failures have bounded retry/backoff and a circuit that refreshes the client after cooldown. Optional explicitly configured fallback models run sequentially and share the ledger. File-backed daily accounting coordinates only processes sharing its file/settings; it is not Google's project quota meter.
+Gemini quota is governed by an **adaptive sliding-window rate limiter** (`AdaptiveRateLimiter` in `quota.py`):
+- **Safety Cap:** 12 RPM application ceiling over a rolling 60-second window, maintaining 3 requests of safety headroom below Google's 15 RPM free tier limit.
+- **Zero Default Pacing:** Normal requests execute with 0.0s artificial delay, running tool generation and final synthesis immediately at full model speed.
+- **Question-Level Cooldown:** When usage reaches 8 or more calls within the 60-second window, a gentle 1.5-second cooldown is applied before starting subsequent questions—never between internal tool calls within the same question.
+- **Fail-Fast Recovery:** If the 12 RPM capacity is reached, the limiter calculates exact recovery time from the oldest attempt in the window. If recovery wait exceeds 10.0 seconds, it immediately raises a retryable `ModelError` (HTTP 429 with `Retry-After`) instead of blocking the worker thread or freezing the UI.
+- **Auto-Recovery:** As past attempts exit the 60-second rolling window, artificial delays automatically drop back to 0.0s.
+- **Fixed Spacing Override:** `PORTIQ_REQUEST_INTERVAL` (default `0.0s`) remains available for testing or intentional fixed-interval pacing (e.g. historical evaluation benchmarks).
+
+Daily/authentication failures stop automatic retries; transient failures have bounded retry/backoff and a circuit that refreshes the client after cooldown. Optional explicitly configured fallback models run sequentially and share the ledger and limiter. File-backed daily accounting coordinates only processes sharing its file/settings; it is not Google's project quota meter.
 
 ## Optional service, cache and sessions
 

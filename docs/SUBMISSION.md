@@ -76,7 +76,12 @@ A Gemini key is required only for genuine model questions. Deterministic SQL/exp
 | `GEMINI_API_KEY` | empty | CLI/server credential; never a browser asset |
 | `GEMINI_MODEL` | `gemini-3.1-flash-lite` | Primary model; availability verified only by a live request |
 | `PORTIQ_DB`, `PORTIQ_SOURCE` | `portfolio_database.db`, `.` | SQLite file and input directory; global CLI flags can override |
-| `PORTIQ_REQUEST_INTERVAL` | 13 s | Backend-local SDK-start spacing; Render/captured CLI run use 6.5 s |
+| `PORTIQ_REQUEST_INTERVAL` | 0.0 s | Fixed minimum SDK-start spacing; 0.0 s allows adaptive limiter to govern pacing |
+| `PORTIQ_RPM_LIMIT` | 12 | Adaptive limiter safety ceiling (under provider's 15 RPM limit) |
+| `PORTIQ_RPM_WINDOW` | 60.0 s | Rolling window duration for SDK attempt tracking |
+| `PORTIQ_RPM_COOLDOWN_THRESHOLD` | 8 | In-window attempt count that triggers question-level cooldown |
+| `PORTIQ_RPM_COOLDOWN_SECONDS` | 1.5 s | Cooldown before starting a new question when approaching quota |
+| `PORTIQ_MAX_WAIT_SECONDS` | 10.0 s | Recovery ceiling before returning immediate 429 Retry-After |
 | `PORTIQ_DAILY_REQUESTS` | 200; Docker 100 | Actual-SDK-attempt local guard per UTC day |
 | `PORTIQ_QUOTA_DB` | unset; Docker `/app/runtime/quota.sqlite` | Shared daily ledger; unset uses instance memory |
 | `PORTIQ_FALLBACK_MODELS` | empty | Up to two explicit sequential alternatives |
