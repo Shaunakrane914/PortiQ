@@ -72,7 +72,7 @@ uv run portfolio-agent init-db
 uv run portfolio-agent serve
 ```
 
-Open **http://127.0.0.1:8000** to start in AI Analyst and ask a question immediately. Overview, Explorer and Reconciliation work without a Gemini key. AI Analyst labels local calculation, cached answers and genuine model analysis. Its default local/cache settings are visible; turn both off to demonstrate genuine Gemini analysis. An access-code dialog appears only if the owner has configured the existing optional demo token; the default local interface has no password wall.
+Open **http://127.0.0.1:8000** to start in AI Analyst and ask a question immediately. Overview, Explorer and Reconciliation work without a Gemini key. AI Analyst labels local calculation, cached answers and genuine model analysis. Its local/cache settings default to unchecked so genuine Gemini analysis is demonstrated immediately; turn either on to observe local fast-path calculation or exact caching. An access-code dialog appears only if the owner has configured the existing optional demo token; the default local interface has no password wall.
 
 The current interface uses midnight navy, warm ivory and champagne gold. Older screenshots remain archived with their original source revision.
 

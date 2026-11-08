@@ -683,10 +683,10 @@ async function analyst() {
   const controls = el("div", null, "toolbar");
   const local = el("input");
   local.type = "checkbox";
-  local.checked = true;
+  local.checked = false;
   const cache = el("input");
   cache.type = "checkbox";
-  cache.checked = true;
+  cache.checked = false;
   const lab = (text, i) => {
     const l = el("label");
     l.append(i, document.createTextNode(" " + text));
