@@ -101,6 +101,13 @@ preserved with the experiment. Ordinary evaluation does not contain a retrieval 
 
 ## Current and historical evidence
 
+The [9 November verification](../reports/assurance-2026-11-09/README.md) includes a fresh
+supplied v4 CLI pass at `a3b9b24` (10/10, 21 SDK attempts, 48,249 reported tokens, measured page
+accesses), a final-source offline replay at `bfcca5e` (50/50 archived answers, 46 wrong-prose
+mutations rejected) and actual HTTP/Docker checks. The subsequent real-provider conversation
+attempt accepted four correct answers but hit daily quota on two others and did not complete
+its planned nine questions. None of these scopes is substituted for another.
+
 The archived [schema-graph comparison](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md), source
 `7caf262`, completed all twenty entries: full schema 10/10 versus graph 9/10, with 21 SDK
 attempts each. Reported tokens were 48,296 versus 35,352 (26.80% lower); one graph attempt
@@ -113,6 +120,8 @@ explains why both retrieval strategies and their comparison runners were removed
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
+| [Fresh supplied v4 CLI](../reports/assurance-2026-11-09/supplied/supplied.json), `a3b9b24` | **10/10**, 21 SDK attempts, 48,249 reported tokens | Fresh generation, all ten final-answer checks, eight SQL page profiles; later compatible verifier/context fixes have separate proof |
+| [Final historical replay](../reports/assurance-2026-11-09/historical-replay-final.json), `bfcca5e` | **50/50**, 46 bad-prose mutations rejected | Offline archived answers; zero provider calls; not a fresh 50-question model run |
 | [Full-schema CLI capture without RAG](../reports/supplied-no-rag-2026-11-09/README.md), `0b3e94a` | **10/10 supplied**, 21 SDK attempts, 48,293 reported tokens | Evaluator v3; all ten explicit answer checks passed; no active retrieval, cache/local disabled, zero provider errors |
 | [Post-removal supplied CLI capture](../reports/supplied-after-graph-removal-2026-11-08/README.md), `f14ea21` | **10/10 supplied**, 21 SDK attempts, 54,093 reported tokens | Evaluator v3; all ten explicit answer checks passed; full schema/basic BM25, graph removed, cache/local disabled |
 | [Fresh supplied CLI capture](../reports/supplied-v3-2026-11-08/README.md), `b8db4a9` | **10/10 supplied**, 21 SDK calls, 54,075 reported tokens | Evaluator v3; all ten explicit answer-format checks passed; cache/local disabled |

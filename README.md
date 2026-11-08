@@ -60,6 +60,11 @@ content. Any failed case returns exit code 1. Use fresh output names. Evaluator 
 hybrid percentage/scalar interference; historical captures retain their original version.
 [Evidence and limits](docs/EVALUATION.md) distinguish live runs, offline replays and load tests.
 
+[Current verification](reports/assurance-2026-11-09/README.md): 282 local tests passed; fresh
+supplied CLI 10/10 under v4; final historical replay 50/50 with 46 bad-prose mutations rejected.
+The 60-second HTTP soak and production Docker checks passed. A longer live concurrent run
+was interrupted by Google's daily quota and is explicitly incomplete.
+
 The agent uses the complete nine-table schema, actual categorical values, catalogue and
 financial conventions. SQL is parsed, authorized, bounded and read-only. Exposure normalizes
 Stock weights and excludes bonds; total quote values include bonds. Both RAG strategies were

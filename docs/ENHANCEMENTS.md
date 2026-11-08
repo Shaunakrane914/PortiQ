@@ -78,6 +78,12 @@ responsibilities. A passing smoke test is not a security certification or availa
 
 ## Validation
 
+The [current verification](../reports/assurance-2026-11-09/README.md) records 282 local tests,
+fresh supplied v4 CLI 10/10, final offline historical replay 50/50, a 1,729-request HTTP/stub
+soak, and 16 passing production Docker checks. A corrected real three-user hybrid run
+accepted four correct answers but stopped on daily-quota failures, so its nine-query live
+protocol remains incomplete. This is verified single-process behavior, not distributed/SLA proof.
+
 `tests/test_enhancements.py` checks query work, rate reservations, simultaneous
 requests, overload recovery, production settings and an actual Streamlit AppTest session.
 The platform CI job installs the GUI extra and runs these checks before browser/container

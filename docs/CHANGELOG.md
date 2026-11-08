@@ -16,6 +16,10 @@
 - Extended replay exposed six valid formats still rejected by the earlier table-only
   contract. Added bound label/value and min/max prose support, with swapped/contradictory
   claim tests, and corrected "sectors with no securities" empty-result detection.
+- Final validation: 282 local tests, isolated Python 3.11 checks, fresh supplied v4 10/10,
+  final offline replay 50/50 with 46 bad-prose mutations rejected, a passing HTTP soak and
+  all 16 production Docker checks. The longer real-provider protocol is quota-interrupted;
+  its failed/incomplete captures remain in the [evidence](../reports/assurance-2026-11-09/README.md).
 
 ## BM25 retrieval removed from active architecture — 9 November 2026
 

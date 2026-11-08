@@ -5,8 +5,9 @@ mandatory and optional requirements to implementations.
 
 - Historical 50/50 extended results belong to their recorded source and evaluator version.
   The suite has been observed and is regression evidence, not blind validation.
-- The latest supplied run passed 10/10 with v3 checks on `0b3e94a` after both retrieval removals;
-  it is a known finite suite. Earlier captures retain their own source and verification scope.
+- The fresh supplied v4 run passed 10/10 on `a3b9b24`; final-source replay accepts all fifty
+  archived answers and rejects 46 bad-prose mutations. These are known finite suites and
+  different generation/replay scopes, not blind validation.
 - Evaluator v4 verifies explicit scalar, list, table and exposure representations. Missing
   required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
   checker does not prove arbitrary English entailment, advice or additional unstructured claims.
@@ -25,6 +26,9 @@ mandatory and optional requirements to implementations.
   locks. Multiple processes would have separate sessions/RPM/capacity state. A retained SQLite
   ledger coordinates daily usage only; distributed deployment needs external coordination.
   Production rejects multi-worker environment settings; scale within the bounded client pool.
+- Final-source HTTP/stub soak and Docker verification passed. A real three-user hybrid
+  protocol accepted four correct answers before two daily-quota failures; its planned nine
+  questions were not completed. Longer live-provider load remains unverified until quota recovers.
 - Random session IDs are bearer capabilities, not user identities. The production profile
   uses the existing shared bearer token, not individual accounts, roles or per-user budgets.
 - The public Render demo remains anonymous. Production must be explicitly configured and

@@ -66,6 +66,9 @@ The stub soak measures API capacity, rejection/recovery, readiness and isolation
 are not Gemini inference measurements. Output files must be fresh. Neither test establishes
 a production SLA, unlimited throughput or distributed availability.
 
+[Measured verification](../reports/assurance-2026-11-09/README.md) records the current soak,
+Docker checks and quota-interrupted real-provider attempt with their exact source versions.
+
 ## Performance-aware evaluation
 
 ```powershell
