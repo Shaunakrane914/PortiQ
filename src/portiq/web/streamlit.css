@@ -1,0 +1,56 @@
+/* Native Streamlit widgets adapt to the shared dashboard stylesheet above. */
+[data-testid="stAppViewContainer"] { background: var(--paper); color: var(--navy); }
+[data-testid="stMain"], [data-testid="stMainBlockContainer"] { padding: 0; max-width: none; margin: 0; }
+.st-key-workspace { padding: 38px 40px 18px; max-width: 1700px; margin: auto; }
+[data-testid="stAppDeployButton"], [data-testid="stMainMenu"], [data-testid="stToolbarActions"], [data-testid="stDecoration"] { display: none; }
+[data-testid="stHeader"] { background: transparent; height: 0; }
+[data-testid="stSidebar"] { background: var(--navy); min-width: 248px; max-width: 248px; }
+[data-testid="stSidebarContent"] { padding: 0; }
+[data-testid="stSidebarHeader"] { position: absolute; right: 8px; top: 8px; padding: 0; height: 24px; min-height: 0; }
+[data-testid="stSidebarUserContent"] { padding: 32px 22px; }
+[data-testid="stSidebar"] [data-testid="stRadioOption"] {
+  padding: 13px 12px; border-radius: 5px; margin: 3px 0; width: 100%;
+  border: 1px solid transparent; color: var(--ivory);
+}
+[data-testid="stSidebar"] [data-testid="stRadioOption"] p {
+  color: color-mix(in srgb, var(--ivory) 78%, var(--navy)); font-size: 13px;
+}
+[data-testid="stSidebar"] [data-testid="stRadioOption"]:has(input:checked) {
+  background: color-mix(in srgb, var(--ivory) 16%, var(--navy));
+  box-shadow: inset 3px 0 var(--gold);
+}
+[data-testid="stRadioOption"] > div > div:not([data-testid]) { display: none; }
+[data-testid="stRadioOption"] p { white-space: pre; }
+[data-testid="stRadio"] [role="radiogroup"] { width: 100%; align-items: stretch; }
+[data-testid="stSidebar"] label:has(input:focus-visible) { outline: 2px solid var(--gold); }
+[data-testid="stSidebar"] button { color: var(--ivory); }
+.rail-footer { position: fixed; bottom: 28px; width: 204px; }
+[data-testid="stHeading"] h1 { font-family: Georgia, serif; font-size: 36px; font-weight: 400; padding: 0; }
+[data-testid="stCaptionContainer"] p { color: var(--muted); font-size: 12px; }
+[data-testid="stVerticalBlockBorderWrapper"] > div { border-color: var(--line); border-radius: 6px; }
+[class*="st-key-card_"] { background: var(--ivory); border-radius: 6px; padding: 20px 22px; }
+[data-testid="stLayoutWrapper"]:has(> [class*="st-key-card_"]) { background: var(--ivory); border-radius: 6px; }
+[data-testid="stForm"] { border: 0; padding: 0; }
+[data-testid="stButton"] button, [data-testid="stFormSubmitButton"] button,
+[data-testid="stDownloadButton"] button { border-color: var(--line); border-radius: 4px; }
+[data-testid="stButton"] button p, [data-testid="stFormSubmitButton"] button p { font-size: 11px; }
+[data-testid="stFormSubmitButton"] button[kind="primaryFormSubmit"] {
+  background: var(--navy); border-color: var(--navy); color: var(--ivory);
+}
+[data-testid="stFormSubmitButton"] button[kind="primaryFormSubmit"] p { color: var(--ivory); }
+[data-testid="stAlert"], [data-testid="stAlertContainer"] { background: color-mix(in srgb, var(--gold) 12%, var(--ivory)); color: var(--navy); }
+[data-testid="stAlert"] p, [data-testid="stAlert"] svg { color: var(--navy); }
+[data-testid="stSelectbox"] label p { text-transform: uppercase; font-size: 9px; letter-spacing: 1px; }
+.portiq-empty-chat { padding: 30px 0; color: var(--muted); font-size: 16px; }
+.portiq-empty-chat small { display: block; font-size: 12px; margin-top: 8px; }
+.message { margin: 12px 0; }
+.message pre { background: transparent; border: 0; padding: 0; margin: 8px 0; font: 14px/1.65 "Segoe UI", Arial, sans-serif; color: var(--navy); white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-height: 650px) { .rail-footer { position: static; margin-top: 24px; } }
+@media (max-width: 760px) {
+  .st-key-workspace { padding: 28px 18px 18px; }
+  .topbar { padding: 0 18px 0 42px; }
+  .tag { font-size: 7px; }
+  .footer { flex-direction: column; gap: 8px; }
+  [data-testid="stHorizontalBlock"] { flex-wrap: wrap; }
+  [data-testid="stHorizontalBlock"] > [data-testid="stColumn"] { min-width: min(100%, 240px); }
+}

@@ -11,7 +11,7 @@ continues to work without Streamlit, FastAPI, Node or a browser.
 | Logging | Request IDs, status, tool names, SDK counts and durations; no questions, credentials or SDK payloads in operational logs. Use CLI `--verbose`; the API module enables INFO logs. |
 | Input validation | Strict typed tool and API schemas, question/body limits and explicit errors. |
 | Caching | Bounded TTL/LRU exact answers, isolated by session, model/configuration, runtime source and database version. Failures are not cached. CLI/UI opt-in; evaluator disabled. |
-| Streamlit GUI | `uv sync --extra gui`, then `uv run --extra gui portfolio-agent gui`. Genuine model analysis is the default; local/cache/context controls are explicit. |
+| Streamlit GUI | `uv sync --extra gui`, then `uv run --extra gui portfolio-agent gui`. Matches the existing four-view workspace using the shared dashboard stylesheet plus a native-widget adapter. Genuine model analysis is the default; local/cache/context controls are explicit. |
 | Metadata RAG | `MetadataIndex` builds documents from live SQLite columns/foreign keys and descriptive metadata. BM25 retrieves three relevant documents for each question and appends them to model context with source IDs. Full schema remains available to preserve join coverage. No embeddings, GraphRAG, external corpus or benchmark answers are claimed. |
 | Production REST API | Explicit production profile, bounded input/concurrency, safe errors, request logs, readiness/liveness, existing bearer authentication, strict production origins/hosts, retained quota storage and a hardened Compose deployment. Deployment verification and limits are described below. |
 | Concurrent users | A bounded reusable model-client pool, per-conversation turn locks and shared atomic daily/RPM guards permit independent conversations to overlap. Default capacity four. Tests synchronize two simultaneous fake provider calls and verify separate results, sessions and per-request metrics. |
@@ -34,6 +34,10 @@ dashboard binds to 127.0.0.1:8000. Streamlit shares server-side quota/cache/sess
 uses the navy/ivory/gold palette and honors global CLI database/source/model options,
 but each browser conversation has its own opaque session identifier. It is a local optional
 interface; the production recipe serves the existing static dashboard and REST API.
+AI Analyst, Overview, Portfolio Explorer and Reconciliation share the same portfolio
+selector and backend calculations. SQL evidence, SDK/token/timing metrics and reconciliation
+CSV export are available in Streamlit. Questions render as escaped plain text; the launcher
+hides framework deployment controls and client error traces.
 
 ## Production deployment profile
 
@@ -74,6 +78,8 @@ responsibilities. A passing smoke test is not a security certification or availa
 requests, overload recovery, production settings and an actual Streamlit AppTest session.
 The platform CI job installs the GUI extra and runs these checks before browser/container
 verification. No fake provider test is reported as a live Gemini accuracy run.
+Three additional Playwright cases exercise the actual Streamlit server, including mobile
+sidebar navigation, portfolio selection, local chat, export and injected-markup handling.
 
 Final-answer verification and current live evidence are documented in
 [evaluation methodology](EVALUATION.md). Historical reports retain their original evaluator

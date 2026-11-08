@@ -77,7 +77,10 @@ uv sync --frozen --extra gui
 uv run --extra gui portfolio-agent gui
 ```
 
-Streamlit opens on http://127.0.0.1:8501. Metadata retrieval runs locally over live schema
+Streamlit opens on http://127.0.0.1:8501 and matches the existing workspace: navy sidebar,
+ivory/gold theme, serif headings, portfolio selector and the same four views. Its analyst
+form includes SQL evidence, request metrics and explicit local/cache/context controls.
+Metadata retrieval runs locally over live schema
 documents and adds source references to model context. Efficiency scoring measures SQLite
 VM work, not disk reads. The production profile is separate from the anonymous Render demo.
 

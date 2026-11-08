@@ -157,15 +157,23 @@ def test_streamlit_chat_uses_shared_local_tools(database: Path, monkeypatch) -> 
     monkeypatch.setenv("GEMINI_API_KEY", "")
     monkeypatch.setenv("PORTIQ_QUOTA_DB", str(database.with_suffix(".quota.db")))
     script = Path(__file__).parents[1] / "src/portiq/streamlit_app.py"
-    app = AppTest.from_file(str(script)).run()
+    app = AppTest.from_file(str(script), default_timeout=15).run()
     assert not app.exception
-    assert not app.sidebar.checkbox[0].value
-    app.sidebar.checkbox[0].check().run()
-    app.chat_input[0].set_value("Count all portfolios").run()
+    assert not app.checkbox[0].value
+    app.checkbox[0].check()
+    app.text_area[0].set_value("Count all portfolios")
+    app.button(key="gui_analyze").click().run()
     assert not app.exception
-    assert any("13" in text.value for text in app.text)
-    app.sidebar.button[0].click().run()
+    assert "13" in app.session_state["messages"][-1]["text"]
+    app.button(key="gui_reset").click().run()
     assert not app.session_state["messages"]
+    app.sidebar.radio[0].set_value("Overview").run()
+    assert not app.exception and len(app.dataframe) == 1
+    app.selectbox(key="gui_selected").set_value(4).run()
+    app.sidebar.radio[0].set_value("Portfolio Explorer").run()
+    assert not app.exception and len(app.dataframe) >= 4
+    app.sidebar.radio[0].set_value("Reconciliation").run()
+    assert not app.exception and app.get("download_button")
 
 
 def test_gui_launcher_preserves_global_configuration(

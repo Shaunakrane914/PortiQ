@@ -1,5 +1,14 @@
 # Change history
 
+## Streamlit workspace alignment — 8 November 2026
+
+- Matched the existing frontend with a shared stylesheet, navy sidebar, ivory/gold accents,
+  serif headings, portfolio picker and the same four analytical views.
+- Added persistent SQL evidence/metrics, native analyst form, safe text rendering and CSV
+  export. Local/cache/context remain explicit choices; no new Gemini calls were needed.
+- Added actual-server Playwright coverage for desktop chat, all views/selection/export,
+  mobile navigation and injected markup. Streamlit's client error traces are hidden.
+
 ## Optional enhancements and evaluator v3 — 8 November 2026
 
 - Added local BM25 metadata retrieval with schema provenance, an optional Streamlit chat,

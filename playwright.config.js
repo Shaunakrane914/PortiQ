@@ -15,6 +15,18 @@ module.exports = defineConfig({
   },
   webServer: [
     {
+      command: "uv run --extra gui portfolio-agent gui --port 8022",
+      url: "http://127.0.0.1:8022/_stcore/health",
+      reuseExistingServer: false,
+      timeout: 30000,
+      env: {
+        GEMINI_API_KEY: "",
+        STREAMLIT_SERVER_HEADLESS: "true",
+        PORTIQ_DB: "portfolio_database.db",
+        PORTIQ_QUOTA_DB: "reports/local/streamlit-quota.sqlite",
+      },
+    },
+    {
       command: "uv run portfolio-agent serve --port 8020",
       url: "http://127.0.0.1:8020/api/health",
       reuseExistingServer: false,

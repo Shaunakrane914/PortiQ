@@ -120,6 +120,7 @@ def main(argv: list[str] | None = None) -> int:
                     "--server.address=127.0.0.1",
                     f"--server.port={args.port}",
                     "--browser.gatherUsageStats=false",
+                    "--client.showErrorDetails=none",
                     "--theme.primaryColor=#B69C6A",
                     "--theme.backgroundColor=#F4F1E8",
                     "--theme.secondaryBackgroundColor=#F4F1E8",
