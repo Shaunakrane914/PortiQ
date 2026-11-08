@@ -1,5 +1,13 @@
 # Change history
 
+## Graph retrieval removed from active architecture — 8 November 2026
+
+- Preserved verified commit `8a6143c` on `archive/schema-graph-rag-2026-11-08`, including
+  implementation, tests and all experiment evidence.
+- Removed graph runtime integration, its audit script/tests and bulky artifacts from `main`.
+  The agent retains full-schema context, basic BM25, SQL validation/repair and financial tools.
+- Recorded the correctness/complexity decision in [engineering notes](ENGINEERING_NOTES.md#schema-graph-retrieval-archived).
+
 ## Experimental schema-graph retrieval — 8 November 2026
 
 - Added table/column/rule nodes, actual FK traversal for join bridges, conservative fallback
@@ -9,8 +17,8 @@
 - The fresh supplied paired run scored full schema 10/10 versus graph 9/10. Reported tokens
   fell 26.80%; a recovered 504 had unknown usage, and latency showed no reliable gain.
 - Preserved the graph's incorrect bond-excluding denominator and all attempts in the
-  [experiment evidence](../reports/graph-rag-2026-11-08/README.md). Graph remains experimental;
-  the application default remains basic retrieval.
+  [archived experiment evidence](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md).
+  The experiment was subsequently removed from the active architecture as noted above.
 
 ## Controlled retrieval comparison — 8 November 2026
 

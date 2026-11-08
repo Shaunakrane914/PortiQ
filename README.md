@@ -78,10 +78,9 @@ the complete supplied-question pass: **10/10 and 21 SDK calls in both modes**, w
 The planned repeat encountered provider 504 errors; it is retained and clearly separated
 from the complete comparison. Implemented retrieval is not a demonstrated accuracy upgrade.
 
-The separate [schema-graph experiment](reports/graph-rag-2026-11-08/README.md) follows actual
-foreign-key paths and selects a smaller schema. Its fresh paired run used **26.80% fewer
-reported tokens**, but scored **9/10 versus the full-schema control's 10/10**, with no reliable
-latency gain. Graph retrieval remains experimental; application defaults are unchanged.
+Graph retrieval was evaluated and removed from the active architecture to prioritize
+correctness and simplicity. The [engineering decision](docs/ENGINEERING_NOTES.md#schema-graph-retrieval-archived)
+links its preserved implementation and evidence. Full-schema context and basic BM25 remain.
 
 ```powershell
 uv sync --frozen --extra gui

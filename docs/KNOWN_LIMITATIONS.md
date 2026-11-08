@@ -20,12 +20,10 @@ mandatory and optional requirements to implementations.
   has not been established. A controlled supplied-question pass showed equal 10/10 accuracy,
   equal SDK calls, +12.02% reported tokens and no reliable speed gain; the repeat encountered
   provider failures. See the [raw experiment and scope](../reports/rag-ablation-2026-11-08/README.md).
-- Experimental schema-graph RAG traverses actual foreign keys to prune initial metadata,
-  with full-schema fallback. It is not Microsoft's document/community GraphRAG pipeline.
-  The [fresh paired run](../reports/graph-rag-2026-11-08/README.md) reduced reported tokens
-  26.80% but scored 9/10 against the control's 10/10. Complete table coverage did not prevent
-  a wrong financial denominator. One recovered 504 had unknown usage; latency showed no
-  reliable gain. It remains experimental and does not change application defaults.
+- Graph retrieval is excluded from the active architecture after a 9/10 versus 10/10
+  comparison exposed a financial denominator regression despite complete table coverage.
+  The [engineering decision and archive](ENGINEERING_NOTES.md#schema-graph-retrieval-archived)
+  preserve the evidence. Basic BM25 and full-schema context remain.
 - One process supports bounded parallel analyses with separate model clients and per-session
   locks. Multiple processes would have separate sessions/RPM/capacity state. A retained SQLite
   ledger coordinates daily usage only; distributed deployment needs external coordination.

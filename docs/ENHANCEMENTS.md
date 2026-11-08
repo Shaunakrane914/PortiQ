@@ -12,7 +12,7 @@ continues to work without Streamlit, FastAPI, Node or a browser.
 | Input validation | Strict typed tool and API schemas, question/body limits and explicit errors. |
 | Caching | Bounded TTL/LRU exact answers, isolated by session, model/configuration, runtime source and database version. Failures are not cached. CLI/UI opt-in; evaluator disabled. |
 | Streamlit GUI | `uv sync --extra gui`, then `uv run --extra gui portfolio-agent gui`. Matches the existing four-view workspace using the shared dashboard stylesheet plus a native-widget adapter. Genuine model analysis is the default; local/cache/context controls are explicit. |
-| Metadata RAG | Default BM25 retrieves three live schema documents and appends them to the full context. An experimental schema graph selects tables through real FK paths and prunes initial DDL, with full-schema fallback. This is not Microsoft's document/community GraphRAG pipeline. See [graph retrieval](GRAPH_RETRIEVAL.md) for the method and comparison commands. No embeddings, external corpus or benchmark answers enter runtime retrieval. |
+| Metadata RAG | BM25 retrieves three live schema documents and appends them to the full context with source IDs. It demonstrates the optional metadata-RAG requirement; measured benefit remains unproven. Graph retrieval was removed from the active architecture; see the [archived experiment decision](ENGINEERING_NOTES.md#schema-graph-retrieval-archived). No embeddings, external corpus or benchmark answers enter runtime retrieval. |
 | Production REST API | Explicit production profile, bounded input/concurrency, safe errors, request logs, readiness/liveness, existing bearer authentication, strict production origins/hosts, retained quota storage and a hardened Compose deployment. Deployment verification and limits are described below. |
 | Concurrent users | A bounded reusable model-client pool, per-conversation turn locks and shared atomic daily/RPM guards permit independent conversations to overlap. Default capacity four. Tests synchronize two simultaneous fake provider calls and verify separate results, sessions and per-request metrics. |
 | Performance-aware evaluation | Each generated/reference SQL is separately profiled. A correctness-gated score is `100 * min(1, reference VM work / generated VM work)`; incorrect SQL/answers receive zero. The metric counts SQLite progress callbacks at interval one and records query plans. It is an engine-work proxy, not measured logical page reads. |
@@ -100,13 +100,9 @@ The runner now stops on an open circuit and rejects zero-call rows as completed 
 `PortfolioAgent(..., use_retrieval=False)` supports the experimental control; application
 defaults remain unchanged. For this nine-table dataset, metadata retrieval is functional but
 adds redundant context; useful retrieval gains would need evidence from missing knowledge
-or larger schemas. No embeddings or larger-corpus benefits were measured here. The separate
-[schema-graph experiment](GRAPH_RETRIEVAL.md) tests replacing redundant full-schema context
-with connected metadata selection; its results must not be inferred from this basic-RAG run.
-Its [fresh live comparison](../reports/graph-rag-2026-11-08/README.md) reduced reported tokens
-by 26.80%, but scored 9/10 against the full-schema control's 10/10. Required table coverage
-was complete; a financial denominator error remained. No reliable latency gain was shown,
-so graph retrieval remains experimental and application defaults remain unchanged.
+or larger schemas. No embeddings or larger-corpus benefits were measured here. Graph
+retrieval was evaluated separately and removed to prioritize financial correctness and
+simplicity. Its source and evidence remain in the [archive](ENGINEERING_NOTES.md#schema-graph-retrieval-archived).
 
 Implementation references: [SQLite progress callbacks](https://www.sqlite.org/c3ref/progress_handler.html),
 [Streamlit chat](https://docs.streamlit.io/develop/api-reference/chat) and

@@ -12,7 +12,7 @@ The original [assignment](assignment/README.md) requires SQL translation, equity
 | SQL execution | [sql.py](../src/portiq/sql.py) | Parse, authorize, bound and execute read-only queries |
 | Required exposure calculator | [exposure.py](../src/portiq/exposure.py) | Resolve one portfolio and normalize stock weights by stock sector |
 | Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, explicit answer verification and correctness-gated VM-work scores |
-| Metadata retrieval | [retrieval.py](../src/portiq/retrieval.py), [schema_graph.py](../src/portiq/schema_graph.py) | Default BM25 schema documents; experimental FK-graph context selection with fallback |
+| Metadata retrieval | [retrieval.py](../src/portiq/retrieval.py) | BM25 over live schema/foreign-key documents with source IDs |
 | Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, adaptive sliding-window limiter, local budget, safe retry/circuit handling |
 | Optional service | [service.py](../src/portiq/service.py) | Explicit local capabilities, exact cache, context and sequential fallback |
 | Optional analytics | [analytics.py](../src/portiq/analytics.py) | Snapshots, quote-value reconciliation and data-quality notices |
@@ -77,7 +77,7 @@ The exact cache holds up to 64 successful, deep-copied responses for 300 seconds
 
 One API process supports four concurrent analyses by default. A reusable client pool shares its daily ledger and RPM reservations, while per-conversation locks serialize only turns in the same session. Excess analyses receive 503 and Retry-After. The socket-client HTTP limit is separate. Distributed scheduling and per-user cost accounting are not implemented.
 
-Default metadata RAG builds live schema documents, ranks them with BM25 and adds the top three to the full model context. Experimental `context_mode="graph"` instead selects connected schema tables, retaining bridge tables along actual FK paths and falling back to full context for uncertain selection. Dedicated SQL planning/repair always retain the full schema. See [graph retrieval](GRAPH_RETRIEVAL.md). Runtime retrieval never reads evaluator fixtures or reference answers. Streamlit is an optional extra and uses the same analysis service.
+Metadata RAG builds live schema documents, ranks them with BM25 and adds the top three to the full model context. Runtime retrieval never reads evaluator fixtures or reference answers. Graph retrieval was removed after evaluation; the [engineering decision](ENGINEERING_NOTES.md#schema-graph-retrieval-archived) links the archived experiment. Streamlit is an optional extra and uses the same analysis service.
 
 ## Packaging and platform
 

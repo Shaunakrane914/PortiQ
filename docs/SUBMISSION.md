@@ -28,7 +28,7 @@ The setup hint mentions in-memory loading, while the sample opens `portfolio_dat
 | SQL safety, parameterized queries, errors, logging, input validation | Implemented. Fixed queries bind parameters; generated SQL is parsed/authorized/read-only, rather than universally parameterized. |
 | Caching | Explicit exact cache; disabled during live evaluation. |
 | Graphical interface | Existing HTML/JS dashboard plus optional Streamlit chat (`gui`). |
-| RAG / GraphRAG for metadata | Default BM25 schema retrieval; experimental FK-graph metadata selection with full-schema fallback. The [paired graph run](../reports/graph-rag-2026-11-08/README.md) reduced reported tokens but failed one supplied case; default unchanged. |
+| RAG / GraphRAG for metadata | Basic BM25 retrieval over live schema/foreign-key documents, with source IDs and the full schema retained. Graph retrieval was evaluated and removed; see the [engineering decision](ENGINEERING_NOTES.md#schema-graph-retrieval-archived). |
 | REST API | Production configuration profile, liveness/readiness, bounded requests, safe logging and hardened retained-volume Compose recipe. |
 | Concurrent multi-user execution | Default four analyses, separate reusable clients, shared quota guards and per-session turn locks. |
 | Performance-aware evaluation | Correctness-gated relative SQLite VM-work scoring and query plans. Logical page I/O is not measured. |

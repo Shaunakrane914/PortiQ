@@ -27,6 +27,21 @@ See [enhancement implementation and tests](ENHANCEMENTS.md), [evaluation](EVALUA
 
 ## Historical evidence
 
+### Schema-graph retrieval archived
+
+Evaluated foreign-key-guided schema retrieval against full-schema prompting. It reduced
+reported token usage by 26.8% but introduced a financial calculation regression (9/10
+versus 10/10). The approach was removed from the submission's active architecture to
+prioritize correctness and reduce maintenance cost. Both modes used 21 SDK attempts;
+no reliable latency improvement was demonstrated. One recovered provider error had
+unknown usage, so reported token savings are not a complete billing comparison.
+
+The implementation, tests, reproduction commands and byte-exact experiment evidence are
+preserved on [archive/schema-graph-rag-2026-11-08](https://github.com/Shaunakrane914/PortiQ/tree/archive/schema-graph-rag-2026-11-08),
+at verified commit `8a6143c`. Read the [archived comparison](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md).
+The active agent keeps the full nine-table schema and basic BM25 metadata retrieval.
+The assignment permits RAG **or** GraphRAG; no replacement retrieval system was added.
+
 The fresh [supplied-ten capture](../reports/supplied-v3-2026-11-08/README.md) on `b8db4a9`
 passed 10/10 with all ten explicit v3 answer checks, 21 SDK calls and 54,075 reported tokens.
 Its first complete 8/10 run is separately retained: percentage units in exposure-table headers

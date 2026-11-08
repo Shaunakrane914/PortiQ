@@ -82,13 +82,15 @@ that completion-label mistake. Ordinary application retrieval defaults were not 
 
 ## Current and historical evidence
 
-The separate [schema-graph comparison](../reports/graph-rag-2026-11-08/README.md), source
+The archived [schema-graph comparison](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md), source
 `7caf262`, completed all twenty entries: full schema 10/10 versus graph 9/10, with 21 SDK
 attempts each. Reported tokens were 48,296 versus 35,352 (26.80% lower); one graph attempt
 returned 504 without usage metadata. No reliable latency gain was demonstrated. Question 7
 had every required table but dropped bonds from its value denominator. Offline metadata
-coverage for 10 supplied and 46 extended data cases is not an accuracy score. Reproduce with
-`scripts/rag_ablation.py --treatment graph --trials 1 --output <fresh-directory>`.
+coverage for 10 supplied and 46 extended data cases is not an accuracy score. The graph
+implementation and its reproduction commands now live only on the archive branch;
+[the engineering decision](ENGINEERING_NOTES.md#schema-graph-retrieval-archived) explains
+its removal. The active comparison runner supports basic BM25 versus full schema only.
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
