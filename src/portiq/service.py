@@ -378,6 +378,27 @@ class AnalysisService:
                     )
                     return clarification, session_id
             selected_context = state.selected if conversation else selected
+            selected_reference = re.compile(
+                r"\b(?:the\s+)?(?:selected|current)\s+(?:portfolio|fund)\b", re.I
+            )
+            if conversation and selected_reference.search(query):
+                if selected_context is None:
+                    return AgentResponse(
+                        request_id=str(uuid4()),
+                        status="clarification",
+                        answer="Which portfolio should I use? Please name or select one.",
+                        tools=[],
+                        model="none",
+                        model_versions=[],
+                        duration_ms=0,
+                        model_duration_ms=0,
+                        api_calls=0,
+                        tokens=0,
+                        execution_source="Local context clarification",
+                    ), session_id
+                # This is an explicit session selection, not a model-inferred identity.
+                name = resolve_portfolio(self.settings.database, str(selected_context))[1]
+                query = selected_reference.sub(lambda _: name, query)
             if (
                 conversation
                 and selected_context is not None

@@ -10,6 +10,9 @@
   worker counts; cleanup runs in a lifespan finally block, with bounded shutdown settings.
 - Added actual-HTTP soak/live conversation verification and concise reviewer/operations guides.
   Distributed availability and externally operated TLS/monitoring are not claimed.
+- Live follow-ups exposed a missing selected-portfolio binding. Explicit selected/current
+  portfolio references now resolve through their own session, or clarify without a model
+  guess when no selection exists. The first failed live protocol is retained separately.
 
 ## BM25 retrieval removed from active architecture — 9 November 2026
 

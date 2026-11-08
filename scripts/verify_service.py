@@ -211,6 +211,12 @@ def main():
                                     body["session_id"].encode()
                                 ).hexdigest(),
                             )
+                            if args.live:
+                                record.update(
+                                    actual=answer.model_dump(mode="json"),
+                                    answer_verification=scored["answer_verification"],
+                                    sql_efficiency=scored["sql_efficiency"],
+                                )
                         else:
                             record.update(
                                 passed=False, retry_after=response.headers.get("Retry-After")
