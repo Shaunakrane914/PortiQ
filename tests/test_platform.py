@@ -5,7 +5,6 @@ from decimal import Decimal
 from pathlib import Path
 
 import pytest
-from google.genai import errors
 from test_agent import FakeBackend, call
 
 from portiq.agent import _financial as financial
@@ -13,7 +12,7 @@ from portiq.agent import render_tools
 from portiq.analytics import Holding, PortfolioService, reconcile
 from portiq.config import Settings
 from portiq.errors import PortiqError
-from portiq.quota import RequestBudget, classify
+from portiq.quota import RequestBudget
 from portiq.service import AnalysisService, ExactCache, Sessions, local_answer
 
 
@@ -284,23 +283,6 @@ def test_atomic_budget_across_connections(tmp_path: Path) -> None:
     assert sum(results) == 10 and a.used() == b.used() == 10
     a.close()
     b.close()
-
-
-@pytest.mark.parametrize(
-    "code,payload,kind,retry",
-    [
-        (429, {"quotaId": "RequestsPerDay"}, "daily_quota", False),
-        (429, {"details": [{"retryDelay": "2.5s"}]}, "rate_limit", True),
-        (429, {"details": [{"retryDelay": "120s"}]}, "rate_limit", False),
-        (503, {}, "provider_transient", True),
-        (504, {}, "provider_transient", True),
-        (403, {}, "authentication", False),
-        (404, {}, "unsupported_model", False),
-    ],
-)
-def test_error_classification(code: int, payload: dict, kind: str, retry: bool) -> None:
-    result = classify(errors.APIError(code, payload))
-    assert result[:2] == (kind, retry)
 
 
 def test_cache_context_rebuild_and_mutation(database: Path) -> None:

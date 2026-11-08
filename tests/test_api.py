@@ -171,7 +171,7 @@ def test_internal_reports_and_configuration_are_not_public(client: TestClient) -
         "/api/cache",
         "/api/evaluation/summary",
         "/openapi.json",
-        "/reports/v0.2.0/verification.json",
+        "/reports/cli-2026-11-08/summary.json",
         "/.env",
         "/docs/assignment/README.md",
     ]:

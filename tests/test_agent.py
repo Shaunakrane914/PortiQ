@@ -1,4 +1,5 @@
 import json
+import os
 import sqlite3
 from contextlib import closing
 from pathlib import Path
@@ -262,3 +263,20 @@ def test_agent_and_sql_planner_receive_column_domains(database: Path) -> None:
     assert '"portfolios.status": {"values": ["Active", "Passive"]' in agent.schema
     assert '"portfolios.strategy_type"' in agent.schema
     assert agent.schema in backend.requests[0][1].system_instruction
+
+
+@pytest.mark.live
+@pytest.mark.skipif(
+    os.getenv("PORTIQ_LIVE") != "1", reason="Set PORTIQ_LIVE=1 for real Gemini calls"
+)
+def test_live_agent() -> None:
+    from portiq.model import GeminiBackend
+
+    settings = Settings.from_env()
+    backend = GeminiBackend(settings)
+    try:
+        response = PortfolioAgent(settings, backend).answer("Count all portfolios in the database")
+        assert response.status == "answer"
+        assert any(t.result and t.result.get("rows") == [[13]] for t in response.tools)
+    finally:
+        backend.close()

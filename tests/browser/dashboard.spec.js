@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const { execFileSync } = require("node:child_process");
 const evidenceRoot =
   process.env.PORTIQ_CAPTURE_RELEASE === "1"
-    ? process.env.PORTIQ_CAPTURE_DIR || "reports/v0.2.0"
+    ? process.env.PORTIQ_CAPTURE_DIR || "reports/cli-2026-11-08"
     : "reports/local";
 const shots = evidenceRoot + "/screenshots";
 test.beforeAll(() => fs.mkdirSync(shots, { recursive: true }));
@@ -161,7 +161,7 @@ test("public interface omits assessment and internal metadata", async ({
     "/api/cache",
     "/openapi.json",
     "/.env",
-    "/reports/v0.2.0/verification.json",
+    "/reports/cli-2026-11-08/summary.json",
   ])
     expect((await page.request.get(path)).status()).toBe(404);
   const css = await (await page.request.get("/styles.css")).text();

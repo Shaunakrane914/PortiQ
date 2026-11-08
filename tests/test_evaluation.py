@@ -138,20 +138,65 @@ def test_report_artifacts(database: Path, source: Path, tmp_path: Path) -> None:
     assert output.exists() and output.with_suffix(".md").exists()
 
 
-@pytest.mark.parametrize("filename", ["extended-final.json", "extended-regression.json"])
 def test_historical_passive_failure_scores_semantics_and_routing(
     database: Path,
     source: Path,
-    filename: str,
 ) -> None:
-    old = json.loads((source / "reports" / filename).read_text())["records"]
-    trace = next(r for r in old if r["id"] == "ext-02")
+    passive_sql = (
+        "SELECT portfolio_name FROM portfolios WHERE strategy_type = 'Passive' "
+        "ORDER BY portfolio_name ASC;"
+    )
+    actual = {
+        "request_id": "test-ext-02",
+        "status": "answer",
+        "answer": "There are no passive portfolios.",
+        "tools": [
+            {
+                "tool": "sql_query",
+                "arguments": {
+                    "sql": passive_sql,
+                    "question": "List the names of Passive portfolios, alphabetically.",
+                    "explanation": "Retrieve names where strategy_type is Passive",
+                },
+                "result": {
+                    "columns": ["portfolio_name"],
+                    "rows": [],
+                    "sql": passive_sql,
+                    "duration_ms": 1.5,
+                    "truncated": False,
+                },
+                "duration_ms": 2.0,
+            },
+            {
+                "tool": "sql_query",
+                "arguments": {
+                    "sql": "SELECT DISTINCT strategy_type FROM portfolios;",
+                    "question": "Distinct strategy types",
+                    "explanation": "Check distinct values",
+                },
+                "result": {
+                    "columns": ["strategy_type"],
+                    "rows": [["Growth"], ["Income"], ["Index"]],
+                    "sql": "SELECT DISTINCT strategy_type FROM portfolios;",
+                    "duration_ms": 1.5,
+                    "truncated": False,
+                },
+                "duration_ms": 2.0,
+            },
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [],
+        "duration_ms": 10.0,
+        "model_duration_ms": 8.0,
+        "api_calls": 2,
+        "tokens": 100,
+    }
     suite = json.loads((source / "evaluation/extended.json").read_text())["questions"]
     case = next(c for c in suite if c["id"] == "ext-02")
     result = score_answer(
         Settings(database=database, source=source),
         case,
-        AgentResponse.model_validate(trace["actual"]),
+        AgentResponse.model_validate(actual),
         narrative_rules=["portfolio_names"],
     )
     assert result["sql_valid"] is True
