@@ -52,6 +52,31 @@ def test_sql_work_profile_distinguishes_equivalent_work_and_enforces_safety(data
         execute(database, "DELETE FROM portfolios", profile=True)
 
 
+def test_rag_ablation_changes_only_retrieved_prompt_context(database: Path) -> None:
+    from test_agent import FakeBackend
+
+    settings = Settings(database=database)
+    backends = [
+        FakeBackend([call("respond", status="unsupported", answer="No forecast.")])
+        for _ in range(2)
+    ]
+    agents = [
+        PortfolioAgent(settings, backends[0]),
+        PortfolioAgent(settings, backends[1], use_retrieval=False),
+    ]
+    answers = [agent.answer("Forecast historical prices") for agent in agents]
+    on, off = [backend.requests[0][1] for backend in backends]
+    assert on.system_instruction.startswith(off.system_instruction)
+    assert "RETRIEVED METADATA" in on.system_instruction
+    assert "RETRIEVED METADATA" not in off.system_instruction
+    assert on.model_dump(exclude={"system_instruction"}) == off.model_dump(
+        exclude={"system_instruction"}
+    )
+    assert backends[0].requests[0][0] == backends[1].requests[0][0]
+    assert agents[0].schema == agents[1].schema and "CREATE TABLE" in agents[1].schema
+    assert answers[0].metadata_sources and not answers[1].metadata_sources
+
+
 def test_future_rate_reservations_do_not_overbook_recovery_slots() -> None:
     limiter = AdaptiveRateLimiter(rpm_limit=2, max_wait_seconds=10, clock=lambda: 100)
     limiter.acquire()
