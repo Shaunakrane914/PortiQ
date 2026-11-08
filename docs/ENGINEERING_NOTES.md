@@ -42,6 +42,10 @@ at verified commit `8a6143c`. Read the [archived comparison](https://github.com/
 The active agent keeps the full nine-table schema and basic BM25 metadata retrieval.
 The assignment permits RAG **or** GraphRAG; no replacement retrieval system was added.
 
+Removal verification: 235 core tests passed, followed by a fresh **10/10 supplied CLI run**
+on `f14ea21`, including all ten explicit final-answer checks. The [capture](../reports/supplied-after-graph-removal-2026-11-08/README.md)
+records 21 SDK attempts, 54,093 reported tokens and zero provider errors.
+
 The fresh [supplied-ten capture](../reports/supplied-v3-2026-11-08/README.md) on `b8db4a9`
 passed 10/10 with all ten explicit v3 answer checks, 21 SDK calls and 54,075 reported tokens.
 Its first complete 8/10 run is separately retained: percentage units in exposure-table headers

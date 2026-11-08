@@ -5,8 +5,8 @@ mandatory and optional requirements to implementations.
 
 - Historical 50/50 extended results belong to their recorded source and evaluator version.
   The suite has been observed and is regression evidence, not blind validation.
-- The fresh supplied run passed 10/10 with v3 checks on `b8db4a9`; it is also a known finite
-  suite. The later GUI startup configuration fix is covered separately by key-free checks.
+- The latest supplied run passed 10/10 with v3 checks on `f14ea21` after graph removal;
+  it is a known finite suite. Earlier captures retain their own source and verification scope.
 - Evaluator v3 verifies explicit scalar, list, table and exposure representations. Missing
   required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
   checker does not prove arbitrary English entailment, advice or additional unstructured claims.

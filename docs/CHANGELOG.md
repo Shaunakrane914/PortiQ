@@ -1,12 +1,15 @@
 # Change history
 
-## Graph retrieval removed from active architecture — 8 November 2026
+## Graph retrieval removed from active architecture — 9 November 2026
 
 - Preserved verified commit `8a6143c` on `archive/schema-graph-rag-2026-11-08`, including
   implementation, tests and all experiment evidence.
 - Removed graph runtime integration, its audit script/tests and bulky artifacts from `main`.
   The agent retains full-schema context, basic BM25, SQL validation/repair and financial tools.
 - Recorded the correctness/complexity decision in [engineering notes](ENGINEERING_NOTES.md#schema-graph-retrieval-archived).
+- Verification passed: 235 core tests, lint/format/types and a fresh supplied CLI **10/10**
+  with 21 SDK attempts and zero provider errors. The [post-removal evidence](../reports/supplied-after-graph-removal-2026-11-08/README.md)
+  is tied to captured source `f14ea21`.
 
 ## Experimental schema-graph retrieval — 8 November 2026
 
