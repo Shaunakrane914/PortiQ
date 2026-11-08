@@ -54,6 +54,20 @@ def _table_cell(value: Any, text: str) -> bool:
     return _value_present(value, text)
 
 
+def _sector_claims(text: str, sector: str) -> list[re.Match[str]]:
+    """Bind percentages to a named sector, without crossing into the next claim."""
+    name = r"(?<!\w)" + re.escape(sector) + r"(?!\w)"
+    value = r"(?P<value>[+-]?\d+(?:\.\d+)?)\s*%"
+    return [
+        *re.finditer(
+            name + r"\s*(?:[:|=]\s*|-\s+|(?:is|at|represents|accounts for)\s*)?" + value,
+            text,
+            re.I,
+        ),
+        *re.finditer(value + r"\s+(?:in|for|of|to)\s+" + name, text, re.I),
+    ]
+
+
 def verify_answer(
     text: str,
     expected: list[dict[str, Any]],
@@ -69,6 +83,33 @@ def verify_answer(
     checks = 0
     clean = text.replace("*", "").replace("`", "")
     plain = _plain(text)
+    scalar_text = clean
+    allowed_portfolios = {
+        reference["portfolio_name"] for reference in expected if "portfolio_name" in reference
+    }
+    allowed_portfolios.update(
+        row[0]
+        for reference in expected
+        if reference.get("columns") == ["portfolio_name"]
+        for row in reference["rows"]
+    )
+    # Exposure percentages belong to their own reference, not a SQL scalar. Mask only
+    # explicitly sector-bound claims; their values are still checked below, including
+    # wrong/extra percentages. Unrelated numerical contradictions remain visible.
+    if len(expected) > 1 and any("sectors" in reference for reference in expected):
+        known_sectors = set(sector_names or []) | {
+            sector for reference in expected for sector in reference.get("sectors", {})
+        }
+        spans = [
+            claim.span("value")
+            for sector in known_sectors
+            for claim in _sector_claims(clean, sector)
+        ]
+        masked = list(clean)
+        for start, end in spans:
+            masked[start:end] = " " * (end - start)
+        scalar_text = "".join(masked)
+        scalar_text = re.sub(r"(?m)^\s*(?:#{1,6}\s*)?\d+[.)]\s+", "", scalar_text)
     percentage_rows: list[tuple[str, str]] = []
     percentage_table = False
     for line in clean.splitlines():
@@ -84,6 +125,9 @@ def verify_answer(
             continue
         if percentage_table and not all(re.fullmatch(r":?-+:?", cell) for cell in cells):
             percentage_rows.append((cells[0], cells[1]))
+            if len(expected) > 1:
+                # A typed percentage table has the same unit even without '%' per cell.
+                scalar_text = scalar_text.replace(line, " " * len(line), 1)
     empty_claim = bool(
         NO_ROWS.search(plain)
         or re.search(
@@ -101,21 +145,13 @@ def verify_answer(
                 if sector.casefold() not in {name.casefold() for name in sectors}:
                     failures.append(f"{label}: unexpected sector row {sector}.")
             for sector in sector_names or []:
-                if sector not in sectors and re.search(
-                    re.escape(sector) + r"[^\d\n]{0,30}[\d.]+\s*%", clean, re.I
-                ):
+                if sector not in sectors and _sector_claims(clean, sector):
                     failures.append(f"{label}: unexpected sector percentage for {sector}.")
             for name in portfolio_names:
-                if name != reference["portfolio_name"] and _value_present(name, plain):
+                if name not in allowed_portfolios and _value_present(name, plain):
                     failures.append(f"{label}: unexpected portfolio identity {name}.")
             for sector, percentage in sectors.items():
-                matches = re.findall(
-                    r"(?<!\w)"
-                    + re.escape(sector)
-                    + r"(?!\w)[^\d%+\-\n]{0,60}([+-]?\d+(?:\.\d+)?)\s*%",
-                    clean,
-                    re.I,
-                )
+                matches = [claim["value"] for claim in _sector_claims(clean, sector)]
                 checks += 1
                 matches.extend(
                     cell
@@ -141,13 +177,14 @@ def verify_answer(
             value = rows[0][0]
             if value == 0 and empty_claim:
                 continue
-            if not _value_present(value, plain):
+            scalar_plain = _plain(scalar_text)
+            if not _value_present(value, scalar_plain):
                 failures.append(f"{label}: scalar value is missing or incorrect.")
-            if re.search(r"\b(?:not|isn't|aren't)\s+[$€£]?\s*\d", plain, re.I):
+            if re.search(r"\b(?:not|isn't|aren't)\s+[$€£]?\s*\d", scalar_plain, re.I):
                 failures.append(f"{label}: negated scalar claim.")
             if isinstance(value, (int, float)) and any(
                 abs(number - value) > (0 if isinstance(value, int) else tolerance) + 1e-6
-                for number, tolerance in _numbers(plain)
+                for number, tolerance in _numbers(scalar_plain)
             ):
                 failures.append(f"{label}: conflicting numerical scalar claim.")
             continue
@@ -190,7 +227,7 @@ def verify_answer(
             if matched is not None:
                 used.add(matched)
                 continue
-            if width == 1 and _value_present(row[0], plain):
+            if width == 1 and _value_present(row[0], _plain(scalar_text)):
                 continue
             # Bullet lists can express string projections, e.g. company name (symbol).
             if all(isinstance(value, str) for value in row) and any(
@@ -202,7 +239,7 @@ def verify_answer(
         if reference["columns"] == ["portfolio_name"]:
             names = {row[0] for row in rows}
             for name in portfolio_names:
-                if name not in names and _value_present(name, plain):
+                if name not in names | allowed_portfolios and _value_present(name, plain):
                     failures.append(f"{label}: unexpected portfolio {name}.")
     return {
         "status": "failed" if failures else "passed" if checks else "not_checked",
@@ -290,13 +327,8 @@ def check_faithfulness(
                         name == exposure["portfolio_name"],
                     )
             for sector in sector_names or list(exposure["sectors"]):
-                pattern = re.compile(
-                    r"(?<!\w)" + re.escape(sector) + r"(?!\w)[^\d%+\-\n]{0,60}"
-                    r"([+-]?\d+(?:\.\d+)?)\s*%",
-                    re.IGNORECASE,
-                )
-                for match in pattern.finditer(text):
-                    claim = match[1]
+                for match in _sector_claims(text, sector):
+                    claim = match["value"]
                     tolerance = 0.5 * 10 ** -len(claim.partition(".")[2])
                     percentage = exposure["sectors"].get(sector)
                     add(

@@ -1,5 +1,16 @@
 # Change history
 
+## Hybrid evaluation and operational verification — 9 November 2026
+
+- Evaluator v4 separates exposure percentages from SQL scalar checks, supports percentages
+  before sector names and retains consumed SDK metadata if scoring itself fails.
+- Added an optional APSW performance extra and `evaluate --profile-io` for correctness-gated
+  SQLite pager-access scoring, with engine/cache metadata and independently verified rows.
+- Readiness checks all nine analytical tables and quota storage. Production rejects unsupported
+  worker counts; cleanup runs in a lifespan finally block, with bounded shutdown settings.
+- Added actual-HTTP soak/live conversation verification and concise reviewer/operations guides.
+  Distributed availability and externally operated TLS/monitoring are not claimed.
+
 ## BM25 retrieval removed from active architecture — 9 November 2026
 
 - Preserved commit `d65927b` on `archive/bm25-rag-2026-11-09`, including the original

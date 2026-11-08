@@ -16,8 +16,8 @@ to work without Streamlit, FastAPI, Node or a browser.
 | Metadata RAG | Evaluated and excluded from the active submission. BM25 added 12.02% reported tokens without demonstrated accuracy/latency benefit; graph retrieval scored 9/10 versus 10/10. Full-schema prompting remains. See the [decision and archives](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded). |
 | Production REST API | Explicit production profile, bounded input/concurrency, safe errors, request logs, readiness/liveness, existing bearer authentication, strict production origins/hosts, retained quota storage and a hardened Compose deployment. Deployment verification and limits are described below. |
 | Concurrent users | A bounded reusable model-client pool, per-conversation turn locks and shared atomic daily/RPM guards permit independent conversations to overlap. Default capacity four. Tests synchronize two simultaneous fake provider calls and verify separate results, sessions and per-request metrics. |
-| Performance-aware evaluation | Each generated/reference SQL is separately profiled. A correctness-gated score is `100 * min(1, reference VM work / generated VM work)`; incorrect SQL/answers receive zero. The metric counts SQLite progress callbacks at interval one and records query plans. It is an engine-work proxy, not measured logical page reads. |
-| Hybrid questions | Both tools can execute within one request; the extended suite includes three frozen hybrid cases. Existing agent tests cover combined tool execution. |
+| Performance-aware evaluation | VM-work scoring and query plans remain available. Optional `--profile-io` uses the performance extra to measure actual SQLite pager hits + misses on matched fresh-cache queries; incorrect answers receive zero. Engine/cache policy and limits are recorded. See [operations](OPERATIONS.md#performance-aware-evaluation). |
+| Hybrid questions | Both tools execute within one request; evaluator v4 separates sector-percentage claims from SQL scalars and supports value-before-sector phrasing. Historical replays plus wrong/missing/negated claim tests cover the regression. |
 
 ## Run the interfaces
 
@@ -41,6 +41,9 @@ CSV export are available in Streamlit. Questions render as escaped plain text; t
 hides framework deployment controls and client error traces.
 
 ## Production deployment profile
+
+The [operations guide](OPERATIONS.md) documents the supported single-process topology,
+readiness dependencies, overload/recovery, shutdown, backups and actual-HTTP verification.
 
 The public Render demo retains its anonymous behavior. Production settings are an explicit
 separate choice. Configure private environment variables before running:

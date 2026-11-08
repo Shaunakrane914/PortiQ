@@ -74,6 +74,11 @@ def parser() -> argparse.ArgumentParser:
     evaluation.add_argument("--trials", type=int, choices=range(1, 6), default=1)
     evaluation.add_argument("--split", choices=["development", "validation", "heldout"])
     evaluation.add_argument("--limit", type=int)
+    evaluation.add_argument(
+        "--profile-io",
+        action="store_true",
+        help="Score SQLite logical page accesses (performance extra required)",
+    )
     return root
 
 
@@ -197,6 +202,9 @@ def main(argv: list[str] | None = None) -> int:
 
             assert agent is not None
 
+            if args.profile_io and importlib.util.find_spec("apsw") is None:
+                raise PortiqError("Install --extra performance before using --profile-io.")
+
             suite = settings.source / (
                 "ground_truth_dataset.json"
                 if args.suite == "supplied"
@@ -205,7 +213,13 @@ def main(argv: list[str] | None = None) -> int:
             if args.limit is not None and args.limit <= 0:
                 raise PortiqError("--limit must be positive.")
             report = evaluate(
-                agent, suite, args.output, trials=args.trials, split=args.split, limit=args.limit
+                agent,
+                suite,
+                args.output,
+                trials=args.trials,
+                split=args.split,
+                limit=args.limit,
+                profile_io=args.profile_io,
             )
             print(f"{report['passed']}/{report['total']} passed; report: {args.output}")
             return 0 if report["passed"] == report["total"] and report["total"] else 1

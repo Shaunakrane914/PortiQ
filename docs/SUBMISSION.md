@@ -31,8 +31,8 @@ The setup hint mentions in-memory loading, while the sample opens `portfolio_dat
 | RAG / GraphRAG for metadata | Deliberately excluded after evaluation: BM25 added tokens without demonstrated benefit; graph retrieval failed one financial calculation. Full-schema context is retained. See the [engineering decision and archives](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded). |
 | REST API | Production configuration profile, liveness/readiness, bounded requests, safe logging and hardened retained-volume Compose recipe. |
 | Concurrent multi-user execution | Default four analyses, separate reusable clients, shared quota guards and per-session turn locks. |
-| Performance-aware evaluation | Correctness-gated relative SQLite VM-work scoring and query plans. Logical page I/O is not measured. |
-| Hybrid questions using both tools | Implemented; three cases in the extended regression. |
+| Performance-aware evaluation | VM-work scoring/query plans plus optional measured pager accesses with `--profile-io`; see [operations](OPERATIONS.md#performance-aware-evaluation). |
+| Hybrid questions using both tools | Agent supports both tools; evaluator v4 fixes valid hybrid prose rejection, with adversarial regression coverage. |
 
 See [enhancement implementation, verification and production scope](ENHANCEMENTS.md).
 
@@ -67,7 +67,9 @@ uv run portfolio-agent evaluate --suite extended --output reports/local/extended
 
 Both spend genuine Gemini quota. Use fresh output names: reports are written at the selected path. JSON contains SQL/results/reference comparisons and provider metrics; Markdown contains strict pass/fail. Exit code 1 indicates at least one failure. Successful retries from separate runs are not stitched into a full score.
 
-The fresh [supplied CLI evidence](../reports/supplied-v3-2026-11-08/README.md) captures `b8db4a9`: **10/10**, all ten final-answer checks, 21 SDK calls and 54,075 reported tokens. A separate earlier 8/10 run is retained with its two verifier-format false negatives. The [historical CLI-only extended evidence](../reports/cli-2026-11-08/README.md) captures `4b49d95`: 50/50 under evaluator v2, 92 SDK calls and 201,404 tokens. These are different suites and verification contracts; see [evaluation](EVALUATION.md).
+The [evaluation evidence index](EVALUATION.md) records current and historical runs with their
+source/evaluator versions, provider counts and verification limits. Historical scores are
+not silently upgraded after evaluator changes.
 
 ## Configuration
 

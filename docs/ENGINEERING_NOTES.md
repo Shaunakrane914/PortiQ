@@ -16,9 +16,10 @@ implemented without making web, Streamlit or Node dependencies mandatory for the
 - A bounded reusable client pool permits parallel requests, shares quota guards and preserves
   per-client retry/circuit state. Conversation turns serialize within each session; results,
   caches, history and per-question metrics remain isolated.
-- Evaluator v3 checks actual final-answer content using explicit result-format contracts,
+- Evaluator v4 checks actual final-answer content using explicit result-format contracts,
   independently checks SQL/CSV exposure evidence and keeps correctness separate from a
-  reference-relative VM-work performance score. It does not use an LLM judge.
+  reference-relative VM/page-access performance scores. Hybrid percentage claims are checked
+  independently from SQL scalars. It does not use an LLM judge.
 - The existing anonymous hosted demo remains available. A separate production configuration
   validates hosts/origins/token/storage and provides a hardened container deployment recipe.
   Distributed state, individual user identity and operational TLS/monitoring remain separate work.

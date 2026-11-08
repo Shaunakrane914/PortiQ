@@ -7,14 +7,14 @@ mandatory and optional requirements to implementations.
   The suite has been observed and is regression evidence, not blind validation.
 - The latest supplied run passed 10/10 with v3 checks on `0b3e94a` after both retrieval removals;
   it is a known finite suite. Earlier captures retain their own source and verification scope.
-- Evaluator v3 verifies explicit scalar, list, table and exposure representations. Missing
+- Evaluator v4 verifies explicit scalar, list, table and exposure representations. Missing
   required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
   checker does not prove arbitrary English entailment, advice or additional unstructured claims.
 - Numeric tables use tool column order. Reordered prose columns or alternative tied ordering
   can be penalized. A correct tool result alone does not certify the final narrative.
-- SQLite progress callbacks measure VM work approximately, not logical page reads or physical
-  I/O. Performance scores are relative to the reference on the same small database and are
-  correctness gated. They are not a general query optimizer or large-data benchmark.
+- Default SQLite progress callbacks measure VM work. Optional `--profile-io` counts pager
+  hits + misses using APSW on fresh private caches; physical device I/O is not measured.
+  Scores are correctness-gated relative to the reference, not a general query optimizer.
 - Metadata RAG is deliberately excluded from the active submission. BM25 added 12.02%
   reported tokens at equal observed accuracy; graph retrieval scored 9/10 versus 10/10.
   Neither demonstrated a reliable speed gain. The agent retains the full schema, live
@@ -23,6 +23,7 @@ mandatory and optional requirements to implementations.
 - One process supports bounded parallel analyses with separate model clients and per-session
   locks. Multiple processes would have separate sessions/RPM/capacity state. A retained SQLite
   ledger coordinates daily usage only; distributed deployment needs external coordination.
+  Production rejects multi-worker environment settings; scale within the bounded client pool.
 - Random session IDs are bearer capabilities, not user identities. The production profile
   uses the existing shared bearer token, not individual accounts, roles or per-user budgets.
 - The public Render demo remains anonymous. Production must be explicitly configured and

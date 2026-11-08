@@ -4,6 +4,7 @@ import hmac
 import logging
 import math
 import os
+import sqlite3
 import threading
 import time
 from collections import OrderedDict, deque
@@ -108,8 +109,10 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> Any:
-        yield
-        analysis.close()
+        try:
+            yield
+        finally:
+            analysis.close()
 
     app = FastAPI(
         title="PortiQ",
@@ -128,6 +131,10 @@ def create_app(
             raise ValueError("Production API requires explicit allowed hosts.")
         if settings.quota_path is None:
             raise ValueError("Production API requires a persistent quota ledger.")
+        if any(os.getenv(name, "1") != "1" for name in ("WEB_CONCURRENCY", "UVICORN_WORKERS")):
+            raise ValueError(
+                "Production profile supports one worker; use bounded query concurrency."
+            )
     analysis = service or AnalysisService(settings)
     app.state.analysis = analysis
     if "*" in extra_hosts or (not extra_hosts and os.getenv("PORTIQ_ALLOW_ANONYMOUS") == "1"):
@@ -255,6 +262,11 @@ def create_app(
 
     @app.exception_handler(Exception)
     async def unexpected_error(request: Request, exc: Exception) -> JSONResponse:
+        logger.error(
+            "request=%s failure_type=%s",
+            getattr(request.state, "request_id", "unknown"),
+            type(exc).__name__,
+        )
         return JSONResponse(
             {"detail": "Internal request failure; consult the request ID."},
             500,
@@ -278,7 +290,26 @@ def create_app(
     def live() -> dict[str, str]:
         return {"status": "alive"}
 
-    app.add_api_route("/api/ready", health, methods=["GET", "HEAD"])
+    @app.api_route("/api/ready", methods=["GET", "HEAD"])
+    def ready() -> JSONResponse:
+        try:
+            with connect_readonly(settings.database) as conn:
+                for table in (
+                    "portfolios",
+                    "holdings",
+                    "securities",
+                    "sectors",
+                    "transactions",
+                    "historical_prices",
+                    "portfolio_performance",
+                    "risk_metrics",
+                    "benchmarks",
+                ):
+                    conn.execute(f"SELECT 1 FROM {table} LIMIT 0")
+            analysis.budget.used()
+            return JSONResponse({"status": "ready"})
+        except (PortiqError, sqlite3.Error):
+            return JSONResponse({"status": "dependencies unavailable"}, 503)
 
     @app.get("/api/overview")
     def overview() -> dict[str, Any]:
@@ -408,7 +439,13 @@ def main() -> None:
     if not settings.database.exists():
         initialize(settings.source, settings.database)
     uvicorn.run(
-        create_app(settings), host=host, port=int(os.getenv("PORT", "8000")), proxy_headers=False
+        create_app(settings),
+        host=host,
+        port=int(os.getenv("PORT", "8000")),
+        proxy_headers=False,
+        limit_concurrency=128,
+        timeout_keep_alive=5,
+        timeout_graceful_shutdown=45,
     )
 
 

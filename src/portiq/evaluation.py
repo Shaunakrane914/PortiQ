@@ -187,6 +187,7 @@ def score_answer(
     answer: AgentResponse,
     *,
     narrative_rules: list[str] | None = None,
+    profile_io: bool = False,
 ) -> dict[str, Any]:
     """Score evidence, routing and limited prose claims independently; never stop at routing."""
     record = _record(case)
@@ -318,19 +319,50 @@ def score_answer(
             generated = candidates[assignment[index]]["result"]
             reference_steps = baseline.vm_steps or 0
             actual_steps = generated["vm_steps"] or 0
-            record["sql_efficiency"].append(
-                {
-                    "reference_vm_steps": reference_steps,
-                    "generated_vm_steps": actual_steps,
-                    "reference_query_plan": baseline.query_plan,
-                    "generated_query_plan": generated["query_plan"],
-                    "score": round(100 * min(1, reference_steps / max(actual_steps, 1)), 2)
+            measurement = {
+                "reference_vm_steps": reference_steps,
+                "generated_vm_steps": actual_steps,
+                "reference_query_plan": baseline.query_plan,
+                "generated_query_plan": generated["query_plan"],
+                "score": round(100 * min(1, reference_steps / max(actual_steps, 1)), 2)
+                if record["passed"]
+                else 0.0,
+                "metric": "SQLite VM progress callbacks at interval 1; lower work is preferred",
+                "logical_page_reads": None,
+            }
+            if profile_io:
+                from portiq.profiling import page_profile
+
+                reference_io = page_profile(settings.database, reference["sql"])
+                actual_io = page_profile(settings.database, generated["sql"])
+                for profile, expected_rows in (
+                    (reference_io, reference["rows"]),
+                    (actual_io, generated["rows"]),
+                ):
+                    error = compare_rows(expected_rows, profile.pop("rows"), ordered=False)
+                    if error:
+                        raise PortiqError(
+                            "Page profiler result disagrees with validated SQL: " + error
+                        )
+                measurement.update(
+                    vm_score=measurement["score"],
+                    reference_page_io=reference_io,
+                    generated_page_io=actual_io,
+                    logical_page_reads=actual_io["logical_page_reads"],
+                    score=round(
+                        100
+                        * min(
+                            1,
+                            reference_io["logical_page_reads"]
+                            / max(actual_io["logical_page_reads"], 1),
+                        ),
+                        2,
+                    )
                     if record["passed"]
                     else 0.0,
-                    "metric": "SQLite VM progress callbacks at interval 1; lower work is preferred",
-                    "logical_page_reads": None,
-                }
-            )
+                    metric="Correctness-gated relative SQLite logical page accesses",
+                )
+            record["sql_efficiency"].append(measurement)
     record["efficiency_score"] = (
         statistics.mean(item["score"] for item in record["sql_efficiency"])
         if record["sql_efficiency"]
@@ -346,15 +378,27 @@ def score_answer(
 
 
 def evaluate_case(
-    agent: AnswerAgent, case: dict[str, Any], *, narrative_rules: list[str] | None = None
+    agent: AnswerAgent,
+    case: dict[str, Any],
+    *,
+    narrative_rules: list[str] | None = None,
+    profile_io: bool = False,
 ) -> dict[str, Any]:
     start = time.perf_counter()
+    answer = None
     try:
+        answer = agent.answer(case["question"])
         record = score_answer(
-            agent.settings, case, agent.answer(case["question"]), narrative_rules=narrative_rules
+            agent.settings,
+            case,
+            answer,
+            narrative_rules=narrative_rules,
+            profile_io=profile_io,
         )
     except (PortiqError, ValueError, KeyError, TypeError) as exc:
         record = _record(case)
+        if answer is not None:
+            record["actual"] = answer.model_dump(mode="json")
         record["failure"] = f"Evaluation failed: {type(exc).__name__}: {exc}"
         record["failures"] = [{"dimension": "execution", "message": str(exc)}]
     record["duration_ms"] = round((time.perf_counter() - start) * 1000, 3)
@@ -369,6 +413,7 @@ def evaluate(
     trials: int = 1,
     split: str | None = None,
     limit: int | None = None,
+    profile_io: bool = False,
 ) -> dict[str, Any]:
     cases = json.loads(suite.read_text(encoding="utf-8"))["questions"]
     if split:
@@ -383,7 +428,10 @@ def evaluate(
     for trial in range(1, trials + 1):
         for case in cases:
             record = evaluate_case(
-                agent, case, narrative_rules=suite_rules.get(str(case["id"]), [])
+                agent,
+                case,
+                narrative_rules=suite_rules.get(str(case["id"]), []),
+                profile_io=profile_io,
             )
             record["trial"] = trial
             records.append(record)
@@ -398,7 +446,8 @@ def evaluate(
             )
     durations = sorted(r["duration_ms"] for r in records)
     report = {
-        "evaluator_version": 3,
+        "evaluator_version": 4,
+        "sql_performance_metric": "logical_page_reads" if profile_io else "vm_steps",
         "execution_strategy": "orchestrated",
         "fallback_models": list(agent.settings.fallback_models),
         "generation_mode": (
@@ -451,7 +500,10 @@ def evaluate(
         if any(r.get("efficiency_score") is not None for r in records)
         else None,
         "sql_efficiency_scope": (
-            "Correctness-gated work score relative to reference; SQLite VM callbacks, not "
+            "Correctness-gated relative pager hits + misses; same APSW engine/fresh private "
+            "cache for both queries; no physical device I/O claim."
+            if profile_io
+            else "Correctness-gated work score relative to reference; SQLite VM callbacks, not "
             "logical disk/page I/O. Scores do not change answer correctness."
         ),
         "mean_ms": statistics.mean(durations) if durations else None,

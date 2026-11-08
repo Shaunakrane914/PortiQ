@@ -12,6 +12,7 @@ The original [assignment](assignment/README.md) requires SQL translation, equity
 | SQL execution | [sql.py](../src/portiq/sql.py) | Parse, authorize, bound and execute read-only queries |
 | Required exposure calculator | [exposure.py](../src/portiq/exposure.py) | Resolve one portfolio and normalize stock weights by stock sector |
 | Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, explicit answer verification and correctness-gated VM-work scores |
+| Optional page profiling | [profiling.py](../src/portiq/profiling.py) | Evaluation-only APSW pager hits/misses; matched cache/engine and independent result agreement |
 | Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, adaptive sliding-window limiter, local budget, safe retry/circuit handling |
 | Optional service | [service.py](../src/portiq/service.py) | Explicit local capabilities, exact cache, context and sequential fallback |
 | Optional analytics | [analytics.py](../src/portiq/analytics.py) | Snapshots, quote-value reconciliation and data-quality notices |
@@ -52,7 +53,7 @@ SQLite is file-backed so separate CLI invocations and the optional API can share
 
 Exposure normalizes only `Stock` `current_weight` and excludes bonds. Reconciliation compares recorded allocations with illustrative `quantity * current_price` allocations only when values are complete and one known currency permits a denominator. No FX, inferred cash, accrued interest or AUM rescaling is introduced. [Data conventions](DATA_ASSUMPTIONS.md) explain the supplied reference contracts.
 
-The evaluator independently re-executes generated SQL and reference SQL. Exposure references use original CSVs rather than the production calculator/resolver. Evaluator v3 also verifies explicit scalar/list/table/exposure answer content and records correctness-gated SQLite VM-work scores. SQL safety and result correctness remain separate checks; [evaluation scope](EVALUATION.md) documents the format contract and its limits.
+The evaluator independently re-executes generated SQL and reference SQL. Exposure references use original CSVs rather than the production calculator/resolver. Evaluator v4 also verifies explicit scalar/list/table/exposure answer content, including hybrid percentage/scalar claims, and records correctness-gated SQLite work/page-access scores. SQL safety and result correctness remain separate checks; [evaluation scope](EVALUATION.md) documents the format contract and its limits.
 
 ## Provider accounting and failure handling
 

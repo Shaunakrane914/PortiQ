@@ -16,7 +16,7 @@ file are written; any case failure returns exit 1. `--trials 1..5`, `--limit` an
 `--split development|validation|heldout` select repetitions/subsets. All extended cases have
 been observed, including the old heldout labels; they are not blind validation.
 
-## Evaluator v3: answer verification and SQL efficiency
+## Evaluator v4: answer verification and SQL efficiency
 
 Each case records separate status, routing, evidence, answer-verification and SQL-validity
 dimensions. Correct reference data alone cannot make an incorrect final answer pass.
@@ -41,14 +41,28 @@ dimensions. Correct reference data alone cannot make an incorrect final answer p
 - `sql_efficiency` records generated/reference query plans and SQLite progress callbacks with
   interval one. `efficiency_score = 100 * min(1, reference work / generated work)` for a correct
   answer; incorrect SQL/answers receive zero. Efficiency never overrides correctness. Engine
-  callbacks are an approximate VM-work metric, not logical page/disk I/O. `logical_page_reads`
-  stays null. Small-data scores do not establish production query performance.
+  callbacks are an approximate VM-work metric. Optional `--profile-io` (performance extra)
+  measures SQLite pager cache hits + misses for both queries on matched fresh private caches.
+  Result rows must independently agree before scoring; engine/cache metadata and both VM and
+  page metrics are recorded. Pager accesses are not physical storage reads or SQL Server's
+  exact I/O accounting. See [measurement details](OPERATIONS.md#performance-aware-evaluation).
+
+Hybrid verification masks only explicitly sector-bound percentages from SQL scalar checks;
+those percentages remain independently checked against the exposure reference. Both
+`Technology: 93%` and `93% in Technology` are supported, as are typed percentage tables.
+Unrelated wrong/negated scalar claims still fail. Required tool results remain distinct;
+omitting either analytical tool cannot pass. The three archived hybrid answers now pass
+replay, while wrong/missing/contradictory claim mutations fail. These replays make zero model
+calls and are separate from live evidence. If evaluation fails after an answer was generated,
+its actual SDK/token metadata is retained rather than silently discarded.
 
 The answer checker verifies explicit supported formats, not arbitrary English entailment.
 Unsupported paraphrases, omitted fields or reordered prose columns can be conservatively
 rejected. Extra unstructured claims, advice and every possible negation are not certified.
 Handling cases have no factual answer contract and are not counted as successful narrative
 verification. No LLM judge or extra judge SDK calls are used.
+Multiple independent scalar references or overlapping exposure narratives can still require
+explicit separable formatting; this is not an unrestricted natural-language entailment judge.
 
 Reports identify evaluator version, data/suite/runtime hashes, configured model, actual SDK
 metrics and generation mode. Injected fake backends are explicitly labeled non-live. Missing
