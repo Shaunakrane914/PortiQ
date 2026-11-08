@@ -17,8 +17,8 @@ test("overview and real recorded portfolio exploration", async ({ page }) => {
   await expect(
     page.getByText("Portfolio universe", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("Aggregate AUM", { exact: true })).toBeVisible();
-  await expect(page.locator("#content")).toContainText("Unavailable");
+  await expect(page.getByText("Aggregate AUM", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".overview-metrics .metric")).toHaveCount(3);
   await expect(
     page.getByRole("columnheader", { name: "Stock recorded %" }),
   ).toBeVisible();
@@ -84,9 +84,7 @@ test("local analyst, exact cache and portfolio follow-up", async ({ page }) => {
   });
   await page.screenshot({ path: shots + "/analyst-local.png", fullPage: true });
 });
-test("reconciliation export and mobile layout", async ({
-  page,
-}) => {
+test("reconciliation export and mobile layout", async ({ page }) => {
   await page.goto("/#reconciliation");
   await expect(
     page.getByRole("heading", { name: "Holding-level review" }),

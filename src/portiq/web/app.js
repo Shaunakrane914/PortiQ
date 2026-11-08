@@ -275,7 +275,7 @@ async function getSnapshot() {
 async function overview() {
   const d = await api("/api/overview");
   const root = el("div"),
-    metrics = el("div", null, "metrics");
+    metrics = el("div", null, "metrics overview-metrics");
   metrics.append(
     metric(
       "Portfolio universe",
@@ -289,7 +289,6 @@ async function overview() {
       d.holding_count,
       "Positions across the supplied universe",
     ),
-    metric("Aggregate AUM", "Unavailable", "Currency basis is unspecified"),
   );
   root.append(metrics);
   const grid = el("div", null, "grid"),
@@ -316,7 +315,10 @@ async function overview() {
       "Dataset observations are historical and sparse. No price, return or risk value is represented as live.",
       "info",
     ),
-    el("p", d.aum_basis),
+    el(
+      "p",
+      "AUM is shown per portfolio in the table. Its currency and valuation date are unspecified.",
+    ),
     el(
       "p",
       "Recorded holding weights and reconstructed quote values are separate views. Differences do not establish which convention is correct.",

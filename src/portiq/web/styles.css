@@ -245,6 +245,9 @@ p {
   gap: 16px;
   margin-bottom: 24px;
 }
+.overview-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
 .metric,
 .card {
   background: var(--ivory);
