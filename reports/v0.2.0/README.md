@@ -1,5 +1,7 @@
 # v0.2 evidence index
 
+For the later CLI-only capture on `4b49d95`, see [8 November 2026 evidence](../cli-2026-11-08/README.md): **50/50 extended**, 92 SDK calls and 201,404 reported tokens. The assignment's supplied ten and this separate fifty are distinguished in the [current evaluation guide](../../docs/EVALUATION.md). The retained artifacts below remain historical captures.
+
 The retained reports describe their recorded pre-cleanup runtime revisions. Cleanup commit `122dee6` intentionally removed the experimental planner and development artifacts. Do not interpret archived scores, test counts or manifests as fresh verification of the current code.
 
 | Retained artifact | Meaning |

@@ -1,60 +1,44 @@
-# Security boundary
+# Security boundary and public demo
 
-Threats covered locally include generated SQL mutation, multiple statements, administrative
-operations, arbitrary function calls, schema/file reads, recursive queries, untrusted names,
-oversized inputs, slow joins, malformed model output and credential disclosure in transport errors.
+The assignment lists SQL safety, input validation, error handling and logging as optional enhancements. These are implemented, while the service remains an assessment/demo application. SQL safety does not certify semantic correctness or production multi-tenant isolation.
 
-Layers:
+## SQL and tool boundaries
 
 1. Typed tool arguments reject extra keys, wrong types and oversized values.
-2. SQLGlot requires one SQLite query; DDL, DML, INTO, administrative statements, recursive
-   CTEs, attached databases and SQLite internal/pragma tables are rejected.
-3. SQLite's prepare-time authorizer independently allows application-table reads and an
-   explicit set of analytical functions. Unknown functions are denied, including extension,
-   file, randomblob and zeroblob functions.
-4. Every application query runs with a read-only URI, `query_only=ON`, and extensions disabled.
-5. SQL size, expression depth, compound query count, value length, result rows and SQLite
-   execution time are bounded. Results are fetched incrementally with a 1 MB value budget.
-   Truncation is explicit and cannot pass evaluation. Initialization rejects destinations
-   that would overwrite original assessment inputs, including through resolved paths.
-6. Exposure resolution uses parameterized IDs and whole-token matching; names never become SQL.
+2. SQLGlot requires one SQLite read query and rejects mutations, administrative statements, recursive CTEs, attached/internal/pragma tables and other unsupported constructs.
+3. SQLite's authorizer independently allows application-table reads and an explicit set of analytical functions. File/extension functions, arbitrary unknown functions and allocation-heavy blob functions are denied.
+4. Query connections use a read-only URI, `query_only=ON` and disabled extensions.
+5. SQL size/depth, compound queries, value length, row counts and VM execution time are bounded. Fetching has a 1 MB value budget; truncation is explicit and cannot pass evaluation.
+6. Portfolio resolution and fixed queries use bound parameters. Generated SQL can contain escaped literals, but never gains write privileges because a model emitted it.
 
-Generated analytical SQL may contain correctly escaped literals; the model has no write
-capability even if it misquotes a user input. Deterministic queries use bound parameters.
-This makes the SQLite boundary, rather than instruction obedience, responsible for preventing
-mutation. Prompt injection tests deliberately force malicious model SQL and verify file bytes
-remain unchanged.
+The model has no file/shell tools. Initialization checks resolved destination paths so an explicit rebuild cannot overwrite original assessment inputs. Tests deliberately supply malicious generated SQL and verify database bytes remain unchanged. The SQLite boundary enforces read access independently of prompt obedience.
 
-API keys are environment-only `SecretStr` values, excluded from serialized settings and repr.
-SDK error text is never returned directly because URLs/payloads can carry credentials.
-Verbose logging leaves transport loggers disabled. `.env` and database/log artifacts are ignored.
-The model receives schema, questions and tool results, never application credentials.
+The progress callback bounds VM work, not every native allocation or parser step; this is not an OS sandbox. The model can still choose a valid wrong-column query or misstate a valid result. Independent reference scoring and authoritative tool tables address a different boundary from SQL authorization.
 
-Limits: this is a local analyst tool, not a hostile multi-tenant SQL sandbox. The SQLite
-progress callback bounds VM execution, not every possible native allocation or parser step.
-Deployments serving untrusted users should add process isolation, memory/CPU limits,
-authentication, per-user budgets and audit retention. A generated narrative can still
-misstate a valid result; displayed structured evidence is authoritative, and narrative
-faithfulness is not automatically established by SQL result scoring.
+## Credentials and model data flow
 
+Keys come from process environment or a local `.env` and use `SecretStr`, excluded from settings serialization/repr. `.env`, local databases, logs and development environments are ignored. Transport exception text is not returned verbatim because URLs/payloads may contain credentials. Verbose operation logs keep SDK/HTTP transport loggers disabled and do not expose hidden reasoning.
 
-## Optional platform boundary
+Gemini receives schema/catalogue/domain context, user questions and necessary tool results. It does not receive the application key in its prompt. Evaluation reports intentionally contain frozen benchmark questions, model answers, SQL and results; they do not embed runtime credentials. Ordinary browser conversations are ephemeral and are not automatically written to those reports. Users should avoid entering personal/confidential information into the public demo; its UI discloses the Gemini data flow.
 
-FastAPI accepts bounded typed JSON and rejects extra fields, oversized or chunked bodies above 16 KiB and unsafe origins. Explicit CORS and trusted-host configuration is required outside local use. A configured bearer token is checked with constant-time comparison. Request IDs accompany responses; raw validation input, provider payloads, keys and exception strings are not logged or returned.
+## Local API controls
 
-The application ignores forwarded-client headers and rate-limits actual socket clients with bounded limiter state. A semaphore admits one analytical request at a time; use one server worker. Rate limiting and the circuit are not distributed security controls. Daily request reservations can be shared atomically through a configured SQLite ledger; conflicting process settings are unsupported.
+FastAPI accepts strict typed JSON, rejects extra fields and bounds POST bodies to 16 KiB, including chunked bodies. POST requests require JSON. Origin validation accepts an exact base/allowlisted origin or a hostname match to the base URL/Host header to support TLS-terminating proxies. The hostname fallback does not strictly compare scheme and port, so it is not full origin isolation. Configured CORS origins must be explicit; wildcard CORS is rejected. A configured bearer token uses constant-time comparison. Browser-facing validation/provider/filesystem errors are sanitized; request IDs support troubleshooting.
 
-The dashboard constructs data with `textContent` and explicit DOM/SVG nodes. CSP restricts application assets to the same origin; no inline script or external chart CDN is needed. Browser tests inject malicious database labels and verify they remain literal text. Downloaded CSV values neutralize spreadsheet formula prefixes. Internal evaluation, configuration and cache-management routes are not exposed by the web app.
+The API rate limiter uses actual socket clients and ignores forwarded-client headers. Behind a proxy, clients can share a socket identity/limit. A semaphore admits one analytical request at a time and rejects concurrent analysis as busy. One worker is supported. Rate limiting, the circuit and in-memory cache/session state are not distributed controls. A shared SQLite file coordinates local daily attempt counts only among compatible processes.
 
-Cached successes are deep-copied and keyed by data/code/model/strategy/context identity; no failures are retained. Opaque random session IDs separate bounded in-memory conversations. Anyone holding such a capability can use that session; a demo token does not create per-user identity. A public multi-user service requires real authentication/authorization and per-user quotas.
+CLI `serve` requires a demo token for a bind address other than `127.0.0.1` or `localhost`. The module/container entry point alternatively permits explicit `PORTIQ_ALLOW_ANONYMOUS=1` for networked model access without a token. A token, if configured, is still checked; the anonymous flag does not disable it. Host wildcard and anonymous-host defaults are described in [configuration](SUBMISSION.md#configuration).
 
-Docker runs as UID 10001 and excludes `.env`, development environments and local artifacts. Credentials belong only in runtime environment or a managed secret store. Neither the Gemini key nor conversations are embedded in reports. No public production deployment is represented by the container smoke check.
+## Hosted frontend and deployment choices
 
+The public [Render demo](https://portiq-b9u7.onrender.com) is configured through [render.yaml](../render.yaml) with anonymous opt-in, wildcard accepted hosts and a 6.5-second SDK interval. It is a small review demonstration, not production multi-user identity, authorization, per-user budgets, audit retention or availability. No additional password wall is imposed on ordinary browsing.
 
-## Public frontend review
+The four views are AI Analyst (landing page), Overview, Portfolio Explorer and Reconciliation. Assessment branding, Evaluation Lab, System Status and internal configuration/report pages are removed. `/api/about`, `/api/evaluation/summary`, cache-management and public OpenAPI/docs routes are unavailable. Static serving is restricted to `web/`; `.env`, assignment documents, reports and project files are not served by those routes.
 
-The public UI has four views: Overview, Portfolio Explorer, AI Analyst and Reconciliation. Assessment branding, Evaluation Lab, System Status, report provenance, local machine paths and runtime configuration are removed. `/api/about`, `/api/evaluation/summary`, cache-management routes and `/openapi.json` return 404. Static serving is restricted to `web/`; assessment documents, reports, `.env` and project files are not served. Browser errors redact provider/configuration/filesystem details; CLI diagnostics remain actionable locally.
+The dashboard constructs data with `textContent` and DOM/SVG nodes. Same-origin CSP assets, no external chart CDN and tests with malicious labels reduce frontend injection risks. CSV downloads neutralize spreadsheet formula prefixes. Opaque session IDs are bearer capabilities, not user accounts; possession permits access to that in-memory session. A configured demo token is shared access, not per-user authorization.
 
-A scan of the supplied CSVs found no email addresses, local-user paths or API-key patterns. This is a bounded check, not a certification of every future dataset. The demo intentionally displays portfolio records. Questions and necessary tool results for AI analysis go to Google Gemini; the UI discloses that data flow. Avoid submitting personal/confidential questions to a public demo.
+The repository intentionally remains public. Source CSVs and historical reports are accessible there independently of website routes. Frontend cleanup does not make those copies private. A bounded scan found no email addresses, user-machine paths or API-key patterns in the supplied CSVs; this is not a guarantee for future data. New CLI evidence was also scanned before publication.
 
-The owner chose to keep GitHub public and avoid adding a password wall to ordinary browsing. Existing optional demo-token and networked-model controls are retained. Public GitHub data/history remains accessible independently of website routes; frontend changes do not make those copies private. Reports and evaluation fixtures are excluded from the web Docker image. Keep container images private if their embedded source data must not be redistributed. No public hosting has been performed by this change.
+Docker runs as UID/GID 10001. The image excludes `.env`, local databases, reports, evaluation fixtures, Node modules and development files, but bundles source CSVs/schema for initialization. Keys belong in runtime environment/secret storage. Persisting the daily ledger requires writable retained storage; ephemeral redeploys can reset a container-local ledger. The local counter is not a project-wide provider quota or billing control.
+
+See [limitations](KNOWN_LIMITATIONS.md), [evaluation scope](EVALUATION.md) and the [assignment checklist](SUBMISSION.md#assignment-requirements) for the claims that are deliberately not made.

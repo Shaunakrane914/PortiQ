@@ -1,34 +1,46 @@
 # Change history
 
-The full development narrative and removed experiment artifacts remain in the [pre-cleanup snapshot](https://github.com/Shaunakrane914/PortiQ/tree/ace58054c7a778817d68a7c1d81386b7dffd95e8). Tags and historical reports are not rewritten.
+Source tags, original assessment inputs, frozen suites and captured evaluation reports are not rewritten. The [pre-cleanup snapshot](https://github.com/Shaunakrane914/PortiQ/tree/ace58054c7a778817d68a7c1d81386b7dffd95e8) retains removed experiments and detailed development evidence.
 
-## Current consolidation
+## Documentation alignment - 8 November 2026
 
-- Merged container startup into `api.py`; Docker now uses `python -m portiq.api`.
-- Combined tool and cache measurements in `scripts/benchmark.py`; outputs default to ignored local reports and existing evidence is not overwritten.
-- Removed the one-off historical diagnostic script and unused planner telemetry/summary code.
-- Consolidated decisions, experiments, performance, acceptance, interview and requirement notes into [engineering notes](ENGINEERING_NOTES.md).
-- Retained CLI chat, genuine Gemini orchestration, SQL authorization, financial formulas, API/dashboard, tests and original assessment inputs.
+- Reorganized the run guide and reviewer checklist around the assignment's four required CLI components.
+- Separated the supplied ten questions from the optional author-created fifty; current and historical scores retain their actual capture revisions.
+- Documented file-backed SQLite versus the brief's in-memory setup hint, current SDK/install metadata and implemented/deferred optional enhancements.
+- Reconciled public Render demo, anonymous/token behavior, CLI/module network guards, container defaults and local versus provider quota accounting.
+- Updated architecture for compact context/direct scalar rendering and clarified performance, narrative and production-readiness limits.
+- Kept the original assignment and all raw captured evidence unchanged. This documentation pass is not a new Gemini evaluation.
 
-## Cleanup after v0.2 experiments
+## CI bootstrap - `84d296a`
 
-Commit `122dee6` removed the experimental planner and selected development artifacts and moved deterministic rendering into `agent.py`. A follow-up guard rejects the removed API strategy instead of silently using the original agent. Documentation distinguishes archived measurements from current checks; removed evidence remains in Git history.
+Repeated GitHub Release HTTP 504 responses prevented `setup-uv` from reaching the tests on Windows and Linux. CI now selects runner Python with `actions/setup-python@v6` and installs pinned `uv==0.11.26` from PyPI. All four Python/OS matrix jobs and the browser/container job remain; matrix fail-fast is disabled. All five jobs passed on this commit. Failed Actions history was later removed at the owner's request, independently of model-evaluation reports.
 
-## v0.2 platform work
+## CLI evidence publication - `3fd4cab`, `6ae3355`
 
-Added shared analytics/reconciliation, local capabilities, exact caching, bounded conversation context, actual SDK accounting, quota-aware retries/circuit/fallback, optional FastAPI/static dashboard and non-root Docker checks. The original planner remains supported.
+Published the complete [CLI-only 50-question capture](../reports/cli-2026-11-08/README.md): 50/50, 92 actual SDK invocations, 201,404 reported tokens and zero provider errors on source `4b49d95`. It includes complete answers, SQL, independent references, per-question metrics, transcript, immutable hashes and data audits. Scoped attributes preserve exact original CRLF/transcript bytes. Publishing the evidence did not run the model again.
 
-Archived original-agent results were 10/10 supplied, 50/50 extended and 8/8 platform. Experimental results were 9/10, 50/50 and 7/8, including a Technology-sector projection mismatch and unjustified portfolio guess. The experimental path was not promoted and was later removed. A failed 250-attempt provider run and reporting-metadata caveats remain explicitly documented in the archived evidence. Intermediate container artifact inclusion was corrected before any image publication.
+## Model requests - `4b49d95`
+
+Compacted schema formatting and repeated instructions while retaining the original orchestrator. Supported scalar-only requests can directly render one successful, non-truncated SQL cell after genuine Gemini generation. Multiple tools, guarded compound language and other shapes retain normal synthesis. Metadata discloses rendering and actual SDK/token use. No rolling-minute Gemini scheduler was retained. The later full CLI capture showed no regression on its frozen fifty, without establishing unseen accuracy or a general inference-time speedup.
+
+## Frontend and hosted demonstration
+
+Made AI Analyst the landing page and retained Overview, Portfolio Explorer and Reconciliation. Removed internal evaluation/configuration/status pages/routes, public schema discovery, assessment branding and the aggregate AUM card whose currency basis was unspecified. Browser errors are sanitized; local/cache/model modes stay visible. Applied navy, ivory and gold.
+
+Added the optional Render blueprint and public review demo, explicit anonymous network opt-in, cloud health-check host handling and GET/HEAD health support. Later changes accept matching hostnames for TLS proxy origins and default the UI's local/cache checkboxes off; browser smoke tests enable those modes explicitly when testing them. This is not production multi-user identity or availability. The repository remains public by the owner's choice; website cleanup does not hide GitHub data/history.
+
+## Consolidation after v0.2 experiments
+
+Cleanup `122dee6` removed the unsuccessful experimental planner and selected development artifacts, and merged deterministic rendering into `agent.py`. Follow-ups reject its removed strategy rather than silently substituting another. Container startup lives in `api.py`; Docker uses `python -m portiq.api`. Tool/cache benchmarking is consolidated in `scripts/benchmark.py`; engineering/requirement notes are consolidated in the current documentation.
+
+## Historical v0.2 platform work
+
+Added shared analytics/reconciliation, explicit local capabilities, exact caching, bounded context, actual SDK accounting, local quota/retry/circuit/fallback controls, optional FastAPI/static UI and non-root Docker verification. Original-path captures passed 10/10 supplied, 50/50 extended and 8/8 platform. The experimental path passed 9/10, 50/50 and 7/8, including a Technology projection mismatch and an ambiguous portfolio guess; it was not promoted. Provider-outage failures and reporting caveats remain archived separately.
 
 ## v0.1.1
 
-Fixed Passive/status semantics using database-derived classification values, separated result/routing/narrative scoring, and preserved historical failures. Archived fresh results: 10/10 supplied, 50/50 extended, 6/6 categorical and 3/3 ambiguity; 148 ordinary tests, 94.04% line coverage and four CI jobs. These are historical source-specific results.
+Corrected Passive/status semantics with database-derived categorical domains, strengthened result/routing/narrative scoring and preserved historical failures. Archived results: 10/10 supplied, 50/50 extended, 6/6 categorical and 3/3 ambiguity. Its 148 ordinary tests, 94.04% coverage and four CI jobs describe that release, not current verification.
 
 ## v0.1.0
 
-Delivered the CLI-first Gemini agent, read-only SQL tool, Decimal exposure calculator and independent evaluator. Its extended ext-02 failure was genuinely wrong-column semantics and a false narrative, not merely an extra tool call. Later diagnostics corrected that interpretation without altering the old reports.
-
-
-## Public interface cleanup
-
-Reduced navigation to four portfolio views. Removed internal reports/configuration/cache endpoints and schema discovery, redacted browser errors, and removed assessment branding. The default local interface has no added password wall; existing optional deployment controls remain. The web image excludes historical reports and benchmark fixtures. Applied a midnight-navy, ivory and champagne-gold palette with tested text contrast. The repository remains public by the owner's explicit choice; website cleanup does not hide existing GitHub copies.
+Delivered the CLI Gemini agent, read-only SQL tool, Decimal exposure calculator and independent evaluator. Its ext-02 failure was wrong-column semantics and a false narrative, not merely an extra tool call. Later diagnostics corrected the interpretation without altering original reports or tags.

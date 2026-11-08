@@ -2,6 +2,8 @@
 
 The actual `portfolio-agent evaluate --suite extended` CLI subprocess passed **50/50** on source revision [`4b49d95`](https://github.com/Shaunakrane914/PortiQ/commit/4b49d95332ff212287ca8480d8ebde19e2c93a80). No browser, HTTP request, local capability registry or answer cache was used. This commit publishes evidence from that completed run; it does not represent another model run.
 
+These fifty are the author-created extended regression, separate from the original assignment's ten supplied questions. This is not a fresh supplied-ten score or blind validation. The [assignment checklist](../../docs/SUBMISSION.md#assignment-requirements) and [evaluation guide](../../docs/EVALUATION.md) explain that distinction and the current implementation.
+
 | Metric | Observed result |
 |---|---:|
 | Reference data results | 46/46 |

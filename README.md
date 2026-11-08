@@ -1,146 +1,96 @@
-# PortiQ — AI-Powered Portfolio Intelligence
+# PortiQ - CLI-first Portfolio Analytics Agent
 
-[![Live Demo](https://img.shields.io/badge/Render-Live%20Demo-success?logo=render)](https://portiq-b9u7.onrender.com)
 [![CI](https://github.com/Shaunakrane914/PortiQ/actions/workflows/ci.yml/badge.svg)](https://github.com/Shaunakrane914/PortiQ/actions)
+[Hosted demo](https://portiq-b9u7.onrender.com) | [Assignment checklist](docs/SUBMISSION.md#assignment-requirements) | [Latest CLI evidence](reports/cli-2026-11-08/README.md)
 
-> **Live Production URL:** [https://portiq-b9u7.onrender.com](https://portiq-b9u7.onrender.com)  
-> **API Health:** [https://portiq-b9u7.onrender.com/api/health](https://portiq-b9u7.onrender.com/api/health)
+PortiQ implements the four deliverables in the original [PL Capital assignment](docs/assignment/README.md): a natural-language SQL tool, an equity-only sector exposure calculator, a command-line agent that chooses tools, and a command-line evaluator for the supplied ground truth. The optional API/dashboard uses the same backend. Data is a static demonstration, not live market data or investment advice.
 
-Built for the PL Capital AI Engineering Take-Home Assessment.
+## Run the assignment solution
 
-The four required components remain the core of this project:
-
-1. **Text-to-SQL:** Gemini generates SQLite queries; parsed validation and a read-only authorizer enforce the boundary.
-2. **Equity-only sector exposure:** Python uses Decimal and normalizes stock `current_weight`; bonds are excluded.
-3. **CLI agent:** genuine Gemini function calling selects and executes typed tools.
-4. **Independent evaluator:** reference SQL runs independently; result, routing and limited narrative checks are reported separately.
-
-The original [assessment instructions](docs/assignment/README.md), nine CSVs, schema, suggested requirements and frozen benchmarks remain unchanged. This is an incremental upgrade of v0.1.1. The dataset is static demonstration data, not a live feed or investment recommendation.
-
-## CLI quick start
-
-Python 3.11+ and [uv](https://docs.astral.sh/uv/getting-started/installation/) are required. Run from the cloned repository root.
+Use Python 3.11+ from a clone of this repository. [uv](https://docs.astral.sh/uv/getting-started/installation/) is the recommended installer; `uv.lock` is the tested dependency resolution.
 
 ```powershell
 uv sync --frozen
-Copy-Item .env.example .env
-# Set GEMINI_API_KEY in .env locally; never commit it.
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+# Set GEMINI_API_KEY in .env locally. Never commit the key.
 uv run portfolio-agent init-db
-uv run portfolio-agent exposure "Balanced Portfolio"
-uv run portfolio-agent sql "SELECT COUNT(*) FROM portfolios"
-uv run portfolio-agent ask "List the names of Passive portfolios, alphabetically." --show-sql
 uv run portfolio-agent chat
 ```
 
-On macOS/Linux use `cp .env.example .env`. A pip alternative is `python -m pip install -e .`; `uv.lock` is the canonical tested resolution. The CLI does not require FastAPI, Node or a browser. A clone with the supplied data is required; wheels do not bundle the assessment dataset. Global `--model`, `--db`, `--source` options precede the subcommand.
+Run `init-db` once on a fresh checkout. It validates and loads all nine CSVs; it will not replace an existing database without `--rebuild`. On macOS/Linux, create the environment file with `test -f .env || cp .env.example .env`. A pip alternative is `python -m pip install -e .` in an activated virtual environment, then use `portfolio-agent` directly. The supplied `requirements.txt` is preserved reference material; current runtime dependencies are in `pyproject.toml`.
 
-`ask` and `chat` use the original orchestration by default. `chat --context` enables bounded conversation history; independent questions remain the default. `ask --local` and `chat --local --cache --context` explicitly enable the small local capability registry and in-memory exact cache.
+In `chat`, type a question directly, then type `exit` when finished. Example questions:
 
-For an explicit scalar-only request such as `How many securities are classified as Bond? Return just the count.`, Gemini still generates the SQL. After successful validation/execution, a single-cell result can be rendered directly without a second Gemini call to restate it. Compound requests, truncated results and other answer formats retain model synthesis. Structured responses identify this as `deterministic scalar rendering after Gemini SQL`; it is separate from the optional local registry and exact cache.
+- How many portfolios do we have in total?
+- What are the names of all active portfolios?
+- Calculate sector exposure for Balanced Portfolio.
 
-The [8 November CLI-only regression](reports/cli-2026-11-08/README.md) passed **50/50** with **92 actual Gemini calls and 201,404 reported tokens**. Complete answers, generated SQL, independent references, timings, usage and the actual CLI transcript are preserved. The same frozen suite's archived original run also passed 50/50 with 266,304 tokens; the 24.37% reduction showed no regression on these cases, without establishing accuracy on unseen questions.
+Bare `chat` treats questions independently. `uv run portfolio-agent chat --context` enables bounded follow-ups. Neither the base CLI nor its evaluator needs FastAPI, Node, a browser, or a running server.
 
 ```powershell
-uv run portfolio-agent snapshot "Balanced Portfolio"
-uv run portfolio-agent reconcile "Balanced Portfolio"
-uv run portfolio-agent ask "Count all portfolios" --local --json
-uv run portfolio-agent chat --local --cache --context
+# Natural-language SQL: Gemini generates and locally validates the query.
+uv run portfolio-agent ask "List the names of Passive portfolios, alphabetically." --show-sql
+# Deterministic exposure: no Gemini key or calls needed.
+uv run portfolio-agent exposure "Balanced Portfolio"
+# Explicit SQL execution: this command does not translate natural language.
+uv run portfolio-agent sql "SELECT COUNT(*) FROM portfolios"
+# Configuration/database checks; --live additionally spends a Gemini request.
 uv run portfolio-agent doctor
-uv run portfolio-agent doctor --live
 ```
 
-For the supplied Balanced Portfolio, equity weight is 0.36: Technology 61.11%, Financials 22.22%, Healthcare 16.67%. These values are computed from holdings. A bond-only portfolio has undefined equity exposure.
+## Evaluate accuracy first
 
-## Live evaluation
-
-These commands consume real Gemini quota. Evaluation bypasses local routing and answer caching.
+The **required supplied suite has 10 questions** in [ground_truth_dataset.json](ground_truth_dataset.json): eight SQL and two exposure questions. The separate, author-created [extended suite](evaluation/extended.json) has 50 previously observed regression questions.
 
 ```powershell
-uv run portfolio-agent evaluate --output reports/local/supplied.json
-uv run portfolio-agent evaluate --suite extended --output reports/local/extended.json
+# Required supplied ground truth; uses genuine Gemini calls.
+uv run portfolio-agent evaluate --output reports/local/supplied-new.json
+# Optional extended regression; uses genuine Gemini calls.
+uv run portfolio-agent evaluate --suite extended --output reports/local/extended-new.json
 ```
 
-Evaluation uses the same frozen questions, a paced backend and independent oracles. [Evaluation details](docs/EVALUATION.md) distinguish complete runs, partial failures, mocked tests and deterministic checks. Archived v0.2 results at runtime revision `2bef3c4` are **10/10 supplied, 50/50 extended and 8/8 platform**. These predate the cleanup refactor; they are not a fresh accuracy score for the current tree. Historical v0.1.1 results remain separately preserved. Current evidence is indexed in [v0.2.0 reports](reports/v0.2.0/README.md).
+Choose fresh output names: the evaluator writes JSON, Markdown and a temporary progress report at the selected path. `evaluate` bypasses the local registry and answer cache, independently checks results and returns a nonzero exit code if any case fails. Check account quota and the local daily guard before a live run; [configuration and quota handling](docs/SUBMISSION.md#configuration) explain their separate scopes.
 
-## Optional API and dashboard
+The [8 November 2026 CLI-only run](reports/cli-2026-11-08/README.md) on `4b49d95` passed **50/50**: 46 data-result cases and four handling cases, **92 actual SDK calls**, **201,404 reported tokens**, zero provider errors, and 593.976 seconds of CLI wall time. The archived original path passed the same suite with 266,304 tokens: 24.37% fewer tokens with no observed regression on those cases. Historical runs are not controlled speed comparisons or proof of unseen accuracy. Six cases have additional automated narrative assertions; all six passed.
 
-The optional platform adds shared analytics, reconciliation, data-quality notices, a four-view dashboard, bounded context, exact caching and quota controls.
+The supplied suite's published **10/10** results are historical captures at their recorded revisions; they are not a fresh supplied-suite score for `4b49d95`. [Evaluation methodology and evidence](docs/EVALUATION.md) distinguish supplied, extended, historical, live and key-free checks. Original inputs, frozen suites and captured reports are not rewritten.
+
+## Implementation choices
+
+- Gemini uses typed function calls to choose SQL, exposure or a final response. Python validates every tool invocation. No runtime planner imports benchmark answers.
+- Sector exposure normalizes `Stock` holding weights within equities and excludes bonds. Balanced Portfolio computes Technology 61.11%, Financials 22.22%, Healthcare 16.67%; no-positive-equity exposure is undefined.
+- SQLGlot validation, SQLite authorization, read-only connections and resource bounds enforce SQL safety. Valid SQL can still answer the wrong question; the evaluator checks its results separately.
+- For explicit scalar-only wording such as "Return just the count", one successful, non-truncated, single-cell SQL result can be rendered after Gemini's query generation without another summary call. Other formats and guarded compound requests retain model synthesis. This is labeled in response metadata and is separate from local routing/cache.
+- SQLite is file-backed for shared CLI/API access, atomic rebuilds and read-only connections. The brief mentions in-memory setup and also shows a file-backed example; this implementation provides the file-backed choice, not an in-memory mode.
+
+See [architecture](docs/ARCHITECTURE.md), [data conventions](docs/DATA_ASSUMPTIONS.md) and [engineering decisions](docs/ENGINEERING_NOTES.md).
+
+## Optional dashboard and hosted demo
 
 ```powershell
 uv sync --frozen --extra web
-uv run portfolio-agent init-db
 uv run portfolio-agent serve
 ```
 
-Open **http://127.0.0.1:8000** to start in AI Analyst and ask a question immediately. Overview, Explorer and Reconciliation work without a Gemini key. AI Analyst labels local calculation, cached answers and genuine model analysis. Its local/cache settings default to unchecked so genuine Gemini analysis is demonstrated immediately; turn either on to observe local fast-path calculation or exact caching. An access-code dialog appears only if the owner has configured the existing optional demo token; the default local interface has no password wall.
+Open **http://127.0.0.1:8000**. AI Analyst is the landing page; Overview, Portfolio Explorer and Reconciliation are the other three views. The static HTML/CSS/JavaScript frontend needs no build step. The hosted [Render demo](https://portiq-b9u7.onrender.com) and [health endpoint](https://portiq-b9u7.onrender.com/api/health) are optional review conveniences, not a production-readiness claim.
 
-The current interface uses midnight navy, warm ivory and champagne gold. Older screenshots remain archived with their original source revision.
+The UI starts with local fast-path and exact caching **unchecked**, so chat uses genuine Gemini analysis by default. Enable them explicitly to demonstrate local/cache behavior. The CLI also opts in with `--local` / `--cache`; `evaluate` never uses them. API clients should explicitly send `"local":false,"cache":false` for genuine analysis because the API request schema defaults differ from the UI. Local capabilities cover portfolio counts, unambiguous exposure, holdings and portfolio details. A Gemini-planned scalar answer still consumes a real SDK call.
 
-The UI uses original HTML/CSS/JavaScript, system fonts and local assets. There is no frontend build requirement. Charts show actual observations and missing-data notices; they do not imply live market coverage.
+The deployment explicitly permits anonymous demo access. An optional configured demo token remains supported; no new password wall is required. [Submission, API, Docker and configuration instructions](docs/SUBMISSION.md) document the exact behavior, including the stricter network-bind rule for CLI `serve`.
 
-```powershell
-Invoke-RestMethod http://127.0.0.1:8000/api/health
-Invoke-RestMethod http://127.0.0.1:8000/api/portfolios/4/exposure
-Invoke-RestMethod http://127.0.0.1:8000/api/portfolios/4/reconciliation
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/ask -ContentType application/json -Body '{"question":"Count all portfolios","local":true,"cache":false}'
-```
-
-Public schema discovery and internal evaluation/configuration/cache endpoints are disabled. `/api/conversation` accepts a returned opaque session ID; `/api/ask` is independent. Selected portfolios use numeric IDs from `/api/portfolios`. Set `PORTIQ_DEMO_TOKEN` before a network bind, and send `Authorization: Bearer <token>` from API clients. The Gemini key stays on the server.
-
-## Docker
-
-```powershell
-docker build -t portiq:0.2 .
-docker run --rm --name portiq-demo -p 127.0.0.1:8000:8000 portiq:0.2
-```
-
-The non-root container initializes its database reproducibly and serves the deterministic dashboard without credentials. Model requests return a clean 503 when no key is configured. For AI, pass a private environment file at runtime with both `GEMINI_API_KEY` and `PORTIQ_DEMO_TOKEN`; never bake secrets into the image. A volume mounted at `/app/runtime` can retain the database and quota ledger; ensure UID 10001 can write it. No public deployment is claimed. See [submission instructions](docs/SUBMISSION.md).
-
-## Configuration
-
-| Variable | Default | Scope |
-|---|---|---|
-| `GEMINI_API_KEY` | empty | Required only for genuine AI requests |
-| `GEMINI_MODEL` | `gemini-3.1-flash-lite` | Account availability varies; use `doctor --live` |
-| `PORTIQ_DB`, `PORTIQ_SOURCE` | `portfolio_database.db`, `.` | Dataset location |
-| `PORTIQ_REQUEST_INTERVAL` | 13 seconds | Minimum spacing between SDK starts in one backend |
-| `PORTIQ_DAILY_REQUESTS` | 200 | Actual SDK attempts per UTC day in the configured ledger |
-| `PORTIQ_QUOTA_DB` | unset | Optional shared SQLite file; otherwise instance memory |
-| `PORTIQ_FALLBACK_MODELS` | empty | At most two explicit sequential alternatives |
-| `PORTIQ_CIRCUIT_FAILURES`, `PORTIQ_CIRCUIT_SECONDS` | 3, 30 | Transport/transient failure circuit and client refresh |
-| `PORTIQ_DEMO_TOKEN` | unset | Optional bearer token; required for CLI network binding |
-| `PORTIQ_CORS_ORIGINS` | empty | Explicit permitted origins, comma-separated |
-| `PORTIQ_ALLOWED_HOSTS` | local hosts | Explicit additional hosts, comma-separated |
-| `PORTIQ_RATE_LIMIT` | 60/minute | Socket-client API rate limit; one server worker supported |
-
-The counter is not Google's quota meter. Failed attempts count conservatively even when delivery is unknown. Shared-file coordination applies only to processes using the same file and settings. Pacing and the circuit remain backend-local. Daily/authentication failures stop automatic retries; restart after fixing configuration. Hedging is deferred to avoid spending parallel quota.
-
-## Verify and review
+## Key-free verification
 
 ```powershell
 uv sync --frozen --extra dev
-uv run ruff check src tests scripts
-uv run ruff format --check src tests scripts
-uv run mypy src
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy
 uv run pytest --cov=portiq
+# Node 22 is used in browser CI; only needed for development verification.
 npm ci
 npx playwright install chromium
+npm run check:web
 npm run test:web
 ```
 
-Ordinary CI is key-free: the existing four Python/OS jobs plus browser and real container checks. Opt-in live tests are separate. Current cleanup checks are recorded separately from the archived release evidence; run the commands above to verify your checkout. The experimental planner was intentionally removed.
-
-```mermaid
-flowchart LR
-  CLI --> Service[Shared analysis service]
-  Web[HTML dashboard] --> API[FastAPI] --> Service
-  Service --> Cache[Exact cache / local capabilities]
-  Service --> Agent[Original agent]
-  Agent --> Gemini[Gemini typed function calls]
-  Agent --> SQL[Validated read-only SQL]
-  Service --> Finance[Shared exposure / reconciliation]
-  SQL --> DB[(Supplied SQLite data)]
-  Finance --> DB
-```
-
-Start with [architecture](docs/ARCHITECTURE.md), [engineering notes](docs/ENGINEERING_NOTES.md), [security](docs/SECURITY.md), [known limitations](docs/KNOWN_LIMITATIONS.md) and [evaluation guide](docs/EVALUATION.md). Quote-value reconstruction is illustrative: prices lack a common valuation date, AUM currencies are unspecified, and bond valuation conventions are incomplete. Recorded weights, reconstructed weights and equity-only exposure are explicitly different bases.
+CI runs Python 3.11/3.13 on Ubuntu/Windows plus a separate real browser/container job. Live Gemini evaluations are opt-in and are not CI tests. See [submission](docs/SUBMISSION.md), [security](docs/SECURITY.md), [known limitations](docs/KNOWN_LIMITATIONS.md) and [change history](docs/CHANGELOG.md) for review scope.
