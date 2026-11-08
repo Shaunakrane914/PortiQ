@@ -118,3 +118,27 @@ def test_shortcuts_preserve_global_options_and_require_explicit_local_mode(
     assert local.returncode == 0 and json.loads(local.stdout)["api_calls"] == 0
     genuine = run("--db", str(database), "Count all portfolios")
     assert genuine.returncode == 1 and "GEMINI_API_KEY" in genuine.stderr
+
+
+@pytest.mark.parametrize("percentage,passed", [("60.00", True), ("61.00", False)])
+def test_exposure_table_header_carries_percentage_units(percentage: str, passed: bool) -> None:
+    answer = f"| Sector | Exposure (%) |\n| :--- | :--- |\n| Technology | {percentage} |"
+    reference = [{"portfolio_name": "Fund A", "sectors": {"Technology": 60.0}}]
+    result = verify_answer(answer, reference, ["Fund A"])
+    assert (result["status"] == "passed") is passed
+    missing = verify_answer(
+        answer,
+        [
+            {
+                "portfolio_name": "Fund A",
+                "sectors": {
+                    "Technology": 60.0,
+                    "Energy": 40.0,
+                },
+            }
+        ],
+        [],
+    )
+    assert missing["status"] == "failed"
+    extra = verify_answer(answer + "\n| Energy | 0.00 |", reference, [])
+    assert extra["status"] == "failed"

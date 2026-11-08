@@ -69,6 +69,21 @@ def verify_answer(
     checks = 0
     clean = text.replace("*", "").replace("`", "")
     plain = _plain(text)
+    percentage_rows: list[tuple[str, str]] = []
+    percentage_table = False
+    for line in clean.splitlines():
+        if "|" not in line:
+            percentage_table = False
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) != 2:
+            percentage_table = False
+            continue
+        if re.search(r"%|percent", cells[1], re.I) and re.search(r"sector", cells[0], re.I):
+            percentage_table = True
+            continue
+        if percentage_table and not all(re.fullmatch(r":?-+:?", cell) for cell in cells):
+            percentage_rows.append((cells[0], cells[1]))
     empty_claim = bool(
         NO_ROWS.search(plain)
         or re.search(
@@ -82,6 +97,9 @@ def verify_answer(
         label = f"Reference {index}"
         if "sectors" in reference:
             sectors = reference["sectors"]
+            for sector, _ in percentage_rows:
+                if sector.casefold() not in {name.casefold() for name in sectors}:
+                    failures.append(f"{label}: unexpected sector row {sector}.")
             for sector in sector_names or []:
                 if sector not in sectors and re.search(
                     re.escape(sector) + r"[^\d\n]{0,30}[\d.]+\s*%", clean, re.I
@@ -99,6 +117,11 @@ def verify_answer(
                     re.I,
                 )
                 checks += 1
+                matches.extend(
+                    cell
+                    for name, cell in percentage_rows
+                    if name.casefold() == sector.casefold() and len(_numbers(cell)) == 1
+                )
                 if not matches or not all(_value_present(percentage, claim) for claim in matches):
                     failures.append(f"{label}: missing or incorrect percentage for {sector}.")
             if NO_ROWS.search(plain):
