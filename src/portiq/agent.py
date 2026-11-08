@@ -71,7 +71,6 @@ class AgentResponse(BaseModel):
     error_kind: str | None = None
     error_retry_after: float | None = None
     rendering: str = "model synthesis with authoritative tool evidence"
-    planning_events: list[str] = Field(default_factory=list)
     rendering_ms: float | None = None
     stages_ms: dict[str, float] = Field(default_factory=dict)
 

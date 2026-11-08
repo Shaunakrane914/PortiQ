@@ -286,6 +286,8 @@ class AnalysisService:
     ) -> tuple[AgentResponse, str]:
         if not question.strip() or len(question) > 4000:
             raise PortiqError("Question must contain 1 to 4000 characters.")
+        if strategy != "existing":
+            raise PortiqError("Only the existing orchestration strategy is supported.")
         with self.lock:
             start = time.perf_counter()
             session_id, state = self.sessions.get(session_id)

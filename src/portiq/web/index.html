@@ -6,7 +6,7 @@
     <title>PortiQ · Portfolio Intelligence</title>
     <meta
       name="description"
-      content="A transparent research workspace for the PL Capital portfolio dataset."
+      content="A clear workspace for portfolio research and analysis."
     />
     <link rel="stylesheet" href="/styles.css" />
     <script src="/app.js" defer></script>
@@ -23,23 +23,27 @@
         <button data-page="overview" aria-current="page">
           <span aria-hidden="true">01</span>Overview
         </button>
-        <button data-page="explorer"><span aria-hidden="true">02</span>Portfolio Explorer</button>
-        <button data-page="analyst"><span aria-hidden="true">03</span>AI Analyst</button>
+        <button data-page="explorer">
+          <span aria-hidden="true">02</span>Portfolio Explorer
+        </button>
+        <button data-page="analyst">
+          <span aria-hidden="true">03</span>AI Analyst
+        </button>
         <button data-page="reconciliation">
           <span aria-hidden="true">04</span>Reconciliation
         </button>
-        <button data-page="evaluation"><span aria-hidden="true">05</span>Evaluation Lab</button>
-        <button data-page="status"><span aria-hidden="true">06</span>System Status</button>
       </nav>
       <div class="rail-footer">
-        <span class="dot"></span> Static assessment dataset
-        <p>Built for the PL Capital<br />AI Engineering Assessment.</p>
+        <span class="dot"></span> Recorded demonstration data
+        <p>Portfolio research,<br />with a clear calculation basis.</p>
         <small>Local analytics · Traceable answers</small>
       </div>
     </aside>
     <div class="workspace">
       <header class="topbar">
         <span class="breadcrumb">RESEARCH / <b id="crumb">OVERVIEW</b></span
+        ><button id="access-button" class="button secondary small" hidden>
+          Demo access</button
         ><span class="tag">RECORDED DATA · NOT LIVE</span>
       </header>
       <main id="main">
@@ -70,5 +74,27 @@
         </footer>
       </main>
     </div>
+    <dialog id="access-dialog" aria-labelledby="access-title">
+      <form id="access-form">
+        <div class="eyebrow">PORTIQ / WORKSPACE</div>
+        <h2 id="access-title">Demo access</h2>
+        <p>This workspace has an access code configured by its owner.</p>
+        <label
+          >Access code<input
+            id="access-code"
+            type="password"
+            autocomplete="off"
+            required
+        /></label>
+        <p id="access-error" role="alert" hidden></p>
+        <div class="form-bottom">
+          <button id="access-cancel" type="button" class="button secondary">
+            Cancel
+          </button>
+          <button class="button" type="submit">Continue</button>
+        </div>
+        <p class="caption">The code stays in this tab's memory.</p>
+      </form>
+    </dialog>
   </body>
 </html>

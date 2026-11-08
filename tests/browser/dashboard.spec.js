@@ -1,139 +1,278 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("node:fs");
-const {execFileSync}=require("node:child_process");
-const evidenceRoot=process.env.PORTIQ_CAPTURE_RELEASE==='1'?(process.env.PORTIQ_CAPTURE_DIR||'reports/v0.2.0'):'reports/local';
-const shots=evidenceRoot+'/screenshots';
-test.beforeAll(()=>fs.mkdirSync(shots,{recursive:true}));
-test("overview and real recorded portfolio exploration",async({page})=>{
-  const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  await page.goto('/');
-  await expect(page.getByRole('heading',{name:'Portfolio overview',exact:true})).toBeVisible();
-  await expect(page.getByText('Portfolio universe',{exact:true})).toBeVisible();
-  await expect(page.getByText('Aggregate AUM',{exact:true})).toBeVisible();
-  await expect(page.locator('#content')).toContainText('Unavailable');
-  await expect(page.getByRole('columnheader',{name:'Stock recorded %'})).toBeVisible();
-  await page.screenshot({path:shots+'/overview-desktop.png',fullPage:true});
-  await page.getByRole('button',{name:'Portfolio Explorer'}).click();
-  await expect(page.getByRole('heading',{name:'Holdings',exact:true})).toBeVisible();
-  await expect(page.getByRole('heading',{name:'Risk observations'})).toBeVisible();
-  await page.getByRole('article',{name:'Holdings',exact:true}).getByRole('searchbox').fill('AAPL');
-  await expect(page.getByRole('article',{name:'Holdings',exact:true}).locator('tbody')).toContainText('AAPL');
-  await page.getByRole('article',{name:'Holdings',exact:true}).getByRole('searchbox').clear();
-  await page.screenshot({path:shots+'/explorer-desktop.png',fullPage:true});
+const { execFileSync } = require("node:child_process");
+const evidenceRoot =
+  process.env.PORTIQ_CAPTURE_RELEASE === "1"
+    ? process.env.PORTIQ_CAPTURE_DIR || "reports/v0.2.0"
+    : "reports/local";
+const shots = evidenceRoot + "/screenshots";
+test.beforeAll(() => fs.mkdirSync(shots, { recursive: true }));
+test("overview and real recorded portfolio exploration", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Portfolio overview", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Portfolio universe", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText("Aggregate AUM", { exact: true })).toBeVisible();
+  await expect(page.locator("#content")).toContainText("Unavailable");
+  await expect(
+    page.getByRole("columnheader", { name: "Stock recorded %" }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: shots + "/overview-desktop.png",
+    fullPage: true,
+  });
+  await page.getByRole("button", { name: "Portfolio Explorer" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Holdings", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Risk observations" }),
+  ).toBeVisible();
+  await page
+    .getByRole("article", { name: "Holdings", exact: true })
+    .getByRole("searchbox")
+    .fill("AAPL");
+  await expect(
+    page
+      .getByRole("article", { name: "Holdings", exact: true })
+      .locator("tbody"),
+  ).toContainText("AAPL");
+  await page
+    .getByRole("article", { name: "Holdings", exact: true })
+    .getByRole("searchbox")
+    .clear();
+  await page.screenshot({
+    path: shots + "/explorer-desktop.png",
+    fullPage: true,
+  });
   expect(errors).toEqual([]);
 });
-test("local analyst, exact cache and portfolio follow-up",async({page})=>{
-  await page.goto('/#analyst');
-  await expect(page.getByRole('button',{name:'Analyze →'})).toBeVisible();
-  const input=page.getByRole('textbox',{name:'Ask PortiQ'});
-  await input.fill('Count all portfolios');await page.getByRole('button',{name:'Analyze →'}).click();
-  await expect(page.locator('.message .answer').last()).toContainText('13');
-  await expect(page.locator('.message .meta').last()).toContainText('0 SDK calls');
-  await input.fill('Count all portfolios');await page.getByRole('button',{name:'Analyze →'}).click();
-  await expect(page.locator('.message .meta').last()).toContainText('cache hit');
-  await input.fill('Show holdings for Balanced Portfolio');await page.getByRole('button',{name:'Analyze →'}).click();
-  await expect(page.locator('.message .meta').last()).toContainText('0 SDK calls');
-  await input.fill('What is its sector exposure?');await page.getByRole('button',{name:'Analyze →'}).click();
-  await expect(page.locator('.message .answer').last()).toContainText('61.11%');
-  await expect(page.locator('.message .answer').last()).toContainText('Balanced Portfolio');
-  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
-  await page.screenshot({path:shots+'/analyst-local.png',fullPage:true});
-});
-test("reconciliation export, archived evidence and mobile layout",async({page})=>{
-  await page.goto('/#reconciliation');
-  await expect(page.getByRole('heading',{name:'Holding-level review'})).toBeVisible();
-  await expect(page.locator('#content')).toContainText('valuation');
-  const download=page.waitForEvent('download');
-  await page.getByRole('button',{name:'Download review CSV'}).click();
-  expect((await download).suggestedFilename()).toMatch(/portiq-reconciliation-\d+\.csv/);
-  await page.screenshot({path:shots+'/reconciliation.png',fullPage:true});
-  await page.getByRole('button',{name:'Evaluation Lab'}).click();
-  await expect(page.locator('#content')).toContainText('not a live');
-  await expect(page.locator('#content')).toContainText('v0.1.1 / extended');
-  await expect(page.getByText('Archived tests, coverage and CI evidence',{exact:true}).first()).toBeVisible();
-  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
-  await page.screenshot({path:shots+'/evaluation-lab.png',fullPage:true});
-  await page.setViewportSize({width:390,height:844});
-  await page.getByRole('button',{name:'Overview'}).click();
-  await expect(page.getByRole('heading',{name:'Portfolio overview'})).toBeVisible();
-  await expect(page.locator('#loading')).toBeHidden();
-  await expect(page.getByText('Portfolio universe',{exact:true})).toBeVisible();
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
-  await page.screenshot({path:shots+'/overview-mobile.png',fullPage:true});
-});
-test("system status shows real configuration and bounded local services",async({page})=>{
-  await page.goto('/#status');
-  await expect(page.locator('#content')).toContainText('UTC');
-  await expect(page.locator('#content')).toContainText('gemini-3.1-flash-lite');
-  await expect(page.locator('#content')).toContainText('Portfolio count');
-  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
-  await page.screenshot({path:shots+'/system-status.png',fullPage:true});
-});
-test("demo token restores dataset controls",async({page})=>{
-  await page.goto('http://127.0.0.1:8011/#status');
-  await page.getByRole('textbox',{name:'Demo access token'}).fill('browser-test-token');
-  await page.getByRole('button',{name:'Use token'}).click();
-  await expect(page.getByRole('combobox',{name:'Selected portfolio'}).locator('option')).toHaveCount(14);
-  await page.getByRole('button',{name:'Overview',exact:true}).click();
-  await expect(page.getByText('Portfolio universe',{exact:true})).toBeVisible();
-});
-test("database labels render as text instead of HTML",async({page})=>{
-  const payload='<img src=x onerror="window.injected=true">';
-  await page.route('**/api/portfolios',async route=>{
-    const response=await route.fetch();const data=await response.json();
-    data.records[0].portfolio_name=payload;
-    await route.fulfill({response,json:data});
+test("local analyst, exact cache and portfolio follow-up", async ({ page }) => {
+  await page.goto("/#analyst");
+  await expect(page.getByRole("button", { name: "Analyze →" })).toBeVisible();
+  const input = page.getByRole("textbox", { name: "Ask PortiQ" });
+  await input.fill("Count all portfolios");
+  await page.getByRole("button", { name: "Analyze →" }).click();
+  await expect(page.locator(".message .answer").last()).toContainText("13");
+  await expect(page.locator(".message .meta").last()).toContainText(
+    "0 SDK calls",
+  );
+  await input.fill("Count all portfolios");
+  await page.getByRole("button", { name: "Analyze →" }).click();
+  await expect(page.locator(".message .meta").last()).toContainText(
+    "cache hit",
+  );
+  await input.fill("Show holdings for Balanced Portfolio");
+  await page.getByRole("button", { name: "Analyze →" }).click();
+  await expect(page.locator(".message .meta").last()).toContainText(
+    "0 SDK calls",
+  );
+  await input.fill("What is its sector exposure?");
+  await page.getByRole("button", { name: "Analyze →" }).click();
+  await expect(page.locator(".message .answer").last()).toContainText("61.11%");
+  await expect(page.locator(".message .answer").last()).toContainText(
+    "Balanced Portfolio",
+  );
+  await page.evaluate(() => {
+    document.activeElement.blur();
+    window.scrollTo(0, 0);
   });
-  await page.goto('/');
-  await expect(page.getByRole('combobox',{name:'Selected portfolio'})).toContainText(payload);
-  expect(await page.locator('img').count()).toBe(0);
-  expect(await page.evaluate(()=>window.injected)).toBeUndefined();
+  await page.screenshot({ path: shots + "/analyst-local.png", fullPage: true });
 });
-test("navigation clears stale content while a new dataset view loads",async({page})=>{
-  await page.goto('/#evaluation');
-  await expect(page.locator('#content')).toContainText('v0.1.1 / extended');
-  await page.route('**/api/overview',async route=>{
-    await new Promise(resolve=>setTimeout(resolve,300));await route.continue();
+test("reconciliation export and mobile layout", async ({
+  page,
+}) => {
+  await page.goto("/#reconciliation");
+  await expect(
+    page.getByRole("heading", { name: "Holding-level review" }),
+  ).toBeVisible();
+  await expect(page.locator("#content")).toContainText("valuation");
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download review CSV" }).click();
+  expect((await download).suggestedFilename()).toMatch(
+    /portiq-reconciliation-\d+\.csv/,
+  );
+  await page.screenshot({
+    path: shots + "/reconciliation.png",
+    fullPage: true,
   });
-  await page.getByRole('button',{name:'Overview',exact:true}).click();
-  await expect(page.locator('#loading')).toBeVisible();
-  await expect(page.locator('#content')).not.toContainText('v0.1.1 / extended');
-  await expect(page.getByText('Portfolio universe',{exact:true})).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Workspace" }).getByRole("button"),
+  ).toHaveCount(4);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Overview" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Portfolio overview" }),
+  ).toBeVisible();
+  await expect(page.locator("#loading")).toBeHidden();
+  await expect(
+    page.getByText("Portfolio universe", { exact: true }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBeTruthy();
+  await page.screenshot({
+    path: shots + "/overview-mobile.png",
+    fullPage: true,
+  });
 });
-test("name fragments switch follow-up context to the actual portfolio",async({page})=>{
-  await page.goto('/#analyst');
-  const input=page.getByRole('textbox',{name:'Ask PortiQ'});
-  await input.fill('Show holdings for Tech Innovation');
-  await page.getByRole('button',{name:'Analyze →'}).click();
-  await expect(page.getByRole('combobox',{name:'Selected portfolio'})).toHaveValue('3');
-  await input.fill('What is its sector exposure?');
-  await page.getByRole('button',{name:'Analyze →'}).click();
-  await expect(page.locator('.message .answer').last()).toContainText('Tech Innovation Fund');
-  await expect(page.locator('.message .answer').last()).toContainText('100.00%');
+test("public interface omits assessment and internal metadata", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByText("Portfolio universe", { exact: true }),
+  ).toBeVisible();
+  const text = await page.locator("body").innerText();
+  for (const privateText of [
+    "PL Capital",
+    "Shaunak",
+    "Evaluation Lab",
+    "System Status",
+    "GEMINI_API_KEY",
+  ])
+    expect(text).not.toContain(privateText);
+  for (const path of [
+    "/api/about",
+    "/api/evaluation/summary",
+    "/api/cache",
+    "/openapi.json",
+    "/.env",
+    "/reports/v0.2.0/verification.json",
+  ])
+    expect((await page.request.get(path)).status()).toBe(404);
+  const css = await (await page.request.get("/styles.css")).text();
+  expect(new Set(css.match(/#[0-9a-f]{6}\b/gi)).size).toBe(3);
 });
-test("genuine Gemini analyst with visible SQL evidence",async({page})=>{
-  test.skip(process.env.PORTIQ_WEB_LIVE!=="1","Opt in to real Gemini calls with PORTIQ_WEB_LIVE=1");
-  await page.goto('/#analyst');
-  await page.getByRole('checkbox',{name:'Local fast path'}).uncheck();
-  await page.getByRole('checkbox',{name:'Exact cache'}).uncheck();
-  const response=page.waitForResponse(r=>r.url().endsWith('/api/conversation')&&r.request().method()==='POST');
-  const question='List the names of Passive portfolios, alphabetically.';
-  await page.getByRole('textbox',{name:'Ask PortiQ'}).fill(question);
-  await page.getByRole('button',{name:'Analyze →'}).click();
-  const http=await response;expect(http.status()).toBe(200);
-  const payload=await http.json();expect(payload.response.api_calls).toBeGreaterThan(0);
-  expect(payload.response.cache).toBe('disabled');
-  const portfolioResponse=await page.request.get('/api/portfolios');
-  const expected=(await portfolioResponse.json()).records.filter(p=>p.status==='Passive').map(p=>p.portfolio_name).sort();
-  const sql=payload.response.tools.find(t=>t.tool==='sql_query'&&t.result);
-  expect(sql.result.rows.map(r=>r[0])).toEqual(expected);
-  for(const name of expected)await expect(page.locator('.message .answer').last()).toContainText(name);
-  await page.getByText('sql_query · validated result',{exact:true}).click();
-  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
-  await page.screenshot({path:shots+'/analyst-gemini-final.png',fullPage:true});
-  fs.writeFileSync(evidenceRoot+'/web-live-final.json',JSON.stringify({mode:'Actual uncached Gemini request through browser and API',timestamp_utc:new Date().toISOString(),runtime_revision:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),question,...payload},null,2)+'\n');
-  await page.getByRole('button',{name:'Evaluation Lab',exact:true}).click();
-  await expect(page.locator('#content')).toContainText('v0.2.0 / extended');
-  await page.evaluate(()=>{document.activeElement.blur();window.scrollTo(0,0)});
-  await page.screenshot({path:shots+'/evaluation-lab-verified.png',fullPage:true});
+test("demo token restores dataset controls", async ({ page }) => {
+  await page.goto("http://127.0.0.1:8021/");
+  await page
+    .getByRole("textbox", { name: "Access code" })
+    .fill("browser-test-token");
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await expect(
+    page
+      .getByRole("combobox", { name: "Selected portfolio" })
+      .locator("option"),
+  ).toHaveCount(14);
+  await page.getByRole("button", { name: "Overview", exact: true }).click();
+  await expect(
+    page.getByText("Portfolio universe", { exact: true }),
+  ).toBeVisible();
+});
+test("database labels render as text instead of HTML", async ({ page }) => {
+  const payload = '<img src=x onerror="window.injected=true">';
+  await page.route("**/api/portfolios", async (route) => {
+    const response = await route.fetch();
+    const data = await response.json();
+    data.records[0].portfolio_name = payload;
+    await route.fulfill({ response, json: data });
+  });
+  await page.goto("/");
+  await expect(
+    page.getByRole("combobox", { name: "Selected portfolio" }),
+  ).toContainText(payload);
+  expect(await page.locator("img").count()).toBe(0);
+  expect(await page.evaluate(() => window.injected)).toBeUndefined();
+});
+test("navigation clears stale content while a new dataset view loads", async ({
+  page,
+}) => {
+  await page.goto("/#explorer");
+  await expect(
+    page.getByRole("heading", { name: "Risk observations" }),
+  ).toBeVisible();
+  await page.route("**/api/overview", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await route.continue();
+  });
+  await page.getByRole("button", { name: "Overview", exact: true }).click();
+  await expect(page.locator("#loading")).toBeVisible();
+  await expect(page.locator("#content")).not.toContainText("Risk observations");
+  await expect(
+    page.getByText("Portfolio universe", { exact: true }),
+  ).toBeVisible();
+});
+test("name fragments switch follow-up context to the actual portfolio", async ({
+  page,
+}) => {
+  await page.goto("/#analyst");
+  const input = page.getByRole("textbox", { name: "Ask PortiQ" });
+  await input.fill("Show holdings for Tech Innovation");
+  await page.getByRole("button", { name: "Analyze →" }).click();
+  await expect(
+    page.getByRole("combobox", { name: "Selected portfolio" }),
+  ).toHaveValue("3");
+  await input.fill("What is its sector exposure?");
+  await page.getByRole("button", { name: "Analyze →" }).click();
+  await expect(page.locator(".message .answer").last()).toContainText(
+    "Tech Innovation Fund",
+  );
+  await expect(page.locator(".message .answer").last()).toContainText(
+    "100.00%",
+  );
+});
+test("genuine Gemini analyst with visible SQL evidence", async ({ page }) => {
+  test.skip(
+    process.env.PORTIQ_WEB_LIVE !== "1",
+    "Opt in to real Gemini calls with PORTIQ_WEB_LIVE=1",
+  );
+  await page.goto("/#analyst");
+  await page.getByRole("checkbox", { name: "Local fast path" }).uncheck();
+  await page.getByRole("checkbox", { name: "Exact cache" }).uncheck();
+  const response = page.waitForResponse(
+    (r) =>
+      r.url().endsWith("/api/conversation") && r.request().method() === "POST",
+  );
+  const question = "List the names of Passive portfolios, alphabetically.";
+  await page.getByRole("textbox", { name: "Ask PortiQ" }).fill(question);
+  await page.getByRole("button", { name: "Analyze →" }).click();
+  const http = await response;
+  expect(http.status()).toBe(200);
+  const payload = await http.json();
+  expect(payload.response.api_calls).toBeGreaterThan(0);
+  expect(payload.response.cache).toBe("disabled");
+  const portfolioResponse = await page.request.get("/api/portfolios");
+  const expected = (await portfolioResponse.json()).records
+    .filter((p) => p.status === "Passive")
+    .map((p) => p.portfolio_name)
+    .sort();
+  const sql = payload.response.tools.find(
+    (t) => t.tool === "sql_query" && t.result,
+  );
+  expect(sql.result.rows.map((r) => r[0])).toEqual(expected);
+  for (const name of expected)
+    await expect(page.locator(".message .answer").last()).toContainText(name);
+  await page.getByText("sql_query · validated result", { exact: true }).click();
+  await page.evaluate(() => {
+    document.activeElement.blur();
+    window.scrollTo(0, 0);
+  });
+  await page.screenshot({
+    path: shots + "/analyst-gemini-final.png",
+    fullPage: true,
+  });
+  fs.writeFileSync(
+    evidenceRoot + "/web-live-final.json",
+    JSON.stringify(
+      {
+        mode: "Actual uncached Gemini request through browser and API",
+        timestamp_utc: new Date().toISOString(),
+        runtime_revision: execFileSync("git", ["rev-parse", "HEAD"], {
+          encoding: "utf8",
+        }).trim(),
+        question,
+        ...payload,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
 });

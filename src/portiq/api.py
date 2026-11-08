@@ -1,10 +1,8 @@
 """Thin single-worker FastAPI demo; all analytics and agent execution use shared services."""
 
 import hmac
-import json
 import math
 import os
-import sqlite3
 import threading
 import time
 from collections import OrderedDict, deque
@@ -26,10 +24,9 @@ from portiq import __version__
 from portiq.agent import AgentResponse
 from portiq.analytics import Reconciliation, Snapshot
 from portiq.config import Settings
-from portiq.database import connect_readonly
-from portiq.errors import ModelError, PortfolioError, PortiqError
+from portiq.database import connect_readonly, initialize
+from portiq.errors import DataError, ModelError, PortfolioError, PortiqError, QueryError
 from portiq.exposure import ExposureResult, calculate_exposure
-from portiq.quota import RequestBudget
 from portiq.service import AnalysisService
 
 
@@ -69,7 +66,7 @@ class Ask(BaseModel):
     question: str = Field(min_length=1, max_length=4000)
     selected_portfolio: int | None = Field(default=None, gt=0)
     session_id: str | None = Field(default=None, min_length=30, max_length=100)
-    strategy: Literal["existing", "one-call"] = "existing"
+    strategy: Literal["existing"] = "existing"
     local: bool = True
     cache: bool = True
 
@@ -84,19 +81,6 @@ class TablePage(BaseModel):
     total: int
     limit: int
     offset: int
-
-
-class Status(BaseModel):
-    status: str
-    version: str
-    model_configured: bool
-    model: str
-    local_tools: list[str]
-    daily_request_limit: int
-    requests_used: int | None
-    budget_scope: str
-    request_interval_seconds: float
-    deployment: str = "single-worker local demo; static assessment dataset"
 
 
 def create_app(
@@ -125,7 +109,12 @@ def create_app(
         analysis.close()
 
     app = FastAPI(
-        title="PortiQ", version=__version__, lifespan=lifespan, docs_url=None, redoc_url=None
+        title="PortiQ",
+        version=__version__,
+        lifespan=lifespan,
+        openapi_url=None,
+        docs_url=None,
+        redoc_url=None,
     )
     app.state.analysis = analysis
     app.add_middleware(BodyLimit)
@@ -206,7 +195,17 @@ def create_app(
         status = (
             404 if isinstance(exc, PortfolioError) else 503 if isinstance(exc, ModelError) else 400
         )
-        return JSONResponse({"detail": str(exc)}, status)
+        # Keep filesystem/configuration/provider details in the CLI, never in browser errors.
+        message = (
+            "Analysis is temporarily unavailable. Please try again later."
+            if isinstance(exc, ModelError)
+            else "The dataset is temporarily unavailable."
+            if isinstance(exc, DataError)
+            else "The requested query could not be completed."
+            if isinstance(exc, QueryError)
+            else str(exc)
+        )
+        return JSONResponse({"detail": message}, status)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(request: Request, exc: RequestValidationError) -> JSONResponse:
@@ -237,39 +236,9 @@ def create_app(
         try:
             with connect_readonly(settings.database) as conn:
                 conn.execute("SELECT 1").fetchone()
-            return JSONResponse({"status": "ok", "version": __version__})
+            return JSONResponse({"status": "ok"})
         except PortiqError:
             return JSONResponse({"status": "database unavailable"}, 503)
-
-    @app.get("/api/about", response_model=Status)
-    def about() -> Status:
-        budget = getattr(analysis.backend, "budget", None)
-        used: int | None = budget.used() if isinstance(budget, RequestBudget) else 0
-        if budget is None and settings.quota_path is not None:
-            try:
-                ledger = RequestBudget(settings.daily_requests, settings.quota_path)
-                used = ledger.used()
-                ledger.close()
-            except (OSError, sqlite3.Error):
-                used = None
-        return Status(
-            status="ready",
-            version=__version__,
-            model_configured=bool(settings.api_key.get_secret_value()),
-            model=settings.model,
-            local_tools=[
-                "Portfolio count",
-                "Equity sector exposure",
-                "Portfolio holdings",
-                "Portfolio metadata",
-            ],
-            daily_request_limit=settings.daily_requests,
-            requests_used=used,
-            budget_scope="Shared SQLite file, UTC day"
-            if settings.quota_path
-            else "This backend instance, UTC day; not globally distributed",
-            request_interval_seconds=settings.request_interval,
-        )
 
     @app.get("/api/overview")
     def overview() -> dict[str, Any]:
@@ -337,6 +306,11 @@ def create_app(
                 local=body.local,
                 cached=body.cache,
             )
+            if result.status == "error":
+                result.answer = "Analysis is temporarily unavailable. Please try again later."
+                for trace in result.tools:
+                    if trace.error:
+                        trace.error = "This analysis step could not be completed."
             envelope = AskResult(response=result, session_id=session_id)
             if result.status == "error":
                 status = (
@@ -363,70 +337,30 @@ def create_app(
     def conversation(body: Ask) -> AskResult | JSONResponse:
         return answer(body, True)
 
-    @app.post("/api/cache/clear")
-    def clear_cache() -> dict[str, str]:
-        analysis.cache.clear()
-        return {"status": "cleared"}
-
-    @app.get("/api/cache")
-    def cache_status() -> dict[str, Any]:
-        return {
-            "size": len(analysis.cache.items),
-            "capacity": analysis.cache.capacity,
-            "ttl_seconds": analysis.cache.ttl,
-        }
-
-    @app.get("/api/evaluation/summary")
-    def evaluation() -> dict[str, Any]:
-        outputs = []
-        for version in ("v0.1.1", "v0.2.0"):
-            for name in ("supplied", "extended", "semantic", "ambiguity-regression"):
-                path = settings.source / "reports" / version / (name + ".json")
-                if path.is_file():
-                    report = json.loads(path.read_text(encoding="utf-8"))
-                    verification_path = settings.source / "reports" / version / "verification.json"
-                    verification = (
-                        json.loads(verification_path.read_text(encoding="utf-8"))
-                        if verification_path.is_file()
-                        else {}
-                    )
-                    outputs.append(
-                        {
-                            "runtime_revision": report.get(
-                                "runtime_revision", verification.get("runtime_commit")
-                            ),
-                            "verification": {
-                                k: verification.get(k) for k in ("pytest", "coverage", "ci")
-                            },
-                            "release": version,
-                            "name": name,
-                            "execution": "archived fresh Gemini regression; not a live check",
-                            "externally_blind": False,
-                            **{
-                                k: report.get(k)
-                                for k in (
-                                    "timestamp_utc",
-                                    "model",
-                                    "total",
-                                    "passed",
-                                    "answer_correct",
-                                    "routing_correct",
-                                    "narrative_checked",
-                                    "narrative_failed",
-                                    "api_calls",
-                                    "tokens",
-                                    "mean_ms",
-                                    "p95_ms",
-                                    "cache",
-                                    "source_sha256",
-                                    "runtime_sha256",
-                                )
-                            },
-                        }
-                    )
-        return {"reports": outputs}
-
     app.mount(
         "/", StaticFiles(directory=Path(__file__).parent / "web", html=True), name="dashboard"
     )
     return app
+
+
+def main() -> None:
+    """Container entry point; optional web dependencies stay outside the base CLI."""
+    import uvicorn
+
+    settings = Settings.from_env()
+    host = os.getenv("PORTIQ_HOST", "127.0.0.1")
+    if (
+        host not in {"127.0.0.1", "localhost"}
+        and settings.api_key.get_secret_value()
+        and not os.getenv("PORTIQ_DEMO_TOKEN")
+    ):
+        raise PortiqError("Set PORTIQ_DEMO_TOKEN for networked Gemini access.")
+    if not settings.database.exists():
+        initialize(settings.source, settings.database)
+    uvicorn.run(
+        create_app(settings), host=host, port=int(os.getenv("PORT", "8000")), proxy_headers=False
+    )
+
+
+if __name__ == "__main__":
+    main()

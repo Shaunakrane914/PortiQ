@@ -50,11 +50,11 @@ uv run portfolio-agent evaluate --output reports/local/supplied.json
 uv run portfolio-agent evaluate --suite extended --output reports/local/extended.json
 ```
 
-Evaluation uses the same frozen questions, a paced backend and independent oracles. [Evaluation details](docs/EVALUATION.md) distinguish complete runs, partial failures, mocked tests and deterministic checks. Fresh v0.2 results are **10/10 supplied, 50/50 extended and 8/8 platform**. Historical v0.1.1 results remain separately preserved. Current evidence is indexed in [v0.2.0 reports](reports/v0.2.0/README.md).
+Evaluation uses the same frozen questions, a paced backend and independent oracles. [Evaluation details](docs/EVALUATION.md) distinguish complete runs, partial failures, mocked tests and deterministic checks. Archived v0.2 results at runtime revision `2bef3c4` are **10/10 supplied, 50/50 extended and 8/8 platform**. These predate the cleanup refactor; they are not a fresh accuracy score for the current tree. Historical v0.1.1 results remain separately preserved. Current evidence is indexed in [v0.2.0 reports](reports/v0.2.0/README.md).
 
 ## Optional API and dashboard
 
-The optional platform adds shared analytics, reconciliation, data-quality notices, a six-view dashboard, bounded context, exact caching and quota controls.
+The optional platform adds shared analytics, reconciliation, data-quality notices, a four-view dashboard, bounded context, exact caching and quota controls.
 
 ```powershell
 uv sync --frozen --extra web
@@ -62,9 +62,9 @@ uv run portfolio-agent init-db
 uv run portfolio-agent serve
 ```
 
-Open **http://127.0.0.1:8000**. Overview, Explorer, Reconciliation, Evaluation Lab and System Status work without a Gemini key. AI Analyst labels local calculation, cached answers and genuine model analysis. Its default local/cache settings are visible; turn both off to demonstrate genuine Gemini analysis. Enter an optional demo access token through System Status; it remains in browser memory.
+Open **http://127.0.0.1:8000**. Overview, Explorer and Reconciliation work without a Gemini key. AI Analyst labels local calculation, cached answers and genuine model analysis. Its default local/cache settings are visible; turn both off to demonstrate genuine Gemini analysis. An access-code dialog appears only if the owner has configured the existing optional demo token; the default local interface has no password wall.
 
-![Portfolio overview](reports/v0.2.0/final-ui/screenshots/overview-desktop.png)
+The current interface uses midnight navy, warm ivory and champagne gold. Older screenshots remain archived with their original source revision.
 
 The UI uses original HTML/CSS/JavaScript, system fonts and local assets. There is no frontend build requirement. Charts show actual observations and missing-data notices; they do not imply live market coverage.
 
@@ -75,7 +75,7 @@ Invoke-RestMethod http://127.0.0.1:8000/api/portfolios/4/reconciliation
 Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/api/ask -ContentType application/json -Body '{"question":"Count all portfolios","local":true,"cache":false}'
 ```
 
-The typed API schema is at `/openapi.json` (interactive documentation is disabled). `/api/conversation` accepts a returned opaque session ID; `/api/ask` is independent. Selected portfolios use numeric IDs from `/api/portfolios`. Set `PORTIQ_DEMO_TOKEN` before a network bind, and send `Authorization: Bearer <token>` from API clients. The Gemini key stays on the server.
+Public schema discovery and internal evaluation/configuration/cache endpoints are disabled. `/api/conversation` accepts a returned opaque session ID; `/api/ask` is independent. Selected portfolios use numeric IDs from `/api/portfolios`. Set `PORTIQ_DEMO_TOKEN` before a network bind, and send `Authorization: Bearer <token>` from API clients. The Gemini key stays on the server.
 
 ## Docker
 
@@ -118,7 +118,7 @@ npx playwright install chromium
 npm run test:web
 ```
 
-Ordinary CI is key-free: the existing four Python/OS jobs plus browser and real container checks. Opt-in live tests are separate. The current local suite has 204 passes and two live skips; exact coverage and final CI are recorded in the versioned verification report.
+Ordinary CI is key-free: the existing four Python/OS jobs plus browser and real container checks. Opt-in live tests are separate. Current cleanup checks are recorded separately from the archived release evidence; run the commands above to verify your checkout. The experimental planner was intentionally removed.
 
 ```mermaid
 flowchart LR
@@ -133,4 +133,4 @@ flowchart LR
   Finance --> DB
 ```
 
-Start with [architecture](docs/ARCHITECTURE.md), [experiments](docs/EXPERIMENTS.md), [security](docs/SECURITY.md), [known limitations](docs/KNOWN_LIMITATIONS.md) and the [acceptance audit](docs/ACCEPTANCE.md). Quote-value reconstruction is illustrative: prices lack a common valuation date, AUM currencies are unspecified, and bond valuation conventions are incomplete. Recorded weights, reconstructed weights and equity-only exposure are explicitly different bases.
+Start with [architecture](docs/ARCHITECTURE.md), [engineering notes](docs/ENGINEERING_NOTES.md), [security](docs/SECURITY.md), [known limitations](docs/KNOWN_LIMITATIONS.md) and [evaluation guide](docs/EVALUATION.md). Quote-value reconstruction is illustrative: prices lack a common valuation date, AUM currencies are unspecified, and bond valuation conventions are incomplete. Recorded weights, reconstructed weights and equity-only exposure are explicitly different bases.

@@ -33,14 +33,6 @@ const titles = {
     "Allocation reconciliation",
     "Two valid lenses. Make their differences visible.",
   ],
-  evaluation: [
-    "Evaluation lab",
-    "Measured evidence, with its conditions attached.",
-  ],
-  status: [
-    "System status",
-    "Understand what is local, configured and available.",
-  ],
 };
 async function api(path, body) {
   const r = await fetch(path, {
@@ -53,10 +45,11 @@ async function api(path, body) {
   });
   const d = await r.json();
   if (!r.ok) {
-    if (r.status === 401)
-      throw new Error(
-        "Access token required. Open System Status to enter your demo access token.",
-      );
+    if (r.status === 401) {
+      $("access-button").hidden = false;
+      if (!$("access-dialog").open) $("access-dialog").showModal();
+      throw new Error("This demo requires its owner's access code.");
+    }
     throw new Error(
       typeof d.detail === "string"
         ? d.detail
@@ -68,7 +61,7 @@ async function api(path, body) {
 function card(title, kicker) {
   const c = el("article", null, "card"),
     h = el("div", null, "card-head");
-  c.setAttribute("aria-label",title);
+  c.setAttribute("aria-label", title);
   h.append(el("h2", title), el("span", kicker || "RECORDED DATA", "kicker"));
   c.append(h);
   return c;
@@ -200,7 +193,7 @@ function bars(data) {
         width: 400,
         height: 9,
         rx: 3,
-        fill: "#edf1ed",
+        fill: "var(--line)",
       }),
       svgNode("rect", {
         x: 0,
@@ -208,7 +201,7 @@ function bars(data) {
         width: Math.max(0, Math.min(100, Number(value))) * 4,
         height: 9,
         rx: 3,
-        fill: i === 0 ? "#16786c" : "#83b5a5",
+        fill: i === 0 ? "var(--navy)" : "var(--gold)",
       }),
       svgNode(
         "text",
@@ -244,11 +237,17 @@ function navChart(rows) {
     )
     .join(" ");
   svg.append(
-    svgNode("line", { x1: 35, y1: 125, x2: 465, y2: 125, stroke: "#dce3df" }),
+    svgNode("line", {
+      x1: 35,
+      y1: 125,
+      x2: 465,
+      y2: 125,
+      stroke: "var(--line)",
+    }),
     svgNode("polyline", {
       points,
       fill: "none",
-      stroke: "#16786c",
+      stroke: "var(--navy)",
       "stroke-width": 2,
     }),
     svgNode("text", { x: 0, y: 25 }, fmt(hi)),
@@ -332,10 +331,14 @@ async function overview() {
   const universe = card("The portfolio universe", "RECORDED MANDATES");
   universe.append(
     table(
-      d.portfolios.map(p=>{
-        const composition=d.composition.find(c=>c.name===p.portfolio_name)||{};
-        return {...p,recorded_stock_percent:composition.Stock??null,
-          recorded_bond_percent:composition.Bond??null};
+      d.portfolios.map((p) => {
+        const composition =
+          d.composition.find((c) => c.name === p.portfolio_name) || {};
+        return {
+          ...p,
+          recorded_stock_percent: composition.Stock ?? null,
+          recorded_bond_percent: composition.Bond ?? null,
+        };
       }),
       [
         ["portfolio_name", "Portfolio"],
@@ -349,7 +352,13 @@ async function overview() {
       { search: true, sort: true },
     ),
   );
-  universe.append(el("p","Stock and bond percentages use the recorded whole-portfolio weight denominator (1.0). An absent asset-class entry is shown as unavailable; no cash allocation is inferred.","caption"));
+  universe.append(
+    el(
+      "p",
+      "Stock and bond percentages use the recorded whole-portfolio weight denominator (1.0). An absent asset-class entry is shown as unavailable; no cash allocation is inferred.",
+      "caption",
+    ),
+  );
   root.append(universe);
   return root;
 }
@@ -406,12 +415,39 @@ async function explorer() {
   );
   grid.append(ex, comp);
   root.append(grid);
-  const concentration=card("Concentration at a glance","EXPLICIT WEIGHT BASES");
-  concentration.append(el("p","Largest equity sector(s), at displayed precision: "+
-    (Object.entries(s.largest_equity_sectors).map(([name,value])=>name+" "+value+"%").join("; ")||"Not available")),
-    el("p","Largest recorded holding(s), including bonds: "+
-      (s.largest_recorded_holdings.map(h=>h.symbol+" (#"+h.holding_id+") "+fmt(h.current_weight*100)+"%").join("; ")||"Not available")),
-    el("p","Equity sectors use total Stock weight. Holding rank uses recorded current_weight across all listed assets.","caption"));
+  const concentration = card(
+    "Concentration at a glance",
+    "EXPLICIT WEIGHT BASES",
+  );
+  concentration.append(
+    el(
+      "p",
+      "Largest equity sector(s), at displayed precision: " +
+        (Object.entries(s.largest_equity_sectors)
+          .map(([name, value]) => name + " " + value + "%")
+          .join("; ") || "Not available"),
+    ),
+    el(
+      "p",
+      "Largest recorded holding(s), including bonds: " +
+        (s.largest_recorded_holdings
+          .map(
+            (h) =>
+              h.symbol +
+              " (#" +
+              h.holding_id +
+              ") " +
+              fmt(h.current_weight * 100) +
+              "%",
+          )
+          .join("; ") || "Not available"),
+    ),
+    el(
+      "p",
+      "Equity sectors use total Stock weight. Holding rank uses recorded current_weight across all listed assets.",
+      "caption",
+    ),
+  );
   root.append(concentration);
   const h = card("Holdings", "SOURCE: HOLDINGS + SECURITIES");
   h.append(
@@ -533,10 +569,24 @@ async function reconciliation() {
     ),
   );
   root.append(sectors);
-  const largest=card("Largest allocation differences","ABSOLUTE PERCENTAGE POINTS");
-  if(r.largest_discrepancies.length)largest.append(table(r.largest_discrepancies,
-    [["holding_id","Holding ID"],["symbol","Symbol"],["recorded_percent","Recorded %"],["reconstructed_percent","Reconstructed %"],["difference_pp","Difference pp"]]));
-  else largest.append(el("p","No defensible reconstructed difference is available.","empty"));
+  const largest = card(
+    "Largest allocation differences",
+    "ABSOLUTE PERCENTAGE POINTS",
+  );
+  if (r.largest_discrepancies.length)
+    largest.append(
+      table(r.largest_discrepancies, [
+        ["holding_id", "Holding ID"],
+        ["symbol", "Symbol"],
+        ["recorded_percent", "Recorded %"],
+        ["reconstructed_percent", "Reconstructed %"],
+        ["difference_pp", "Difference pp"],
+      ]),
+    );
+  else
+    largest.append(
+      el("p", "No defensible reconstructed difference is available.", "empty"),
+    );
   root.append(largest);
   const holdings = card("Holding-level review", "IDENTIFIED BY HOLDING ID");
   holdings.append(
@@ -586,16 +636,20 @@ async function reconciliation() {
   return root;
 }
 const messages = [];
-function remember(message,log){
-  messages.push(message);log.append(message);
-  while(messages.length>50){messages.shift();log.firstChild?.remove()}
+function remember(message, log) {
+  messages.push(message);
+  log.append(message);
+  while (messages.length > 50) {
+    messages.shift();
+    log.firstChild?.remove();
+  }
 }
 async function analyst() {
   const root = el("div"),
-    c = card("A conversation with evidence", "SESSION MEMORY · MAX 8 TURNS");
+    c = card("A conversation with evidence", "PORTFOLIO QUESTIONS");
   c.append(
     notice(
-      "Local capabilities use no model. Other questions use genuine Gemini function calling. Selected portfolio context is explicit; unclear references require clarification.",
+      "Ask about the recorded portfolio data. AI questions and relevant tool results are sent to Google Gemini; avoid entering personal or confidential information.",
       "info",
     ),
   );
@@ -636,10 +690,7 @@ async function analyst() {
     l.append(i, document.createTextNode(" " + text));
     return l;
   };
-  controls.append(
-    lab("Local fast path", local),
-    lab("Exact cache", cache),
-  );
+  controls.append(lab("Local fast path", local), lab("Exact cache", cache));
   const bottom = el("div", null, "form-bottom"),
     send = el("button", "Analyze →", "button");
   send.type = "submit";
@@ -662,7 +713,7 @@ async function analyst() {
     reset.disabled = true;
     const user = el("div", null, "message user");
     user.append(el("div", "YOU", "kicker"), el("p", question));
-    remember(user,log);
+    remember(user, log);
     input.value = "";
     try {
       const d = await api("/api/conversation", {
@@ -680,7 +731,7 @@ async function analyst() {
       const block = el("div", null, "message");
       block.append(
         el("div", a.execution_source.toUpperCase(), "kicker"),
-        el("pre", a.answer,"answer"),
+        el("pre", a.answer, "answer"),
       );
       const serviceMs = a.provider_metrics.reduce(
           (n, m) => n + m.service_ms,
@@ -713,7 +764,7 @@ async function analyst() {
                   t.result.columns.map((col, i) => [String(i), row[i]]),
                 ),
               ),
-              t.result.columns.map((col,i) => [String(i), col]),
+              t.result.columns.map((col, i) => [String(i), col]),
               { max: 40 },
             ),
           );
@@ -723,136 +774,16 @@ async function analyst() {
           );
         block.append(details);
       }
-      remember(block,log);
+      remember(block, log);
     } catch (e) {
       const n = notice(e.message, "error");
-      remember(n,log);
+      remember(n, log);
     } finally {
       send.disabled = false;
       reset.disabled = false;
       input.focus();
     }
   };
-  return root;
-}
-async function evaluation() {
-  const d = await api("/api/evaluation/summary"),
-    root = el("div");
-  root.append(
-    notice(
-      "Archived regression evidence, not a live check. These questions were author-created or supplied, have been observed, and are not externally blind. This page does not launch API-consuming evaluations.",
-      "info",
-    ),
-  );
-  for (const r of d.reports) {
-    const c = card(r.release + " / " + r.name, "ARCHIVED FRESH RUN"),
-      m = el("div", null, "statline");
-    for (const [label, value] of [
-      ["Strict pass", r.passed + " / " + r.total],
-      ["Answer", r.answer_correct + " / " + r.total],
-      ["Routing", r.routing_correct + " / " + r.total],
-      ["Narrative coverage", r.narrative_checked + " checked"],
-      ["SDK calls", r.api_calls],
-      ["Tokens", r.tokens],
-    ]) {
-      const x = el("div", label);
-      x.prepend(el("strong", fmt(value)));
-      m.append(x);
-    }
-    c.append(
-      m,
-      el(
-        "p",
-        `${r.timestamp_utc} · ${r.model} · runtime ${r.runtime_revision?.slice(0,12)||"not recorded"} · cache ${r.cache} · mean ${(r.mean_ms / 1000).toFixed(2)}s (pacing included)`,
-        "caption",
-      ),
-    );
-    const detail = el("details");
-    detail.append(
-      el("summary", "Dataset and runtime provenance"),
-      el(
-        "pre",
-        JSON.stringify(
-          { dataset_sha256: r.source_sha256, runtime_sha256: r.runtime_sha256 },
-          null,
-          2,
-        ),
-      ),
-    );
-    const checks=el("details");
-    checks.append(el("summary","Archived tests, coverage and CI evidence"),
-      el("pre",JSON.stringify(r.verification,null,2)));
-    c.append(detail,checks);
-    root.append(c);
-  }
-  return root;
-}
-async function status() {
-  const root = el("div"),
-    auth = card("Demo access", "OPTIONAL SERVER ACCESS CONTROL"),
-    form = el("form", null, "toolbar"),
-    input = el("input");
-  input.type = "password";
-  input.placeholder = "Demo access token (not Gemini key)";
-  input.setAttribute("aria-label", "Demo access token");
-  const b = el("button", "Use token", "button");
-  form.append(input, b);
-  form.onsubmit = async (e) => {
-    e.preventDefault();
-    token = input.value;
-    input.value = "";
-    if (!portfolios.length) await boot();
-    else await load();
-  };
-  auth.append(
-    el(
-      "p",
-      "Leave empty for an unprotected local demo. Token stays in this page's memory; Gemini credentials remain on the server.",
-    ),
-    form,
-  );
-  root.append(auth);
-  try {
-    const [health, about, cache] = await Promise.all([
-      api("/api/health"),
-      api("/api/about"),
-      api("/api/cache"),
-    ]);
-    const c = card("Runtime readiness", "LOCAL SYSTEM"),
-      kv = el("div", null, "key-grid");
-    for (const [k, v] of Object.entries({
-      ...health,
-      ...about,
-      cache_entries: cache.size,
-      cache_ttl_seconds: cache.ttl_seconds,
-    })) {
-      const x = el("div");
-      x.append(el("small", k.replaceAll("_", " ")), el("strong", fmt(v)));
-      kv.append(x);
-    }
-    const clear = el("button", "Clear exact-match cache", "button secondary");
-    clear.onclick = async () => {
-      try {
-        await api("/api/cache/clear", {});
-        load();
-      } catch (e) {
-        $("error").textContent = e.message;
-        $("error").hidden = false;
-      }
-    };
-    c.append(
-      kv,
-      el(
-        "p",
-        "One worker. Bounded in-memory sessions. Optional bearer access control. No claim of multi-tenant production security.",
-        "caption",
-      ),
-      clear,
-    );
-    root.append(c);
-  } catch (e) {
-    root.append(notice(e.message, "error"));
-  }
   return root;
 }
 async function load() {
@@ -873,8 +804,6 @@ async function load() {
       explorer,
       analyst,
       reconciliation,
-      evaluation,
-      status,
     }[page]();
     if (run === epoch) $("content").replaceChildren(content);
   } catch (e) {
@@ -899,7 +828,7 @@ async function boot() {
     selected = portfolios[0]?.portfolio_id ?? null;
     $("portfolio").value = selected || "";
   } catch (e) {
-    page = "status";
+    $("content").replaceChildren(notice(e.message, "info"));
   }
   document.querySelectorAll("[data-page]").forEach(
     (b) =>
@@ -914,6 +843,29 @@ async function boot() {
     load();
   };
   if (titles[location.hash.slice(1)]) page = location.hash.slice(1);
-  load();
+  if (portfolios.length) load();
 }
+$("access-button").onclick = () => $("access-dialog").showModal();
+$("access-cancel").onclick = () => $("access-dialog").close();
+$("access-form").onsubmit = async (event) => {
+  event.preventDefault();
+  token = $("access-code").value.trim();
+  $("access-code").value = "";
+  $("access-error").hidden = true;
+  try {
+    const d = await api("/api/portfolios");
+    portfolios = d.records;
+    $("portfolio").replaceChildren(new Option("Choose a portfolio", ""));
+    for (const p of portfolios)
+      $("portfolio").append(new Option(p.portfolio_name, p.portfolio_id));
+    selected = portfolios[0]?.portfolio_id ?? null;
+    $("portfolio").value = selected || "";
+    $("access-dialog").close();
+    await load();
+  } catch (e) {
+    token = "";
+    $("access-error").textContent = e.message;
+    $("access-error").hidden = false;
+  }
+};
 boot();

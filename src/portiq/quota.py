@@ -8,7 +8,6 @@ import weakref
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import Any
 
 import httpx
 
@@ -94,17 +93,3 @@ def classify(exc: Exception) -> tuple[str, bool, float | None]:
     if isinstance(exc, httpx.TransportError):
         return "connection", True, None
     return "invalid_response" if isinstance(exc, ValueError) else "provider_error", False, None
-
-
-def attempt_summary(attempts: list[dict[str, Any]]) -> dict[str, Any]:
-    return {
-        "attempts": len(attempts),
-        "service_ms": sum(a["service_ms"] for a in attempts),
-        "pacing_ms": sum(a["pacing_ms"] for a in attempts),
-        "input_tokens": sum(a.get("input_tokens") or 0 for a in attempts),
-        "output_tokens": sum(a.get("output_tokens") or 0 for a in attempts),
-        "thinking_tokens": sum(a.get("thinking_tokens") or 0 for a in attempts),
-        "unknown_input_attempts": sum(a.get("input_tokens") is None for a in attempts),
-        "unknown_output_attempts": sum(a.get("output_tokens") is None for a in attempts),
-        "unknown_usage_attempts": sum(a.get("total_tokens") is None for a in attempts),
-    }

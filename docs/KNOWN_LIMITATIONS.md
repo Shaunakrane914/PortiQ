@@ -1,6 +1,6 @@
 # Known limitations
 
-- The experimental one-call planner has produced a valid but wrong Technology-sector valuation query (13 rows versus the reference eight). It also guessed a portfolio for an ambiguous new question; the original planner correctly clarified. The original planner remains default. Finite regression scores do not establish general natural-language accuracy.
+- The experimental one-call planner was removed in cleanup commit `122dee6` after result and ambiguity regressions. Only the original orchestration is supported. Archived scores describe their recorded source revisions; finite regression results do not establish general natural-language accuracy.
 - Historical v0.1.1 scores are historical. Fresh v0.2 runs and partial failures are separately indexed; failed runs are never stitched into a successful run.
 - Provider service and transport vary. One comparison suffered sustained 503/504/connection failures and reached its 250-attempt local budget. A fresh-client probe subsequently succeeded; the cause is unproven. A bounded circuit now limits consecutive failures. Availability is not guaranteed.
 - The quota counter counts SDK invocations, not confirmed provider receipt or billing. Unknown token usage remains unknown. UTC-day accounting may differ from provider reset times. In-memory budgets reset on restart; shared SQLite coordination requires the same configured file and limit. Pacing/circuit state is local. No distributed quota scheduler is claimed.

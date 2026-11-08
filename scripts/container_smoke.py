@@ -40,20 +40,21 @@ def main() -> None:
             checks.append({"path": path, "status": r.status, "bytes": len(payload)})
             if path.endswith("/exposure"):
                 assert json.loads(payload)["sectors"]["Technology"] == "61.11"
-    with urllib.request.urlopen(args.url + "/api/evaluation/summary", timeout=5) as response:
-        reports = json.load(response)["reports"]
-        current = {
-            r["name"]: (r["passed"], r["total"]) for r in reports if r["release"] == "v0.2.0"
-        }
-        assert current == {
-            "supplied": (10, 10),
-            "extended": (50, 50),
-            "semantic": (6, 6),
-            "ambiguity-regression": (3, 3),
-        }
-        checks.append(
-            {"path": "/api/evaluation/summary", "status": 200, "verified_archived_scores": current}
-        )
+    for private in [
+        "/api/evaluation/summary",
+        "/api/about",
+        "/api/cache",
+        "/openapi.json",
+        "/reports/v0.2.0/verification.json",
+        "/.env",
+    ]:
+        try:
+            urllib.request.urlopen(args.url + private, timeout=5)
+        except urllib.error.HTTPError as exc:
+            assert exc.code == 404
+        else:
+            raise AssertionError("Internal endpoint must not be available: " + private)
+    checks.append({"internal_routes_and_files": "not exposed"})
     body = json.dumps({"question": "What is the AAPL price?", "local": False}).encode()
     try:
         urllib.request.urlopen(

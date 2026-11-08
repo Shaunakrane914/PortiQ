@@ -8,7 +8,7 @@ The mandatory assessment is the CLI. Review README -> CLI quick start -> frozen 
 4. Run `evaluate --output reports/local/supplied.json`; use `--suite extended` for the separate 50-question regression. These are genuine model calls; allow quota and service time.
 5. Optionally run `uv sync --frozen --extra web` and `uv run portfolio-agent serve`, then open http://127.0.0.1:8000. Show reconciliation bases and warnings, a zero-call local answer, a cache hit, and an uncached genuine Gemini answer with visible SQL.
 
-`chat --context --local --cache` demonstrates selected-portfolio follow-ups. Bare `chat` retains independent-question behavior. `--strategy one-call` is experimental and deliberately not default because of observed semantic regression.
+`chat --context --local --cache` demonstrates selected-portfolio follow-ups. Bare `chat` retains independent-question behavior. The experimental planner and its CLI flag were removed during cleanup; use the original orchestration.
 
 For a credential-free container demo:
 
@@ -17,7 +17,7 @@ docker build -t portiq:0.2 .
 docker run --rm --name portiq-demo -p 127.0.0.1:8000:8000 portiq:0.2
 ```
 
-For model access, pass a private runtime env file containing `GEMINI_API_KEY`, `PORTIQ_DEMO_TOKEN` and account-appropriate limits. Enter the demo token through System Status. Use a writable `/app/runtime` volume if a persistent quota ledger is required. Never publish `.env` or expose an unauthenticated model endpoint.
+For model access, pass a private runtime env file containing `GEMINI_API_KEY`, `PORTIQ_DEMO_TOKEN` and account-appropriate limits. If a token is configured, enter it through the small access-code dialog. Use a writable `/app/runtime` volume if a persistent quota ledger is required. Never publish `.env` or expose an unauthenticated model endpoint.
 
 Public hosting is deferred. A real deployment needs an account, TLS/reverse proxy, explicit hosts/origins, external identity and per-user cost controls. No hosted URL or availability claim is supplied.
 

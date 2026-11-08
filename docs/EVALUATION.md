@@ -75,7 +75,7 @@ provider error codes are never interpreted as factual numerical claims.
 Both v0.1.0 extended report Git blobs remain byte-for-byte unchanged. Their 49/50 failure involved
 wrong semantics: the agent filtered `strategy_type` for a value stored under `status`, then
 claimed no relevant portfolios existed. Evaluator v1 stopped at the extra-call failure.
-`scripts/review_diagnostics.py` re-scores those exact traces offline with independent references
+The archived [historical diagnostic](https://github.com/Shaunakrane914/PortiQ/blob/ace58054c7a778817d68a7c1d81386b7dffd95e8/scripts/review_diagnostics.py) re-scored those exact traces offline with independent references
 and reports routing, result and narrative failures. This is diagnostic re-scoring, not a new
 Gemini run. The old release description understated the error and has been corrected.
 
@@ -104,16 +104,18 @@ the final reports. Use the latter with `git show <release>:<path>` to verify a d
 line-ending normalization alone does not change the recorded questions or results.
 
 
-## v0.2 experiments and new cases
+## Historical v0.2 experiments and new cases
+
+Cleanup commit `122dee6` removed the experimental planner, comparison helper and selected development evidence. The following describes the pre-cleanup experiment. Removed artifacts are available in the [archived snapshot](https://github.com/Shaunakrane914/PortiQ/tree/ace58054c7a778817d68a7c1d81386b7dffd95e8). Current `evaluate` uses the original agent and bypasses local routing/cache.
 
 The frozen supplied/extended/categorical/ambiguity files and all historical reports remain unchanged. `evaluation/platform.json` is a separate author-created eight-case regression set; its sidecar declares two narrative contracts. It tests missing observations, distinct currencies, recorded allocation, a hybrid exposure/weight question, latest dated NAV, unsupported prediction and ambiguous references. References are independently executed by the existing scorer. These cases are observed development/regression cases, not an unseen validation claim.
 
-`scripts/compare_strategies.py` runs both strategies against the same cases with alternating order and a shared 6.5-second-paced backend. Cache/local paths and fallback models are disabled. It measures SDK service, actual deliberate pacing, retry backoff and Python analysis wall time separately. Source, database, suite and rule hashes are checked for changes at completion. Tokens distinguish reported input, candidate output and thinking counts; missing usage is disclosed rather than inferred.
+Before removal, `scripts/compare_strategies.py` ran both strategies against the same cases with alternating order and a shared 6.5-second-paced backend. Cache/local paths and fallback models are disabled. It measures SDK service, actual deliberate pacing, retry backoff and Python analysis wall time separately. Source, database, suite and rule hashes are checked for changes at completion. Tokens distinguish reported input, candidate output and thinking counts; missing usage is disclosed rather than inferred.
 
 The first full comparison attempt reached its explicit 250-SDK-invocation budget after 131 records. It is retained in `paired-outage/progress.json` with `complete: false`: 36 successful provider calls, 27 transient failures, one timeout and 186 connection errors. Its supplied segment shows a real one-call Technology-sector valuation error; its failed extended/platform segments are not a useful measure of model reasoning ability. No partial results are stitched into later runs.
 
 A subsequent fresh-client connectivity probe succeeded. Cause is unproven. A new circuit stops repeated transient/transport calls and refreshes the client after cooldown; mocked policy tests verify the bound, while later fresh live results remain separately recorded. The original planner stays default regardless of lower one-call request counts.
 
-`scripts/platform_benchmark.py` independently derives references from CSVs and checks four local capabilities over 20 paired repeats: local execution versus exact cache hit. It makes zero provider calls. It measures warm Python service time, not public API or browser latency. Browser tests exercise real local HTTP/data with no key; a separate explicit `PORTIQ_WEB_LIVE=1` test performs genuine uncached Gemini analysis.
+`scripts/benchmark.py --mode cache` independently derives references from CSVs and checks four local capabilities over 20 paired repeats: local execution versus exact cache hit. It makes zero provider calls. It measures warm Python service time, not public API or browser latency. Browser tests exercise real local HTTP/data with no key; a separate explicit `PORTIQ_WEB_LIVE=1` test performs genuine uncached Gemini analysis.
 
 Versioned manifests identify complete runs, source revisions and CI. The historical report index is preserved; [v0.2 evidence](../reports/v0.2.0/README.md) is separate. Ordinary CI never runs paid/live evaluations.
