@@ -59,6 +59,8 @@ The later [CLI-only 50-question run](../reports/cli-2026-11-08/README.md) on `4b
 
 ## Verification and reviewer path
 
+CI bootstrap uses `actions/setup-python@v6` and installs the same pinned `uv==0.11.26` wheel from PyPI. Repeated GitHub Release downloads in `setup-uv` returned HTTP 504 before any tests ran on Windows and Linux. The existing Python 3.11/3.13 Ubuntu/Windows matrix and platform checks remain; disabling matrix fail-fast lets all checks finish independently. `UV_PYTHON_DOWNLOADS=never` keeps uv on the Python selected by setup-python.
+
 Start with [README](../README.md), demonstrate `chat`, `ask --show-sql`, `exposure` and the supplied evaluator, then show the optional dashboard. Full-result comparison checks projection, ordering, duplicates and numeric values; limited narrative assertions declare their coverage. Mock policy tests, offline replay and fresh model runs are separate kinds of evidence.
 
 The v0.1.0 Passive/status failure was a genuine wrong-column answer. v0.1.1 grounded classification values in the database and passed its archived 10/10 supplied and 50/50 extended regressions. Original inputs, frozen suites and v0.1.1 reports remain unchanged. Detailed old investigations are available in Git history; current source never loads benchmark answers.
