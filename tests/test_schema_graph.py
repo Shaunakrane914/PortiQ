@@ -108,3 +108,14 @@ def test_original_questions_have_complete_reference_table_coverage(
             else {"portfolios", "holdings", "securities", "sectors"}
         )
         assert expected <= set(graph.retrieve(case["question"]).tables), case["id"]
+
+
+@pytest.mark.parametrize("question", ["Unknown metric xyzzy", "Compare portfolio benchmarks"])
+def test_graph_agent_fallback_sends_exact_original_prompt(database: Path, question: str) -> None:
+    backend = FakeBackend([call("respond", status="unsupported", answer="Not available.")])
+    agent = PortfolioAgent(Settings(database=database), backend, context_mode="graph")
+    response = agent.answer(question)
+    assert backend.requests[0][1].system_instruction == agent.system
+    assert response.context_fallback
+    assert agent.graph is not None
+    assert set(response.context_tables) == set(agent.graph.ddl)

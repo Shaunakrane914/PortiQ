@@ -82,6 +82,14 @@ that completion-label mistake. Ordinary application retrieval defaults were not 
 
 ## Current and historical evidence
 
+The separate [schema-graph comparison](../reports/graph-rag-2026-11-08/README.md), source
+`7caf262`, completed all twenty entries: full schema 10/10 versus graph 9/10, with 21 SDK
+attempts each. Reported tokens were 48,296 versus 35,352 (26.80% lower); one graph attempt
+returned 504 without usage metadata. No reliable latency gain was demonstrated. Question 7
+had every required table but dropped bonds from its value denominator. Offline metadata
+coverage for 10 supplied and 46 extended data cases is not an accuracy score. Reproduce with
+`scripts/rag_ablation.py --treatment graph --trials 1 --output <fresh-directory>`.
+
 | Evidence | Recorded result | Scope |
 |---|---|---|
 | [Fresh supplied CLI capture](../reports/supplied-v3-2026-11-08/README.md), `b8db4a9` | **10/10 supplied**, 21 SDK calls, 54,075 reported tokens | Evaluator v3; all ten explicit answer-format checks passed; cache/local disabled |
@@ -94,10 +102,10 @@ that completion-label mistake. Ordinary application retrieval defaults were not 
 The fresh supplied run took 132.471 seconds of CLI wall time, with 13.143-second mean and
 19.520-second p95 question time, including its child-process-only 6.5-second batch spacing.
 No normal pacing settings or ledger records were reset. It is a full independent run, not
-a rescore or retry of only the failed questions. Subsequent GUI work changes the optional
-Streamlit startup/presentation paths, including four-view parity with the existing frontend;
-analytical model/tool and evaluator source remain identical to the capture. GUI behavior
-has separate key-free AppTest and actual-server Playwright checks.
+a rescore or retry of only the failed questions. Later GUI work changed Streamlit startup
+and presentation, with separate key-free AppTest and actual-server Playwright checks.
+Subsequent experimental retrieval controls have their own pinned source and paired evidence
+above; the historical supplied capture is not silently recertified for those modes.
 
 The retained eight CLI capture files remain byte-exact and have
 [SHA-256 hashes](../reports/cli-2026-11-08/artifact-sha256.json). Their original scores, failures,

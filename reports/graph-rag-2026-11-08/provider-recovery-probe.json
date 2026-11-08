@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "model": "gemini-3.1-flash-lite",
+  "text": "OK.",
+  "usage": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 2,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 4,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 4
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 6,
+    "traffic_type": null
+  },
+  "attempts": [
+    {
+      "timestamp_utc": "2026-11-08T17:53:00.557473+00:00",
+      "model": "gemini-3.1-flash-lite",
+      "service_ms": 1035.656399995787,
+      "pacing_ms": 0.0,
+      "input_tokens": 4,
+      "output_tokens": 2,
+      "thinking_tokens": null,
+      "total_tokens": 6,
+      "error_kind": null,
+      "sequence": 1
+    }
+  ]
+}

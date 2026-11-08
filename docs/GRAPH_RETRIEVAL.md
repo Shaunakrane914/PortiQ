@@ -54,6 +54,13 @@ small-sample evidence, not proof of unseen accuracy or a statistically reliable 
 
 ## Limits
 
+The [fresh paired comparison](../reports/graph-rag-2026-11-08/README.md) scored **10/10 for
+full schema and 9/10 for graph context**, with 21 SDK attempts each. Graph mode used 26.80%
+fewer reported tokens, but one recovered 504 had unknown usage and latency did not show a
+reliable improvement. Its failed sector-value query excluded bonds from the denominator
+despite complete table coverage. This is a useful context-compression experiment, not a
+demonstrated accuracy improvement or grounds to switch the default.
+
 Semantic aliases and metric rules are deliberately small and inspectable. They can miss
 paraphrases, and connected seed selection cannot guarantee that every needed table was
 recognized. Full-schema SQL repair limits the damage but may add model calls. An absent

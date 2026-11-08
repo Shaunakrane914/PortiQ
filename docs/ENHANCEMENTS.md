@@ -103,6 +103,10 @@ adds redundant context; useful retrieval gains would need evidence from missing 
 or larger schemas. No embeddings or larger-corpus benefits were measured here. The separate
 [schema-graph experiment](GRAPH_RETRIEVAL.md) tests replacing redundant full-schema context
 with connected metadata selection; its results must not be inferred from this basic-RAG run.
+Its [fresh live comparison](../reports/graph-rag-2026-11-08/README.md) reduced reported tokens
+by 26.80%, but scored 9/10 against the full-schema control's 10/10. Required table coverage
+was complete; a financial denominator error remained. No reliable latency gain was shown,
+so graph retrieval remains experimental and application defaults remain unchanged.
 
 Implementation references: [SQLite progress callbacks](https://www.sqlite.org/c3ref/progress_handler.html),
 [Streamlit chat](https://docs.streamlit.io/develop/api-reference/chat) and

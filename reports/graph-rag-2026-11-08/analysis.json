@@ -1,0 +1,140 @@
+{
+  "source_commit": "7caf262f7f415184ec237ad8ec764dc678937420",
+  "complete": true,
+  "source_and_inputs_unchanged": true,
+  "database_unchanged": true,
+  "paired_comparisons": 10,
+  "arms": {
+    "off": {
+      "answers": 10,
+      "questions_reaching_sdk": 10,
+      "blocked_before_sdk": 0,
+      "passed": 10,
+      "result_correct": 10,
+      "narrative_verified": 10,
+      "sdk_calls": 21,
+      "reported_tokens": 48296,
+      "input_tokens": 45333,
+      "output_tokens": 2963,
+      "attempts_with_unknown_usage": 0,
+      "provider_errors": 0,
+      "mean_service_ms": 5995.885019998241,
+      "median_service_ms": 3101.5316999946663,
+      "mean_question_ms": 15371.1558,
+      "pacing_ms": 87409.53289999015,
+      "backoff_ms": 0.0,
+      "cached_input_tokens": 0,
+      "attempts_with_unreported_cache_usage": 21
+    },
+    "on": {
+      "answers": 10,
+      "questions_reaching_sdk": 10,
+      "blocked_before_sdk": 0,
+      "passed": 9,
+      "result_correct": 9,
+      "narrative_verified": 9,
+      "sdk_calls": 21,
+      "reported_tokens": 35352,
+      "input_tokens": 32689,
+      "output_tokens": 2663,
+      "attempts_with_unknown_usage": 1,
+      "provider_errors": 1,
+      "mean_service_ms": 6499.019770001178,
+      "median_service_ms": 3142.22565000091,
+      "mean_question_ms": 15670.1619,
+      "pacing_ms": 81285.3809000153,
+      "backoff_ms": 1029.211836445056,
+      "cached_input_tokens": 0,
+      "attempts_with_unreported_cache_usage": 21
+    }
+  },
+  "reported_token_reduction_percent": 26.801391419579257,
+  "reported_input_token_reduction_percent": 27.89138155427613,
+  "mean_service_change_percent": 8.391334195449351,
+  "mean_service_change_percent_cluster_bootstrap_95": [
+    -53.040874669053004,
+    188.7555695506984
+  ],
+  "controls": [
+    {
+      "id": 1,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 2,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 3,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 4,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 5,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 6,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 7,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 8,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 9,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    },
+    {
+      "id": 10,
+      "same_non_system_initial_configuration": true,
+      "initial_prompts_match_offline_audit": true
+    }
+  ],
+  "failures": [
+    {
+      "id": 7,
+      "condition": "on",
+      "failures": [
+        {
+          "dimension": "result",
+          "message": "Reference 0: Row count: expected 8, actual 11."
+        },
+        {
+          "dimension": "faithfulness",
+          "message": "Reference 0: missing or incorrect complete row ['Balanced Portfolio', 388704.0, 1073279.0, 36.22]."
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "One pass of the known supplied suite; not unseen/general accuracy.",
+    "One graph SDK attempt returned 504 without usage metadata; token totals are reported usage only, not complete billable usage.",
+    "SDK service includes network and recovered provider errors, excludes deliberate pacing. Timing confidence interval crosses zero.",
+    "Offline reference-table coverage does not prove correct SQL or answers.",
+    "Application default remains basic retrieval; graph is experimental."
+  ],
+  "validation": {
+    "offline_suite": "245 passed, 1 live test skipped before capture",
+    "formatter": "passed",
+    "ruff": "passed",
+    "mypy": "passed",
+    "post_capture_regressions": "13 passed: schema graph and ablation completion tests, including two added exact-prompt fallback cases"
+  }
+}

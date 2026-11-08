@@ -1,5 +1,17 @@
 # Change history
 
+## Experimental schema-graph retrieval — 8 November 2026
+
+- Added table/column/rule nodes, actual FK traversal for join bridges, conservative fallback
+  and response provenance. No graph database, document extraction or additional model calls.
+- Offline audit retained required tables for all 10 supplied and 46 extended data questions,
+  reducing initial system characters by 33.23% and 24.56% respectively.
+- The fresh supplied paired run scored full schema 10/10 versus graph 9/10. Reported tokens
+  fell 26.80%; a recovered 504 had unknown usage, and latency showed no reliable gain.
+- Preserved the graph's incorrect bond-excluding denominator and all attempts in the
+  [experiment evidence](../reports/graph-rag-2026-11-08/README.md). Graph remains experimental;
+  the application default remains basic retrieval.
+
 ## Controlled retrieval comparison — 8 November 2026
 
 - Added a native experimental RAG-off control and reproducible paired live-Gemini runner.
