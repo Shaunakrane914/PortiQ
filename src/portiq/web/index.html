@@ -14,20 +14,20 @@
   <body>
     <a class="skip" href="#main">Skip to workspace</a>
     <aside class="rail">
-      <a class="brand" href="#overview"
+      <a class="brand" href="#analyst"
         ><span class="mark">P<span>iQ</span></span
         ><span>PortiQ<small>PORTFOLIO INTELLIGENCE</small></span></a
       >
       <div class="rail-label">RESEARCH WORKSPACE</div>
       <nav aria-label="Workspace">
-        <button data-page="overview" aria-current="page">
-          <span aria-hidden="true">01</span>Overview
+        <button data-page="analyst" aria-current="page">
+          <span aria-hidden="true">01</span>AI Analyst
+        </button>
+        <button data-page="overview">
+          <span aria-hidden="true">02</span>Overview
         </button>
         <button data-page="explorer">
-          <span aria-hidden="true">02</span>Portfolio Explorer
-        </button>
-        <button data-page="analyst">
-          <span aria-hidden="true">03</span>AI Analyst
+          <span aria-hidden="true">03</span>Portfolio Explorer
         </button>
         <button data-page="reconciliation">
           <span aria-hidden="true">04</span>Reconciliation
@@ -41,7 +41,7 @@
     </aside>
     <div class="workspace">
       <header class="topbar">
-        <span class="breadcrumb">RESEARCH / <b id="crumb">OVERVIEW</b></span
+        <span class="breadcrumb">RESEARCH / <b id="crumb">AI ANALYST</b></span
         ><button id="access-button" class="button secondary small" hidden>
           Demo access</button
         ><span class="tag">RECORDED DATA · NOT LIVE</span>
@@ -50,8 +50,10 @@
         <div class="page-heading">
           <div>
             <div class="eyebrow">PORTiQ / ANALYTICS</div>
-            <h1 id="title">Portfolio overview</h1>
-            <p id="subtitle">See the allocation. Understand the basis.</p>
+            <h1 id="title">AI Analyst</h1>
+            <p id="subtitle">
+              Ask about your portfolios. Get answers with evidence.
+            </p>
           </div>
           <label class="portfolio-picker"
             >Selected portfolio<select

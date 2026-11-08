@@ -12,7 +12,7 @@ const fmt = (v) =>
     : typeof v === "number"
       ? v.toLocaleString(undefined, { maximumFractionDigits: 4 })
       : String(v);
-let page = "overview",
+let page = "analyst",
   selected = null,
   portfolios = [],
   session = null,
@@ -26,8 +26,8 @@ const titles = {
     "Holdings, observations and risk — with the source in view.",
   ],
   analyst: [
-    "AI analyst",
-    "Ask naturally. Inspect every tool, query and calculation.",
+    "AI Analyst",
+    "Ask about your portfolios. Get answers with evidence.",
   ],
   reconciliation: [
     "Allocation reconciliation",
@@ -840,6 +840,12 @@ async function boot() {
         load();
       }),
   );
+  document.querySelector(".brand").onclick = (event) => {
+    event.preventDefault();
+    page = "analyst";
+    location.hash = page;
+    load();
+  };
   $("portfolio").onchange = () => {
     selected = $("portfolio").value ? Number($("portfolio").value) : null;
     load();

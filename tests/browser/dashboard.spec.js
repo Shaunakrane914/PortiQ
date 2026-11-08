@@ -10,7 +10,7 @@ test.beforeAll(() => fs.mkdirSync(shots, { recursive: true }));
 test("overview and real recorded portfolio exploration", async ({ page }) => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("/");
+  await page.goto("/#overview");
   await expect(
     page.getByRole("heading", { name: "Portfolio overview", exact: true }),
   ).toBeVisible();
@@ -52,8 +52,19 @@ test("overview and real recorded portfolio exploration", async ({ page }) => {
   });
   expect(errors).toEqual([]);
 });
-test("local analyst, exact cache and portfolio follow-up", async ({ page }) => {
-  await page.goto("/#analyst");
+test("home opens AI Analyst, supports chat and returns through the brand", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "AI Analyst", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByRole("navigation", { name: "Workspace" })
+      .getByRole("button")
+      .first(),
+  ).toHaveText(/AI Analyst/);
   await expect(page.getByRole("button", { name: "Analyze →" })).toBeVisible();
   const input = page.getByRole("textbox", { name: "Ask PortiQ" });
   await input.fill("Count all portfolios");
@@ -83,6 +94,13 @@ test("local analyst, exact cache and portfolio follow-up", async ({ page }) => {
     window.scrollTo(0, 0);
   });
   await page.screenshot({ path: shots + "/analyst-local.png", fullPage: true });
+  await page.getByRole("button", { name: "Overview", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Portfolio overview", exact: true }),
+  ).toBeVisible();
+  await page.locator("a.brand").click();
+  await expect(page.getByRole("textbox", { name: "Ask PortiQ" })).toBeVisible();
+  await expect(page.locator(".message .answer").last()).toContainText("61.11%");
 });
 test("reconciliation export and mobile layout", async ({ page }) => {
   await page.goto("/#reconciliation");
@@ -125,9 +143,7 @@ test("public interface omits assessment and internal metadata", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(
-    page.getByText("Portfolio universe", { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Ask PortiQ" })).toBeVisible();
   const text = await page.locator("body").innerText();
   for (const privateText of [
     "PL Capital",
