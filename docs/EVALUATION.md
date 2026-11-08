@@ -96,6 +96,7 @@ explains why both retrieval strategies and their comparison runners were removed
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
+| [Full-schema CLI capture without RAG](../reports/supplied-no-rag-2026-11-09/README.md), `0b3e94a` | **10/10 supplied**, 21 SDK attempts, 48,293 reported tokens | Evaluator v3; all ten explicit answer checks passed; no active retrieval, cache/local disabled, zero provider errors |
 | [Post-removal supplied CLI capture](../reports/supplied-after-graph-removal-2026-11-08/README.md), `f14ea21` | **10/10 supplied**, 21 SDK attempts, 54,093 reported tokens | Evaluator v3; all ten explicit answer checks passed; full schema/basic BM25, graph removed, cache/local disabled |
 | [Fresh supplied CLI capture](../reports/supplied-v3-2026-11-08/README.md), `b8db4a9` | **10/10 supplied**, 21 SDK calls, 54,075 reported tokens | Evaluator v3; all ten explicit answer-format checks passed; cache/local disabled |
 | [First v3 supplied capture](../reports/supplied-v3-2026-11-08/supplied.json), `f3a9954` | **8/10**, 21 SDK calls, 54,076 tokens | Two false negatives for correct exposure tables with percentage units in their header; raw failed run retained |

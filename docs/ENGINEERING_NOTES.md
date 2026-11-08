@@ -49,6 +49,12 @@ at `8a6143c`. The [BM25 comparison](https://github.com/Shaunakrane914/PortiQ/blo
 and [graph comparison](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md)
 retain failed/interrupted attempts and their limitations.
 
+After both removals, **232 core tests passed** and a fresh supplied CLI evaluation on
+`0b3e94a` passed **10/10**, including all ten explicit final-answer checks: 21 SDK attempts,
+48,293 reported tokens and zero provider errors. The [capture](../reports/supplied-no-rag-2026-11-09/README.md)
+also records an offline check that all initial prompts/configurations match the original
+no-RAG control. This known-suite verification does not establish unseen accuracy.
+
 ## Historical evidence
 
 ### Schema-graph retrieval archived

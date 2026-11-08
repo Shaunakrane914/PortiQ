@@ -1,0 +1,138 @@
+{
+  "source_commit": "0b3e94af6d124982bd399a170a20a2cc5dc38a98",
+  "command": [
+    "python",
+    "-m",
+    "portiq",
+    "--db",
+    "reports/local/supplied-no-rag.db",
+    "evaluate",
+    "--suite",
+    "supplied",
+    "--output",
+    "reports/supplied-no-rag-2026-11-09/supplied.json"
+  ],
+  "python_executable": "current uv-managed Python interpreter",
+  "started_utc": "2026-11-08T18:39:08.402192+00:00",
+  "source_and_input_sha256": {
+    "data/benchmarks.csv": "c5f70f07e572c3a6277a230581387be05690f98aee5e755d7e992cf3acbfca62",
+    "data/historical_prices.csv": "4b96a7854d90df4d6899cd7f4b12b7dba5569add5dbdd886e1835feab48a99f0",
+    "data/holdings.csv": "6c0ff216fcc3485aa0c503c6d69a0946baebdfc0089cb1bd8904f43ac12304fc",
+    "data/portfolio_performance.csv": "acff5da0220cbd2f017b2a13530a7024ba92d057381ba18d43505d080a7ec3b1",
+    "data/portfolios.csv": "11904963dc585cc290864beb6cea21a9e4a427dcdedc50aad7b6228e1cb383bb",
+    "data/risk_metrics.csv": "424e004e3c7e015519cfb7531bd65f7204be49b7d5e897b8d8fddd4724b9d304",
+    "data/sectors.csv": "5abb7d83dfc45d51d3ed271b6e32a54cd713a7c23ff164512dc50de4f87f4010",
+    "data/securities.csv": "973d3241b815bfd60d9ea363cde8f9138fca946a14dcedbc9e696fdfdfe7a20e",
+    "data/transactions.csv": "736ee6c86f88b7f9f05de97b4a8b1a27f89917ea278f847a95eaafdaafacba5f",
+    "database_schema.sql": "e685fdff7d28e5b7018b72f3e1806641dd2d957a367219877fb89cf8011c62b2",
+    "evaluation/faithfulness.json": "458dcf2cc85af6b7d2d606db9d8523419a7e6f5013fe1b768e9a1d35cae66119",
+    "ground_truth_dataset.json": "7a5c9e4ea18f973d047d31aece044a84a179010e53ca06a6fb65f00ae0343244",
+    "src/portiq/__init__.py": "43f120fd08606ac485548c7b425a1998474366d9325c46ac101d881d100f76ed",
+    "src/portiq/__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8",
+    "src/portiq/agent.py": "96d364dc23612cc43443c2ab5d9a19d811d03b02ba29eb4fd5943c4b323c4b0b",
+    "src/portiq/analytics.py": "8203b95e12a3797b621dd1ff2f4085bfbdb26279bc89976b203f4d4f48dc4160",
+    "src/portiq/api.py": "0dfe89dce0dd69696fa6707f05d5ca8f7ef54182f9b002f4eae8ddd249348d94",
+    "src/portiq/cli.py": "8d1e4ed982315c99830a41f3f698f55e7e96267946d13369f9810f0f4e3345d9",
+    "src/portiq/config.py": "416d699a80c8ab0dc9dd708a35e4f9c51aaa416d7321f933ab43b08ef91f0328",
+    "src/portiq/database.py": "87b17791e0012cc847a1d899823b5246ba89d8c990b0c58e014b30b628e04441",
+    "src/portiq/errors.py": "7d25e8887858dde69738db6751bf7a061d49089fc46b635a1860f530436b3d6e",
+    "src/portiq/evaluation.py": "5077af70b9e5a332e4282f5c1ce2a6072d52992bc0a8b6aee66c44b1a04eb020",
+    "src/portiq/exposure.py": "67dbdfe6be2b2aa27647082eb8519263381fd5155e908f842e97da44047ec187",
+    "src/portiq/faithfulness.py": "305fa084a9432b6029c1b0345a23b4ad1c10e588ddbea24f434d812ce4b632dc",
+    "src/portiq/model.py": "4a09b54d82f68a8441859e34cd748a2756e3babf6edad8521e8a360d3648b772",
+    "src/portiq/prompts.py": "7c997208e519cca426d46eb06fb27f02512b330000dfbd84a6907034a5967360",
+    "src/portiq/quota.py": "b93219d4a8738b9631a1c7c020c7f06a46948829cdd9505ba081745f52832fe7",
+    "src/portiq/service.py": "f627d5965a9bd6b37ed483c34486fdfdf10a4ddf7655046f691a6255763eda4a",
+    "src/portiq/sql.py": "e96ca631c196396190e3ccafa355fecd32372f2787a28a3ca56a88c7efc4e691",
+    "src/portiq/streamlit_app.py": "aab96d6c35cc4986d8a7407bf0d95051438e118ee21cae97c17d7efdc190a355"
+  },
+  "ledger_before": 202,
+  "daily_guard": 1000,
+  "request_interval_seconds": 6.5,
+  "pacing_scope": "Child CLI process only; application environment and ledger unchanged",
+  "model": "gemini-3.1-flash-lite",
+  "fallback_models": [],
+  "prompt_control_equivalence": {
+    "scope": "Offline initial-prompt/configuration equivalence only; no generated-answer accuracy or latency measurement. No SDK calls.",
+    "baseline": "First complete trial, no-RAG control, archived experiment captured at e862996",
+    "checks": [
+      {
+        "id": 1,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 2,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 3,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 4,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 5,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 6,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 7,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 8,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 9,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      },
+      {
+        "id": 10,
+        "same_full_schema_system_prompt": true,
+        "same_non_system_configuration": true
+      }
+    ],
+    "provider_calls": 0
+  },
+  "metadata": "Complete schema, categorical domains, catalogue and financial conventions; no active RAG",
+  "local_answers": false,
+  "answer_cache": false,
+  "database_rows": {
+    "sectors": 10,
+    "securities": 30,
+    "benchmarks": 13,
+    "portfolios": 13,
+    "holdings": 95,
+    "transactions": 24,
+    "historical_prices": 330,
+    "portfolio_performance": 44,
+    "risk_metrics": 44
+  },
+  "key_free_checks": {
+    "pytest": "232 passed; 1 opt-in live test skipped",
+    "ruff": "passed",
+    "format": "passed",
+    "mypy": "18 source files passed"
+  },
+  "finished_utc": "2026-11-08T18:41:34.940208+00:00",
+  "wall_ms": 146502.65840000066,
+  "exit_code": 0,
+  "ledger_after": 223,
+  "source_and_inputs_unchanged": true,
+  "database_unchanged": true
+}

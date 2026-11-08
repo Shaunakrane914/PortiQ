@@ -11,6 +11,9 @@
 - The [engineering decision](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded)
   records why both retrieval strategies were rejected. The optional RAG enhancement is
   explicitly marked evaluated and excluded rather than claimed as active functionality.
+- Verification passed: 232 core tests, lint/format/types and a fresh supplied CLI **10/10**
+  with 21 SDK attempts, 48,293 reported tokens and zero provider errors. The
+  [no-RAG capture](../reports/supplied-no-rag-2026-11-09/README.md) is tied to source `0b3e94a`.
 
 ## Graph retrieval removed from active architecture — 9 November 2026
 
