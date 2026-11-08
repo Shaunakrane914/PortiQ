@@ -10,32 +10,12 @@ from fastapi.testclient import TestClient
 from pydantic import SecretStr
 from test_agent import call
 
-from portiq.agent import PortfolioAgent
 from portiq.api import create_app
 from portiq.config import Settings
 from portiq.errors import QueryError
 from portiq.quota import AdaptiveRateLimiter
-from portiq.retrieval import MetadataIndex
 from portiq.service import AnalysisService
 from portiq.sql import execute
-
-
-def test_metadata_retrieval_is_query_specific_and_sent_to_model(database: Path) -> None:
-    from test_agent import FakeBackend
-
-    index = MetadataIndex(database)
-    price = index.retrieve("historical closing prices volume")
-    risk = index.retrieve("sharpe risk drawdown volatility")
-    assert price[0].source == "sqlite-schema:historical_prices"
-    assert risk[0].source == "sqlite-schema:risk_metrics"
-    assert "Foreign keys:" in price[0].text
-    assert index.retrieve("xyzzy") == []
-    backend = FakeBackend([call("respond", status="unsupported", answer="No predictions.")])
-    result = PortfolioAgent(Settings(database=database), backend).answer(
-        "Predict future sharpe volatility"
-    )
-    assert "sqlite-schema:risk_metrics" in result.metadata_sources
-    assert "RETRIEVED METADATA" in backend.requests[0][1].system_instruction
 
 
 def test_sql_work_profile_distinguishes_equivalent_work_and_enforces_safety(database: Path) -> None:
@@ -50,31 +30,6 @@ def test_sql_work_profile_distinguishes_equivalent_work_and_enforces_safety(data
     assert simple.query_plan and wasteful.query_plan
     with pytest.raises(QueryError):
         execute(database, "DELETE FROM portfolios", profile=True)
-
-
-def test_rag_ablation_changes_only_retrieved_prompt_context(database: Path) -> None:
-    from test_agent import FakeBackend
-
-    settings = Settings(database=database)
-    backends = [
-        FakeBackend([call("respond", status="unsupported", answer="No forecast.")])
-        for _ in range(2)
-    ]
-    agents = [
-        PortfolioAgent(settings, backends[0]),
-        PortfolioAgent(settings, backends[1], use_retrieval=False),
-    ]
-    answers = [agent.answer("Forecast historical prices") for agent in agents]
-    on, off = [backend.requests[0][1] for backend in backends]
-    assert on.system_instruction.startswith(off.system_instruction)
-    assert "RETRIEVED METADATA" in on.system_instruction
-    assert "RETRIEVED METADATA" not in off.system_instruction
-    assert on.model_dump(exclude={"system_instruction"}) == off.model_dump(
-        exclude={"system_instruction"}
-    )
-    assert backends[0].requests[0][0] == backends[1].requests[0][0]
-    assert agents[0].schema == agents[1].schema and "CREATE TABLE" in agents[1].schema
-    assert answers[0].metadata_sources and not answers[1].metadata_sources
 
 
 def test_future_rate_reservations_do_not_overbook_recovery_slots() -> None:

@@ -9,7 +9,8 @@ implemented without making web, Streamlit or Node dependencies mandatory for the
 - Gemini selects typed SQL/exposure tools. SQLite executes read-only bounded SQL; Decimal
   arithmetic calculates normalized stock-only exposure. Runtime code never imports benchmarks.
 - Full schema, live categorical domains and the portfolio catalogue remain in model context.
-  Local metadata retrieval adds relevant column/foreign-key descriptions with provenance.
+  Financial conventions and declared schema relationships are retained directly; no retrieval
+  layer selects, removes or appends metadata at runtime.
 - A guarded scalar-only request can avoid the model summary call. Other shapes retain the
   original tool loop. No unsuccessful alternate planner is restored.
 - A bounded reusable client pool permits parallel requests, shares quota guards and preserves
@@ -25,22 +26,36 @@ implemented without making web, Streamlit or Node dependencies mandatory for the
 See [enhancement implementation and tests](ENHANCEMENTS.md), [evaluation](EVALUATION.md) and
 [limitations](KNOWN_LIMITATIONS.md) for exact verification boundaries.
 
+## Metadata retrieval evaluated and excluded
+
+Both retrieval strategies were evaluated against full-schema prompting in separate paired
+runs of the ten supplied questions. BM25 tied at 10/10 but used **12.02% more reported tokens**.
+Schema-graph retrieval used **26.8% fewer reported tokens** but scored **9/10 versus 10/10**,
+including a financial denominator error. Neither demonstrated a reliable latency benefit
+or fewer SDK attempts. These are small, known-suite experiments, not general accuracy claims;
+one graph provider failure had unknown token usage.
+
+Both approaches were removed from the active architecture to prioritize correctness and
+reduce maintenance cost for this nine-table database. The agent sends the complete schema,
+database-derived categorical values, portfolio catalogue and financial conventions directly
+to Gemini. Foreign-key definitions, read-only SQL validation/repair and deterministic
+financial calculations remain. RAG is optional in the assignment; it is deliberately excluded
+from the submission, and no replacement retrieval system was added.
+
+Source, reproduction commands and original evidence are preserved on
+[archive/bm25-rag-2026-11-09](https://github.com/Shaunakrane914/PortiQ/tree/archive/bm25-rag-2026-11-09)
+at `d65927b` and [archive/schema-graph-rag-2026-11-08](https://github.com/Shaunakrane914/PortiQ/tree/archive/schema-graph-rag-2026-11-08)
+at `8a6143c`. The [BM25 comparison](https://github.com/Shaunakrane914/PortiQ/blob/d65927b2e59e07c76ff3795e1395c0724a439241/reports/rag-ablation-2026-11-08/README.md)
+and [graph comparison](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md)
+retain failed/interrupted attempts and their limitations.
+
 ## Historical evidence
 
 ### Schema-graph retrieval archived
 
-Evaluated foreign-key-guided schema retrieval against full-schema prompting. It reduced
-reported token usage by 26.8% but introduced a financial calculation regression (9/10
-versus 10/10). The approach was removed from the submission's active architecture to
-prioritize correctness and reduce maintenance cost. Both modes used 21 SDK attempts;
-no reliable latency improvement was demonstrated. One recovered provider error had
-unknown usage, so reported token savings are not a complete billing comparison.
-
-The implementation, tests, reproduction commands and byte-exact experiment evidence are
-preserved on [archive/schema-graph-rag-2026-11-08](https://github.com/Shaunakrane914/PortiQ/tree/archive/schema-graph-rag-2026-11-08),
-at verified commit `8a6143c`. Read the [archived comparison](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md).
-The active agent keeps the full nine-table schema and basic BM25 metadata retrieval.
-The assignment permits RAG **or** GraphRAG; no replacement retrieval system was added.
+The graph implementation and its complete evidence remain at verified commit `8a6143c`.
+The [retrieval decision above](#metadata-retrieval-evaluated-and-excluded) also covers the
+subsequent removal of BM25. The earlier graph-removal verification below still used BM25.
 
 Removal verification: 235 core tests passed, followed by a fresh **10/10 supplied CLI run**
 on `f14ea21`, including all ten explicit final-answer checks. The [capture](../reports/supplied-after-graph-removal-2026-11-08/README.md)

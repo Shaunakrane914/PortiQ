@@ -69,20 +69,17 @@ The earlier [supplied-ten CLI run](reports/supplied-v3-2026-11-08/README.md) on 
 
 See [architecture](docs/ARCHITECTURE.md), [data conventions](docs/DATA_ASSUMPTIONS.md) and [engineering decisions](docs/ENGINEERING_NOTES.md).
 
-All optional assignment bullets now have implementations: metadata RAG, a Streamlit chat,
-concurrent model requests, SQL-efficiency scoring and a separate production deployment
-profile extend the existing safety, logging, validation, caching and hybrid support.
+Optional enhancements include a Streamlit chat, concurrent model requests, SQL-efficiency
+scoring and a separate production deployment profile alongside safety, logging, validation,
+caching and hybrid support. Metadata RAG is deliberately excluded after evaluation.
 See the [enhancement checklist and deployment guide](docs/ENHANCEMENTS.md).
 
-The [controlled RAG comparison](reports/rag-ablation-2026-11-08/README.md) found no gain on
-the complete supplied-question pass: **10/10 and 21 SDK calls in both modes**, with
-**12.02% more reported tokens** when retrieval was enabled. Latency was inconclusive.
-The planned repeat encountered provider 504 errors; it is retained and clearly separated
-from the complete comparison. Implemented retrieval is not a demonstrated accuracy upgrade.
-
-Graph retrieval was evaluated and removed from the active architecture to prioritize
-correctness and simplicity. The [engineering decision](docs/ENGINEERING_NOTES.md#schema-graph-retrieval-archived)
-links its preserved implementation and evidence. Full-schema context and basic BM25 remain.
+Both retrieval strategies were evaluated and removed: BM25 added **12.02% reported tokens**
+at equal observed accuracy; schema-graph retrieval scored **9/10 versus 10/10**. Neither
+demonstrated a reliable latency benefit. The agent uses the complete nine-table schema,
+database-derived categories, portfolio catalogue and financial conventions directly.
+The [engineering decision](docs/ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded)
+links both preserved experiments and their limitations.
 
 ```powershell
 uv sync --frozen --extra gui
@@ -92,8 +89,7 @@ uv run --extra gui portfolio-agent gui
 Streamlit opens on http://127.0.0.1:8501 and matches the existing workspace: navy sidebar,
 ivory/gold theme, serif headings, portfolio selector and the same four views. Its analyst
 form includes SQL evidence, request metrics and explicit local/cache/context controls.
-Metadata retrieval runs locally over live schema
-documents and adds source references to model context. Efficiency scoring measures SQLite
+Full-schema context is shared with the core agent. Efficiency scoring measures SQLite
 VM work, not disk reads. The production profile is separate from the anonymous Render demo.
 
 ## Optional dashboard and hosted demo

@@ -15,15 +15,11 @@ mandatory and optional requirements to implementations.
 - SQLite progress callbacks measure VM work approximately, not logical page reads or physical
   I/O. Performance scores are relative to the reference on the same small database and are
   correctness gated. They are not a general query optimizer or large-data benchmark.
-- Default metadata RAG retrieves schema descriptions with BM25 and retains full DDL. It uses
-  no embeddings or external documents. Retrieval usefulness on unseen large schemas
-  has not been established. A controlled supplied-question pass showed equal 10/10 accuracy,
-  equal SDK calls, +12.02% reported tokens and no reliable speed gain; the repeat encountered
-  provider failures. See the [raw experiment and scope](../reports/rag-ablation-2026-11-08/README.md).
-- Graph retrieval is excluded from the active architecture after a 9/10 versus 10/10
-  comparison exposed a financial denominator regression despite complete table coverage.
-  The [engineering decision and archive](ENGINEERING_NOTES.md#schema-graph-retrieval-archived)
-  preserve the evidence. Basic BM25 and full-schema context remain.
+- Metadata RAG is deliberately excluded from the active submission. BM25 added 12.02%
+  reported tokens at equal observed accuracy; graph retrieval scored 9/10 versus 10/10.
+  Neither demonstrated a reliable speed gain. The agent retains the full schema, live
+  categorical values, catalogue and financial conventions. The [engineering decision and archives](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded)
+  preserve both experiments. No external-document or large-schema retrieval benefit is claimed.
 - One process supports bounded parallel analyses with separate model clients and per-session
   locks. Multiple processes would have separate sessions/RPM/capacity state. A retained SQLite
   ledger coordinates daily usage only; distributed deployment needs external coordination.

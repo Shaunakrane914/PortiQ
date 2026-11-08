@@ -1,7 +1,8 @@
 # Optional assignment enhancements
 
-All twelve optional bullets in the original brief have an implementation. The core CLI
-continues to work without Streamlit, FastAPI, Node or a browser.
+Eleven of the twelve optional bullets have active implementations. Metadata RAG was
+evaluated and deliberately excluded based on measured tradeoffs. The core CLI continues
+to work without Streamlit, FastAPI, Node or a browser.
 
 | Enhancement | Implementation and evidence |
 |---|---|
@@ -12,7 +13,7 @@ continues to work without Streamlit, FastAPI, Node or a browser.
 | Input validation | Strict typed tool and API schemas, question/body limits and explicit errors. |
 | Caching | Bounded TTL/LRU exact answers, isolated by session, model/configuration, runtime source and database version. Failures are not cached. CLI/UI opt-in; evaluator disabled. |
 | Streamlit GUI | `uv sync --extra gui`, then `uv run --extra gui portfolio-agent gui`. Matches the existing four-view workspace using the shared dashboard stylesheet plus a native-widget adapter. Genuine model analysis is the default; local/cache/context controls are explicit. |
-| Metadata RAG | BM25 retrieves three live schema documents and appends them to the full context with source IDs. It demonstrates the optional metadata-RAG requirement; measured benefit remains unproven. Graph retrieval was removed from the active architecture; see the [archived experiment decision](ENGINEERING_NOTES.md#schema-graph-retrieval-archived). No embeddings, external corpus or benchmark answers enter runtime retrieval. |
+| Metadata RAG | Evaluated and excluded from the active submission. BM25 added 12.02% reported tokens without demonstrated accuracy/latency benefit; graph retrieval scored 9/10 versus 10/10. Full-schema prompting remains. See the [decision and archives](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded). |
 | Production REST API | Explicit production profile, bounded input/concurrency, safe errors, request logs, readiness/liveness, existing bearer authentication, strict production origins/hosts, retained quota storage and a hardened Compose deployment. Deployment verification and limits are described below. |
 | Concurrent users | A bounded reusable model-client pool, per-conversation turn locks and shared atomic daily/RPM guards permit independent conversations to overlap. Default capacity four. Tests synchronize two simultaneous fake provider calls and verify separate results, sessions and per-request metrics. |
 | Performance-aware evaluation | Each generated/reference SQL is separately profiled. A correctness-gated score is `100 * min(1, reference VM work / generated VM work)`; incorrect SQL/answers receive zero. The metric counts SQLite progress callbacks at interval one and records query plans. It is an engine-work proxy, not measured logical page reads. |
@@ -74,7 +75,7 @@ responsibilities. A passing smoke test is not a security certification or availa
 
 ## Validation
 
-`tests/test_enhancements.py` checks retrieval, query work, rate reservations, simultaneous
+`tests/test_enhancements.py` checks query work, rate reservations, simultaneous
 requests, overload recovery, production settings and an actual Streamlit AppTest session.
 The platform CI job installs the GUI extra and runs these checks before browser/container
 verification. No fake provider test is reported as a live Gemini accuracy run.
@@ -87,7 +88,7 @@ version and score; they are not retroactively certified under the stricter contr
 
 ## Measured retrieval value
 
-The [paired live comparison](../reports/rag-ablation-2026-11-08/README.md) keeps the complete
+The [archived paired live comparison](https://github.com/Shaunakrane914/PortiQ/blob/d65927b2e59e07c76ff3795e1395c0724a439241/reports/rag-ablation-2026-11-08/README.md) kept the complete
 schema and every generation/tool/evaluation setting fixed while removing only the retrieved
 block in the control condition. Its complete, error-free supplied pass scored 10/10 with
 21 SDK calls in both modes. Reported tokens increased from 48,271 to 54,074 (+12.02%). Mean
@@ -96,13 +97,12 @@ No accuracy, call-count, SQL-work-score or reliable latency improvement was demo
 
 The repeat was interrupted by provider 504s and circuit blocking, including a failed minimal
 recovery probe. Those rows are preserved and are not reported as complete model comparisons.
-The runner now stops on an open circuit and rejects zero-call rows as completed comparisons.
-`PortfolioAgent(..., use_retrieval=False)` supports the experimental control; application
-defaults remain unchanged. For this nine-table dataset, metadata retrieval is functional but
-adds redundant context; useful retrieval gains would need evidence from missing knowledge
-or larger schemas. No embeddings or larger-corpus benefits were measured here. Graph
-retrieval was evaluated separately and removed to prioritize financial correctness and
-simplicity. Its source and evidence remain in the [archive](ENGINEERING_NOTES.md#schema-graph-retrieval-archived).
+The archived runner stops on an open circuit and rejects zero-call rows as completed
+comparisons. Both retrieval implementations, their controls and experiment-specific tests
+were subsequently removed from the active codebase. The agent now always receives the full
+schema without RAG. No embeddings or larger-corpus benefits were measured. See the
+[engineering decision](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded) for
+both experiments and their archive branches.
 
 Implementation references: [SQLite progress callbacks](https://www.sqlite.org/c3ref/progress_handler.html),
 [Streamlit chat](https://docs.streamlit.io/develop/api-reference/chat) and

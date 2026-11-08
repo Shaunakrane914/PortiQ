@@ -2,7 +2,7 @@
 
 `uv run portfolio-agent evaluate` selects the original [ten supplied questions](../ground_truth_dataset.json),
 eight SQL and two exposure. `--suite extended` selects the separate author-created
-[50-question regression](../evaluation/extended.json). Runtime planning/retrieval never reads
+[50-question regression](../evaluation/extended.json). Runtime planning never reads
 questions, IDs, expected SQL or narrative rules from these files.
 
 ```powershell
@@ -54,15 +54,17 @@ Reports identify evaluator version, data/suite/runtime hashes, configured model,
 metrics and generation mode. Injected fake backends are explicitly labeled non-live. Missing
 provider usage remains unknown. Service, pacing, backoff and end-to-end time are distinct.
 
-## Controlled metadata-RAG experiment
+## Archived metadata-RAG experiments
 
-Run `uv run python scripts/rag_ablation.py --output reports/local/rag-new --trials 2` from a
-clean checkout with sufficient quota. It alternates conditions and reverses their order on
-the second trial. One client, isolated CSV-loaded database, full schema, catalogue, tools,
-temperature and evaluator are shared; only retrieved context changes. The usual local/cache
-paths and any judge model are absent. The 6.5-second SDK interval is experiment-only.
+Retrieval was evaluated and removed from the active architecture. Reproduction scripts and
+retrieval-specific tests remain only on the archive branches linked in the
+[engineering decision](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded).
+The paired BM25 experiment alternated conditions, sharing one client, isolated CSV-loaded
+database, full schema, catalogue, tools, temperature and evaluator. Only the appended
+retrieved context changed. Its 6.5-second SDK interval was experiment-only; local answers,
+answer cache and judge models were disabled.
 
-The [8 November comparison](../reports/rag-ablation-2026-11-08/README.md), source `e862996`,
+The [8 November comparison](https://github.com/Shaunakrane914/PortiQ/blob/d65927b2e59e07c76ff3795e1395c0724a439241/reports/rag-ablation-2026-11-08/README.md), source `e862996`,
 completed its first ten-question paired pass: both conditions 10/10, 21 SDK calls, 48,271
 tokens off versus 54,074 on. No SQL-work-score improvement occurred (95.52 mean each).
 Service time includes transport; its descriptive bootstrap interval (-19.70% to +61.64%
@@ -76,9 +78,9 @@ prescheduled trial; a separately labeled post-hoc sensitivity includes fifteen f
 answered, error-free pairs. These are not stitched into a new complete run. A separate
 one-call recovery probe also returned 504 and is excluded from both conditions.
 
-The benchmark runner was corrected after this capture to stop on an open circuit, mark
-pre-SDK blocked rows incomplete and omit zero-call timing pairs. A regression test prevents
-that completion-label mistake. Ordinary application retrieval defaults were not changed.
+The archived benchmark runner was corrected after capture to stop on an open circuit, mark
+pre-SDK blocked rows incomplete and omit zero-call timing pairs. Its regression test is
+preserved with the experiment. Ordinary evaluation does not contain a retrieval mode switch.
 
 ## Current and historical evidence
 
@@ -89,8 +91,8 @@ returned 504 without usage metadata. No reliable latency gain was demonstrated. 
 had every required table but dropped bonds from its value denominator. Offline metadata
 coverage for 10 supplied and 46 extended data cases is not an accuracy score. The graph
 implementation and its reproduction commands now live only on the archive branch;
-[the engineering decision](ENGINEERING_NOTES.md#schema-graph-retrieval-archived) explains
-its removal. The active comparison runner supports basic BM25 versus full schema only.
+[the engineering decision](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded)
+explains why both retrieval strategies and their comparison runners were removed from main.
 
 | Evidence | Recorded result | Scope |
 |---|---|---|

@@ -1,5 +1,17 @@
 # Change history
 
+## BM25 retrieval removed from active architecture — 9 November 2026
+
+- Preserved commit `d65927b` on `archive/bm25-rag-2026-11-09`, including the original
+  benchmark evidence and reproduction scripts. The graph experiment remains in its archive.
+- Removed BM25 runtime integration, response provenance, its retriever, comparison runner
+  and retrieval-specific tests. There were no retrieval-only third-party dependencies.
+- The agent now uses full-schema context directly. Categorical values, declared relationships,
+  portfolio catalogue, financial definitions and SQL safeguards remain unchanged.
+- The [engineering decision](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded)
+  records why both retrieval strategies were rejected. The optional RAG enhancement is
+  explicitly marked evaluated and excluded rather than claimed as active functionality.
+
 ## Graph retrieval removed from active architecture — 9 November 2026
 
 - Preserved verified commit `8a6143c` on `archive/schema-graph-rag-2026-11-08`, including

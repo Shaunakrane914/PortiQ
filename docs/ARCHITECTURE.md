@@ -12,7 +12,6 @@ The original [assignment](assignment/README.md) requires SQL translation, equity
 | SQL execution | [sql.py](../src/portiq/sql.py) | Parse, authorize, bound and execute read-only queries |
 | Required exposure calculator | [exposure.py](../src/portiq/exposure.py) | Resolve one portfolio and normalize stock weights by stock sector |
 | Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, explicit answer verification and correctness-gated VM-work scores |
-| Metadata retrieval | [retrieval.py](../src/portiq/retrieval.py) | BM25 over live schema/foreign-key documents with source IDs |
 | Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, adaptive sliding-window limiter, local budget, safe retry/circuit handling |
 | Optional service | [service.py](../src/portiq/service.py) | Explicit local capabilities, exact cache, context and sequential fallback |
 | Optional analytics | [analytics.py](../src/portiq/analytics.py) | Snapshots, quote-value reconciliation and data-quality notices |
@@ -26,7 +25,7 @@ flowchart LR
   Eval[CLI evaluate] --> Agent
   UI[Static dashboard] --> API[FastAPI] --> Service
   Streamlit[Optional Streamlit chat] --> Service
-  Agent --> Metadata[Local metadata retrieval]
+  Context[Full schema + domains + financial conventions] --> Agent
   Service --> Agent
   Service --> Local[Explicit local calculations / exact cache]
   Agent --> Backend[Metered Gemini backend] --> Gemini[Google GenAI SDK]
@@ -77,7 +76,7 @@ The exact cache holds up to 64 successful, deep-copied responses for 300 seconds
 
 One API process supports four concurrent analyses by default. A reusable client pool shares its daily ledger and RPM reservations, while per-conversation locks serialize only turns in the same session. Excess analyses receive 503 and Retry-After. The socket-client HTTP limit is separate. Distributed scheduling and per-user cost accounting are not implemented.
 
-Metadata RAG builds live schema documents, ranks them with BM25 and adds the top three to the full model context. Runtime retrieval never reads evaluator fixtures or reference answers. Graph retrieval was removed after evaluation; the [engineering decision](ENGINEERING_NOTES.md#schema-graph-retrieval-archived) links the archived experiment. Streamlit is an optional extra and uses the same analysis service.
+The agent receives the complete schema, declared relationships, database-derived classification values, portfolio catalogue and financial conventions directly. No RAG or graph retrieval runs in the active architecture. The [engineering decision](ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded) links both archived experiments and their measured tradeoffs. Streamlit is an optional extra and uses the same analysis service.
 
 ## Packaging and platform
 
