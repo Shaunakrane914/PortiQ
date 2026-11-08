@@ -1,5 +1,11 @@
 # PortiQ — AI-Powered Portfolio Intelligence
 
+[![Live Demo](https://img.shields.io/badge/Render-Live%20Demo-success?logo=render)](https://portiq-b9u7.onrender.com)
+[![CI](https://github.com/Shaunakrane914/PortiQ/actions/workflows/ci.yml/badge.svg)](https://github.com/Shaunakrane914/PortiQ/actions)
+
+> **Live Production URL:** [https://portiq-b9u7.onrender.com](https://portiq-b9u7.onrender.com)  
+> **API Health:** [https://portiq-b9u7.onrender.com/api/health](https://portiq-b9u7.onrender.com/api/health)
+
 Built for the PL Capital AI Engineering Take-Home Assessment.
 
 The four required components remain the core of this project:
