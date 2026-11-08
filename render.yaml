@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: portiq
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORTIQ_HOST
+        value: 0.0.0.0
+      - key: PORTIQ_ALLOW_ANONYMOUS
+        value: "1"
+      - key: PORTIQ_REQUEST_INTERVAL
+        value: "6.5"
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: PORTIQ_DEMO_TOKEN
+        sync: false

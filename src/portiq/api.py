@@ -353,8 +353,11 @@ def main() -> None:
         host not in {"127.0.0.1", "localhost"}
         and settings.api_key.get_secret_value()
         and not os.getenv("PORTIQ_DEMO_TOKEN")
+        and os.getenv("PORTIQ_ALLOW_ANONYMOUS") != "1"
     ):
-        raise PortiqError("Set PORTIQ_DEMO_TOKEN for networked Gemini access.")
+        raise PortiqError(
+            "Set PORTIQ_DEMO_TOKEN for networked Gemini access, or PORTIQ_ALLOW_ANONYMOUS=1."
+        )
     if not settings.database.exists():
         initialize(settings.source, settings.database)
     uvicorn.run(
