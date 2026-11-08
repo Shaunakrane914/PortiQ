@@ -86,15 +86,15 @@ class GeminiBackend:
                 kind=self.suppressed_kind,
             )
         now = time.monotonic()
-        delay = self.limiter.acquire(
+        throttle_delay = self.limiter.acquire(
             request_interval=self.request_interval,
             last_request=self.last_request,
             now=now,
         )
         pacing_ms = 0.0
-        if delay > 0:
+        if throttle_delay > 0:
             pacing_start = time.perf_counter()
-            time.sleep(delay)
+            time.sleep(throttle_delay)
             pacing_ms = (time.perf_counter() - pacing_start) * 1000
         self.last_request = time.monotonic()
         if not self.budget.reserve():
