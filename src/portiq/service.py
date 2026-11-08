@@ -18,7 +18,7 @@ from portiq.config import Settings
 from portiq.errors import ModelError, PortiqError
 from portiq.exposure import calculate_exposure, resolve_portfolio
 from portiq.model import Backend, GeminiBackend
-from portiq.quota import RequestBudget
+from portiq.quota import AdaptiveRateLimiter, RequestBudget
 from portiq.sql import execute
 
 
@@ -131,9 +131,21 @@ class FallbackBackend:
     def __init__(self, settings: Settings) -> None:
         settings.require_key()
         self.budget = RequestBudget(settings.daily_requests, settings.quota_path)
+        self.limiter = AdaptiveRateLimiter(
+            rpm_limit=settings.rpm_limit,
+            window_seconds=settings.rpm_window,
+            max_wait_seconds=settings.max_wait_seconds,
+            cooldown_threshold=settings.rpm_cooldown_threshold,
+            cooldown_seconds=settings.rpm_cooldown_seconds,
+        )
         models = list(dict.fromkeys([settings.model, *settings.fallback_models]))
         self.backends = [
-            GeminiBackend(settings.model_copy(update={"model": m}), self.budget) for m in models
+            GeminiBackend(
+                settings.model_copy(update={"model": m}),
+                budget=self.budget,
+                limiter=self.limiter,
+            )
+            for m in models
         ]
         self.attempts: list[dict[str, Any]] = []
         self.attempt_sequence = 0

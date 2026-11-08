@@ -1,15 +1,133 @@
-"""Atomic request budget and sanitized provider error classification. No prompts are stored."""
+"""Atomic request budget, adaptive sliding-window limiter, and sanitized error classification."""
 
 import json
+import math
 import re
 import sqlite3
 import threading
+import time
 import weakref
+from collections import deque
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from pathlib import Path
+from typing import Any
 
 import httpx
+
+from portiq.errors import ModelError
+
+
+class AdaptiveRateLimiter:
+    """Sliding-window quota controller tracking actual Gemini SDK attempts.
+
+    Maintains a rolling window of request timestamps over `window_seconds` (default 60s).
+    Enforces an application safety cap (default 12 RPM under the 15 RPM provider limit).
+    - Default artificial delay is 0s: requests execute immediately while under the safety cap.
+    - As usage approaches the quota (>= cooldown_threshold), introduces a temporary gentle
+      cooldown (1.5s) before starting a new question (never between tool calls in a question).
+    - When the application safety cap is reached:
+        - Calculates the exact recovery time until the oldest attempt exits the rolling window.
+        - If recovery time <= max_wait_seconds, permits waiting for the slot to free.
+        - If recovery time > max_wait_seconds, immediately raises ModelError with retry_after
+          to return a clean retry/cooldown error message without freezing the web worker or UI.
+    - Automatically recovers to 0s artificial delay as past attempts expire past 60s.
+    """
+
+    def __init__(
+        self,
+        rpm_limit: int = 12,
+        window_seconds: float = 60.0,
+        max_wait_seconds: float = 10.0,
+        cooldown_threshold: int = 8,
+        cooldown_seconds: float = 1.5,
+        clock: Any = None,
+    ) -> None:
+        self.rpm_limit = rpm_limit
+        self.window_seconds = window_seconds
+        self.max_wait_seconds = max_wait_seconds
+        self.cooldown_threshold = cooldown_threshold
+        self.cooldown_seconds = cooldown_seconds
+        self.clock = clock or time.monotonic
+        self.lock = threading.RLock()
+        self.timestamps: deque[float] = deque()
+
+    def _evict_expired(self, now: float) -> None:
+        cutoff = now - self.window_seconds
+        while self.timestamps and self.timestamps[0] <= cutoff:
+            self.timestamps.popleft()
+
+    def prepare_question(self, now: float | None = None) -> float:
+        """Called before starting a new question.
+
+        Returns required cooldown delay (0.0 if sufficient quota headroom remains).
+        Raises ModelError if quota is saturated and recovery wait exceeds max_wait_seconds.
+        """
+        with self.lock:
+            current = self.clock() if now is None else now
+            self._evict_expired(current)
+            if len(self.timestamps) >= self.rpm_limit:
+                recovery = self.window_seconds - (current - self.timestamps[0])
+                if recovery > self.max_wait_seconds:
+                    wait_s = math.ceil(recovery)
+                    raise ModelError(
+                        f"Gemini rate limit capacity full; retry after {wait_s} seconds.",
+                        kind="rate_limit",
+                        retryable=True,
+                        retry_after=math.ceil(recovery),
+                    )
+                return max(0.0, recovery)
+            if len(self.timestamps) >= self.cooldown_threshold:
+                return self.cooldown_seconds
+            return 0.0
+
+    def acquire(
+        self,
+        request_interval: float = 0.0,
+        last_request: float = 0.0,
+        now: float | None = None,
+    ) -> float:
+        """Called before an SDK call. Computes required delay and records the attempt.
+
+        Returns delay in seconds (0.0 for immediate processing).
+        Raises ModelError if capacity is saturated and wait exceeds max_wait_seconds.
+        """
+        with self.lock:
+            current = self.clock() if now is None else now
+            self._evict_expired(current)
+
+            interval_delay = 0.0
+            if request_interval > 0 and last_request > 0:
+                elapsed = current - last_request
+                if elapsed < request_interval:
+                    interval_delay = request_interval - elapsed
+
+            window_delay = 0.0
+            if len(self.timestamps) >= self.rpm_limit:
+                recovery = self.window_seconds - (current - self.timestamps[0])
+                if recovery > self.max_wait_seconds:
+                    wait_s = math.ceil(recovery)
+                    raise ModelError(
+                        f"Gemini rate limit capacity full; retry after {wait_s} seconds.",
+                        kind="rate_limit",
+                        retryable=True,
+                        retry_after=math.ceil(recovery),
+                    )
+                window_delay = max(0.0, recovery)
+
+            delay = max(interval_delay, window_delay)
+            self.timestamps.append(current + delay)
+            return delay
+
+    def current_usage(self, now: float | None = None) -> int:
+        with self.lock:
+            current = self.clock() if now is None else now
+            self._evict_expired(current)
+            return len(self.timestamps)
+
+    def clear(self) -> None:
+        with self.lock:
+            self.timestamps.clear()
 
 
 class RequestBudget:

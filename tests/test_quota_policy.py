@@ -1,6 +1,7 @@
 import http.client
 import importlib.util
 import io
+import time
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -14,7 +15,7 @@ from portiq.agent import PortfolioAgent
 from portiq.config import Settings
 from portiq.errors import ModelError
 from portiq.model import GeminiBackend, MeteredBackend
-from portiq.quota import classify
+from portiq.quota import AdaptiveRateLimiter, classify
 from portiq.service import FallbackBackend
 
 
@@ -207,3 +208,160 @@ def test_circuit_limits_attempts_and_refreshes_after_cooldown(
     finally:
         backend.close()
     assert len(closed) == 2
+
+
+def test_adaptive_rate_limiter_immediate_processing() -> None:
+    clock = [100.0]
+    limiter = AdaptiveRateLimiter(
+        rpm_limit=12,
+        window_seconds=60.0,
+        max_wait_seconds=10.0,
+        cooldown_threshold=8,
+        cooldown_seconds=1.5,
+        clock=lambda: clock[0],
+    )
+    # First 7 requests process immediately with 0s delay
+    for i in range(7):
+        assert limiter.prepare_question() == 0.0
+        delay = limiter.acquire()
+        assert delay == 0.0
+        assert limiter.current_usage() == i + 1
+
+
+def test_adaptive_rate_limiter_question_cooldown_approaching_quota() -> None:
+    clock = [100.0]
+    limiter = AdaptiveRateLimiter(
+        rpm_limit=12,
+        window_seconds=60.0,
+        max_wait_seconds=10.0,
+        cooldown_threshold=8,
+        cooldown_seconds=1.5,
+        clock=lambda: clock[0],
+    )
+    # Fill 8 slots (e.g. 4 questions consuming 2 calls each)
+    for _ in range(8):
+        limiter.acquire()
+    assert limiter.current_usage() == 8
+
+    # 5th question approaching quota triggers question-level cooldown
+    assert limiter.prepare_question() == 1.5
+
+    # However, internal tool calls within that question execute with 0s delay
+    assert limiter.acquire() == 0.0
+    assert limiter.acquire() == 0.0
+
+
+def test_adaptive_rate_limiter_quota_saturated_fail_fast() -> None:
+    clock = [100.0]
+    limiter = AdaptiveRateLimiter(
+        rpm_limit=12,
+        window_seconds=60.0,
+        max_wait_seconds=10.0,
+        cooldown_threshold=8,
+        clock=lambda: clock[0],
+    )
+    # Fill all 12 slots at t=100
+    for _ in range(12):
+        limiter.acquire()
+    assert limiter.current_usage() == 12
+
+    # At t=110, oldest slot is at t=100. Recovery requires 60 - 10 = 50s.
+    clock[0] = 110.0
+    with pytest.raises(ModelError) as exc_info:
+        limiter.prepare_question()
+    assert exc_info.value.kind == "rate_limit"
+    assert exc_info.value.retryable is True
+    assert exc_info.value.retry_after == 50.0
+
+    # acquire() also fails fast without freezing the thread
+    with pytest.raises(ModelError) as exc_info2:
+        limiter.acquire()
+    assert exc_info2.value.kind == "rate_limit"
+    assert exc_info2.value.retry_after == 50.0
+    # No extra slot was added when rejected
+    assert limiter.current_usage() == 12
+
+
+def test_adaptive_rate_limiter_quota_saturated_short_wait() -> None:
+    clock = [100.0]
+    limiter = AdaptiveRateLimiter(
+        rpm_limit=12,
+        window_seconds=60.0,
+        max_wait_seconds=10.0,
+        cooldown_threshold=8,
+        clock=lambda: clock[0],
+    )
+    for _ in range(12):
+        limiter.acquire()
+
+    # At t=155, oldest slot at t=100 will expire in 60 - 55 = 5s
+    clock[0] = 155.0
+    # 5s <= max_wait_seconds (10s), so it permits waiting
+    assert limiter.prepare_question() == 5.0
+    assert limiter.acquire() == 5.0
+
+
+def test_adaptive_rate_limiter_automatic_recovery() -> None:
+    clock = [100.0]
+    limiter = AdaptiveRateLimiter(
+        rpm_limit=12,
+        window_seconds=60.0,
+        max_wait_seconds=10.0,
+        cooldown_threshold=8,
+        clock=lambda: clock[0],
+    )
+    for _ in range(12):
+        limiter.acquire()
+
+    # Advance time past 60s window
+    clock[0] = 165.0
+    # All 12 requests have aged out; usage drops to 0 and delays reset to 0.0s
+    assert limiter.prepare_question() == 0.0
+    assert limiter.acquire() == 0.0
+    assert limiter.current_usage() == 1
+
+
+def test_adaptive_rate_limiter_thread_safety() -> None:
+    import threading
+
+    limiter = AdaptiveRateLimiter(rpm_limit=50, window_seconds=60.0)
+    errors_encountered = []
+
+    def worker():
+        try:
+            for _ in range(5):
+                limiter.acquire()
+        except Exception as e:
+            errors_encountered.append(e)
+
+    threads = [threading.Thread(target=worker) for _ in range(10)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    assert not errors_encountered
+    assert limiter.current_usage() == 50
+
+
+def test_agent_integration_with_adaptive_limiter(
+    database: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    settings = Settings(
+        database=database,
+        api_key=SecretStr("test"),
+        rpm_limit=12,
+        rpm_cooldown_threshold=8,
+    )
+    backend = GeminiBackend(settings)
+    # Saturate the limiter
+    for _ in range(12):
+        backend.limiter.timestamps.append(time.monotonic())
+
+    agent = PortfolioAgent(settings, backend)
+    # The agent should fail fast with status="error" and error_kind="rate_limit"
+    response = agent.answer("How many portfolios do we have?")
+    assert response.status == "error"
+    assert response.error_kind == "rate_limit"
+    assert response.error_retry_after is not None
+    assert response.api_calls == 0

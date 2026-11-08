@@ -12,7 +12,7 @@ from google.genai import errors, types
 
 from portiq.config import Settings
 from portiq.errors import ModelError
-from portiq.quota import RequestBudget, classify
+from portiq.quota import AdaptiveRateLimiter, RequestBudget, classify
 
 
 class Backend(Protocol):
@@ -22,13 +22,25 @@ class Backend(Protocol):
 
 
 class GeminiBackend:
-    def __init__(self, settings: Settings, budget: RequestBudget | None = None) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        budget: RequestBudget | None = None,
+        limiter: AdaptiveRateLimiter | None = None,
+    ) -> None:
         key = settings.require_key()
         self.settings = settings
         self.model = settings.model
         self.request_interval = settings.request_interval
         self.last_request = 0.0
         self.budget = budget or RequestBudget(settings.daily_requests, settings.quota_path)
+        self.limiter = limiter or AdaptiveRateLimiter(
+            rpm_limit=settings.rpm_limit,
+            window_seconds=settings.rpm_window,
+            max_wait_seconds=settings.max_wait_seconds,
+            cooldown_threshold=settings.rpm_cooldown_threshold,
+            cooldown_seconds=settings.rpm_cooldown_seconds,
+        )
         self.owns_budget = budget is None
         self.lock = threading.RLock()
         self.attempts: list[dict[str, Any]] = []
@@ -73,11 +85,16 @@ class GeminiBackend:
                 "Model disabled until backend restart after " + self.suppressed_kind + ".",
                 kind=self.suppressed_kind,
             )
+        now = time.monotonic()
+        delay = self.limiter.acquire(
+            request_interval=self.request_interval,
+            last_request=self.last_request,
+            now=now,
+        )
         pacing_ms = 0.0
-        remaining = self.request_interval - (time.monotonic() - self.last_request)
-        if remaining > 0:
+        if delay > 0:
             pacing_start = time.perf_counter()
-            time.sleep(remaining)
+            time.sleep(delay)
             pacing_ms = (time.perf_counter() - pacing_start) * 1000
         self.last_request = time.monotonic()
         if not self.budget.reserve():

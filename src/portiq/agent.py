@@ -240,6 +240,18 @@ class PortfolioAgent:
             )
             return result
 
+        limiter = getattr(self.backend, "limiter", None)
+        if limiter is not None and hasattr(limiter, "prepare_question"):
+            try:
+                cooldown = limiter.prepare_question()
+                if cooldown > 0:
+                    time.sleep(cooldown)
+            except ModelError as exc:
+                failed_response = finish("error", str(exc))
+                failed_response.error_kind = exc.kind
+                failed_response.error_retry_after = exc.retry_after
+                return failed_response
+
         for _ in range(self.settings.max_tool_calls + 2):
             try:
                 response = meter.generate(

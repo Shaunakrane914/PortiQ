@@ -19,7 +19,12 @@ class Settings(BaseModel):
     query_seconds: float = Field(default=2.0, gt=0, le=10)
     max_tool_calls: int = Field(default=6, ge=1, le=12)
     sql_attempts: int = Field(default=3, ge=1, le=4)
-    request_interval: float = Field(default=13.0, ge=0, le=60)
+    request_interval: float = Field(default=0.0, ge=0, le=60)
+    rpm_limit: int = Field(default=12, ge=1, le=120)
+    rpm_window: float = Field(default=60.0, ge=1.0, le=300.0)
+    rpm_cooldown_threshold: int = Field(default=8, ge=1, le=120)
+    rpm_cooldown_seconds: float = Field(default=1.5, ge=0.0, le=30.0)
+    max_wait_seconds: float = Field(default=10.0, ge=0.0, le=60.0)
     daily_requests: int = Field(default=200, ge=1, le=10000)
     quota_path: Path | None = None
     fallback_models: tuple[str, ...] = Field(default=(), max_length=2)
@@ -34,7 +39,12 @@ class Settings(BaseModel):
             source=Path(os.getenv("PORTIQ_SOURCE", ".")),
             model=os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite"),
             api_key=SecretStr(os.getenv("GEMINI_API_KEY", "")),
-            request_interval=float(os.getenv("PORTIQ_REQUEST_INTERVAL", "13")),
+            request_interval=float(os.getenv("PORTIQ_REQUEST_INTERVAL", "0")),
+            rpm_limit=int(os.getenv("PORTIQ_RPM_LIMIT", "12")),
+            rpm_window=float(os.getenv("PORTIQ_RPM_WINDOW", "60")),
+            rpm_cooldown_threshold=int(os.getenv("PORTIQ_RPM_COOLDOWN_THRESHOLD", "8")),
+            rpm_cooldown_seconds=float(os.getenv("PORTIQ_RPM_COOLDOWN_SECONDS", "1.5")),
+            max_wait_seconds=float(os.getenv("PORTIQ_MAX_WAIT_SECONDS", "10")),
             daily_requests=int(os.getenv("PORTIQ_DAILY_REQUESTS", "200")),
             quota_path=Path(os.environ["PORTIQ_QUOTA_DB"])
             if os.getenv("PORTIQ_QUOTA_DB")
