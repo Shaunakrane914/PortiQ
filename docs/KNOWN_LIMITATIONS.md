@@ -17,7 +17,9 @@ mandatory and optional requirements to implementations.
   correctness gated. They are not a general query optimizer or large-data benchmark.
 - Metadata RAG retrieves schema descriptions locally with BM25 and retains full DDL. It uses
   no embeddings, external documents or GraphRAG. Retrieval usefulness on unseen large schemas
-  has not been established by the supplied ten-question suite.
+  has not been established. A controlled supplied-question pass showed equal 10/10 accuracy,
+  equal SDK calls, +12.02% reported tokens and no reliable speed gain; the repeat encountered
+  provider failures. See the [raw experiment and scope](../reports/rag-ablation-2026-11-08/README.md).
 - One process supports bounded parallel analyses with separate model clients and per-session
   locks. Multiple processes would have separate sessions/RPM/capacity state. A retained SQLite
   ledger coordinates daily usage only; distributed deployment needs external coordination.

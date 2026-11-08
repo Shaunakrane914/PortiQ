@@ -1,5 +1,14 @@
 # Change history
 
+## Controlled retrieval comparison — 8 November 2026
+
+- Added a native experimental RAG-off control and reproducible paired live-Gemini runner.
+- The complete supplied pass tied at 10/10 and 21 calls, with 12.02% more reported tokens
+  for RAG; timing and SQL-work scores showed no demonstrated gain.
+- Preserved the provider-interrupted repeat and separate failed recovery probe. Corrected
+  benchmark completion/timing logic so circuit-blocked, zero-SDK rows cannot masquerade as
+  completed model comparisons. No application retrieval default or quota ledger was reset.
+
 ## Streamlit workspace alignment — 8 November 2026
 
 - Matched the existing frontend with a shared stylesheet, navy sidebar, ivory/gold accents,

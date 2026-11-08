@@ -5,6 +5,11 @@ The latest supplied-ten evidence is [the v3 CLI capture](supplied-v3-2026-11-08/
 The first complete 8/10 capture is separately retained with its verifier-format explanation.
 The historical extended evidence is versioned in [`reports/cli-2026-11-08/`](cli-2026-11-08/README.md).
 
+The [RAG on/off experiment](rag-ablation-2026-11-08/README.md) contains a complete ten-pair
+comparison and a separately documented provider-interrupted repeat. The complete pass shows
+equal accuracy/calls and 12.02% more reported tokens with retrieval; it does not demonstrate
+an accuracy or reliable latency improvement. Raw failed/blocked entries are retained.
+
 ## Official Submission Evidence — 8 November 2026
 
 | Artifact | Purpose |

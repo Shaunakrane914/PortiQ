@@ -1,0 +1,189 @@
+{
+  "scope": "Coverage of documents named after reference-query tables, not total context coverage. Foreign-key links in other documents are not counted. Full schema remains available in both live arms. No references enter runtime prompts.",
+  "cases": [
+    {
+      "id": 1,
+      "required_table_documents": [
+        "portfolios"
+      ],
+      "retrieved_table_documents": [
+        "portfolio_performance",
+        "portfolios",
+        "holdings"
+      ],
+      "matching_documents": [
+        "portfolios"
+      ],
+      "required_document_coverage": 1.0,
+      "retrieved_document_precision": 0.3333333333333333
+    },
+    {
+      "id": 2,
+      "required_table_documents": [
+        "portfolios"
+      ],
+      "retrieved_table_documents": [
+        "portfolios",
+        "portfolio_performance",
+        "holdings"
+      ],
+      "matching_documents": [
+        "portfolios"
+      ],
+      "required_document_coverage": 1.0,
+      "retrieved_document_precision": 0.3333333333333333
+    },
+    {
+      "id": 3,
+      "required_table_documents": [
+        "sectors",
+        "securities"
+      ],
+      "retrieved_table_documents": [
+        "sectors",
+        "securities",
+        "historical_prices"
+      ],
+      "matching_documents": [
+        "sectors",
+        "securities"
+      ],
+      "required_document_coverage": 1.0,
+      "retrieved_document_precision": 0.6666666666666666
+    },
+    {
+      "id": 4,
+      "required_table_documents": [
+        "portfolios"
+      ],
+      "retrieved_table_documents": [
+        "portfolios",
+        "portfolio_performance",
+        "risk_metrics"
+      ],
+      "matching_documents": [
+        "portfolios"
+      ],
+      "required_document_coverage": 1.0,
+      "retrieved_document_precision": 0.3333333333333333
+    },
+    {
+      "id": 5,
+      "required_table_documents": [
+        "holdings",
+        "portfolios",
+        "securities"
+      ],
+      "retrieved_table_documents": [
+        "holdings",
+        "portfolios"
+      ],
+      "matching_documents": [
+        "holdings",
+        "portfolios"
+      ],
+      "required_document_coverage": 0.6666666666666666,
+      "retrieved_document_precision": 1.0
+    },
+    {
+      "id": 6,
+      "required_table_documents": [
+        "sectors",
+        "securities"
+      ],
+      "retrieved_table_documents": [
+        "securities",
+        "holdings",
+        "sectors"
+      ],
+      "matching_documents": [
+        "sectors",
+        "securities"
+      ],
+      "required_document_coverage": 1.0,
+      "retrieved_document_precision": 0.6666666666666666
+    },
+    {
+      "id": 7,
+      "required_table_documents": [
+        "holdings",
+        "portfolios",
+        "sectors",
+        "securities"
+      ],
+      "retrieved_table_documents": [
+        "sectors",
+        "holdings",
+        "portfolio_performance"
+      ],
+      "matching_documents": [
+        "holdings",
+        "sectors"
+      ],
+      "required_document_coverage": 0.5,
+      "retrieved_document_precision": 0.6666666666666666
+    },
+    {
+      "id": 8,
+      "required_table_documents": [
+        "holdings",
+        "portfolios",
+        "sectors",
+        "securities"
+      ],
+      "retrieved_table_documents": [
+        "holdings",
+        "risk_metrics",
+        "sectors"
+      ],
+      "matching_documents": [
+        "holdings",
+        "sectors"
+      ],
+      "required_document_coverage": 0.5,
+      "retrieved_document_precision": 0.6666666666666666
+    },
+    {
+      "id": 9,
+      "required_table_documents": [
+        "holdings",
+        "portfolios",
+        "securities",
+        "sectors"
+      ],
+      "retrieved_table_documents": [
+        "sectors",
+        "securities",
+        "portfolios"
+      ],
+      "matching_documents": [
+        "portfolios",
+        "sectors",
+        "securities"
+      ],
+      "required_document_coverage": 0.75,
+      "retrieved_document_precision": 1.0
+    },
+    {
+      "id": 10,
+      "required_table_documents": [
+        "holdings",
+        "portfolios",
+        "securities",
+        "sectors"
+      ],
+      "retrieved_table_documents": [
+        "holdings",
+        "sectors",
+        "securities"
+      ],
+      "matching_documents": [
+        "holdings",
+        "sectors",
+        "securities"
+      ],
+      "required_document_coverage": 0.75,
+      "retrieved_document_precision": 1.0
+    }
+  ]
+}

@@ -54,6 +54,32 @@ Reports identify evaluator version, data/suite/runtime hashes, configured model,
 metrics and generation mode. Injected fake backends are explicitly labeled non-live. Missing
 provider usage remains unknown. Service, pacing, backoff and end-to-end time are distinct.
 
+## Controlled metadata-RAG experiment
+
+Run `uv run python scripts/rag_ablation.py --output reports/local/rag-new --trials 2` from a
+clean checkout with sufficient quota. It alternates conditions and reverses their order on
+the second trial. One client, isolated CSV-loaded database, full schema, catalogue, tools,
+temperature and evaluator are shared; only retrieved context changes. The usual local/cache
+paths and any judge model are absent. The 6.5-second SDK interval is experiment-only.
+
+The [8 November comparison](../reports/rag-ablation-2026-11-08/README.md), source `e862996`,
+completed its first ten-question paired pass: both conditions 10/10, 21 SDK calls, 48,271
+tokens off versus 54,074 on. No SQL-work-score improvement occurred (95.52 mean each).
+Service time includes transport; its descriptive bootstrap interval (-19.70% to +61.64%
+for on-minus-off relative mean) does not establish a reliable speed change.
+
+The planned repeat encountered four provider-transient errors, including a 504, and left seven subsequent entries
+blocked before any SDK call. The captured legacy `complete=true` only meant forty schedule
+rows existed; it does not certify forty genuine model executions or complete two-pass
+accuracy. The raw capture is unchanged. The primary analysis uses the first complete
+prescheduled trial; a separately labeled post-hoc sensitivity includes fifteen fully
+answered, error-free pairs. These are not stitched into a new complete run. A separate
+one-call recovery probe also returned 504 and is excluded from both conditions.
+
+The benchmark runner was corrected after this capture to stop on an open circuit, mark
+pre-SDK blocked rows incomplete and omit zero-call timing pairs. A regression test prevents
+that completion-label mistake. Ordinary application retrieval defaults were not changed.
+
 ## Current and historical evidence
 
 | Evidence | Recorded result | Scope |

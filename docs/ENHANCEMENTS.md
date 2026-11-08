@@ -85,6 +85,23 @@ Final-answer verification and current live evidence are documented in
 [evaluation methodology](EVALUATION.md). Historical reports retain their original evaluator
 version and score; they are not retroactively certified under the stricter contract.
 
+## Measured retrieval value
+
+The [paired live comparison](../reports/rag-ablation-2026-11-08/README.md) keeps the complete
+schema and every generation/tool/evaluation setting fixed while removing only the retrieved
+block in the control condition. Its complete, error-free supplied pass scored 10/10 with
+21 SDK calls in both modes. Reported tokens increased from 48,271 to 54,074 (+12.02%). Mean
+SDK service was 4.961 versus 5.348 seconds, but the uncertainty interval crossed zero.
+No accuracy, call-count, SQL-work-score or reliable latency improvement was demonstrated.
+
+The repeat was interrupted by provider 504s and circuit blocking, including a failed minimal
+recovery probe. Those rows are preserved and are not reported as complete model comparisons.
+The runner now stops on an open circuit and rejects zero-call rows as completed comparisons.
+`PortfolioAgent(..., use_retrieval=False)` supports the experimental control; application
+defaults remain unchanged. For this nine-table dataset, metadata retrieval is functional but
+adds redundant context; useful retrieval gains would need evidence from missing knowledge
+or larger schemas. No embeddings or larger-corpus benefits were measured here.
+
 Implementation references: [SQLite progress callbacks](https://www.sqlite.org/c3ref/progress_handler.html),
 [Streamlit chat](https://docs.streamlit.io/develop/api-reference/chat) and
 [FastAPI deployment concepts](https://fastapi.tiangolo.com/deployment/concepts/).

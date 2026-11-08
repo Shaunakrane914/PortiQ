@@ -72,6 +72,12 @@ concurrent model requests, SQL-efficiency scoring and a separate production depl
 profile extend the existing safety, logging, validation, caching and hybrid support.
 See the [enhancement checklist and deployment guide](docs/ENHANCEMENTS.md).
 
+The [controlled RAG comparison](reports/rag-ablation-2026-11-08/README.md) found no gain on
+the complete supplied-question pass: **10/10 and 21 SDK calls in both modes**, with
+**12.02% more reported tokens** when retrieval was enabled. Latency was inconclusive.
+The planned repeat encountered provider 504 errors; it is retained and clearly separated
+from the complete comparison. Implemented retrieval is not a demonstrated accuracy upgrade.
+
 ```powershell
 uv sync --frozen --extra gui
 uv run --extra gui portfolio-agent gui

@@ -100,10 +100,12 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
         selected = [r for r in records if r["condition"] == condition]
         if not selected:
             continue
-        service = [r["service_ms"] for r in selected]
+        service = [r["service_ms"] for r in selected if r["provider_attempts"]]
         usage = [u for r in selected for u in r["provider_attempts"]]
         arms[condition] = {
             "answers": len(selected),
+            "questions_reaching_sdk": sum(bool(r["provider_attempts"]) for r in selected),
+            "blocked_before_sdk": sum(not r["provider_attempts"] for r in selected),
             "passed": sum(r["passed"] for r in selected),
             "result_correct": sum(r["result_correct"] is True for r in selected),
             "narrative_verified": sum(r.get("narrative_status") == "passed" for r in selected),
@@ -113,8 +115,8 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
             "output_tokens": sum(u["output_tokens"] or 0 for u in usage),
             "attempts_with_unknown_usage": sum(u["total_tokens"] is None for u in usage),
             "provider_errors": sum(u["error_kind"] is not None for u in usage),
-            "mean_service_ms": statistics.mean(service),
-            "median_service_ms": statistics.median(service),
+            "mean_service_ms": statistics.mean(service) if service else None,
+            "median_service_ms": statistics.median(service) if service else None,
             "mean_question_ms": statistics.mean(r["duration_ms"] for r in selected),
             "pacing_ms": sum(u["pacing_ms"] for u in usage),
             "backoff_ms": sum(r.get("actual", {}).get("backoff_ms", 0) for r in selected),
@@ -135,6 +137,8 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
         if set(modes) != {"off", "on"}:
             continue
         off, on = modes["off"], modes["on"]
+        if not off["provider_attempts"] or not on["provider_attempts"]:
+            continue
         pairs.append(
             {
                 "trial": trial,
@@ -176,6 +180,11 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def protocol_complete(records: list[dict[str, Any]], expected: int) -> bool:
+    """A scheduled row blocked before reaching Gemini is not a completed model comparison."""
+    return len(records) == expected and all(r["provider_attempts"] for r in records)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
@@ -212,6 +221,7 @@ def main() -> int:
     before_hashes = source_hashes(root)
     args.output.mkdir(parents=True)
     manifest = {
+        "experiment_protocol_version": 2,
         "experiment": "Paired metadata-RAG ablation using actual Gemini SDK generation",
         "source_commit": subprocess.run(
             ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
@@ -283,6 +293,7 @@ def main() -> int:
                         "daily_quota",
                         "local_budget",
                         "unsupported_model",
+                        "circuit_open",
                     }:
                         break
         finally:
@@ -296,7 +307,8 @@ def main() -> int:
                     "database_unchanged": database_hash
                     == hashlib.sha256(database.read_bytes()).hexdigest(),
                     "database_rows": audit["rows"],
-                    "complete": len(records) == len(schedule),
+                    "scheduled_entries_complete": len(records) == len(schedule),
+                    "complete": protocol_complete(records, len(schedule)),
                 }
             )
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
