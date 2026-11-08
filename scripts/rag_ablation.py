@@ -73,6 +73,7 @@ def source_hashes(root: Path) -> dict[str, str]:
         root / name
         for name in (
             "scripts/rag_ablation.py",
+            "scripts/schema_graph_audit.py",
             "database_schema.sql",
             "ground_truth_dataset.json",
             "evaluation/faithfulness.json",
@@ -175,8 +176,8 @@ def summarize(records: list[dict[str, Any]]) -> dict[str, Any]:
         "paired_comparisons": len(pairs),
         "on_minus_off_mean_service_percent_cluster_bootstrap_95": interval,
         "uncertainty_scope": "Descriptive 5000-resample bootstrap over question clusters; "
-        "two trials "
-        "of a known ten-question suite do not establish general or unseen accuracy/latency.",
+        "Repeated trials of a known ten-question suite do not establish general or unseen "
+        "accuracy/latency.",
     }
 
 
@@ -189,6 +190,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--trials", type=int, choices=[1, 2, 3], default=2)
+    parser.add_argument("--treatment", choices=["basic", "graph"], default="basic")
     args = parser.parse_args()
     root = Path.cwd()
     settings = Settings.from_env()
@@ -221,7 +223,7 @@ def main() -> int:
     before_hashes = source_hashes(root)
     args.output.mkdir(parents=True)
     manifest = {
-        "experiment_protocol_version": 2,
+        "experiment_protocol_version": 3,
         "experiment": "Paired metadata-RAG ablation using actual Gemini SDK generation",
         "source_commit": subprocess.run(
             ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
@@ -238,8 +240,14 @@ def main() -> int:
         "local_answers": False,
         "answer_cache": False,
         "judge_model": False,
+        "context_modes": {"off": "full", "on": args.treatment},
         "control": "Same client, full schema, catalogue, domains, conventions, tools, temperature, "
-        "SQL repair budgets, data and evaluator. Only retrieved metadata block differs.",
+        "SQL repair budgets, data and evaluator. Only retrieved metadata block differs."
+        if args.treatment == "basic"
+        else "Same client, model, conventions, tools, temperature, SQL repair budgets, data "
+        "and evaluator. Graph selection prunes initial schema/catalogue/domain context; "
+        "full-schema fallback applies to uncertain selection. Dedicated SQL planning and "
+        "repair retain the full schema in both arms. No extra retrieval model calls.",
         "timing_scope": "SDK service includes network; deliberate pacing excluded from service. "
         "Provider cache is observed when reported, not controlled. "
         "No inference-only clock is available.",
@@ -256,7 +264,9 @@ def main() -> int:
         raw = GeminiBackend(controlled)
         backend = CapturedBackend(raw)
         agents = {
-            mode: PortfolioAgent(controlled, backend, use_retrieval=mode == "on")
+            mode: PortfolioAgent(
+                controlled, backend, context_mode="full" if mode == "off" else args.treatment
+            )
             for mode in ("off", "on")
         }
         assert agents["off"].system == agents["on"].system
