@@ -11,6 +11,9 @@
   to evaluator v2 and are not silently upgraded.
 - Fixed shortcut CLI help/global flags and made local/context modes explicit. Corrected
   deleted-report links and removed instructions for deleted helper scripts.
+- Preserved the first supplied CLI run's 8/10 verifier-format failure, added percentage-header
+  support and recorded a separate complete 10/10 run with 21 SDK calls and 54,075 tokens.
+  The optional GUI launcher forwards global configuration and uses the navy/ivory/gold palette.
 
 Source tags, original assessment inputs, frozen suites and captured evaluation reports are not rewritten. The [pre-cleanup snapshot](https://github.com/Shaunakrane914/PortiQ/tree/ace58054c7a778817d68a7c1d81386b7dffd95e8) retains removed experiments and detailed development evidence.
 

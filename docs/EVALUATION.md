@@ -54,14 +54,23 @@ Reports identify evaluator version, data/suite/runtime hashes, configured model,
 metrics and generation mode. Injected fake backends are explicitly labeled non-live. Missing
 provider usage remains unknown. Service, pacing, backoff and end-to-end time are distinct.
 
-## Historical evidence
+## Current and historical evidence
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
+| [Fresh supplied CLI capture](../reports/supplied-v3-2026-11-08/README.md), `b8db4a9` | **10/10 supplied**, 21 SDK calls, 54,075 reported tokens | Evaluator v3; all ten explicit answer-format checks passed; cache/local disabled |
+| [First v3 supplied capture](../reports/supplied-v3-2026-11-08/supplied.json), `f3a9954` | **8/10**, 21 SDK calls, 54,076 tokens | Two false negatives for correct exposure tables with percentage units in their header; raw failed run retained |
 | [Retained CLI-only capture](../reports/cli-2026-11-08/README.md), `4b49d95` | 50/50 extended; 92 SDK calls; 201,404 reported tokens | Evaluator v2: 46 data and four handling cases; six configured narrative cases |
 | [Original-agent supplied capture](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.2.0/supplied.json) | 10/10 | Historical source/evaluator, not current v3 certification |
 | [Original-agent extended capture](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.2.0/extended.json) | 50/50; 97 SDK calls; 266,304 tokens | Historical comparison, not a controlled latency experiment |
 | [v0.1.1 supplied](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.1.1/supplied.json) / [extended](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.1.1/extended.json) | 10/10 / 50/50 | Historical release evidence |
+
+The fresh supplied run took 132.471 seconds of CLI wall time, with 13.143-second mean and
+19.520-second p95 question time, including its child-process-only 6.5-second batch spacing.
+No normal pacing settings or ledger records were reset. It is a full independent run, not
+a rescore or retry of only the failed questions. A subsequent GUI-launcher environment
+forwarding fix changes only the optional Streamlit startup path; analytical model/tool and
+evaluator source remain identical to the capture. That GUI path has separate key-free tests.
 
 The retained eight CLI capture files remain byte-exact and have
 [SHA-256 hashes](../reports/cli-2026-11-08/artifact-sha256.json). Their original scores, failures,

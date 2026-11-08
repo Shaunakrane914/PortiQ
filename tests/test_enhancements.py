@@ -166,3 +166,39 @@ def test_streamlit_chat_uses_shared_local_tools(database: Path, monkeypatch) -> 
     assert any("13" in text.value for text in app.text)
     app.sidebar.button[0].click().run()
     assert not app.session_state["messages"]
+
+
+def test_gui_launcher_preserves_global_configuration(
+    database: Path, source: Path, monkeypatch
+) -> None:
+    from portiq.cli import main
+
+    calls = []
+    monkeypatch.setattr("portiq.cli.importlib.util.find_spec", lambda name: object())
+
+    def launch(arguments, **kwargs):
+        calls.append((arguments, kwargs["env"]))
+        return SimpleNamespace(returncode=0)
+
+    monkeypatch.setattr("portiq.cli.subprocess.run", launch)
+    assert (
+        main(
+            [
+                "--db",
+                str(database),
+                "--source",
+                str(source),
+                "--model",
+                "test-model",
+                "gui",
+                "--port",
+                "8502",
+            ]
+        )
+        == 0
+    )
+    arguments, env = calls[0]
+    assert "--server.port=8502" in arguments
+    assert env["PORTIQ_DB"] == str(database.resolve())
+    assert env["PORTIQ_SOURCE"] == str(source.resolve())
+    assert env["GEMINI_MODEL"] == "test-model"

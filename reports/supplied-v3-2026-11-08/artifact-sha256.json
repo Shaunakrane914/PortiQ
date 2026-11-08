@@ -1,0 +1,16 @@
+{
+  "algorithm": "SHA-256",
+  "scope": "Both complete raw CLI captures; no capture file rewritten",
+  "files": {
+    "cli-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cli-stdout.txt": "a807d3cf4dcbe0c8f2f1fdf78b3a3c5663977dc5efc6f00a58dabadc5b49f585",
+    "final/cli-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final/cli-stdout.txt": "24e929342457658f14b56fd1d9ea62be7989853b0d8042bc3a16b5f57502322b",
+    "final/run-manifest.json": "5fdd77fbe61cb5b189f25924e93a466797f564f4958c9fc5bdaac95352d0c3fe",
+    "final/supplied.json": "0571823c971cd2dca577bdace1f549f2fadae5d6f87e678342b0fc69018dfc4b",
+    "final/supplied.md": "49e552001cd72c18661ef4b02b3a8fb6bac73600eba8fadbdf6f63363913d4bb",
+    "run-manifest.json": "3302594b8aede56208def95dde4aab3c943959a26c35d1467a054d3cb9c256fc",
+    "supplied.json": "6b4a9abc3a546e37a656f57bfbb660b1973e48b4dcf80d861c43f8cd36831f30",
+    "supplied.md": "4ceafa2dc7165674141c4434d291d7f1289b09288978790efb88ced366e43326"
+  }
+}

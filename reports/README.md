@@ -1,6 +1,9 @@
 # Evaluation and verification report index
 
-The active, canonical evaluation evidence for PortiQ is versioned in [`reports/cli-2026-11-08/`](cli-2026-11-08/README.md).
+The latest supplied-ten evidence is [the v3 CLI capture](supplied-v3-2026-11-08/README.md):
+**10/10**, 21 SDK calls and 54,075 reported tokens, with explicit answer checks for all ten.
+The first complete 8/10 capture is separately retained with its verifier-format explanation.
+The historical extended evidence is versioned in [`reports/cli-2026-11-08/`](cli-2026-11-08/README.md).
 
 ## Official Submission Evidence — 8 November 2026
 

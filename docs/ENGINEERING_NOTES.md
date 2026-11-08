@@ -27,6 +27,13 @@ See [enhancement implementation and tests](ENHANCEMENTS.md), [evaluation](EVALUA
 
 ## Historical evidence
 
+The fresh [supplied-ten capture](../reports/supplied-v3-2026-11-08/README.md) on `b8db4a9`
+passed 10/10 with all ten explicit v3 answer checks, 21 SDK calls and 54,075 reported tokens.
+Its first complete 8/10 run is separately retained: percentage units in exposure-table headers
+needed verifier format support. Added tests reject wrong/missing/extra percentages; no failed
+fragments were stitched into the subsequent full run. A later GUI-only configuration-forwarding
+fix does not change the evaluated analytical code.
+
 The retained [8 November CLI capture](../reports/cli-2026-11-08/README.md) on `4b49d95`
 passed 50/50 under evaluator v2 with 92 SDK calls and 201,404 reported tokens. Its six
 configured narrative cases passed; that capture is not retroactively verified under v3.

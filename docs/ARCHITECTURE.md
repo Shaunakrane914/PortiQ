@@ -11,11 +11,13 @@ The original [assignment](assignment/README.md) requires SQL translation, equity
 | Gemini agent / SQL planning | [agent.py](../src/portiq/agent.py), [prompts.py](../src/portiq/prompts.py) | Typed tool selection, focused complex-query planning, bounded repairs, final rendering |
 | SQL execution | [sql.py](../src/portiq/sql.py) | Parse, authorize, bound and execute read-only queries |
 | Required exposure calculator | [exposure.py](../src/portiq/exposure.py) | Resolve one portfolio and normalize stock weights by stock sector |
-| Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, evidence comparison, limited narrative contracts |
+| Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, explicit answer verification and correctness-gated VM-work scores |
+| Metadata retrieval | [retrieval.py](../src/portiq/retrieval.py) | BM25 over live schema/foreign-key documents with source IDs |
 | Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, adaptive sliding-window limiter, local budget, safe retry/circuit handling |
 | Optional service | [service.py](../src/portiq/service.py) | Explicit local capabilities, exact cache, context and sequential fallback |
 | Optional analytics | [analytics.py](../src/portiq/analytics.py) | Snapshots, quote-value reconciliation and data-quality notices |
 | Optional platform | [api.py](../src/portiq/api.py), [web/](../src/portiq/web/) | Single-worker REST adapter and four-view static interface |
+| Optional Streamlit | [streamlit_app.py](../src/portiq/streamlit_app.py) | Chat using the shared analysis services; installed with the GUI extra |
 
 ```mermaid
 flowchart LR
@@ -23,6 +25,8 @@ flowchart LR
   CLI -->|optional context / local / cache| Service[AnalysisService]
   Eval[CLI evaluate] --> Agent
   UI[Static dashboard] --> API[FastAPI] --> Service
+  Streamlit[Optional Streamlit chat] --> Service
+  Agent --> Metadata[Local metadata retrieval]
   Service --> Agent
   Service --> Local[Explicit local calculations / exact cache]
   Agent --> Backend[Metered Gemini backend] --> Gemini[Google GenAI SDK]

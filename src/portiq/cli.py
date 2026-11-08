@@ -120,8 +120,18 @@ def main(argv: list[str] | None = None) -> int:
                     "--server.address=127.0.0.1",
                     f"--server.port={args.port}",
                     "--browser.gatherUsageStats=false",
+                    "--theme.primaryColor=#B69C6A",
+                    "--theme.backgroundColor=#F4F1E8",
+                    "--theme.secondaryBackgroundColor=#F4F1E8",
+                    "--theme.textColor=#111C2E",
                 ],
                 check=False,
+                env=os.environ
+                | {
+                    "PORTIQ_DB": str(settings.database.resolve()),
+                    "PORTIQ_SOURCE": str(settings.source.resolve()),
+                    "GEMINI_MODEL": settings.model,
+                },
             ).returncode
         if args.command == "exposure":
             print(calculate_exposure(settings.database, args.portfolio).model_dump_json(indent=2))

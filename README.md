@@ -1,7 +1,7 @@
 # PortiQ - CLI-first Portfolio Analytics Agent
 
 [![CI](https://github.com/Shaunakrane914/PortiQ/actions/workflows/ci.yml/badge.svg)](https://github.com/Shaunakrane914/PortiQ/actions)
-[Hosted demo](https://portiq-b9u7.onrender.com) | [Assignment checklist](docs/SUBMISSION.md#assignment-requirements) | [Latest CLI evidence](reports/cli-2026-11-08/README.md)
+[Hosted demo](https://portiq-b9u7.onrender.com) | [Assignment checklist](docs/SUBMISSION.md#assignment-requirements) | [Latest supplied CLI evidence](reports/supplied-v3-2026-11-08/README.md)
 
 PortiQ implements the four deliverables in the original [PL Capital assignment](docs/assignment/README.md): a natural-language SQL tool, an equity-only sector exposure calculator, a command-line agent that chooses tools, and a command-line evaluator for the supplied ground truth. The optional API/dashboard uses the same backend. Data is a static demonstration, not live market data or investment advice.
 
@@ -55,7 +55,7 @@ Choose fresh output names: the evaluator writes JSON, Markdown and a temporary p
 
 The [8 November 2026 CLI-only run](reports/cli-2026-11-08/README.md) on `4b49d95` passed **50/50**: 46 data-result cases and four handling cases, **92 actual SDK calls**, **201,404 reported tokens**, zero provider errors, and 593.976 seconds of CLI wall time. The archived original path passed the same suite with 266,304 tokens: 24.37% fewer tokens with no observed regression on those cases. Historical runs are not controlled speed comparisons or proof of unseen accuracy. Six cases have additional automated narrative assertions; all six passed.
 
-The supplied suite's published **10/10** results are historical captures at their recorded revisions; they are not a fresh supplied-suite score for `4b49d95`. [Evaluation methodology and evidence](docs/EVALUATION.md) distinguish supplied, extended, historical, live and key-free checks. Original inputs, frozen suites and captured reports are not rewritten.
+The fresh [supplied-ten CLI run](reports/supplied-v3-2026-11-08/README.md) on `b8db4a9` passed **10/10** under evaluator v3, including explicit final-answer checks for all ten: **21 SDK calls, 54,075 reported tokens**. The earlier complete 8/10 capture is retained; two correct exposure tables were rejected before percentage-header support was fixed. Runs are separate and never stitched. [Evaluation methodology](docs/EVALUATION.md) defines the bounded verification contract. Original inputs, frozen suites and captured reports are not rewritten.
 
 ## Implementation choices
 

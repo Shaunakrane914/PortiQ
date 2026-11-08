@@ -67,7 +67,7 @@ uv run portfolio-agent evaluate --suite extended --output reports/local/extended
 
 Both spend genuine Gemini quota. Use fresh output names: reports are written at the selected path. JSON contains SQL/results/reference comparisons and provider metrics; Markdown contains strict pass/fail. Exit code 1 indicates at least one failure. Successful retries from separate runs are not stitched into a full score.
 
-The latest published [CLI-only extended evidence](../reports/cli-2026-11-08/README.md) captures `4b49d95`: 50/50 passed, 92 SDK calls and 201,404 reported tokens. This is a separate fifty-question regression, not the supplied ten. Published supplied 10/10 captures are historical, with revisions identified in [evaluation](EVALUATION.md). This documentation update does not imply a new supplied-suite model run.
+The fresh [supplied CLI evidence](../reports/supplied-v3-2026-11-08/README.md) captures `b8db4a9`: **10/10**, all ten final-answer checks, 21 SDK calls and 54,075 reported tokens. A separate earlier 8/10 run is retained with its two verifier-format false negatives. The [historical CLI-only extended evidence](../reports/cli-2026-11-08/README.md) captures `4b49d95`: 50/50 under evaluator v2, 92 SDK calls and 201,404 tokens. These are different suites and verification contracts; see [evaluation](EVALUATION.md).
 
 ## Configuration
 

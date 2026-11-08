@@ -31,6 +31,7 @@ uv run portfolio-agent serve
 
 Run `init-db` only for a missing database. Streamlit binds to 127.0.0.1:8501; the existing
 dashboard binds to 127.0.0.1:8000. Streamlit shares server-side quota/cache/session services,
+uses the navy/ivory/gold palette and honors global CLI database/source/model options,
 but each browser conversation has its own opaque session identifier. It is a local optional
 interface; the production recipe serves the existing static dashboard and REST API.
 
