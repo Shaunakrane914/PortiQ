@@ -143,12 +143,12 @@ def analyst(service: AnalysisService, selected: int | None) -> None:
                 st.session_state["gui_cached"] = False
 
         smarter = st.checkbox(
-            "Smarter answer (2 SDK)",
+            "Detailed AI explanation",
             value=False,
             key="gui_smarter",
             on_change=change_answer_mode,
-            help="Gemini reviews results and adds explanation. Usually 2 calls; analysis, "
-            "repairs or retries can add more. Uses live Gemini with local fast path and cache off.",
+            help="Gemini synthesizes an additional explanation from the verified results. "
+            "Default mode provides fast, direct results in 1 call.",
         )
         with st.form("analyst_question", clear_on_submit=True):
             question = st.text_area(

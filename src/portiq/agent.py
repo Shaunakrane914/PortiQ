@@ -385,7 +385,7 @@ class PortfolioAgent:
                 and can_render_complete(traces)
             ):
                 rendering_start = time.perf_counter()
-                answer = render_tools(traces, exact=True)
+                answer = render_tools(traces, exact=True, question=question)
                 if len(answer) <= 10000:
                     completed = finish("answer", answer)
                     completed.rendering = "validated tool results after Gemini complete plan"
@@ -410,7 +410,7 @@ class PortfolioAgent:
                 and not re.search(r"\b(?:and|also|separately|both)\b|[;\n]", question, re.I)
             ):
                 rendering_start = time.perf_counter()
-                answer = render_tools(traces)
+                answer = render_tools(traces, question=question)
                 rendering_ms = (time.perf_counter() - rendering_start) * 1000
                 scalar_response = finish("answer", answer)
                 scalar_response.rendering = "deterministic scalar rendering after Gemini SQL"
@@ -489,7 +489,99 @@ def can_render_complete(tools: list[ToolTrace]) -> bool:
     return True
 
 
-def render_tools(tools: list[ToolTrace], *, max_rows: int = 30, exact: bool = False) -> str:
+def _format_scalar_value(value: Any, *, exact: bool = False) -> str:
+    if value is None:
+        return "Not available"
+    if isinstance(value, int):
+        return format(value, ",")
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            return "Not available"
+        d = Decimal(str(value))
+        text = str(d)
+        if "." in text:
+            integer_part, frac_part = text.split(".", 1)
+            sign = "-" if integer_part.startswith("-") else ""
+            clean_int = integer_part.lstrip("-")
+            return f"{sign}{int(clean_int):,}.{frac_part}"
+        return f"{int(d):,}"
+    return str(value)
+
+
+def _format_label(column: str, question: str = "") -> str:
+    """Format an SQL column or alias into a natural human label without guessing."""
+    col = column.strip()
+    count_match = re.match(r"(?i)^count\s*\((.*?)\)$", col)
+    if count_match:
+        inner = count_match.group(1).strip()
+        if re.match(r"(?i)^distinct\s+", inner):
+            sub = re.sub(r"(?i)^distinct\s+", "", inner).strip().replace("_", " ")
+            return f"Distinct {sub} count"
+        q = question.lower()
+        if "portfolio" in q:
+            return "Total portfolios"
+        if "securit" in q:
+            return "Total securities"
+        if "holding" in q:
+            return "Total holdings"
+        if "transaction" in q:
+            return "Total transactions"
+        return "Total count"
+
+    sum_match = re.match(r"(?i)^sum\s*\((.*?)\)$", col)
+    if sum_match:
+        inner = sum_match.group(1).strip().replace("_", " ")
+        if inner.lower() == "total aum":
+            return "Total AUM"
+        return f"Total {inner.title()}"
+
+    avg_match = re.match(r"(?i)^avg\s*\((.*?)\)$", col)
+    if avg_match:
+        inner = avg_match.group(1).strip().replace("_", " ")
+        return f"Average {inner}"
+
+    min_match = re.match(r"(?i)^min\s*\((.*?)\)$", col)
+    if min_match:
+        inner = min_match.group(1).strip().replace("_", " ")
+        return f"Minimum {inner}"
+
+    max_match = re.match(r"(?i)^max\s*\((.*?)\)$", col)
+    if max_match:
+        inner = max_match.group(1).strip().replace("_", " ")
+        return f"Maximum {inner}"
+
+    known_labels = {
+        "portfolio_count": "Total portfolios",
+        "total_portfolios": "Total portfolios",
+        "total_aum": "Total AUM",
+        "aum": "AUM",
+        "portfolio_name": "Portfolio Name",
+        "portfolio_id": "Portfolio ID",
+        "security_id": "Security ID",
+        "cost_basis": "Cost Basis",
+        "market_value": "Market Value",
+        "current_price": "Current Price",
+        "strategy_type": "Strategy Type",
+        "asset_type": "Asset Type",
+        "sector_name": "Sector",
+        "unrealized_pnl": "Unrealized PnL",
+    }
+    if col.lower() in known_labels:
+        return known_labels[col.lower()]
+
+    if "_" in col and " " not in col:
+        return col.replace("_", " ").title()
+
+    return col
+
+
+def render_tools(
+    tools: list[ToolTrace],
+    *,
+    max_rows: int = 30,
+    exact: bool = False,
+    question: str = "",
+) -> str:
     sections = []
     for tool in tools:
         if tool.error:
@@ -510,19 +602,30 @@ def render_tools(tools: list[ToolTrace], *, max_rows: int = 30, exact: bool = Fa
             )
             continue
         columns, rows = result["columns"], result["rows"]
+        q_context = question or (tool.arguments or {}).get("question") or ""
         if not rows:
             sections.append("No matching rows.")
         elif len(columns) == len(rows) == 1:
             value = rows[0][0]
-            formatted = (
-                _financial(str(value))
-                if value is not None
-                and not exact
-                and columns[0].lower()
-                in {"current_price", "total_aum", "cost_basis", "market_value"}
-                else _cell(value, exact=exact)
-            )
-            sections.append(f"{columns[0]}: {formatted}")
+            label = _format_label(columns[0], q_context)
+            formatted = _format_scalar_value(value, exact=exact)
+            sections.append(f"{label}: {formatted}")
+        elif len(columns) == 1 and len(rows) > 1:
+            count = len(rows)
+            clean_label = _format_label(columns[0], q_context).lower()
+            if "portfolio" in clean_label:
+                entity = "portfolios"
+            elif "securit" in clean_label or clean_label == "symbols":
+                entity = "securities"
+            elif "sector" in clean_label:
+                entity = "sectors"
+            elif clean_label.endswith("s"):
+                entity = clean_label
+            else:
+                entity = clean_label + "s"
+            header = f"{count} matching {entity}:"
+            items = [f"* {_cell(r[0], exact=exact)}" for r in rows[:max_rows]]
+            sections.append(header + "\n" + "\n".join(items))
         else:
             sections.append(
                 " | ".join(_cell(c, exact=exact) for c in columns)

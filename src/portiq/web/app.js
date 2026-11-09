@@ -696,11 +696,11 @@ async function analyst() {
     l.append(i, document.createTextNode(" " + text));
     return l;
   };
-  const smarterLabel = lab("Smarter answer (2 SDK)", smarter);
+  const smarterLabel = lab("Detailed AI explanation", smarter);
   smarterLabel.className = "smarter-option";
   const smarterHelp = el(
     "p",
-    "Gemini reviews results and adds an explanation. Usually 2 calls; analysis, repairs or retries can add more. Uses live Gemini with local fast path and cache off.",
+    "Gemini synthesizes an additional explanation from the verified results. Default mode provides fast, direct results in 1 call.",
     "caption",
   );
   smarterHelp.id = "smarter-help";

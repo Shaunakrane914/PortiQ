@@ -261,7 +261,7 @@ def local_answer(settings: Settings, question: str, selected: int | None) -> Age
     for tool in tools:
         tool.duration_ms = (time.perf_counter() - started) * 1000
     render_start = time.perf_counter()
-    text = render_tools(tools)
+    text = render_tools(tools, question=question)
     render_ms = (time.perf_counter() - render_start) * 1000
     return AgentResponse(
         request_id=str(uuid4()),

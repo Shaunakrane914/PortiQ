@@ -1,5 +1,15 @@
 # Change history
 
+## Polished 1-call presentation and Detailed AI explanation toggle — 9 November 2026
+
+- Upgraded 1-call deterministic rendering (`render_tools`):
+  - Natural aggregate labels: formats `COUNT(*)`, `SUM(...)`, `AVG(...)`, `MIN(...)`, `MAX(...)` into grounded labels without guessing (e.g. `Total portfolios: 13`, `Total AUM: 5,000,000.00`).
+  - Single-column list rendering: formats lists into clean bulleted entries with count header (e.g. `3 matching portfolios:\n* Portfolio A...`) instead of raw column dumps.
+  - Financial safety: preserves exact numeric values with standard grouping commas without inventing currency symbols. Structured evidence (`tool.result`) remains completely untouched.
+  - Added regression test suite (`tests/test_rendered_presentation.py`) covering counts, distinct aggregates, sums, averages, min/max, lists, nulls, negatives, and sector exposures.
+- Renamed the UI toggle in both web dashboard and Streamlit to **"Detailed AI explanation"** with updated help text describing it as an additional Gemini synthesis step.
+- Full Python test suite passed (313 tests), and Playwright browser tests passed (13 tests).
+
 ## Per-request smarter answer mode with Gemini synthesis — 9 November 2026
 
 - Added a user-facing **"Smarter answer (2 SDK)"** toggle to both the web dashboard (`src/portiq/web/app.js`) and Streamlit application (`src/portiq/streamlit_app.py`).

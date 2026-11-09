@@ -1,20 +1,20 @@
-# Smarter Answer (2 SDK) Live Verification Evidence
+# Detailed AI Explanation & Synthesis Live Verification Evidence
 
 **Date:** 9 November 2026  
-**Scope:** Per-request "Smarter answer (2 SDK)" toggle evaluation across dashboard and Streamlit UI interfaces.
+**Scope:** Per-request "Detailed AI explanation" toggle evaluation across dashboard and Streamlit UI interfaces.
 
 ---
 
 ## Overview
 
-A new user-facing checkbox **"Smarter answer (2 SDK)"** allows users in both the web dashboard (`src/portiq/web/app.js`) and Streamlit application (`src/portiq/streamlit_app.py`) to opt into full Gemini model synthesis on demand.
+A user-facing checkbox **"Detailed AI explanation"** allows users in both the web dashboard (`src/portiq/web/app.js`) and Streamlit application (`src/portiq/streamlit_app.py`) to opt into an additional Gemini model synthesis step on demand.
 
 ### Behavior Matrix
 
-| Control State | SDK Calls | Path & Caching | Output Format & Synthesis |
+| Control State | Typical Model Calls | Path & Caching | Output Format & Synthesis |
 | :--- | :--- | :--- | :--- |
-| **Unchecked (Default)** | 1 SDK call | Direct results fast-path; exact cache enabled if selected | Concise direct result (e.g. `COUNT(*): 13`) |
-| **Checked (Smarter)** | 2 SDK calls | Local fast path & exact cache bypassed (`cache: "disabled"`) | Full Gemini model synthesis with explanation (e.g. `There are 13 portfolios in total.`) |
+| **Unchecked (Default)** | 1 call | Direct results fast-path; exact cache enabled if selected | Polished direct result (e.g. `Total portfolios: 13`) |
+| **Checked (Detailed)** | Additional synthesis | Local fast path & exact cache bypassed (`cache: "disabled"`) | Full Gemini model synthesis with explanation (e.g. `There are 13 portfolios in total.`) |
 
 ---
 

@@ -142,9 +142,9 @@ test("reconciliation export and mobile layout", async ({ page }) => {
   });
 });
 
-test("smarter answer selects live synthesis and keeps the fast controls exclusive", async ({ page }) => {
+test("detailed explanation selects live synthesis and keeps the fast controls exclusive", async ({ page }) => {
   await page.goto("/");
-  const smarter = page.getByRole("checkbox", { name: "Smarter answer (2 SDK)", exact: true });
+  const smarter = page.getByRole("checkbox", { name: "Detailed AI explanation", exact: true });
   const local = page.getByRole("checkbox", { name: "Local fast path" });
   const cache = page.getByRole("checkbox", { name: "Exact cache" });
   await expect(smarter).not.toBeChecked();
@@ -163,12 +163,12 @@ test("smarter answer selects live synthesis and keeps the fast controls exclusiv
   await expect(page.getByText("Analysis is temporarily unavailable. Please try again later.", {exact:true})).toBeVisible();
   await page.getByRole("button", { name: "Overview", exact:true }).click();
   await page.getByRole("button", { name: "AI Analyst", exact:true }).click();
-  await expect(page.getByRole("checkbox", {name:"Smarter answer (2 SDK)",exact:true})).toBeChecked();
+  await expect(page.getByRole("checkbox", {name:"Detailed AI explanation",exact:true})).toBeChecked();
   await page.screenshot({path:shots+"/smarter-answer-desktop.png",fullPage:true});
   await page.setViewportSize({width:390,height:844});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
   await page.screenshot({path:shots+"/smarter-answer-mobile.png",fullPage:true});
-  await page.getByRole("checkbox", {name:"Smarter answer (2 SDK)",exact:true}).uncheck();
+  await page.getByRole("checkbox", {name:"Detailed AI explanation",exact:true}).uncheck();
   await expect(page.getByRole("checkbox", {name:"Local fast path"})).toBeEnabled();
 });
 test("public interface omits assessment and internal metadata", async ({

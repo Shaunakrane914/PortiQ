@@ -9,27 +9,27 @@ test("Streamlit matches the workspace and keeps model controls explicit", async 
   await expect(page.getByText("PORTFOLIO INTELLIGENCE", { exact: true })).toBeVisible();
   await expect(page.getByRole("checkbox", { name: "Local fast path" })).not.toBeChecked();
   await expect(page.getByRole("checkbox", { name: "Exact cache" })).not.toBeChecked();
-  await expect(page.getByRole("checkbox", { name: "Smarter answer (2 SDK)", exact:true })).not.toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Detailed AI explanation", exact:true })).not.toBeChecked();
   await page.getByText("Local fast path", { exact: true }).click();
   await page.getByRole("textbox", { name: "Ask PortiQ", exact: true }).fill("Count all portfolios");
   await page.getByRole("button", { name: /^Analyze/ }).click();
-  await expect(page.getByText("portfolio_count: 13", { exact: true })).toBeVisible();
+  await expect(page.getByText("Total portfolios: 13", { exact: true })).toBeVisible();
   await expect(page.getByText(/0 SDK calls/)).toBeVisible();
   await page.getByRole("button", { name: "New conversation", exact: true }).click();
-  await expect(page.getByText("portfolio_count: 13", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Total portfolios: 13", { exact: true })).toHaveCount(0);
 });
 
 test("Streamlit smarter mode disables local/cache while preserving the question", async ({ page }) => {
   await page.getByText("Local fast path",{exact:true}).click();
   await page.getByRole("textbox",{name:"Ask PortiQ",exact:true}).fill("Count all portfolios");
-  await page.getByText("Smarter answer (2 SDK)",{exact:true}).click();
+  await page.getByText("Detailed AI explanation",{exact:true}).click();
   await expect(page.getByRole("checkbox",{name:"Local fast path"})).toBeDisabled();
   await expect(page.getByRole("checkbox",{name:"Exact cache"})).toBeDisabled();
   await expect(page.getByRole("checkbox",{name:"Local fast path"})).not.toBeChecked();
   await expect(page.getByRole("textbox",{name:"Ask PortiQ",exact:true})).toHaveValue("Count all portfolios");
   await page.getByRole("button",{name:/^Analyze/}).click();
   await expect(page.getByText("Analysis is temporarily unavailable. Please try again later.",{exact:true})).toBeVisible();
-  await page.getByText("Smarter answer (2 SDK)",{exact:true}).click();
+  await page.getByText("Detailed AI explanation",{exact:true}).click();
   await expect(page.getByRole("checkbox",{name:"Local fast path"})).toBeEnabled();
 });
 

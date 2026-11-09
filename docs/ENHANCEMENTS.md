@@ -40,10 +40,11 @@ selector and backend calculations. SQL evidence, SDK/token/timing metrics and re
 CSV export are available in Streamlit. Questions render as escaped plain text; the launcher
 hides framework deployment controls and client error traces.
 
-Both the web dashboard and Streamlit support a per-request **"Smarter answer (2 SDK)"** checkbox.
-When checked, the system bypasses local deterministic shortcuts and exact cache hits, requiring
-Gemini to synthesize an explained narrative answer from the authoritative tool data (typically 2 SDK calls).
-When left unchecked (the default), factual queries utilize direct tool results with 1 SDK call.
+Both the web dashboard and Streamlit support a per-request **"Detailed AI explanation"** checkbox.
+When checked, the system bypasses local deterministic shortcuts and exact cache hits, requesting
+an additional Gemini synthesis step to interpret and explain the findings in narrative form.
+When left unchecked (the default), factual queries utilize polished 1-call direct tool results
+(e.g., `Total portfolios: 13`, `3 matching portfolios:\n* ...`) without inventing currency symbols or changing underlying calculations.
 
 ## Production deployment profile
 
