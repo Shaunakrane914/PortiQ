@@ -101,24 +101,23 @@ preserved with the experiment. Ordinary evaluation does not contain a retrieval 
 
 ## Current and historical evidence
 
-The [completed verification](../reports/completion-2026-11-09/README.md), unchanged runtime
-from source `2a68b74` through `a29d1c0`, completed
-the previously quota-blocked three-user hybrid conversation protocol: all nine fresh
-answers and session follow-ups passed, with 22 SDK attempts, 40,972 reported tokens and
-no quota responses. A separate fresh supplied CLI run passed 10/10 under v4, with 21
-SDK attempts and 48,292 reported tokens. Both disable local/cache/fallback answers.
+The [fresh single-run capture](../reports/single-run-2026-11-09/README.md) records **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
+One native evaluator trial ran all fifty frozen questions in order and exited 0. It used a
+fresh database, genuine Gemini, no cache/local fast paths/fallback models and no post-run
+answer substitutions. Source, suite and database hashes were unchanged.
 
-The extended v4 completion result is **50/50 passed after retries**, including all three
-hybrids and all 46 data-answer checks. It includes the full evaluation, recovery and requested
-confirmation: 54 executions, 102 SDK attempts and 217,421 reported tokens. Summed capture
-time is 865.927 seconds; mean/p95 per execution are 15.990/47.091 seconds. Six SDK errors
-had unreported usage. Final-answer relative pager-work score averages 98.25.
+The capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time. Mean/p95 question durations
+are 14.926/28.658 seconds. Provider service, pacing and backoff totals are
+431.934, 270.691 and 2.298 seconds. 2 provider-error attempts and
+2 attempts with unreported usage are retained. Mean correctness-gated pager-work score
+is 98.25/100. All 46 explicit data-answer checks and three hybrids pass.
 
-The retry-aware summary selects the latest recorded attempt for each question, then
-independently re-executes and verifies all fifty using the original full-suite rules. It
-retains source capture hashes, all attempt locations and every provider attempt in usage
-totals. It is a completion view across retries, not a new single-run evaluator capture.
-Earlier offline replays are separate evidence and contribute no answers or usage to it.
+Separately, supplied CLI passed 10/10 with 21 SDK attempts and 48,292 reported tokens;
+three concurrent hybrid conversations passed 9/9 with 22 SDK attempts and 40,972 tokens.
+The [campaign metrics](../reports/single-run-2026-11-09/campaign-metrics.json) account for all
+243 genuine SDK attempts and 519,072 captured reported tokens through this run,
+including all earlier evaluations/recoveries. Earlier retry-aware completion summaries are
+historical reporting views; no answers from them were inserted into the new native capture.
 
 The [earlier 9 November verification](../reports/assurance-2026-11-09/README.md) includes a fresh
 supplied v4 CLI pass at `a3b9b24` (10/10, 21 SDK attempts, 48,249 reported tokens, measured page
@@ -140,8 +139,9 @@ explains why both retrieval strategies and their comparison runners were removed
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
+| [Fresh single full CLI run](../reports/single-run-2026-11-09/extended.json), `a9f1e67` | **50/50**, 93 SDK attempts, 205,940 reported tokens | One full native v4 trial; no post-run substitutions; all 46 data-answer checks and three hybrids pass |
 | [New-key supplied v4 CLI](../reports/retest-2026-11-09/supplied-first/supplied.json), `2a68b74` | **10/10**, 21 SDK attempts, 48,292 reported tokens | Fresh generation on the final verifier/context runtime; all ten answer checks, measured SQL pager work |
-| [Extended v4 completion](../reports/completion-2026-11-09/completion.json), runtime unchanged | **50/50 passed after retries**, 102 SDK attempts, 217,421 reported tokens | All 54 executions counted; six attempts have unknown usage; 46 final data-answer checks pass; full provenance retained |
+| [Earlier retry-aware completion](../reports/completion-2026-11-09/completion.json), runtime unchanged | **50/50 passed after retries**, 102 SDK attempts, 217,421 reported tokens | All 54 executions counted; six attempts have unknown usage; 46 final data-answer checks pass; full provenance retained |
 | [Requested confirmation retry](../reports/completion-2026-11-09/retry.json), `a29d1c0` | **2/2**, 4 SDK attempts, 9,324 reported tokens | Latest answers for questions 12 and 13; included in completion accounting |
 | [Earlier provider recovery](../reports/retest-2026-11-09/provider-recovery.json), `2a68b74` | **2/2**, 4 SDK attempts, 9,307 reported tokens | Earlier recovery capture also included in usage accounting |
 | [New-key live concurrent conversations](../reports/retest-2026-11-09/live-conversations.json), `2a68b74` | **9/9**, 22 SDK attempts, 40,972 reported tokens | Three concurrent users, three turns each; both tools, isolated session follow-ups; no quota failures |

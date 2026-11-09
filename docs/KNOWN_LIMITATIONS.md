@@ -8,11 +8,10 @@ mandatory and optional requirements to implementations.
 - The fresh supplied v4 retest passed 10/10 on `2a68b74`; the earlier verifier replay accepts
   all fifty archived answers and rejects 46 bad-prose mutations. Known finite suites and
   different generation/replay scopes are not blind validation.
-- The [extended completion result](../reports/completion-2026-11-09/README.md) is 50/50
-  passed after retries, across 54 question executions, 102 SDK attempts and 217,421 reported
-  tokens. Six failed SDK attempts had unreported usage, so captured tokens are not a complete
-  billing total. This retry-aware result has separate provenance from a single uninterrupted
-  run. Provider availability remains an external dependency.
+- The [fresh extended v4 capture](../reports/single-run-2026-11-09/README.md) passes 50/50 in one full CLI run:
+  93 SDK attempts, 205,940 reported tokens, 747.520 seconds of CLI wall time. It includes normal bounded SDK retry behavior;
+  2 provider-error attempts and 2 attempts with unreported usage are retained in the metrics.
+  Known-suite success does not establish blind/unseen accuracy or provider availability.
 - Evaluator v4 verifies explicit scalar, list, table and exposure representations. Missing
   required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
   checker does not prove arbitrary English entailment, advice or additional unstructured claims.

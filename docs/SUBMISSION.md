@@ -2,10 +2,10 @@
 
 The unchanged [original assignment](assignment/README.md) is the source of requirements. Its deliverables are a working command-line agent, a ground-truth evaluator, brief run documentation and clean code with error handling. The API/dashboard and other enhancements are optional.
 
-[Current completion evidence](../reports/completion-2026-11-09/README.md): **50/50 extended
-passed after retries**, supplied 10/10, hybrid 3/3 and concurrent conversations 9/9. Extended
-accounting covers 54 executions, 102 SDK attempts and 217,421 reported tokens; six attempts
-have unreported usage. The report records all timing and operational checks.
+[Current evaluation evidence](../reports/single-run-2026-11-09/README.md): **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
+The fresh full-suite capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time.
+Supplied evaluation passes 10/10 and concurrent conversations 9/9. Full usage, latency,
+SQL-work metrics, source hashes and operational checks are recorded in the report.
 
 ## Assignment requirements
 

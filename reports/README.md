@@ -1,31 +1,28 @@
 # Evaluation and verification report index
 
-The [current completion report](completion-2026-11-09/README.md) records **50/50 extended
-passed after retries**, supplied CLI 10/10, all three hybrids passing and live concurrent
-conversations 9/9. It includes every extended execution across evaluation, recovery and
-confirmation: **54 executions, 102 SDK attempts, 217,421 reported tokens** and **865.927
-seconds of summed capture time**. Six attempts have unreported usage.
+**Current result: [50/50 passed in one full CLI run](single-run-2026-11-09/README.md).**
+The fresh native v4 evaluator ran all fifty frozen questions once in order and exited 0,
+with no post-run answer substitutions. All 46 data-answer checks and three hybrids pass.
+The capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time; mean/p95 question times
+are 14.926/28.658 seconds. Full provider, pacing, backoff and SQL-work metrics are retained.
 
-The retry-aware summary independently verifies the latest answer for every case and retains
-all source capture hashes. [Campaign metrics](completion-2026-11-09/campaign-metrics.json)
-cover all new-key checks through confirmation: 150 genuine SDK attempts and 313,132 captured
-reported tokens. The token total omits six failed attempts with unknown usage and two
-live-pytest calls whose token metadata was not collected. It is not a complete billing total.
+[Campaign accounting](single-run-2026-11-09/campaign-metrics.json) covers every earlier
+genuine verification/recovery plus this fresh full run: 243 SDK attempts and
+519,072 captured reported tokens. Across that broader history, 8 failed attempts
+have unreported usage and two live-pytest calls have uncollected token metadata. Reported
+tokens are not complete billing totals or Google's remaining quota.
 
 | Evidence | Scope |
 |---|---|
-| [Completion and metrics](completion-2026-11-09/README.md) | Current 50/50 completion after retries, final-answer re-verification and all execution accounting |
-| [New-key capture index](retest-2026-11-09/README.md) | Raw evaluation, recovery, live HTTP/browser, load, Docker and assignment-integrity evidence |
+| [Fresh full CLI run](single-run-2026-11-09/README.md) | Current single-run 50/50; native JSON/Markdown, terminal streams, input/runtime hashes and metrics |
+| [Earlier completion view](completion-2026-11-09/README.md) | Historical retry-aware summary with all attempts and usage accounted for |
+| [New-key capture index](retest-2026-11-09/README.md) | Supplied 10/10, live conversations 9/9, dashboard/Streamlit, HTTP/stub soak, Docker and assignment integrity |
 | [Earlier assurance](assurance-2026-11-09/README.md) | Verifier corrections, offline replay, adversarial checks and quota-interrupted attempts |
 | [No-RAG supplied](supplied-no-rag-2026-11-09/README.md) | Fresh 10/10 under evaluator v3, source `0b3e94a` |
 | [After graph removal](supplied-after-graph-removal-2026-11-08/README.md) | Fresh 10/10 under v3, source `f14ea21`; BM25 still active |
-| [Supplied v3](supplied-v3-2026-11-08/README.md) | Earlier supplied captures with verifier-format diagnosis |
-| [Extended v2](cli-2026-11-08/README.md) | Historical 50/50 on `4b49d95`, 92 SDK attempts, 201,404 reported tokens; limited narrative verification |
+| [Supplied v3](supplied-v3-2026-11-08/README.md) | Historical supplied captures and verifier-format diagnosis |
+| [Extended v2](cli-2026-11-08/README.md) | Historical 50/50 on `4b49d95`; evaluator v2 |
 
-Raw captures retain their original outcomes. Retry-aware completion, single-run results,
-offline replay and stub load tests are distinct evidence scopes.
-
-Both retrieval experiments were removed from the active architecture and preserved in Git:
-[BM25 paired evidence](https://github.com/Shaunakrane914/PortiQ/blob/d65927b2e59e07c76ff3795e1395c0724a439241/reports/rag-ablation-2026-11-08/README.md)
-and [schema-graph evidence](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md).
-See the [engineering decision](../docs/ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded).
+The [engineering decision](../docs/ENGINEERING_NOTES.md#metadata-retrieval-evaluated-and-excluded)
+links the archived BM25 and schema-graph experiments. Original captures and their outcomes
+remain unchanged; single-run, retry-aware, offline and stub evidence retain distinct scopes.

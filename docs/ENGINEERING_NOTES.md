@@ -4,11 +4,10 @@ The original [assignment](assignment/README.md) prioritizes a working CLI, accur
 tools, a ground-truth evaluator and brief run instructions. The optional enhancements are
 implemented without making web, Streamlit or Node dependencies mandatory for the core CLI.
 
-[Current verified completion](../reports/completion-2026-11-09/README.md): **50/50 passed
-after retries**, with all 54 executions, 102 SDK attempts and 217,421 reported tokens counted.
-The summary independently verifies the latest answer for each case against the original
-rules and links its raw source. No runtime or evaluation criteria changed to obtain this
-completion result; prior captures and unknown-usage attempts remain intact.
+[Current verified result](../reports/single-run-2026-11-09/README.md): **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
+The fresh native v4 capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time, with no
+post-run substitutions. No runtime or evaluator criterion changed. Original raw captures
+and provider-attempt accounting remain intact; campaign totals are recorded separately.
 
 - `main.py` is a shortcut to the canonical parser. Global options are preserved, missing
   databases initialize only for ask/chat, and local/cache/context modes require explicit flags.

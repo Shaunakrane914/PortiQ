@@ -1,10 +1,10 @@
 # New-key verification captures — 9 November 2026
 
-**Current extended result: [50/50 passed after retries](../completion-2026-11-09/README.md).**
-The completion report includes the original evaluation, recovery and requested confirmation:
-54 executions, 102 SDK attempts, 217,421 reported tokens and 865.927 seconds of summed
-capture time. All raw capture outcomes remain unchanged. The retry-aware summary links
-each final answer to its source and independently verifies it against the original rules.
+**Current extended result: [50/50 passed in one full CLI run](../single-run-2026-11-09/README.md).**
+The new native evaluator capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time,
+with all fifty questions evaluated once in order and no post-run substitutions. This
+directory retains its own original captures; the earlier retry-aware completion view and
+its metrics remain in their [historical summary](../completion-2026-11-09/README.md).
 
 This directory retains the new-key captures on the unchanged runtime from `2a68b74`
 through `a29d1c0`, Gemini `gemini-3.1-flash-lite` and evaluator v4. No runtime changes were

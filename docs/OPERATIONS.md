@@ -66,10 +66,10 @@ The stub soak measures API capacity, rejection/recovery, readiness and isolation
 are not Gemini inference measurements. Output files must be fresh. Neither test establishes
 a production SLA, unlimited throughput or distributed availability.
 
-[Latest verification](../reports/completion-2026-11-09/README.md) records 50/50 extended
-passed after retries, supplied 10/10, nine correct real-provider conversation answers,
-complete usage/timing accounting, soak and Docker checks. The earlier
-[quota-interrupted attempts](../reports/assurance-2026-11-09/README.md) remain unchanged.
+[Latest verification](../reports/single-run-2026-11-09/README.md) records 50/50 passed in one full CLI run,
+93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time. Supplied CLI 10/10, nine correct real-provider
+conversation answers, provider/latency accounting, soak and Docker checks are included.
+Original historical captures remain unchanged.
 
 ## Performance-aware evaluation
 

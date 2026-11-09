@@ -2,10 +2,10 @@
 
 The original [assignment](assignment/README.md) requires SQL translation, equity sector exposure, CLI tool selection and a CLI evaluator. They remain the core. The optional HTTP/UI layer adapts the same calculations and agent.
 
-The unchanged runtime's [current verification](../reports/completion-2026-11-09/README.md)
-records 50/50 extended passed after retries, supplied 10/10 and live concurrent conversations
-9/9, with full provider/timing accounting. Retry completion is a reporting view over immutable
-captures; it does not modify runtime routing, SQL safeguards or evaluator pass conditions.
+The unchanged runtime's [current verification](../reports/single-run-2026-11-09/README.md) records **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
+The native evaluator capture contains 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time.
+Supplied evaluation passes 10/10 and concurrent conversations 9/9. Reporting does not alter
+runtime routing, SQL safeguards or evaluator pass conditions.
 
 ## Components and ownership
 

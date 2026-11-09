@@ -1,5 +1,8 @@
 # 50/50 passed after retries — 9 November 2026
 
+**Latest result: [50/50 passed in one full CLI run](../single-run-2026-11-09/README.md).**
+This page retains the earlier retry-aware reporting scope and its original metrics.
+
 **All 50 extended questions pass after retries**, including 46 verified data answers,
 four handling cases and all three hybrids. Supplied CLI evaluation passes 10/10, and
 three concurrent hybrid conversations complete all nine answers correctly.

@@ -1,5 +1,17 @@
 # Change history
 
+## Fresh single-run extended verification — 9 November 2026
+
+- **50/50 passed in one full CLI run**, including all 46 data-answer checks and three
+  hybrids. The unmodified native evaluator completed one trial in original order, exited 0
+  and used no post-run substitutions.
+- Recorded 93 SDK attempts, 205,940 reported tokens, 747.520 seconds of CLI wall time, mean/p95
+  14.926/28.658 seconds and 98.25/100 mean relative pager-work score.
+- Preserved 2 provider-error attempts and 2 unknown-usage attempts in the metrics. Normal
+  runtime configuration, data, prompts, safeguards and evaluator criteria were unchanged.
+- Updated current documentation and [single-run evidence](../reports/single-run-2026-11-09/README.md); historical
+  captures retain their original bytes. Complete campaign accounting is reported separately.
+
 ## New-key retest — 9 November 2026
 
 - Completed the previously quota-blocked live protocol: three users, three hybrid turns

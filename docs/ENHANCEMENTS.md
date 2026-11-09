@@ -79,18 +79,15 @@ responsibilities. A passing smoke test is not a security certification or availa
 
 ## Validation
 
-The [completed verification](../reports/completion-2026-11-09/README.md) records 282 local tests, fresh
-supplied v4 CLI 10/10, a completed nine-answer real three-user hybrid protocol, a 60-second
-HTTP/stub soak and all 16 production Docker checks. Browser verification includes actual
-dashboard and Streamlit servers. Earlier failed/quota-interrupted runs remain in the
-[previous evidence](../reports/assurance-2026-11-09/README.md). This is verified single-process
-behavior, not distributed/SLA proof.
+The [current verification](../reports/single-run-2026-11-09/README.md) records **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids. The fresh full-suite native
+capture contains 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time, with no post-run substitutions.
+Mean/p95 question times are 14.926/28.658 seconds; final relative pager-work score averages
+98.25/100. 2 provider-error attempts and 2 unknown-usage attempts remain accounted for.
 
-The extended v4 completion result is **50/50 passed after retries**, including all three
-hybrids. Accounting includes all 54 executions across evaluation, recovery and confirmation:
-102 SDK attempts, 217,421 reported tokens and 865.927 seconds of summed capture time.
-Six SDK errors had unreported usage. The completion summary links every final answer to its
-source capture and distinguishes retry-aware completion from an uninterrupted run.
+Also verified: supplied CLI 10/10, live three-user hybrid conversations 9/9, 282 local tests,
+actual dashboard/Streamlit browser answers, a 60-second HTTP/stub soak and all 16 production
+Docker checks. Full campaign accounting and raw provenance are linked from the report.
+This is supported single-process behavior, not distributed availability or SLA proof.
 
 `tests/test_enhancements.py` checks query work, rate reservations, simultaneous
 requests, overload recovery, production settings and an actual Streamlit AppTest session.
