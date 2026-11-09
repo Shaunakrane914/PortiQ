@@ -69,7 +69,9 @@ def parser() -> argparse.ArgumentParser:
     evaluation = commands.add_parser(
         "evaluate", help="Live Gemini evaluation with independent oracles"
     )
-    evaluation.add_argument("--suite", choices=["supplied", "extended"], default="supplied")
+    evaluation.add_argument(
+        "--suite", choices=["supplied", "extended", "unseen"], default="supplied"
+    )
     evaluation.add_argument("--output", type=Path, default=Path("reports/local/evaluation.json"))
     evaluation.add_argument("--trials", type=int, choices=range(1, 6), default=1)
     evaluation.add_argument("--split", choices=["development", "validation", "heldout"])
@@ -208,6 +210,8 @@ def main(argv: list[str] | None = None) -> int:
             suite = settings.source / (
                 "ground_truth_dataset.json"
                 if args.suite == "supplied"
+                else "evaluation/unseen_nlp.json"
+                if args.suite == "unseen"
                 else "evaluation/extended.json"
             )
             if args.limit is not None and args.limit <= 0:

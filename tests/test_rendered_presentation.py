@@ -62,12 +62,34 @@ def test_render_min_max() -> None:
         question="Minimum and maximum current price",
     )
     rendered = render_tools([trace], question="Minimum and maximum current price")
-    assert rendered == "MIN(current_price) | MAX(current_price)\n28.95 | 3,380"
+    expected_table = (
+        "| Minimum current price | Maximum current price |\n| --- | --- |\n| 28.95 | 3,380 |"
+    )
+    assert rendered == expected_table
     assert "$" not in rendered
     expected = [
         {
             "columns": ["MIN(current_price)", "MAX(current_price)"],
             "rows": [[28.95, 3380.0]],
+            "tool": "sql_query",
+        }
+    ]
+    assert verify_answer(rendered, expected, [])["status"] == "passed"
+
+
+def test_render_grouped_aggregate_table() -> None:
+    trace = make_tool(
+        ["status", "COUNT(*)"],
+        [["Active", 10], ["Passive", 3]],
+        sql="SELECT status, COUNT(*) FROM portfolios GROUP BY status ORDER BY status",
+        question="Count portfolios by status",
+    )
+    rendered = render_tools([trace], question="Count portfolios by status")
+    assert rendered == "| Status | Portfolios |\n| --- | --- |\n| Active | 10 |\n| Passive | 3 |"
+    expected = [
+        {
+            "columns": ["status", "COUNT(*)"],
+            "rows": [["Active", 10], ["Passive", 3]],
             "tool": "sql_query",
         }
     ]
@@ -102,6 +124,42 @@ def test_render_complex_arithmetic_aggregate() -> None:
         {"columns": ["SUM(quantity * current_price)"], "rows": [[150000.0]], "tool": "sql_query"}
     ]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
+
+
+def test_render_rejects_broad_population_label_for_filtered_query() -> None:
+    trace = make_tool(
+        ["COUNT(*)"],
+        [[10]],
+        sql="SELECT COUNT(*) FROM portfolios WHERE is_active = 1",
+        question="How many active portfolios do we have?",
+    )
+    rendered = render_tools([trace], question="How many active portfolios do we have?")
+    assert rendered == "Active portfolios: 10"
+    assert "Total portfolios" not in rendered
+
+
+def test_render_rejects_invented_currency() -> None:
+    trace = make_tool(["total_aum"], [[15000000.0]], question="Show total AUM")
+    rendered = render_tools([trace], question="Show total AUM")
+    assert rendered == "Total AUM: 15,000,000.0"
+    assert not any(symbol in rendered for symbol in ["$", "€", "£", "USD", "EUR"])
+
+
+def test_unseen_nlp_benchmark_integrity() -> None:
+    import json
+    from pathlib import Path
+
+    benchmark_path = Path("evaluation/unseen_nlp.json")
+    assert benchmark_path.exists(), "evaluation/unseen_nlp.json must exist"
+    with benchmark_path.open(encoding="utf-8") as f:
+        data = json.load(f)
+    questions = data.get("questions", [])
+    assert len(questions) >= 30, (
+        f"Benchmark must have at least 30 questions, found {len(questions)}"
+    )
+    for q in questions:
+        assert "id" in q and "question" in q and "category" in q
+        assert "ground_truth" in q or "references" in q or "expected_status" in q
 
 
 def test_render_single_column_list() -> None:

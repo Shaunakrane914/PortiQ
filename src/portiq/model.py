@@ -51,7 +51,7 @@ class GeminiBackend:
         self.client = genai.Client(
             api_key=key,
             http_options=types.HttpOptions(
-                timeout=30000, retry_options=types.HttpRetryOptions(attempts=1)
+                timeout=60000, retry_options=types.HttpRetryOptions(attempts=1)
             ),
         )
 
@@ -76,7 +76,7 @@ class GeminiBackend:
             self.client = genai.Client(
                 api_key=self.settings.require_key(),
                 http_options=types.HttpOptions(
-                    timeout=30000, retry_options=types.HttpRetryOptions(attempts=1)
+                    timeout=60000, retry_options=types.HttpRetryOptions(attempts=1)
                 ),
             )
             self.circuit_until = 0

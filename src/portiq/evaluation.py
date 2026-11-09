@@ -118,6 +118,8 @@ def _record(case: dict[str, Any]) -> dict[str, Any]:
         "routing_correct": False,
         "answer_correct": False,
         "result_correct": None,
+        "data_correct": None,
+        "projection_exact": None,
         "status_correct": False,
         "sql_valid": None,
         "narrative_status": "not_checked",
@@ -162,6 +164,19 @@ def _compare_evidence(reference: dict[str, Any], candidate: dict[str, Any]) -> s
         return str(candidate["error"])
     actual = candidate["result"]
     if reference["tool"] == "sql_query":
+        ref_cols = [c.lower() for c in reference["columns"]]
+        actual_cols = [c.lower() for c in actual["columns"]]
+        candidate["projection_exact"] = (len(reference["columns"]) == len(actual["columns"]))
+        has_all_cols = len(ref_cols) <= len(actual_cols) and all(c in actual_cols for c in ref_cols)
+        if has_all_cols and not candidate["projection_exact"]:
+            indices = [actual_cols.index(c) for c in ref_cols]
+            projected = [[row[i] for i in indices] for row in actual["rows"]]
+            candidate["data_correct"] = (
+                compare_rows(reference["rows"], projected, ordered=reference["ordered"]) is None
+            )
+        else:
+            candidate["data_correct"] = candidate["projection_exact"]
+
         if len(reference["columns"]) != len(actual["columns"]):
             return f"Projection width: expected {reference['columns']}, got {actual['columns']}."
         return compare_rows(reference["rows"], actual["rows"], ordered=reference["ordered"])
@@ -263,6 +278,25 @@ def score_answer(
     ]
     if expected_status == "answer":
         record["result_correct"] = assignment is not None
+        if assignment is not None:
+            matched_candidates = [candidates[assignment[i]] for i in range(len(expected))]
+            record["projection_exact"] = all(
+                c.get("projection_exact", True)
+                for c in matched_candidates
+                if c.get("tool") == "sql_query"
+            )
+            record["data_correct"] = all(
+                c.get("data_correct", True)
+                for c in matched_candidates
+                if c.get("tool") == "sql_query"
+            )
+        else:
+            record["projection_exact"] = False
+            record["data_correct"] = any(
+                c.get("data_correct") is True
+                for c in candidates
+                if c.get("tool") == "sql_query"
+            )
         if assignment is None:
             details = [
                 f"Reference {i}: "
@@ -483,6 +517,7 @@ def evaluate(
         "answer_correct": sum(r["answer_correct"] for r in records),
         "result_correct": sum(r["result_correct"] is True for r in records),
         "result_checked": sum(r["result_correct"] is not None for r in records),
+        "projection_exact": sum(r.get("projection_exact") is True for r in records),
         "routing_correct": sum(r["routing_correct"] for r in records),
         "narrative_checked": sum(
             r.get("answer_verification", {}).get("status") in {"passed", "failed"}
