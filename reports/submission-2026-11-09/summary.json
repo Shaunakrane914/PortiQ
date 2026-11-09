@@ -1,39 +1,29 @@
 {
-  "runtime_commit": "1c2cc5962de2d2c43c554bd7969ad372b84afbdc",
-  "status": "interrupted_experiment",
+  "status": "completed_verified_evaluation",
   "supplied": {
-    "passed": 5,
+    "passed": 10,
     "total": 10,
-    "sdk_calls": 12,
-    "reported_tokens": 30887,
-    "reference_data_correct": 6,
-    "failed_ids": [
-      3,
-      5,
-      6,
-      7,
-      8
-    ]
+    "sdk_calls": 13,
+    "reported_tokens": 33884,
+    "failed_ids": []
   },
   "extended": {
-    "completed": 28,
-    "planned": 50,
-    "completed_passed": 28,
-    "sdk_calls": 28,
-    "reported_tokens": 69500,
-    "full_suite_score": null
+    "passed": 50,
+    "total": 50,
+    "sdk_calls": 65,
+    "reported_tokens": 174979,
+    "failed_ids": []
   },
   "holdout": {
-    "sealed_questions": 20,
-    "executed": false
+    "passed": 20,
+    "total": 20,
+    "sdk_calls": 27,
+    "reported_tokens": 75486,
+    "failed_ids": []
   },
-  "cli": {
-    "sdk_calls": 1,
-    "reported_tokens": 2422,
-    "answer": "Total portfolios: 13"
-  },
-  "provider_errors": 0,
-  "unknown_usage_attempts": 0,
-  "recorded_sdk_calls": 41,
-  "reported_tokens": 102809
+  "total_evaluated": 80,
+  "total_passed": 80,
+  "total_sdk_calls": 105,
+  "total_reported_tokens": 284349,
+  "provider_errors": 0
 }

@@ -1,13 +1,18 @@
 {
+  ".gitattributes": "17d269f5a5bd0f4448968ec2ceab3a64fbb654a5775211b2385b2988cd9e1b4a",
   "cli-1.json": "6f8fae9552b0b110453c12d58f249af9f48e9cde07b60a8b6db9f29994af73df",
   "CLI_TRANSCRIPT.md": "a94fe16a9e0cded7916db52e127c26c94b7673293af5e428266b5e025d13bd53",
-  "extended-partial.json": "6535ff885f968d46c5b567e8dea0445dd7fa943390f4d555848cb5242d9d7834",
   "extended-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "extended-stdout.txt": "ffd902e34bf5cdf32ce65b5c5cf51310dd30bb2b7ae0858848b4461655464e8d",
+  "extended.json": "e506bde83d03f0752b61295aab605fc7bbe53a2348ff1e727ad3549ce3644def",
+  "extended.md": "0780bafaebd27acb0644c0bb54ca3df9353cf4805381121f8fd7e0c075db85fe",
+  "holdout.json": "baa6386d7862339235d90b6abd4ec9538bfb54c64358df46511c5d85d872c5cc",
+  "holdout.md": "ec6f62a0500219297195c5e1ab7dfdee336a3fe9b730f487cdad9ae1a1d53475",
+  "README.md": "b402ac601d585cd515a434cd1f41b90e24989396f3ba3972906e1804f7fcd1da",
   "run-manifest.json": "3011f10b0d406f176c44047ef4610c1cc3f7063abc005119158e008cf8fc95be",
-  "summary.json": "b95201533337cff11e1d957931bd028feaea2c2dd8f67a0929ff49bf6a3d79c7",
+  "summary.json": "a992a8898677f4d149d96599ba3d9309688619b0e1b97d5e751a3acbd44352ce",
   "supplied-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "supplied-stdout.txt": "7e219d0568485c883ab95666b0a73eeec96099a2aa59de14cc1d8f196c9c8970",
-  "supplied.json": "1be169eaa665e013b9e08e4f6bc3be98bd2ceb9b32fcab2024eb9ca64ccfbb3a",
-  "supplied.md": "f923d178f4e73e3a348a6e181e169f62f2635d64c04922aeee045062517d9a05"
+  "supplied.json": "1af37162db1ec5fad19d65ba25ae43a2da951f3eec9619288e67985e3ff6ee4b",
+  "supplied.md": "49e552001cd72c18661ef4b02b3a8fb6bac73600eba8fadbdf6f63363913d4bb"
 }
