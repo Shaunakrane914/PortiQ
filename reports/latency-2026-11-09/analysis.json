@@ -1,0 +1,133 @@
+{
+  "runtime_source_commit": "1eba590b2b01b9a325e3d29f528dfe6bffd9586d",
+  "runtime_sha256": {
+    "agent.py": "e457fc560b70838530754ee52c6ac4bd16eba3edf59c82f419f1262c13d70e63",
+    "analytics.py": "8203b95e12a3797b621dd1ff2f4085bfbdb26279bc89976b203f4d4f48dc4160",
+    "api.py": "453db250aeca158240e03ced5eb61171bded3e581c6bb6b165f8796d7165d5d1",
+    "cli.py": "8713b7157d04f30575ce4ed1779de6fe77c03d9d455fff6463fc57f33b6fec9f",
+    "config.py": "c0f6f87c2f20017447299d8b065fef404f657ed66a68c58b8274f3430e5a5478",
+    "database.py": "87b17791e0012cc847a1d899823b5246ba89d8c990b0c58e014b30b628e04441",
+    "errors.py": "7d25e8887858dde69738db6751bf7a061d49089fc46b635a1860f530436b3d6e",
+    "evaluation.py": "a6e4fd71e3fdf05b72d2652d6c78c130c039913cc86ded5c061b380baa7bf631",
+    "exposure.py": "67dbdfe6be2b2aa27647082eb8519263381fd5155e908f842e97da44047ec187",
+    "faithfulness.py": "d892efb3df0ac6d4c797f3feff959f4d9d1b0c1cff7987d83ed96a97349384ea",
+    "model.py": "4a09b54d82f68a8441859e34cd748a2756e3babf6edad8521e8a360d3648b772",
+    "profiling.py": "6a84b1e2e6f10a6a15bcf36bd23267c1926243b808c2fac7bbfb381f1914291d",
+    "prompts.py": "482ad4b18762a58bc13e4e2dd8ff99ce0aae5037737606e2973780a84ac40153",
+    "quota.py": "b93219d4a8738b9631a1c7c020c7f06a46948829cdd9505ba081745f52832fe7",
+    "service.py": "ce7321e0bcc7fadb15b5e0d12895ef7a98d57bc7f74b50ad1ea50e69794e0e74",
+    "sql.py": "e96ca631c196396190e3ccafa355fecd32372f2787a28a3ca56a88c7efc4e691",
+    "streamlit_app.py": "aab96d6c35cc4986d8a7407bf0d95051438e118ee21cae97c17d7efdc190a355",
+    "__init__.py": "43f120fd08606ac485548c7b425a1998474366d9325c46ac101d881d100f76ed",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8"
+  },
+  "method": "Gemini explicitly marks a complete factual tool batch; successful small untruncated results are rendered locally from validated evidence. Unmarked/incomplete/ambiguous/error/truncated/large/narrative cases retain the existing loop.",
+  "interactive_pairs": [
+    {
+      "case": "ext-02",
+      "question": "List the names of Passive portfolios, alphabetically.",
+      "baseline_ms": 2837.2785999963526,
+      "candidate_ms": 1157.0605000015348,
+      "baseline_sdk_calls": 2,
+      "candidate_sdk_calls": 1,
+      "baseline_reported_tokens": 4371,
+      "candidate_reported_tokens": 2334
+    },
+    {
+      "case": "ext-37",
+      "question": "Give the equity-only sector exposure for Balanced Portfolio.",
+      "baseline_ms": 2676.3253999961307,
+      "candidate_ms": 2860.8849000011105,
+      "baseline_sdk_calls": 2,
+      "candidate_sdk_calls": 1,
+      "baseline_reported_tokens": 4315,
+      "candidate_reported_tokens": 2284
+    }
+  ],
+  "interactive_scope": "Measured agent construction + question processing, including tools, rendering, any actual provider retries and rate controls; excludes grading and HTTP/browser transport",
+  "local_browser_examples": {
+    "dashboard_list_passive_portfolios_ms": 1454.1641,
+    "streamlit_count_portfolios_ms": 2834.0419,
+    "sdk_calls_per_request": 1,
+    "cache_and_local_answers": false,
+    "test_spacing_seconds": 0.0,
+    "scope": "Actual local headless-browser submit to visible verified answer; two examples, not percentiles or a hosted-production SLA"
+  },
+  "extended_candidate": {
+    "total": 50,
+    "passed": 50,
+    "api_calls": 57,
+    "tokens": 137274,
+    "narrative_checked": 46,
+    "narrative_failed": 0,
+    "mean_ms": 7633.10326,
+    "p95_ms": 13061.687,
+    "sql_efficiency_mean": 98.25108108108108,
+    "capture_wall_ms": 383903.851199997,
+    "directly_rendered_answers": 41,
+    "provider_service_ms": 163906.163200023,
+    "batch_pacing_ms": 153256.96630006132,
+    "backoff_ms": 0.0,
+    "provider_error_attempts": 0,
+    "usage_unknown_attempts": 0,
+    "scope": "Fresh live accuracy run with child-only 6.5-second batch pacing; not an interactive latency comparison"
+  },
+  "supplied_candidate": {
+    "total": 10,
+    "passed": 10,
+    "api_calls": 13,
+    "tokens": 29269,
+    "narrative_checked": 10,
+    "narrative_failed": 0,
+    "mean_ms": 8237.4635,
+    "p95_ms": 20931.618,
+    "sql_efficiency_mean": 93.13125,
+    "capture_wall_ms": 84973.72419999738,
+    "directly_rendered_answers": 9,
+    "provider_service_ms": 30114.91270000988,
+    "batch_pacing_ms": 46351.65380001126,
+    "backoff_ms": 1002.401272422202,
+    "provider_error_attempts": 1,
+    "usage_unknown_attempts": 1,
+    "scope": "Fresh live accuracy run with child-only 6.5-second batch pacing; not an interactive latency comparison"
+  },
+  "historical_baseline_extended": {
+    "source": "reports/single-run-2026-11-09/extended.json",
+    "source_sha256": "889addf47817d686d29140b80dd33cd01d0ef89ab184b492d93ba3b1fecb58d3",
+    "passed": 50,
+    "api_calls": 93,
+    "reported_tokens": 205940,
+    "provider_error_attempts": 2,
+    "usage_unknown_attempts": 2
+  },
+  "observed_extended_sdk_reduction_percent": 38.70967741935484,
+  "observed_extended_reported_token_reduction_percent": 33.34272118092648,
+  "verification": {
+    "python_3_14_passed": 298,
+    "python_3_14_skipped_live": 1,
+    "isolated_python_3_11_passed": 297,
+    "isolated_python_3_11_skipped": 2,
+    "new_direct_result_tests_passed": 16,
+    "ruff": "passed",
+    "format": "passed",
+    "mypy_source_files_passed": 19,
+    "live_browser": {
+      "startTime": "2026-11-09T08:13:57.731Z",
+      "duration": 12959.282000000001,
+      "expected": 2,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "production_docker_checks_passed": 16
+  },
+  "ledger_before_latency_work": 243,
+  "ledger_after_latency_work": 321,
+  "genuine_sdk_attempts_latency_work": 78,
+  "limits": [
+    "Two interactive pairs are descriptive and have provider variance; the exposure pair was slightly slower despite one fewer SDK call.",
+    "Historical full-suite captures were not interleaved; baseline includes two provider errors, candidate none. Token counts are reported usage, not a complete billing comparison.",
+    "Fresh accuracy scores cover known finite suites, not all unseen intents. Completeness is a model plan claim and not a general natural-language entailment proof.",
+    "The normal request interval remains zero. Provider/RPM constraints and retries can still delay individual requests."
+  ]
+}

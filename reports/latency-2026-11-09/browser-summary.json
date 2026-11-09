@@ -1,0 +1,12 @@
+{
+  "stats": {
+    "startTime": "2026-11-09T08:13:57.731Z",
+    "duration": 12959.282000000001,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "errors": [],
+  "scope": "Actual local live dashboard and Streamlit; raw test report with machine paths remains under ignored reports/local"
+}

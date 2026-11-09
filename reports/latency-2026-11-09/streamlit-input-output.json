@@ -1,0 +1,10 @@
+{
+  "mode": "Actual local headless-browser click to visible verified answer; real uncached Gemini",
+  "question": "Count all portfolios",
+  "click_to_answer_ms": 2834.0419,
+  "answer": "COUNT(*): 13",
+  "metrics": "answer · 1 SDK calls · 2,303 reported tokens · 1.44s total · 1.32s service · 0.00s pacing · cache disabled · gemini-3.1-flash-lite",
+  "sql": "SELECT COUNT(*) FROM portfolios",
+  "local": false,
+  "cache": false
+}

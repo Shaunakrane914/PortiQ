@@ -1,20 +1,22 @@
 # Evaluation and verification report index
 
-**Current result: [50/50 passed in one full CLI run](single-run-2026-11-09/README.md).**
-The fresh native v4 evaluator ran all fifty frozen questions once in order and exited 0,
-with no post-run answer substitutions. All 46 data-answer checks and three hybrids pass.
-The capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time; mean/p95 question times
-are 14.926/28.658 seconds. Full provider, pacing, backoff and SQL-work metrics are retained.
+**Current result: [50/50 extended and 10/10 supplied](latency-2026-11-09/README.md)** on
+the direct-results implementation. The full native v4 trials preserve all data-answer
+checks. Extended usage is 57 SDK attempts and 137,274 reported tokens; supplied is 13
+and 29,269. No post-run answer substitutions were used.
 
-[Campaign accounting](single-run-2026-11-09/campaign-metrics.json) covers every earlier
-genuine verification/recovery plus this fresh full run: 243 SDK attempts and
-519,072 captured reported tokens. Across that broader history, 8 failed attempts
-have unreported usage and two live-pytest calls have uncollected token metadata. Reported
-tokens are not complete billing totals or Google's remaining quota.
+Actual uncached, zero-spacing local browser click-to-answer examples were 1.454s and
+2.834s. The paired agent comparison showed 2.837→1.157s for a list and 2.676→2.861s for
+exposure, both with 2→1 SDK calls. These are descriptive samples, not an SLA or general
+latency percentile. Batch accuracy timing is documented separately.
+
+Original captures remain intact. The earlier single-run and retry-aware records retain
+their own source versions, provider counts and campaign accounting snapshots.
 
 | Evidence | Scope |
 |---|---|
-| [Fresh full CLI run](single-run-2026-11-09/README.md) | Current single-run 50/50; native JSON/Markdown, terminal streams, input/runtime hashes and metrics |
+| [Current latency and accuracy](latency-2026-11-09/README.md) | Fresh 50/50 and 10/10, paired no-spacing results, true local browser input-to-output, regression and Docker checks |
+| [Earlier full CLI run](single-run-2026-11-09/README.md) | Current single-run 50/50; native JSON/Markdown, terminal streams, input/runtime hashes and metrics |
 | [Earlier completion view](completion-2026-11-09/README.md) | Historical retry-aware summary with all attempts and usage accounted for |
 | [New-key capture index](retest-2026-11-09/README.md) | Supplied 10/10, live conversations 9/9, dashboard/Streamlit, HTTP/stub soak, Docker and assignment integrity |
 | [Earlier assurance](assurance-2026-11-09/README.md) | Verifier corrections, offline replay, adversarial checks and quota-interrupted attempts |

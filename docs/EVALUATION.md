@@ -101,23 +101,30 @@ preserved with the experiment. Ordinary evaluation does not contain a retrieval 
 
 ## Current and historical evidence
 
-The [fresh single-run capture](../reports/single-run-2026-11-09/README.md) records **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
-One native evaluator trial ran all fifty frozen questions in order and exited 0. It used a
-fresh database, genuine Gemini, no cache/local fast paths/fallback models and no post-run
-answer substitutions. Source, suite and database hashes were unchanged.
+The [current direct-results capture](../reports/latency-2026-11-09/README.md), source `1eba590`, passes **50/50
+extended and 10/10 supplied** in separate complete native v4 trials, without post-run
+substitutions. All 46/10 explicit data-answer checks pass. Gemini still plans every data
+request with full schema context; successful explicitly complete factual batches may render
+their evidence directly. Pass conditions, independent references and safety checks are unchanged.
 
-The capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time. Mean/p95 question durations
-are 14.926/28.658 seconds. Provider service, pacing and backoff totals are
-431.934, 270.691 and 2.298 seconds. 2 provider-error attempts and
-2 attempts with unreported usage are retained. Mean correctness-gated pager-work score
-is 98.25/100. All 46 explicit data-answer checks and three hybrids pass.
+Extended: 57 SDK attempts, 137,274 reported tokens, 41 directly rendered answers, zero
+provider errors/unknown-usage attempts and 98.25/100 mean relative pager-work score.
+Supplied: 13 SDK attempts, 29,269 reported tokens, nine directly rendered answers and
+93.13/100 pager-work score; one provider failure recovered within bounded retries and its
+usage is unreported. Capture times are 383.904s and 84.974s, including child-only 6.5-second
+batch spacing. Their mean/p95 values are batch evaluation metrics, not interactive latency.
 
-Separately, supplied CLI passed 10/10 with 21 SDK attempts and 48,292 reported tokens;
-three concurrent hybrid conversations passed 9/9 with 22 SDK attempts and 40,972 tokens.
-The [campaign metrics](../reports/single-run-2026-11-09/campaign-metrics.json) account for all
-243 genuine SDK attempts and 519,072 captured reported tokens through this run,
-including all earlier evaluations/recoveries. Earlier retry-aware completion summaries are
-historical reporting views; no answers from them were inserted into the new native capture.
+The separate zero-spacing live comparison measured baseline/candidate then candidate/baseline
+on the same client/model/dataset. Passive-list time changed 2.837→1.157s; exposure changed
+2.676→2.861s. Both pairs reduced SDK calls 2→1 with correct answers. Actual local browser
+submit-to-visible-answer samples were 1.454s and 2.834s. Small samples and provider variance
+preclude a general latency percentile or SLA. Source capture hashes and all raw responses
+are retained. Disabling direct results preserves the original system prompt/tool schemas.
+
+The earlier [single-run baseline](../reports/single-run-2026-11-09/README.md) passed 50/50
+using 93 SDK attempts and 205,940 reported tokens. Observed reductions are 38.7% in SDK
+attempts and 33.3% in reported tokens; the captures were not interleaved and the baseline
+includes two unknown-usage provider failures. They are not a complete billing comparison.
 
 The [earlier 9 November verification](../reports/assurance-2026-11-09/README.md) includes a fresh
 supplied v4 CLI pass at `a3b9b24` (10/10, 21 SDK attempts, 48,249 reported tokens, measured page
@@ -139,7 +146,10 @@ explains why both retrieval strategies and their comparison runners were removed
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
-| [Fresh single full CLI run](../reports/single-run-2026-11-09/extended.json), `a9f1e67` | **50/50**, 93 SDK attempts, 205,940 reported tokens | One full native v4 trial; no post-run substitutions; all 46 data-answer checks and three hybrids pass |
+| [Current extended CLI](../reports/latency-2026-11-09/extended-candidate/extended.json), `1eba590` | **50/50**, 57 SDK attempts, 137,274 reported tokens | Fresh full native v4 trial; all 46 data-answer checks pass; no post-run substitution |
+| [Current supplied CLI](../reports/latency-2026-11-09/supplied-candidate/supplied.json), `1eba590` | **10/10**, 13 SDK attempts, 29,269 reported tokens | Fresh full native v4 trial; all ten data-answer checks pass; one unknown-usage provider retry |
+| [Interactive comparison](../reports/latency-2026-11-09/paired-interactive.json), `1eba590` | Four verified answers; two pairs; zero pacing | Same client/model/schema; list faster, exposure slightly slower; both 2→1 SDK calls |
+| [Earlier single full CLI run](../reports/single-run-2026-11-09/extended.json), `a9f1e67` | **50/50**, 93 SDK attempts, 205,940 reported tokens | One full native v4 trial; no post-run substitutions; all 46 data-answer checks and three hybrids pass |
 | [New-key supplied v4 CLI](../reports/retest-2026-11-09/supplied-first/supplied.json), `2a68b74` | **10/10**, 21 SDK attempts, 48,292 reported tokens | Fresh generation on the final verifier/context runtime; all ten answer checks, measured SQL pager work |
 | [Earlier retry-aware completion](../reports/completion-2026-11-09/completion.json), runtime unchanged | **50/50 passed after retries**, 102 SDK attempts, 217,421 reported tokens | All 54 executions counted; six attempts have unknown usage; 46 final data-answer checks pass; full provenance retained |
 | [Requested confirmation retry](../reports/completion-2026-11-09/retry.json), `a29d1c0` | **2/2**, 4 SDK attempts, 9,324 reported tokens | Latest answers for questions 12 and 13; included in completion accounting |

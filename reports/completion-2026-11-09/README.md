@@ -1,5 +1,8 @@
 # 50/50 passed after retries — 9 November 2026
 
+**Latest implementation: [50/50 extended, 10/10 supplied and measured interactive latency](../latency-2026-11-09/README.md).**
+This page retains the historical capture scope and metrics below.
+
 **Latest result: [50/50 passed in one full CLI run](../single-run-2026-11-09/README.md).**
 This page retains the earlier retry-aware reporting scope and its original metrics.
 

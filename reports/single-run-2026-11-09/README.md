@@ -1,5 +1,8 @@
 # 50/50 passed in one full CLI run — 9 November 2026
 
+**Latest implementation: [50/50 extended, 10/10 supplied and measured interactive latency](../latency-2026-11-09/README.md).**
+This page retains the historical capture scope and metrics below.
+
 **All 50 questions passed in this fresh, single full CLI evaluation.** The frozen extended
 suite ran once in its original order. All 46 data-answer checks, four handling cases and
 three hybrid questions passed. No answers were substituted from earlier captures and no

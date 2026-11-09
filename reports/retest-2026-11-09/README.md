@@ -1,5 +1,8 @@
 # New-key verification captures — 9 November 2026
 
+**Latest implementation: [50/50 extended, 10/10 supplied and measured interactive latency](../latency-2026-11-09/README.md).**
+This page retains the historical capture scope and metrics below.
+
 **Current extended result: [50/50 passed in one full CLI run](../single-run-2026-11-09/README.md).**
 The new native evaluator capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time,
 with all fifty questions evaluated once in order and no post-run substitutions. This

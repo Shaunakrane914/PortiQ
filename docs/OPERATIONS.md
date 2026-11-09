@@ -66,10 +66,13 @@ The stub soak measures API capacity, rejection/recovery, readiness and isolation
 are not Gemini inference measurements. Output files must be fresh. Neither test establishes
 a production SLA, unlimited throughput or distributed availability.
 
-[Latest verification](../reports/single-run-2026-11-09/README.md) records 50/50 passed in one full CLI run,
-93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time. Supplied CLI 10/10, nine correct real-provider
-conversation answers, provider/latency accounting, soak and Docker checks are included.
-Original historical captures remain unchanged.
+[Latest verification](../reports/latency-2026-11-09/README.md) records extended 50/50 and supplied 10/10 on
+`1eba590`, plus actual zero-spacing local browser observations of 1.454s and 2.834s.
+Eligible complete factual plans use direct validated result rendering by default. Set
+`PORTIQ_DIRECT_RESULTS=0` and restart to restore previous orchestration. This does not
+change model, schema, cache/local controls, quotas or concurrency limits. Provider variance
+and rate constraints can still delay requests; the report distinguishes interactive samples
+from batch evaluation timings and includes fresh Docker verification.
 
 ## Performance-aware evaluation
 

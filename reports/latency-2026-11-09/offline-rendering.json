@@ -1,0 +1,383 @@
+{
+  "mode": "Offline renderer verification against historical tool results; not fresh Gemini generation or proof that a live model marks its plans complete",
+  "provider_calls": 0,
+  "source_capture": "reports/single-run-2026-11-09/extended.json",
+  "source_capture_sha256": "889addf47817d686d29140b80dd33cd01d0ef89ab184b492d93ba3b1fecb58d3",
+  "runtime_sha256": {
+    "agent.py": "e457fc560b70838530754ee52c6ac4bd16eba3edf59c82f419f1262c13d70e63",
+    "analytics.py": "8203b95e12a3797b621dd1ff2f4085bfbdb26279bc89976b203f4d4f48dc4160",
+    "api.py": "453db250aeca158240e03ced5eb61171bded3e581c6bb6b165f8796d7165d5d1",
+    "cli.py": "8713b7157d04f30575ce4ed1779de6fe77c03d9d455fff6463fc57f33b6fec9f",
+    "config.py": "c0f6f87c2f20017447299d8b065fef404f657ed66a68c58b8274f3430e5a5478",
+    "database.py": "87b17791e0012cc847a1d899823b5246ba89d8c990b0c58e014b30b628e04441",
+    "errors.py": "7d25e8887858dde69738db6751bf7a061d49089fc46b635a1860f530436b3d6e",
+    "evaluation.py": "a6e4fd71e3fdf05b72d2652d6c78c130c039913cc86ded5c061b380baa7bf631",
+    "exposure.py": "67dbdfe6be2b2aa27647082eb8519263381fd5155e908f842e97da44047ec187",
+    "faithfulness.py": "d892efb3df0ac6d4c797f3feff959f4d9d1b0c1cff7987d83ed96a97349384ea",
+    "model.py": "4a09b54d82f68a8441859e34cd748a2756e3babf6edad8521e8a360d3648b772",
+    "profiling.py": "6a84b1e2e6f10a6a15bcf36bd23267c1926243b808c2fac7bbfb381f1914291d",
+    "prompts.py": "482ad4b18762a58bc13e4e2dd8ff99ce0aae5037737606e2973780a84ac40153",
+    "quota.py": "b93219d4a8738b9631a1c7c020c7f06a46948829cdd9505ba081745f52832fe7",
+    "service.py": "ce7321e0bcc7fadb15b5e0d12895ef7a98d57bc7f74b50ad1ea50e69794e0e74",
+    "sql.py": "e96ca631c196396190e3ccafa355fecd32372f2787a28a3ca56a88c7efc4e691",
+    "streamlit_app.py": "aab96d6c35cc4986d8a7407bf0d95051438e118ee21cae97c17d7efdc190a355",
+    "__init__.py": "43f120fd08606ac485548c7b425a1998474366d9325c46ac101d881d100f76ed",
+    "__main__.py": "8117934310eed052d13232637008a5c8eca313f10c12bc9646ee0253f7044fa8"
+  },
+  "total": 50,
+  "passed": 50,
+  "direct_rendered_cases": 46,
+  "direct_rendered_verified": 46,
+  "rows": [
+    {
+      "id": "ext-01",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "COUNT(*): 5"
+    },
+    {
+      "id": "ext-02",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name\nTotal Bond Market Index Fund\nTotal International Index Fund\nTotal Stock Market Index Fund"
+    },
+    {
+      "id": "ext-03",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "SUM(total_aum): 323500000.0"
+    },
+    {
+      "id": "ext-04",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name | total_aum\nFixed Income Plus | 35000000.0\nTotal Bond Market Index Fund | 30000000.0\nDividend Aristocrats Fund | 20000000.0\nConservative Income Fund | 18500000.0"
+    },
+    {
+      "id": "ext-05",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "status | portfolio_count\nActive | 10\nPassive | 3"
+    },
+    {
+      "id": "ext-06",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "symbol\nABBV\nBAC\nCRM\nCVX\nHD\nJNJ\nJPM\nKO\nLLY\nMA\nORCL\nPFE\nPG\nUNH\nV\nWMT\nXOM"
+    },
+    {
+      "id": "ext-07",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "min_price | max_price\n28.95 | 3380.0"
+    },
+    {
+      "id": "ext-08",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "COUNT(DISTINCT country): 1"
+    },
+    {
+      "id": "ext-09",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "benchmark_name: S&P 500 Index"
+    },
+    {
+      "id": "ext-10",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "symbol | maturity_date\nUST-2Y | 2024-01-15\nUST-5Y | 2025-03-01"
+    },
+    {
+      "id": "ext-11",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "symbol | company_name\nBAC | Bank of America Corp.\nJPM | JPMorgan Chase & Co.\nMA | Mastercard Inc.\nV | Visa Inc."
+    },
+    {
+      "id": "ext-12",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name | number_of_holdings\nBalanced Portfolio | 8\nConservative Income Fund | 7\nDividend Aristocrats Fund | 4\nESG Sustainable Fund | 7\nEmerging Markets Fund | 8\nFixed Income Plus | 5\nGrowth Equity Fund | 8\nInternational Equity Fund | 8\nSmall Cap Value Fund | 5\nTech Innovation Fund | 8\nTotal Bond Market Index Fund | 5\nTotal International Index Fund | 10\nTotal Stock Market Index Fund | 12"
+    },
+    {
+      "id": "ext-13",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name\nBalanced Portfolio\nESG Sustainable Fund\nGrowth Equity Fund\nInternational Equity Fund\nTech Innovation Fund\nTotal International Index Fund\nTotal Stock Market Index Fund"
+    },
+    {
+      "id": "ext-14",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "sector_name | stock_count\nAutomotive | 1\nConsumer Discretionary | 1\nConsumer Staples | 4\nEnergy | 2\nFinancials | 4\nHealthcare | 5\nTechnology | 8"
+    },
+    {
+      "id": "ext-15",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "sector_name\nIndustrials\nReal Estate\nUtilities"
+    },
+    {
+      "id": "ext-16",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "transaction_type | total_fees\nBUY | 291.0\nSELL | 53.0"
+    },
+    {
+      "id": "ext-17",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "total_buy_notional: 2187040.0"
+    },
+    {
+      "id": "ext-18",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "total_fees: 62.0"
+    },
+    {
+      "id": "ext-19",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "MAX(price_date): 2023-10-09"
+    },
+    {
+      "id": "ext-20",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "price_date | close_price\n2023-09-25 | 183.18\n2023-09-26 | 179.56\n2023-09-27 | 180.45\n2023-09-28 | 181.3\n2023-09-29 | 182.72\n2023-10-02 | 189.84\n2023-10-03 | 191.96\n2023-10-04 | 193.75\n2023-10-05 | 195.36\n2023-10-06 | 198.16\n2023-10-09 | 199.8"
+    },
+    {
+      "id": "ext-21",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "total_market_value: 1073279.0"
+    },
+    {
+      "id": "ext-22",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "SUM(h.cost_basis): 1127330.0"
+    },
+    {
+      "id": "ext-23",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name | total_current_weight\nBalanced Portfolio | 1.0\nConservative Income Fund | 1.0\nDividend Aristocrats Fund | 1.0\nESG Sustainable Fund | 1.0\nEmerging Markets Fund | 1.0\nFixed Income Plus | 1.0\nGrowth Equity Fund | 1.0\nInternational Equity Fund | 1.0\nSmall Cap Value Fund | 1.0\nTech Innovation Fund | 1.0\nTotal Bond Market Index Fund | 1.0\nTotal International Index Fund | 1.0\nTotal Stock Market Index Fund | 0.98"
+    },
+    {
+      "id": "ext-24",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "asset_type | total_current_weight\nBond | 0.64\nStock | 0.36"
+    },
+    {
+      "id": "ext-25",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "symbol | market_value\nAAPL | 333900.0\nNVDA | 262590.0\nMSFT | 249156.0"
+    },
+    {
+      "id": "ext-26",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "symbol | unrealized_gain\nAAPL | 25750.0\nAMZN | 18000.0\nAVGO | 10970.0\nCRM | 25500.0\nMETA | 26670.0\nMSFT | 27808.0\nNVDA | 62080.0\nORCL | 20520.0"
+    },
+    {
+      "id": "ext-27",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "performance_date | nav\n2023-09-25 | 115.34\n2023-09-26 | 115.78\n2023-09-27 | 116.02\n2023-09-28 | 115.67\n2023-09-29 | 116.23\n2023-10-02 | 116.67\n2023-10-03 | 116.89\n2023-10-04 | 116.45\n2023-10-05 | 116.98\n2023-10-06 | 117.34\n2023-10-09 | 117.78"
+    },
+    {
+      "id": "ext-28",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name | beta\nBalanced Portfolio | 0.9\nConservative Income Fund | 0.43\nGrowth Equity Fund | 1.23\nTech Innovation Fund | 1.58"
+    },
+    {
+      "id": "ext-29",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name\nFixed Income Plus\nTotal Bond Market Index Fund"
+    },
+    {
+      "id": "ext-30",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name | total_bond_market_value\nTotal Bond Market Index Fund | 999625.0\nFixed Income Plus | 589225.0\nBalanced Portfolio | 300975.0\nConservative Income Fund | 270600.0"
+    },
+    {
+      "id": "ext-31",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "COUNT(DISTINCT h.portfolio_id): 6"
+    },
+    {
+      "id": "ext-32",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "portfolio_name | distinct_stock_sectors\nBalanced Portfolio | 3\nConservative Income Fund | 3\nDividend Aristocrats Fund | 2\nESG Sustainable Fund | 3\nEmerging Markets Fund | 4\nGrowth Equity Fund | 2\nInternational Equity Fund | 4\nSmall Cap Value Fund | 2\nTech Innovation Fund | 1\nTotal International Index Fund | 4\nTotal Stock Market Index Fund | 6"
+    },
+    {
+      "id": "ext-33",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "symbol | count\nAAPL | 11\nABBV | 11\nAMZN | 11\nAVGO | 11\nBAC | 11\nCORP-A-10Y | 11\nCORP-AAA-5Y | 11\nCRM | 11\nCVX | 11\nGOOGL | 11\nHD | 11\nJNJ | 11\nJPM | 11\nKO | 11\nLLY | 11\nMA | 11\nMETA | 11\nMSFT | 11\nNVDA | 11\nORCL | 11\nPFE | 11\nPG | 11\nTSLA | 11\nUNH | 11\nUST-10Y | 11\nUST-2Y | 11\nUST-5Y | 11\nV | 11\nWMT | 11\nXOM | 11"
+    },
+    {
+      "id": "ext-34",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "AVG(total_aum): 27000000.0"
+    },
+    {
+      "id": "ext-35",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Growth Equity Fund \u2014 equity-only sector exposure\nTechnology: 93.00%\nConsumer Discretionary: 7.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-36",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Conservative Income Fund \u2014 equity-only sector exposure\nFinancials: 46.88%\nHealthcare: 37.50%\nConsumer Staples: 15.63%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-37",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Balanced Portfolio \u2014 equity-only sector exposure\nTechnology: 61.11%\nFinancials: 22.22%\nHealthcare: 16.67%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-38",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "ESG Sustainable Fund \u2014 equity-only sector exposure\nHealthcare: 38.00%\nConsumer Staples: 35.00%\nTechnology: 27.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-39",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Small Cap Value Fund \u2014 equity-only sector exposure\nHealthcare: 63.00%\nFinancials: 37.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-40",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Dividend Aristocrats Fund \u2014 equity-only sector exposure\nConsumer Staples: 70.00%\nHealthcare: 30.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-41",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Emerging Markets Fund \u2014 equity-only sector exposure\nTechnology: 35.00%\nEnergy: 32.00%\nAutomotive: 18.00%\nConsumer Discretionary: 15.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-42",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Total Stock Market Index Fund \u2014 equity-only sector exposure\nTechnology: 48.98%\nHealthcare: 16.33%\nFinancials: 14.29%\nConsumer Discretionary: 10.20%\nAutomotive: 6.12%\nConsumer Staples: 4.08%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-43",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Total International Index Fund \u2014 equity-only sector exposure\nTechnology: 49.00%\nEnergy: 27.00%\nConsumer Discretionary: 15.00%\nAutomotive: 9.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+    },
+    {
+      "id": "ext-44",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Balanced Portfolio \u2014 equity-only sector exposure\nTechnology: 61.11%\nFinancials: 22.22%\nHealthcare: 16.67%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded.\n\ncurrent_price: 185.5"
+    },
+    {
+      "id": "ext-45",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "Growth Equity Fund \u2014 equity-only sector exposure\nTechnology: 93.00%\nConsumer Discretionary: 7.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded.\n\ncurrent_price: 415.26"
+    },
+    {
+      "id": "ext-46",
+      "direct_rendering_shape_eligible": true,
+      "passed": true,
+      "failures": [],
+      "answer": "International Equity Fund \u2014 equity-only sector exposure\nEnergy: 38.00%\nTechnology: 36.00%\nAutomotive: 15.00%\nConsumer Staples: 11.00%\nBasis: Stock current_weight / total Stock current_weight; bonds excluded.\n\ncurrent_price: 875.3"
+    },
+    {
+      "id": "ext-47",
+      "direct_rendering_shape_eligible": false,
+      "passed": true,
+      "failures": [],
+      "answer": null
+    },
+    {
+      "id": "ext-48",
+      "direct_rendering_shape_eligible": false,
+      "passed": true,
+      "failures": [],
+      "answer": null
+    },
+    {
+      "id": "ext-49",
+      "direct_rendering_shape_eligible": false,
+      "passed": true,
+      "failures": [],
+      "answer": null
+    },
+    {
+      "id": "ext-50",
+      "direct_rendering_shape_eligible": false,
+      "passed": true,
+      "failures": [],
+      "answer": null
+    }
+  ]
+}

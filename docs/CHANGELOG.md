@@ -1,5 +1,19 @@
 # Change history
 
+## Direct validated results and latency verification — 9 November 2026
+
+- Gemini may explicitly complete a factual tool batch. Successful small untruncated results
+  render directly with raw numeric precision; unmarked/error/ambiguous/large/interpretive
+  requests retain normal synthesis. Full schema, financial definitions and SQL safeguards remain.
+- Added `PORTIQ_DIRECT_RESULTS` (default 1); 0 restores the previous orchestration contract.
+- Fresh live extended and supplied suites passed 50/50 and 10/10. Extended usage changed
+  93→57 SDK attempts and 205,940→137,274 reported tokens across historical captures.
+- Actual zero-spacing list pair: 2.837→1.157s; exposure pair: 2.676→2.861s. Both used one
+  SDK call instead of two. Local dashboard/Streamlit click-to-answer samples: 1.454/2.834s.
+- Passed 298 local tests, 297 isolated Python 3.11 tests, lint/format/types, two live browser
+  cases and 16 fresh production Docker checks. [Evidence and measurement scope](../reports/latency-2026-11-09/README.md)
+  retain provider errors, unknown usage and original capture hashes.
+
 ## Fresh single-run extended verification — 9 November 2026
 
 - **50/50 passed in one full CLI run**, including all 46 data-answer checks and three

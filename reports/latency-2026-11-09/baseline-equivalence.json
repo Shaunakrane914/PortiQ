@@ -1,0 +1,7 @@
+{
+  "baseline_source": "7f0949d",
+  "baseline_agent_source_sha256": "8b17dacf7d5d523355017132f4b475a1b349d8e15c004a2c920023d1610acb75",
+  "system_prompt_identical": true,
+  "function_schemas_identical": true,
+  "scope": "Read-only offline comparison of old native agent and new direct_results=False control; zero provider calls"
+}

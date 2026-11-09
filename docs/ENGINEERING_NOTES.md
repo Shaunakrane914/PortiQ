@@ -4,10 +4,11 @@ The original [assignment](assignment/README.md) prioritizes a working CLI, accur
 tools, a ground-truth evaluator and brief run instructions. The optional enhancements are
 implemented without making web, Streamlit or Node dependencies mandatory for the core CLI.
 
-[Current verified result](../reports/single-run-2026-11-09/README.md): **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
-The fresh native v4 capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time, with no
-post-run substitutions. No runtime or evaluator criterion changed. Original raw captures
-and provider-attempt accounting remain intact; campaign totals are recorded separately.
+[Current verified result](../reports/latency-2026-11-09/README.md): **50/50 extended and 10/10 supplied** in
+fresh full native v4 runs on `1eba590`. The extended capture used 57 SDK attempts and
+137,274 reported tokens. Explicitly complete factual plans can render validated tool data
+directly; complex/ambiguous/error/truncated cases retain normal orchestration. Zero-spacing
+browser observations were 1.454s and 2.834s. Full metrics and limitations are in the report.
 
 - `main.py` is a shortcut to the canonical parser. Global options are preserved, missing
   databases initialize only for ask/chat, and local/cache/context modes require explicit flags.
@@ -16,8 +17,11 @@ and provider-attempt accounting remain intact; campaign totals are recorded sepa
 - Full schema, live categorical domains and the portfolio catalogue remain in model context.
   Financial conventions and declared schema relationships are retained directly; no retrieval
   layer selects, removes or appends metadata at runtime.
-- A guarded scalar-only request can avoid the model summary call. Other shapes retain the
-  original tool loop. No unsuccessful alternate planner is restored.
+- Gemini still plans factual data requests. When it explicitly completes every call in a
+  batch, the app can render validated evidence without another synthesis request. SQL results
+  must be nonempty, untruncated, at most 30 rows and losslessly representable; output must fit
+  10,000 characters. Other requests retain the existing loop. Raw numeric precision is kept.
+  `PORTIQ_DIRECT_RESULTS=0` restores previous behavior; no alternate planner or RAG is added.
 - A bounded reusable client pool permits parallel requests, shares quota guards and preserves
   per-client retry/circuit state. Conversation turns serialize within each session; results,
   caches, history and per-question metrics remain isolated.

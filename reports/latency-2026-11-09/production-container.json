@@ -1,0 +1,27 @@
+{
+  "mode": "actual production-profile Docker verification; no Gemini calls",
+  "source_commit": "1eba590b2b01b9a325e3d29f528dfe6bffd9586d",
+  "image_id": "sha256:fb209745c74959908e9a3f33242a5bbda79255620ddf4b9d876b657d9183c83f",
+  "wall_ms": 5755.404600000475,
+  "checks": {
+    "ready": true,
+    "unauthenticated_denied": true,
+    "invalid_origin_denied": true,
+    "body_limit": true,
+    "local_analysis": true,
+    "no_internal_files": true,
+    "uid_10001": true,
+    "read_only_root": true,
+    "capabilities_dropped": true,
+    "no_new_privileges": true,
+    "resource_bounds": true,
+    "base_image_excludes_private_and_optional_files": true,
+    "test_reservation": true,
+    "ledger_survives_restart": true,
+    "ready_after_restart": true,
+    "clean_shutdown": true
+  },
+  "passed": true,
+  "provider_calls": 0,
+  "ledger_scope": "isolated disposable Docker volume; one synthetic reservation verifies retention"
+}

@@ -2,10 +2,11 @@
 
 The original [assignment](assignment/README.md) requires SQL translation, equity sector exposure, CLI tool selection and a CLI evaluator. They remain the core. The optional HTTP/UI layer adapts the same calculations and agent.
 
-The unchanged runtime's [current verification](../reports/single-run-2026-11-09/README.md) records **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
-The native evaluator capture contains 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time.
-Supplied evaluation passes 10/10 and concurrent conversations 9/9. Reporting does not alter
-runtime routing, SQL safeguards or evaluator pass conditions.
+[Current verification](../reports/latency-2026-11-09/README.md) records fresh full CLI passes of 50/50 extended
+and 10/10 supplied on `1eba590`. Gemini can explicitly mark a whole factual tool batch
+complete; successful, bounded, untruncated evidence is rendered directly. Other requests
+retain the normal tool/synthesis loop. SQL safety, schema context and financial calculations
+remain shared. The report separates actual zero-spacing browser timings from batch evaluation.
 
 ## Components and ownership
 
@@ -13,7 +14,7 @@ runtime routing, SQL safeguards or evaluator pass conditions.
 |---|---|---|
 | CLI | [cli.py](../src/portiq/cli.py) | `chat`, `ask`, supplied/extended `evaluate`, deterministic tools and optional server startup |
 | Ingestion/context | [database.py](../src/portiq/database.py) | Validate all CSVs, atomically initialize SQLite, read schema/domains/catalogue |
-| Gemini agent / SQL planning | [agent.py](../src/portiq/agent.py), [prompts.py](../src/portiq/prompts.py) | Typed tool selection, focused complex-query planning, bounded repairs, final rendering |
+| Gemini agent / SQL planning | [agent.py](../src/portiq/agent.py), [prompts.py](../src/portiq/prompts.py) | Typed tool selection, focused planning, bounded repairs, complete-plan result rendering or model synthesis |
 | SQL execution | [sql.py](../src/portiq/sql.py) | Parse, authorize, bound and execute read-only queries |
 | Required exposure calculator | [exposure.py](../src/portiq/exposure.py) | Resolve one portfolio and normalize stock weights by stock sector |
 | Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, explicit answer verification and correctness-gated VM-work scores |

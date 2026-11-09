@@ -2,10 +2,11 @@
 
 The unchanged [original assignment](assignment/README.md) is the source of requirements. Its deliverables are a working command-line agent, a ground-truth evaluator, brief run documentation and clean code with error handling. The API/dashboard and other enhancements are optional.
 
-[Current evaluation evidence](../reports/single-run-2026-11-09/README.md): **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
-The fresh full-suite capture records 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time.
-Supplied evaluation passes 10/10 and concurrent conversations 9/9. Full usage, latency,
-SQL-work metrics, source hashes and operational checks are recorded in the report.
+[Current evaluation evidence](../reports/latency-2026-11-09/README.md): **50/50 extended and 10/10 supplied**
+passed in fresh full CLI runs on `1eba590`, with all explicit data-answer checks passing.
+The extended capture used 57 SDK attempts and 137,274 reported tokens. Actual uncached
+local browser submit-to-answer examples were 1.454s and 2.834s with zero test spacing.
+The report records source hashes, comparison scope and operational verification.
 
 ## Assignment requirements
 
@@ -85,6 +86,7 @@ A Gemini key is required only for genuine model questions. Deterministic SQL/exp
 | `GEMINI_API_KEY` | empty | CLI/server credential; never a browser asset |
 | `GEMINI_MODEL` | `gemini-3.1-flash-lite` | Primary model; availability verified only by a live request |
 | `PORTIQ_DB`, `PORTIQ_SOURCE` | `portfolio_database.db`, `.` | SQLite file and input directory; global CLI flags can override |
+| `PORTIQ_DIRECT_RESULTS` | `1` | Allow direct validated rendering when Gemini marks the whole factual batch complete; `0` restores previous behavior. This still uses genuine model planning. |
 | `PORTIQ_REQUEST_INTERVAL` | 0.0 s | Fixed minimum SDK-start spacing; 0.0 s allows adaptive limiter to govern pacing |
 | `PORTIQ_RPM_LIMIT` | 12 | Adaptive limiter safety ceiling (under provider's 15 RPM limit) |
 | `PORTIQ_RPM_WINDOW` | 60.0 s | Rolling window duration for SDK attempt tracking |

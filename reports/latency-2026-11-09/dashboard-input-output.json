@@ -1,0 +1,87 @@
+{
+  "mode": "Actual local headless-browser click to visible verified answer; real uncached Gemini",
+  "question": "List the names of Passive portfolios, alphabetically.",
+  "click_to_answer_ms": 1454.1641,
+  "api_response": {
+    "request_id": "189cbaa1-f3cb-4fcc-b252-a3cf079d4b71",
+    "status": "answer",
+    "answer": "portfolio_name\nTotal Bond Market Index Fund\nTotal International Index Fund\nTotal Stock Market Index Fund",
+    "tools": [
+      {
+        "tool": "sql_query",
+        "arguments": {
+          "complete": true,
+          "question": "List the names of Passive portfolios, alphabetically.",
+          "explanation": "Retrieving the names of all portfolios with a status of 'Passive', ordered alphabetically.",
+          "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC"
+        },
+        "result": {
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Total Bond Market Index Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC",
+          "duration_ms": 1.283,
+          "truncated": false,
+          "attempts": 1,
+          "validation_ms": 0.3512999974191189,
+          "vm_steps": null,
+          "query_plan": []
+        },
+        "error": null,
+        "duration_ms": 2.006
+      }
+    ],
+    "model": "gemini-3.1-flash-lite",
+    "model_versions": [
+      "gemini-3.1-flash-lite"
+    ],
+    "duration_ms": 1367.5526000006357,
+    "model_duration_ms": 1276.871,
+    "api_calls": 1,
+    "tokens": 2334,
+    "cache": "disabled",
+    "execution_source": "Gemini planned analysis",
+    "strategy": "existing",
+    "provider_metrics": [
+      {
+        "timestamp_utc": "2026-11-09T08:14:03.975484+00:00",
+        "model": "gemini-3.1-flash-lite",
+        "service_ms": 1273.9636000042083,
+        "pacing_ms": 0,
+        "input_tokens": 2261,
+        "output_tokens": 73,
+        "thinking_tokens": null,
+        "total_tokens": 2334,
+        "error_kind": null,
+        "sequence": 1
+      }
+    ],
+    "backoff_ms": 0,
+    "context_portfolio": 4,
+    "error_kind": null,
+    "error_retry_after": null,
+    "rendering": "validated tool results after Gemini complete plan",
+    "rendering_ms": 0.05230000533629209,
+    "stages_ms": {
+      "metadata_and_version": 4.469899999094196,
+      "cache_lookup": 0.000200001522898674
+    }
+  },
+  "expected_portfolio_names": [
+    "Total Bond Market Index Fund",
+    "Total International Index Fund",
+    "Total Stock Market Index Fund"
+  ],
+  "session_id_omitted": true
+}

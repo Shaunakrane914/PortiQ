@@ -8,10 +8,15 @@ mandatory and optional requirements to implementations.
 - The fresh supplied v4 retest passed 10/10 on `2a68b74`; the earlier verifier replay accepts
   all fifty archived answers and rejects 46 bad-prose mutations. Known finite suites and
   different generation/replay scopes are not blind validation.
-- The [fresh extended v4 capture](../reports/single-run-2026-11-09/README.md) passes 50/50 in one full CLI run:
-  93 SDK attempts, 205,940 reported tokens, 747.520 seconds of CLI wall time. It includes normal bounded SDK retry behavior;
-  2 provider-error attempts and 2 attempts with unreported usage are retained in the metrics.
-  Known-suite success does not establish blind/unseen accuracy or provider availability.
+- The [current direct-result implementation](../reports/latency-2026-11-09/README.md) passes fresh extended 50/50
+  and supplied 10/10. The extended capture uses 57 SDK attempts and 137,274 reported tokens.
+  Normal bounded SDK retries remain active; one supplied attempt had unreported usage.
+- Direct rendering requires Gemini's complete-plan claim plus successful bounded evidence;
+  it is not a proof of arbitrary natural-language intent coverage. Empty, truncated, large,
+  ambiguous or interpretive requests retain normal orchestration. SQL data over 30 rows and
+  answers over 10,000 characters do not use this optimization. Known-suite success is not
+  blind/unseen accuracy. The two interactive pairs showed one faster and one slightly slower
+  example; browser timings are local observations, not production percentiles or an SLA.
 - Evaluator v4 verifies explicit scalar, list, table and exposure representations. Missing
   required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
   checker does not prove arbitrary English entailment, advice or additional unstructured claims.

@@ -79,15 +79,24 @@ responsibilities. A passing smoke test is not a security certification or availa
 
 ## Validation
 
-The [current verification](../reports/single-run-2026-11-09/README.md) records **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids. The fresh full-suite native
-capture contains 93 SDK attempts, 205,940 reported tokens and 747.520 seconds of CLI wall time, with no post-run substitutions.
-Mean/p95 question times are 14.926/28.658 seconds; final relative pager-work score averages
-98.25/100. 2 provider-error attempts and 2 unknown-usage attempts remain accounted for.
+The [current verification](../reports/latency-2026-11-09/README.md) records fresh full passes of **50/50 extended
+and 10/10 supplied**, including all 46/10 data-answer checks. The extended capture used 57
+SDK attempts and 137,274 reported tokens; supplied used 13 and 29,269. The extended run had
+zero provider errors; supplied recovered one error with unreported usage.
 
-Also verified: supplied CLI 10/10, live three-user hybrid conversations 9/9, 282 local tests,
-actual dashboard/Streamlit browser answers, a 60-second HTTP/stub soak and all 16 production
-Docker checks. Full campaign accounting and raw provenance are linked from the report.
-This is supported single-process behavior, not distributed availability or SLA proof.
+The direct-results extension uses the same function-calling agent, full schema, SQL safety
+and exposure arithmetic. Gemini explicitly marks all final factual calls complete; the app
+can render bounded successful data without another model synthesis call. Other requests
+retain normal orchestration. `PORTIQ_DIRECT_RESULTS=0` restores previous behavior.
+
+Zero-spacing live pairs reduced both examples from two SDK calls to one. Passive-list time
+changed 2.837→1.157s; exposure changed 2.676→2.861s. Real local browser click-to-answer times
+were 1.454s in the dashboard and 2.834s in Streamlit. These small samples are not universal
+latency claims. The accuracy runs retain separate 6.5-second batch pacing and timing scope.
+
+Verification also passed 298 local tests, 297 isolated Python 3.11 tests, 16 new guard/precision
+tests, lint/format/types, two live browser cases and all 16 fresh production Docker checks.
+The earlier concurrency/load captures remain linked with their own source and scope.
 
 `tests/test_enhancements.py` checks query work, rate reservations, simultaneous
 requests, overload recovery, production settings and an actual Streamlit AppTest session.

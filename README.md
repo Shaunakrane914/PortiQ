@@ -60,12 +60,13 @@ content. Any failed case returns exit code 1. Use fresh output names. Evaluator 
 hybrid percentage/scalar interference; historical captures retain their original version.
 [Evidence and limits](docs/EVALUATION.md) distinguish live runs, offline replays and load tests.
 
-[Current verification](reports/single-run-2026-11-09/README.md): **50/50 passed in one full CLI run**, including all 46 data-answer checks and three hybrids.
-The fresh evaluator ran the full frozen suite once in order, with no post-run substitutions:
-93 SDK attempts, 205,940 reported tokens; 747.520 seconds of CLI wall time. Supplied CLI 10/10, concurrent conversations 9/9,
-local tests, genuine dashboard/Streamlit, HTTP/stub soak and all 16 Docker checks also pass.
-Full provider-error, usage, timing, SQL-work and campaign metrics are in the linked report;
-original captures remain intact.
+[Current verification](reports/latency-2026-11-09/README.md): **50/50 extended and 10/10
+supplied passed in fresh full CLI runs**. Complete factual plans can return validated
+results without a second model synthesis call. Actual uncached local browser examples:
+**1.454s** to list Passive portfolios and **2.834s** to count portfolios in Streamlit,
+with zero test spacing. These are observed samples, not a latency guarantee.
+The extended capture used 57 SDK attempts and 137,274 reported tokens. Full provenance,
+baseline comparisons, provider errors and test scope are in the linked report.
 
 The agent uses the complete nine-table schema, actual categorical values, catalogue and
 financial conventions. SQL is parsed, authorized, bounded and read-only. Exposure normalizes
