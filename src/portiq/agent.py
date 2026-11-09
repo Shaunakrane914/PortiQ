@@ -511,48 +511,15 @@ def _format_scalar_value(value: Any, *, exact: bool = False) -> str:
 def _format_label(column: str, question: str = "") -> str:
     """Format an SQL column or alias into a natural human label without guessing."""
     col = column.strip()
-    count_match = re.match(r"(?i)^count\s*\((.*?)\)$", col)
-    if count_match:
-        inner = count_match.group(1).strip()
-        if re.match(r"(?i)^distinct\s+", inner):
-            sub = re.sub(r"(?i)^distinct\s+", "", inner).strip().replace("_", " ")
-            return f"Distinct {sub} count"
-        q = question.lower()
-        if "portfolio" in q:
-            return "Total portfolios"
-        if "securit" in q:
-            return "Total securities"
-        if "holding" in q:
-            return "Total holdings"
-        if "transaction" in q:
-            return "Total transactions"
-        return "Total count"
-
-    sum_match = re.match(r"(?i)^sum\s*\((.*?)\)$", col)
-    if sum_match:
-        inner = sum_match.group(1).strip().replace("_", " ")
-        if inner.lower() == "total aum":
-            return "Total AUM"
-        return f"Total {inner.title()}"
-
-    avg_match = re.match(r"(?i)^avg\s*\((.*?)\)$", col)
-    if avg_match:
-        inner = avg_match.group(1).strip().replace("_", " ")
-        return f"Average {inner}"
-
-    min_match = re.match(r"(?i)^min\s*\((.*?)\)$", col)
-    if min_match:
-        inner = min_match.group(1).strip().replace("_", " ")
-        return f"Minimum {inner}"
-
-    max_match = re.match(r"(?i)^max\s*\((.*?)\)$", col)
-    if max_match:
-        inner = max_match.group(1).strip().replace("_", " ")
-        return f"Maximum {inner}"
+    q = question.strip().lower()
 
     known_labels = {
         "portfolio_count": "Total portfolios",
         "total_portfolios": "Total portfolios",
+        "active_portfolios": "Active portfolios",
+        "active_portfolio_count": "Active portfolios",
+        "passive_portfolios": "Passive portfolios",
+        "passive_portfolio_count": "Passive portfolios",
         "total_aum": "Total AUM",
         "aum": "AUM",
         "portfolio_name": "Portfolio Name",
@@ -560,8 +527,15 @@ def _format_label(column: str, question: str = "") -> str:
         "security_id": "Security ID",
         "cost_basis": "Cost Basis",
         "market_value": "Market Value",
+        "total_market_value": "Total Market Value",
+        "total_cost_basis": "Total Cost Basis",
         "current_price": "Current Price",
+        "avg_current_price": "Average Current Price",
+        "avg_price": "Average Price",
         "strategy_type": "Strategy Type",
+        "strategy_types": "Strategy Types",
+        "distinct_strategy_types": "Distinct Strategy Types",
+        "distinct_asset_types": "Distinct Asset Types",
         "asset_type": "Asset Type",
         "sector_name": "Sector",
         "unrealized_pnl": "Unrealized PnL",
@@ -569,8 +543,92 @@ def _format_label(column: str, question: str = "") -> str:
     if col.lower() in known_labels:
         return known_labels[col.lower()]
 
-    if "_" in col and " " not in col:
-        return col.replace("_", " ").title()
+    # If column is an identifier/alias without functions
+    if not re.search(r"\(|\)", col):
+        if "_" in col and " " not in col:
+            words = col.split("_")
+            acronyms = {"aum": "AUM", "pnl": "PnL", "id": "ID"}
+            formatted_words = [acronyms.get(w.lower(), w.capitalize()) for w in words]
+            return " ".join(formatted_words)
+        return col
+
+    # Unpack outer wrapper functions such as ROUND(expr, 2), COALESCE(expr, 0), CAST(expr AS ...)
+    cleaned = col
+    while True:
+        wrapper = re.match(r"(?i)^(?:round|coalesce|cast|nullif)\s*\((.*)\)$", cleaned)
+        if not wrapper:
+            break
+        inner = wrapper.group(1).strip()
+        if "," in inner:
+            inner = inner.rsplit(",", 1)[0].strip()
+        elif re.search(r"(?i)\s+as\s+\w+$", inner):
+            inner = re.sub(r"(?i)\s+as\s+\w+$", "", inner).strip()
+        cleaned = inner
+
+    count_match = re.match(r"(?i)^count\s*\((.*?)\)$", cleaned)
+    if count_match:
+        inner = count_match.group(1).strip()
+        if re.match(r"(?i)^distinct\s+", inner):
+            sub = re.sub(r"(?i)^distinct\s+", "", inner).strip().replace("_", " ")
+            return f"Distinct {sub} count"
+
+        # Determine entity from question context
+        if re.search(r"\b(?:portfolio|fund)s?\b", q):
+            entity = "portfolios"
+        elif re.search(r"\b(?:securit|stock|bond)s?\b", q):
+            entity = "securities"
+        elif re.search(r"\bholdings?\b", q):
+            entity = "holdings"
+        elif re.search(r"\btransactions?\b", q):
+            entity = "transactions"
+        elif re.search(r"\bsectors?\b", q):
+            entity = "sectors"
+        else:
+            entity = ""
+
+        # Check for specific filter qualifiers in question to avoid claiming "Total"
+        qualifier_match = re.search(
+            r"\b(active|passive|equity|bond|taxable|retirement|open|closed|technology|matching)\b",
+            q,
+        )
+        if qualifier_match:
+            qualifier = qualifier_match.group(1).capitalize()
+            return f"{qualifier} {entity}" if entity else f"{qualifier} count"
+        if re.search(r"\b(total|all)\b", q) or re.search(r"\bhow many\b", q):
+            return f"Total {entity}" if entity else "Total count"
+        if entity:
+            return entity.capitalize()
+        return "Total count"
+
+    sum_match = re.match(r"(?i)^sum\s*\((.*?)\)$", cleaned)
+    if sum_match:
+        inner = sum_match.group(1).strip().replace("_", " ")
+        if inner.lower() == "total aum":
+            return "Total AUM"
+        if not re.search(r"[*+\-/]|case\b", inner, re.I):
+            return f"Total {inner.title()}"
+        return "Total"
+
+    avg_match = re.match(r"(?i)^avg\s*\((.*?)\)$", cleaned)
+    if avg_match:
+        inner = avg_match.group(1).strip().replace("_", " ")
+        if not re.search(r"[*+\-/]|case\b", inner, re.I):
+            return f"Average {inner}"
+        return "Average"
+
+    min_match = re.match(r"(?i)^min\s*\((.*?)\)$", cleaned)
+    if min_match:
+        inner = min_match.group(1).strip().replace("_", " ")
+        if not re.search(r"[*+\-/]|case\b", inner, re.I):
+            return f"Minimum {inner}"
+        return "Minimum"
+
+    max_match = re.match(r"(?i)^max\s*\((.*?)\)$", cleaned)
+    if max_match:
+        inner = max_match.group(1).strip().replace("_", " ")
+        if not re.search(r"[*+\-/]|case\b", inner, re.I):
+            return f"Maximum {inner}"
+        return "Maximum"
 
     return col
 

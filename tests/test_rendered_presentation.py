@@ -16,15 +16,23 @@ def make_tool(
 def test_render_count_scalar() -> None:
     trace = make_tool(["COUNT(*)"], [[13]], question="Count all portfolios")
     rendered = render_tools([trace], question="Count all portfolios")
-    assert "Total portfolios: 13" in rendered or "13" in rendered
+    assert rendered == "Total portfolios: 13"
     expected = [{"columns": ["COUNT(*)"], "rows": [[13]], "tool": "sql_query"}]
+    assert verify_answer(rendered, expected, [])["status"] == "passed"
+
+
+def test_render_count_filtered() -> None:
+    trace = make_tool(["COUNT(*)"], [[10]], question="How many active portfolios do we have?")
+    rendered = render_tools([trace], question="How many active portfolios do we have?")
+    assert rendered == "Active portfolios: 10"
+    expected = [{"columns": ["COUNT(*)"], "rows": [[10]], "tool": "sql_query"}]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
 
 
 def test_render_count_distinct() -> None:
     trace = make_tool(["COUNT(DISTINCT asset_type)"], [[2]], question="Count distinct asset types")
     rendered = render_tools([trace], question="Count distinct asset types")
-    assert "2" in rendered
+    assert rendered == "Distinct asset type count: 2"
     expected = [{"columns": ["COUNT(DISTINCT asset_type)"], "rows": [[2]], "tool": "sql_query"}]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
 
@@ -32,7 +40,7 @@ def test_render_count_distinct() -> None:
 def test_render_sum() -> None:
     trace = make_tool(["SUM(total_aum)"], [[5000000.0]], question="Total AUM")
     rendered = render_tools([trace], question="Total AUM")
-    assert "5,000,000" in rendered
+    assert rendered == "Total AUM: 5,000,000.0"
     assert "$" not in rendered  # Never invent currency symbols
     expected = [{"columns": ["SUM(total_aum)"], "rows": [[5000000.0]], "tool": "sql_query"}]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
@@ -41,7 +49,7 @@ def test_render_sum() -> None:
 def test_render_avg() -> None:
     trace = make_tool(["AVG(current_price)"], [[125.5]], question="Average price")
     rendered = render_tools([trace], question="Average price")
-    assert "125.5" in rendered
+    assert rendered == "Average current price: 125.5"
     assert "$" not in rendered
     expected = [{"columns": ["AVG(current_price)"], "rows": [[125.5]], "tool": "sql_query"}]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
@@ -54,7 +62,7 @@ def test_render_min_max() -> None:
         question="Minimum and maximum current price",
     )
     rendered = render_tools([trace], question="Minimum and maximum current price")
-    assert "28.95" in rendered and "3,380" in rendered
+    assert rendered == "MIN(current_price) | MAX(current_price)\n28.95 | 3,380"
     assert "$" not in rendered
     expected = [
         {
@@ -62,6 +70,36 @@ def test_render_min_max() -> None:
             "rows": [[28.95, 3380.0]],
             "tool": "sql_query",
         }
+    ]
+    assert verify_answer(rendered, expected, [])["status"] == "passed"
+
+
+def test_render_wrapped_aggregate() -> None:
+    trace = make_tool(["ROUND(AVG(current_price), 2)"], [[125.5]], question="Average current price")
+    rendered = render_tools([trace], question="Average current price")
+    assert rendered == "Average current price: 125.5"
+    expected = [
+        {"columns": ["ROUND(AVG(current_price), 2)"], "rows": [[125.5]], "tool": "sql_query"}
+    ]
+    assert verify_answer(rendered, expected, [])["status"] == "passed"
+
+
+def test_render_explicit_alias() -> None:
+    trace = make_tool(["active_portfolios"], [[10]], question="How many active portfolios?")
+    rendered = render_tools([trace], question="How many active portfolios?")
+    assert rendered == "Active portfolios: 10"
+    expected = [{"columns": ["active_portfolios"], "rows": [[10]], "tool": "sql_query"}]
+    assert verify_answer(rendered, expected, [])["status"] == "passed"
+
+
+def test_render_complex_arithmetic_aggregate() -> None:
+    trace = make_tool(
+        ["SUM(quantity * current_price)"], [[150000.0]], question="Total market value"
+    )
+    rendered = render_tools([trace], question="Total market value")
+    assert rendered == "Total: 150,000.0"
+    expected = [
+        {"columns": ["SUM(quantity * current_price)"], "rows": [[150000.0]], "tool": "sql_query"}
     ]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
 
@@ -103,7 +141,7 @@ def test_render_zero_rows() -> None:
 def test_render_null_values() -> None:
     trace = make_tool(["benchmark_id"], [[None]], question="Show benchmark ID")
     rendered = render_tools([trace], question="Show benchmark ID")
-    assert "Not available" in rendered
+    assert rendered == "Benchmark ID: Not available"
     expected = [{"columns": ["benchmark_id"], "rows": [[None]], "tool": "sql_query"}]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
 
@@ -111,7 +149,7 @@ def test_render_null_values() -> None:
 def test_render_negative_values() -> None:
     trace = make_tool(["unrealized_pnl"], [[-1234.56]], question="Unrealized PnL")
     rendered = render_tools([trace], question="Unrealized PnL")
-    assert "-1,234.56" in rendered
+    assert rendered == "Unrealized PnL: -1,234.56"
     assert "$" not in rendered
     expected = [{"columns": ["unrealized_pnl"], "rows": [[-1234.56]], "tool": "sql_query"}]
     assert verify_answer(rendered, expected, [])["status"] == "passed"
