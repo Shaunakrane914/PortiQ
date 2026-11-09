@@ -88,6 +88,9 @@ AI Analyst first. Local/cache controls default off in the interfaces. API client
 `"local":false,"cache":false` explicitly for genuine analysis. The hosted anonymous demo
 is separate from the token-protected production profile.
 
+To publish the native Streamlit interface, follow the
+[Community Cloud deployment instructions](docs/STREAMLIT_DEPLOYMENT.md).
+
 [Operations](docs/OPERATIONS.md) covers production Compose, readiness, graceful shutdown,
 backup/recovery, concurrent HTTP verification and measured service limits. The supported
 topology is one process with four concurrent analyses; distributed replicas are not claimed.

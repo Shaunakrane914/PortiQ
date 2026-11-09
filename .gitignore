@@ -11,6 +11,8 @@ htmlcov/
 .env
 .env.*
 !.env.example
+.streamlit/secrets.toml
+**/.streamlit/secrets.toml
 *.db
 *.db-*
 *.sqlite*
