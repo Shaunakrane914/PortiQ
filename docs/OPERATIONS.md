@@ -66,8 +66,9 @@ The stub soak measures API capacity, rejection/recovery, readiness and isolation
 are not Gemini inference measurements. Output files must be fresh. Neither test establishes
 a production SLA, unlimited throughput or distributed availability.
 
-[Latest verification](../reports/retest-2026-11-09/README.md) records the completed nine-answer
-real-provider retest, fresh CLI evaluation, soak and Docker checks. The earlier
+[Latest verification](../reports/completion-2026-11-09/README.md) records 50/50 extended
+passed after retries, supplied 10/10, nine correct real-provider conversation answers,
+complete usage/timing accounting, soak and Docker checks. The earlier
 [quota-interrupted attempts](../reports/assurance-2026-11-09/README.md) remain unchanged.
 
 ## Performance-aware evaluation

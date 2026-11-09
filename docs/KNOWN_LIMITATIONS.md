@@ -8,10 +8,11 @@ mandatory and optional requirements to implementations.
 - The fresh supplied v4 retest passed 10/10 on `2a68b74`; the earlier verifier replay accepts
   all fifty archived answers and rejects 46 bad-prose mutations. Known finite suites and
   different generation/replay scopes are not blind validation.
-- The fresh extended v4 run scored 48/50: questions 12 and 13 exhausted bounded retries on
-  provider HTTP 504 failures. Both passed the separate post-run recovery check. The original
-  48/50 score remains; six failed SDK attempts had unreported usage, so captured token totals
-  are not complete billing totals. Provider availability remains an external dependency.
+- The [extended completion result](../reports/completion-2026-11-09/README.md) is 50/50
+  passed after retries, across 54 question executions, 102 SDK attempts and 217,421 reported
+  tokens. Six failed SDK attempts had unreported usage, so captured tokens are not a complete
+  billing total. This retry-aware result has separate provenance from a single uninterrupted
+  run. Provider availability remains an external dependency.
 - Evaluator v4 verifies explicit scalar, list, table and exposure representations. Missing
   required fields and clear contradictions fail. Unsupported paraphrases can fail, and the
   checker does not prove arbitrary English entailment, advice or additional unstructured claims.

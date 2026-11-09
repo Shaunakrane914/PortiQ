@@ -2,6 +2,11 @@
 
 The original [assignment](assignment/README.md) requires SQL translation, equity sector exposure, CLI tool selection and a CLI evaluator. They remain the core. The optional HTTP/UI layer adapts the same calculations and agent.
 
+The unchanged runtime's [current verification](../reports/completion-2026-11-09/README.md)
+records 50/50 extended passed after retries, supplied 10/10 and live concurrent conversations
+9/9, with full provider/timing accounting. Retry completion is a reporting view over immutable
+captures; it does not modify runtime routing, SQL safeguards or evaluator pass conditions.
+
 ## Components and ownership
 
 | Component | Implementation | Responsibility |

@@ -79,17 +79,18 @@ responsibilities. A passing smoke test is not a security certification or availa
 
 ## Validation
 
-The [new-key retest](../reports/retest-2026-11-09/README.md) records 282 local tests, fresh
+The [completed verification](../reports/completion-2026-11-09/README.md) records 282 local tests, fresh
 supplied v4 CLI 10/10, a completed nine-answer real three-user hybrid protocol, a 60-second
 HTTP/stub soak and all 16 production Docker checks. Browser verification includes actual
 dashboard and Streamlit servers. Earlier failed/quota-interrupted runs remain in the
 [previous evidence](../reports/assurance-2026-11-09/README.md). This is verified single-process
 behavior, not distributed/SLA proof.
 
-The fresh extended v4 run scored 48/50, with all three hybrid cases passing. Two requests
-failed on provider HTTP 504s; both passed in a separate 2/2 recovery check. Six SDK errors
-had unreported usage. Neither the retries nor the old offline replay are combined into a
-claimed clean fresh 50/50 run.
+The extended v4 completion result is **50/50 passed after retries**, including all three
+hybrids. Accounting includes all 54 executions across evaluation, recovery and confirmation:
+102 SDK attempts, 217,421 reported tokens and 865.927 seconds of summed capture time.
+Six SDK errors had unreported usage. The completion summary links every final answer to its
+source capture and distinguishes retry-aware completion from an uninterrupted run.
 
 `tests/test_enhancements.py` checks query work, rate reservations, simultaneous
 requests, overload recovery, production settings and an actual Streamlit AppTest session.

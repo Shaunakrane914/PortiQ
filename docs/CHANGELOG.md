@@ -4,9 +4,11 @@
 
 - Completed the previously quota-blocked live protocol: three users, three hybrid turns
   each, all nine answers correct with stable isolated session context and no quota responses.
-- Fresh v4 CLI supplied run passed 10/10. The fresh extended run scored 48/50; two
-  provider-timeout failures passed a separate 2/2 recovery check. Original failures and
-  unknown usage remain recorded; the retry is not presented as a clean full 50/50 score.
+- Fresh v4 CLI supplied run passed 10/10. The extended completion result is **50/50 passed
+  after retries**, with all 54 executions counted: 102 SDK attempts, 217,421 reported tokens
+  and 865.927 seconds of summed capture time. The requested confirmation passed 2/2.
+  Six unknown-usage attempts and all raw history remain recorded in the
+  [completion evidence](../reports/completion-2026-11-09/README.md).
 - Rechecked Python 3.14/3.11, lint/format/types, actual dashboard/Streamlit browsers including
   real Gemini answers, the 60-second HTTP/stub soak, all 16 production Docker checks and
   original-assignment integrity. No runtime changes were required.

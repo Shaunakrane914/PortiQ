@@ -2,6 +2,11 @@
 
 The unchanged [original assignment](assignment/README.md) is the source of requirements. Its deliverables are a working command-line agent, a ground-truth evaluator, brief run documentation and clean code with error handling. The API/dashboard and other enhancements are optional.
 
+[Current completion evidence](../reports/completion-2026-11-09/README.md): **50/50 extended
+passed after retries**, supplied 10/10, hybrid 3/3 and concurrent conversations 9/9. Extended
+accounting covers 54 executions, 102 SDK attempts and 217,421 reported tokens; six attempts
+have unreported usage. The report records all timing and operational checks.
+
 ## Assignment requirements
 
 | Original requirement | Current implementation | Reviewer verification |
@@ -65,7 +70,7 @@ uv run portfolio-agent evaluate --output reports/local/supplied-new.json
 uv run portfolio-agent evaluate --suite extended --output reports/local/extended-new.json
 ```
 
-Both spend genuine Gemini quota. Use fresh output names: reports are written at the selected path. JSON contains SQL/results/reference comparisons and provider metrics; Markdown contains strict pass/fail. Exit code 1 indicates at least one failure. Successful retries from separate runs are not stitched into a full score.
+Both spend genuine Gemini quota. Use fresh output names: reports are written at the selected path. JSON contains SQL/results/reference comparisons and provider metrics; Markdown contains strict pass/fail. Exit code 1 indicates at least one failure. A separate retry-aware completion summary can report the latest result for each case, with all attempts counted and source captures preserved; it is explicitly distinguished from a single uninterrupted run.
 
 The [evaluation evidence index](EVALUATION.md) records current and historical runs with their
 source/evaluator versions, provider counts and verification limits. Historical scores are
