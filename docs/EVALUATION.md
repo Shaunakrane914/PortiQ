@@ -1,5 +1,10 @@
 # Evaluation methodology and evidence
 
+[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
+holdout was not executed. These are observed outcomes, not a full-suite claim for the
+later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+
 `uv run portfolio-agent evaluate` selects the original [ten supplied questions](../ground_truth_dataset.json),
 eight SQL and two exposure. `--suite extended` selects the separate author-created
 [50-question regression](../evaluation/extended.json). Runtime planning never reads
@@ -101,7 +106,7 @@ preserved with the experiment. Ordinary evaluation does not contain a retrieval 
 
 ## Current and historical evidence
 
-The [current direct-results capture](../reports/latency-2026-11-09/README.md), source `1eba590`, passes **50/50
+The [historical direct-results capture](../reports/latency-2026-11-09/README.md), source `1eba590`, passes **50/50
 extended and 10/10 supplied** in separate complete native v4 trials, without post-run
 substitutions. All 46/10 explicit data-answer checks pass. Gemini still plans every data
 request with full schema context; successful explicitly complete factual batches may render
@@ -146,8 +151,8 @@ explains why both retrieval strategies and their comparison runners were removed
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
-| [Current extended CLI](../reports/latency-2026-11-09/extended-candidate/extended.json), `1eba590` | **50/50**, 57 SDK attempts, 137,274 reported tokens | Fresh full native v4 trial; all 46 data-answer checks pass; no post-run substitution |
-| [Current supplied CLI](../reports/latency-2026-11-09/supplied-candidate/supplied.json), `1eba590` | **10/10**, 13 SDK attempts, 29,269 reported tokens | Fresh full native v4 trial; all ten data-answer checks pass; one unknown-usage provider retry |
+| [Historical extended CLI](../reports/latency-2026-11-09/extended-candidate/extended.json), `1eba590` | **50/50**, 57 SDK attempts, 137,274 reported tokens | Fresh full native v4 trial; all 46 data-answer checks pass; no post-run substitution |
+| [Historical supplied CLI](../reports/latency-2026-11-09/supplied-candidate/supplied.json), `1eba590` | **10/10**, 13 SDK attempts, 29,269 reported tokens | Fresh full native v4 trial; all ten data-answer checks pass; one unknown-usage provider retry |
 | [Interactive comparison](../reports/latency-2026-11-09/paired-interactive.json), `1eba590` | Four verified answers; two pairs; zero pacing | Same client/model/schema; list faster, exposure slightly slower; both 2→1 SDK calls |
 | [Earlier single full CLI run](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/single-run-2026-11-09/extended.json), `a9f1e67` | **50/50**, 93 SDK attempts, 205,940 reported tokens | One full native v4 trial; no post-run substitutions; all 46 data-answer checks and three hybrids pass |
 | [New-key supplied v4 CLI](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/retest-2026-11-09/supplied-first/supplied.json), `2a68b74` | **10/10**, 21 SDK attempts, 48,292 reported tokens | Fresh generation on the final verifier/context runtime; all ten answer checks, measured SQL pager work |
@@ -185,3 +190,23 @@ Ruff, format, mypy, pytest and browser/container checks do not spend Gemini quot
 AppTest runs with explicit local mode and no key. Concurrency tests synchronize injected fake
 provider calls and check quota/session isolation; they are not live accuracy results.
 See [enhancements](ENHANCEMENTS.md) for the production/concurrency verification scope.
+
+## Prospective holdout and diagnostic correction
+
+The frozen runtime removes default reference-shaped projections, universal ranking/join
+choices and the supplied diversification formula from prompts and tool schemas. Financial
+definitions, categorical values, full schema and SQL safeguards remain. Undefined metrics
+may require clarification; this can fail the unchanged supplied oracle's expected answer.
+
+The new `data_correct` diagnostic compares actual values and requires distinct evidence
+for every reference, using per-reference comparison state. Extra columns may have matching
+projected data while still failing the strict projection contract. It does not replace
+strict pass/fail or certify missing reference fields. Prior `data_correct` diagnostics in
+other captures are historical and were not rewritten.
+
+`evaluate --dataset evaluation/prospective_holdout_2026-11-09.json` selects the new sealed
+20-question set. Questions and SQL references were created after freezing runtime `1c2cc59`,
+validated offline and committed before the first Gemini call. No result-based prompt,
+evaluator, oracle or question changes were permitted. The author is the implementation
+agent; external independent authorship and permanent unseen status are not claimed.
+The older `unseen_nlp.json` is an observed regression set.

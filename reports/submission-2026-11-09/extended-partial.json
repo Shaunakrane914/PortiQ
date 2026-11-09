@@ -1,0 +1,5535 @@
+{
+  "complete": false,
+  "records": [
+    {
+      "id": "ext-01",
+      "question": "How many securities are classified as Bond? Return just the count.",
+      "category": "simple",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              5
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT COUNT(*) FROM securities WHERE asset_type='Bond'"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "1453e1b5-7f90-435a-a214-152d30e6864d",
+        "status": "answer",
+        "answer": "Bond securities: 5",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "sql": "SELECT count(*) FROM securities WHERE asset_type = 'Bond'",
+              "explanation": "Counting the number of securities where the asset_type is 'Bond'.",
+              "question": "How many securities are classified as Bond?"
+            },
+            "result": {
+              "columns": [
+                "count(*)"
+              ],
+              "rows": [
+                [
+                  5
+                ]
+              ],
+              "sql": "SELECT count(*) FROM securities WHERE asset_type = 'Bond'",
+              "duration_ms": 1.605,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.3276999923400581,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.636
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 3200.546,
+        "model_duration_ms": 3179.965,
+        "api_calls": 1,
+        "tokens": 2426,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:35:22.173609+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 3177.6630000094883,
+            "pacing_ms": 0.0,
+            "input_tokens": 2362,
+            "output_tokens": 64,
+            "thinking_tokens": null,
+            "total_tokens": 2426,
+            "error_kind": null,
+            "sequence": 1
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 1.4634999970439821,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 28,
+          "generated_vm_steps": 28,
+          "reference_query_plan": [
+            "SEARCH securities USING COVERING INDEX idx_securities_asset_type (asset_type=?)"
+          ],
+          "generated_query_plan": [
+            "SEARCH securities USING COVERING INDEX idx_securities_asset_type (asset_type=?)"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 3216.566,
+      "trial": 1
+    },
+    {
+      "id": "ext-02",
+      "question": "List the names of Passive portfolios, alphabetically.",
+      "category": "simple",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Total Bond Market Index Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT portfolio_name FROM portfolios WHERE status='Passive' ORDER BY portfolio_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "bedcc646-4c77-42af-8589-94625da555ae",
+        "status": "answer",
+        "answer": "3 matching portfolios:\n* Total Bond Market Index Fund\n* Total International Index Fund\n* Total Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC;",
+              "complete": true,
+              "question": "List the names of Passive portfolios, alphabetically.",
+              "explanation": "I am querying the portfolios table to retrieve the names of all portfolios where the status is 'Passive', ordered alphabetically."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Total Bond Market Index Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ],
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT portfolio_name FROM portfolios WHERE status = 'Passive' ORDER BY portfolio_name ASC;",
+              "duration_ms": 0.886,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.15759999223519117,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.423
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 5048.791,
+        "model_duration_ms": 5046.055,
+        "api_calls": 1,
+        "tokens": 2438,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:35:28.676236+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1743.874500010861,
+            "pacing_ms": 3297.639500000514,
+            "input_tokens": 2358,
+            "output_tokens": 80,
+            "thinking_tokens": null,
+            "total_tokens": 2438,
+            "error_kind": null,
+            "sequence": 2
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.31799999123904854,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "portfolio_names"
+        ],
+        "checks": [
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Bond Market Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total International Index Fund",
+            "actual": true,
+            "passed": true
+          },
+          {
+            "kind": "required_portfolio",
+            "expected": "Total Stock Market Index Fund",
+            "actual": true,
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "portfolio_names"
+        ]
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 3,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 69,
+          "generated_vm_steps": 69,
+          "reference_query_plan": [
+            "SCAN portfolios USING INDEX sqlite_autoindex_portfolios_1"
+          ],
+          "generated_query_plan": [
+            "SCAN portfolios USING INDEX sqlite_autoindex_portfolios_1"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 3,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 5054.198,
+      "trial": 1
+    },
+    {
+      "id": "ext-03",
+      "question": "What is the total AUM across all portfolios? Return one value.",
+      "category": "simple",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(total_aum)"
+          ],
+          "rows": [
+            [
+              323500000.0
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT SUM(total_aum) FROM portfolios"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "aebc0055-8a14-4fa0-b5eb-b1cd76fbd193",
+        "status": "answer",
+        "answer": "Total AUM: 323,500,000.0",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Calculate the sum of total_aum for all portfolios in the portfolios table.",
+              "complete": true,
+              "sql": "SELECT SUM(total_aum) FROM portfolios",
+              "question": "What is the total AUM across all portfolios?"
+            },
+            "result": {
+              "columns": [
+                "SUM(total_aum)"
+              ],
+              "rows": [
+                [
+                  323500000.0
+                ]
+              ],
+              "sql": "SELECT SUM(total_aum) FROM portfolios",
+              "duration_ms": 0.88,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.11799999629147351,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.29
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 14821.427,
+        "model_duration_ms": 14819.024,
+        "api_calls": 1,
+        "tokens": 2428,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:35:35.188391+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 10059.202600008575,
+            "pacing_ms": 4743.6984999949345,
+            "input_tokens": 2363,
+            "output_tokens": 65,
+            "thinking_tokens": null,
+            "total_tokens": 2428,
+            "error_kind": null,
+            "sequence": 3
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.32279999868478626,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "scalar"
+        ],
+        "checks": [
+          {
+            "kind": "numeric_claim_present",
+            "expected": 323500000.0,
+            "actual": [
+              323500000.0
+            ],
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "scalar"
+        ]
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 62,
+          "generated_vm_steps": 62,
+          "reference_query_plan": [
+            "SCAN portfolios"
+          ],
+          "generated_query_plan": [
+            "SCAN portfolios"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 14826.087,
+      "trial": 1
+    },
+    {
+      "id": "ext-04",
+      "question": "List portfolio_name and total_aum for Low risk portfolios, highest AUM first.",
+      "category": "simple",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name",
+            "total_aum"
+          ],
+          "rows": [
+            [
+              "Fixed Income Plus",
+              35000000.0
+            ],
+            [
+              "Total Bond Market Index Fund",
+              30000000.0
+            ],
+            [
+              "Dividend Aristocrats Fund",
+              20000000.0
+            ],
+            [
+              "Conservative Income Fund",
+              18500000.0
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT portfolio_name,total_aum FROM portfolios WHERE target_risk_level='Low' ORDER BY total_aum DESC"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "46ce11c8-2ea5-4a7a-a4b4-aa0e964936f7",
+        "status": "answer",
+        "answer": "| Portfolio Name | Total AUM |\n| --- | --- |\n| Fixed Income Plus | 35000000.0 |\n| Total Bond Market Index Fund | 30000000.0 |\n| Dividend Aristocrats Fund | 20000000.0 |\n| Conservative Income Fund | 18500000.0 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "List portfolio_name and total_aum for Low risk portfolios, highest AUM first.",
+              "explanation": "I am querying the portfolios table to retrieve the portfolio_name and total_aum for portfolios where the target_risk_level is 'Low', ordered by total_aum in descending order.",
+              "complete": true,
+              "sql": "SELECT portfolio_name, total_aum FROM portfolios WHERE target_risk_level = 'Low' ORDER BY total_aum DESC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "total_aum"
+              ],
+              "rows": [
+                [
+                  "Fixed Income Plus",
+                  35000000.0
+                ],
+                [
+                  "Total Bond Market Index Fund",
+                  30000000.0
+                ],
+                [
+                  "Dividend Aristocrats Fund",
+                  20000000.0
+                ],
+                [
+                  "Conservative Income Fund",
+                  18500000.0
+                ]
+              ],
+              "sql": "SELECT portfolio_name, total_aum FROM portfolios WHERE target_risk_level = 'Low' ORDER BY total_aum DESC;",
+              "duration_ms": 1.493,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.24870000197552145,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.364
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 4712.542,
+        "model_duration_ms": 4709.038,
+        "api_calls": 1,
+        "tokens": 2485,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:35:45.258753+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 4705.45010000933,
+            "pacing_ms": 0.0,
+            "input_tokens": 2368,
+            "output_tokens": 117,
+            "thinking_tokens": null,
+            "total_tokens": 2485,
+            "error_kind": null,
+            "sequence": 4
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.3245999978389591,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 4,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 90,
+          "generated_vm_steps": 90,
+          "reference_query_plan": [
+            "SCAN portfolios",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SCAN portfolios",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 4735.461,
+      "trial": 1
+    },
+    {
+      "id": "ext-05",
+      "question": "Count portfolios by status. Return status and count, sorted by status.",
+      "category": "simple",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "status",
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              "Active",
+              10
+            ],
+            [
+              "Passive",
+              3
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT status,COUNT(*) FROM portfolios GROUP BY status ORDER BY status"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "1ab7ea08-a2ec-4817-a94c-9bd9eea6603e",
+        "status": "answer",
+        "answer": "| Status | Count |\n| --- | --- |\n| Active | 10 |\n| Passive | 3 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Count portfolios by status. Return status and count, sorted by status.",
+              "sql": "SELECT status, COUNT(*) as count FROM portfolios GROUP BY status ORDER BY status;",
+              "explanation": "Counting the number of portfolios grouped by their status and sorting the results by status.",
+              "complete": true
+            },
+            "result": {
+              "columns": [
+                "status",
+                "count"
+              ],
+              "rows": [
+                [
+                  "Active",
+                  10
+                ],
+                [
+                  "Passive",
+                  3
+                ]
+              ],
+              "sql": "SELECT status, COUNT(*) as count FROM portfolios GROUP BY status ORDER BY status;",
+              "duration_ms": 1.601,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.19190000602975488,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.236
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 3148.937,
+        "model_duration_ms": 3145.476,
+        "api_calls": 1,
+        "tokens": 2438,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:35:51.776715+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1360.0960000039777,
+            "pacing_ms": 1764.5240999991074,
+            "input_tokens": 2363,
+            "output_tokens": 75,
+            "thinking_tokens": null,
+            "total_tokens": 2438,
+            "error_kind": null,
+            "sequence": 5
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.32640001154504716,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 2,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 203,
+          "generated_vm_steps": 203,
+          "reference_query_plan": [
+            "SCAN portfolios",
+            "USE TEMP B-TREE FOR GROUP BY"
+          ],
+          "generated_query_plan": [
+            "SCAN portfolios",
+            "USE TEMP B-TREE FOR GROUP BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 3155.35,
+      "trial": 1
+    },
+    {
+      "id": "ext-06",
+      "question": "Which stock symbols trade on NYSE? Return symbols alphabetically.",
+      "category": "simple",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "symbol"
+          ],
+          "rows": [
+            [
+              "ABBV"
+            ],
+            [
+              "BAC"
+            ],
+            [
+              "CRM"
+            ],
+            [
+              "CVX"
+            ],
+            [
+              "HD"
+            ],
+            [
+              "JNJ"
+            ],
+            [
+              "JPM"
+            ],
+            [
+              "KO"
+            ],
+            [
+              "LLY"
+            ],
+            [
+              "MA"
+            ],
+            [
+              "ORCL"
+            ],
+            [
+              "PFE"
+            ],
+            [
+              "PG"
+            ],
+            [
+              "UNH"
+            ],
+            [
+              "V"
+            ],
+            [
+              "WMT"
+            ],
+            [
+              "XOM"
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT symbol FROM securities WHERE exchange='NYSE' AND asset_type='Stock' ORDER BY symbol"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "1845a13a-19ca-42bd-a60b-450e0b3289e6",
+        "status": "answer",
+        "answer": "17 matching symbols:\n* ABBV\n* BAC\n* CRM\n* CVX\n* HD\n* JNJ\n* JPM\n* KO\n* LLY\n* MA\n* ORCL\n* PFE\n* PG\n* UNH\n* V\n* WMT\n* XOM",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT symbol FROM securities WHERE exchange = 'NYSE' AND asset_type = 'Stock' ORDER BY symbol ASC;",
+              "explanation": "Querying the securities table for all symbols where the exchange is 'NYSE' and the asset_type is 'Stock', ordered alphabetically.",
+              "complete": true,
+              "question": "Which stock symbols trade on NYSE? Return symbols alphabetically."
+            },
+            "result": {
+              "columns": [
+                "symbol"
+              ],
+              "rows": [
+                [
+                  "ABBV"
+                ],
+                [
+                  "BAC"
+                ],
+                [
+                  "CRM"
+                ],
+                [
+                  "CVX"
+                ],
+                [
+                  "HD"
+                ],
+                [
+                  "JNJ"
+                ],
+                [
+                  "JPM"
+                ],
+                [
+                  "KO"
+                ],
+                [
+                  "LLY"
+                ],
+                [
+                  "MA"
+                ],
+                [
+                  "ORCL"
+                ],
+                [
+                  "PFE"
+                ],
+                [
+                  "PG"
+                ],
+                [
+                  "UNH"
+                ],
+                [
+                  "V"
+                ],
+                [
+                  "WMT"
+                ],
+                [
+                  "XOM"
+                ]
+              ],
+              "sql": "SELECT symbol FROM securities WHERE exchange = 'NYSE' AND asset_type = 'Stock' ORDER BY symbol ASC;",
+              "duration_ms": 0.82,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.2049000031547621,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.544
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 9582.894,
+        "model_duration_ms": 9580.144,
+        "api_calls": 1,
+        "tokens": 2450,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:35:58.258536+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 4468.870600001537,
+            "pacing_ms": 5108.812200007378,
+            "input_tokens": 2360,
+            "output_tokens": 90,
+            "thinking_tokens": null,
+            "total_tokens": 2450,
+            "error_kind": null,
+            "sequence": 6
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.3404000017326325,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 17,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 262,
+          "generated_vm_steps": 262,
+          "reference_query_plan": [
+            "SEARCH securities USING INDEX idx_securities_asset_type (asset_type=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH securities USING INDEX idx_securities_asset_type (asset_type=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 3,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 9588.643,
+      "trial": 1
+    },
+    {
+      "id": "ext-07",
+      "question": "Return the minimum and maximum current_price across all securities.",
+      "category": "simple",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "MIN(current_price)",
+            "MAX(current_price)"
+          ],
+          "rows": [
+            [
+              28.95,
+              3380.0
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT MIN(current_price),MAX(current_price) FROM securities"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "94e5d655-2a17-4ce6-98fd-460bb20230e8",
+        "status": "answer",
+        "answer": "| Min Price | Max Price |\n| --- | --- |\n| 28.95 | 3380.0 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "explanation": "I am querying the securities table to find the minimum and maximum values in the current_price column.",
+              "sql": "SELECT MIN(current_price) AS min_price, MAX(current_price) AS max_price FROM securities",
+              "question": "Return the minimum and maximum current_price across all securities."
+            },
+            "result": {
+              "columns": [
+                "min_price",
+                "max_price"
+              ],
+              "rows": [
+                [
+                  28.95,
+                  3380.0
+                ]
+              ],
+              "sql": "SELECT MIN(current_price) AS min_price, MAX(current_price) AS max_price FROM securities",
+              "duration_ms": 0.993,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.17379999917466193,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.556
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 3274.825,
+        "model_duration_ms": 3272.159,
+        "api_calls": 1,
+        "tokens": 2446,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:36:04.758851+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1249.7234000038588,
+            "pacing_ms": 2020.529399989755,
+            "input_tokens": 2361,
+            "output_tokens": 85,
+            "thinking_tokens": null,
+            "total_tokens": 2446,
+            "error_kind": null,
+            "sequence": 7
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.32970000756904483,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 281,
+          "generated_vm_steps": 281,
+          "reference_query_plan": [
+            "SCAN securities"
+          ],
+          "generated_query_plan": [
+            "SCAN securities"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 3279.483,
+      "trial": 1
+    },
+    {
+      "id": "ext-08",
+      "question": "How many distinct countries are represented by securities? Return just the count.",
+      "category": "simple",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "COUNT(DISTINCT country)"
+          ],
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT COUNT(DISTINCT country) FROM securities"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "f5f0722e-e4dc-4686-afaa-8319c8c4d33e",
+        "status": "answer",
+        "answer": "Distinct country count: 1",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "sql": "SELECT COUNT(DISTINCT country) FROM securities",
+              "explanation": "I am counting the number of distinct countries listed in the securities table.",
+              "question": "How many distinct countries are represented by securities?"
+            },
+            "result": {
+              "columns": [
+                "COUNT(DISTINCT country)"
+              ],
+              "rows": [
+                [
+                  1
+                ]
+              ],
+              "sql": "SELECT COUNT(DISTINCT country) FROM securities",
+              "duration_ms": 0.938,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.12989999959245324,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.369
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 14268.042,
+        "model_duration_ms": 14265.571,
+        "api_calls": 1,
+        "tokens": 2424,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:36:11.262607+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 9019.637000004877,
+            "pacing_ms": 5241.316400002688,
+            "input_tokens": 2363,
+            "output_tokens": 61,
+            "thinking_tokens": null,
+            "total_tokens": 2424,
+            "error_kind": null,
+            "sequence": 8
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.25610000011511147,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 104,
+          "generated_vm_steps": 104,
+          "reference_query_plan": [
+            "USE TEMP B-TREE FOR count(DISTINCT)",
+            "SCAN securities"
+          ],
+          "generated_query_plan": [
+            "USE TEMP B-TREE FOR count(DISTINCT)",
+            "SCAN securities"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 14273.45,
+      "trial": 1
+    },
+    {
+      "id": "ext-09",
+      "question": "Return benchmark_name for Equity benchmarks in alphabetical order.",
+      "category": "simple",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "benchmark_name"
+          ],
+          "rows": [
+            [
+              "S&P 500 Index"
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT benchmark_name FROM benchmarks WHERE benchmark_type='Equity' ORDER BY benchmark_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "a507fd1e-92a2-4e98-8aa9-e8828676edaf",
+        "status": "answer",
+        "answer": "Benchmark Name: S&P 500 Index",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "sql": "SELECT benchmark_name FROM benchmarks WHERE benchmark_type = 'Equity' ORDER BY benchmark_name ASC;",
+              "question": "Return benchmark_name for Equity benchmarks in alphabetical order.",
+              "explanation": "Querying the benchmarks table for benchmarks where the type is 'Equity', ordered alphabetically by name."
+            },
+            "result": {
+              "columns": [
+                "benchmark_name"
+              ],
+              "rows": [
+                [
+                  "S&P 500 Index"
+                ]
+              ],
+              "sql": "SELECT benchmark_name FROM benchmarks WHERE benchmark_type = 'Equity' ORDER BY benchmark_name ASC;",
+              "duration_ms": 0.824,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.15249999705702066,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.335
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 29380.194,
+        "model_duration_ms": 27877.455,
+        "api_calls": 1,
+        "tokens": 2440,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:36:21.799401+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 27869.28289999196,
+            "pacing_ms": 0.0,
+            "input_tokens": 2360,
+            "output_tokens": 80,
+            "thinking_tokens": null,
+            "total_tokens": 2440,
+            "error_kind": null,
+            "sequence": 9
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.3001000004587695,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 65,
+          "generated_vm_steps": 65,
+          "reference_query_plan": [
+            "SCAN benchmarks USING INDEX sqlite_autoindex_benchmarks_1"
+          ],
+          "generated_query_plan": [
+            "SCAN benchmarks USING INDEX sqlite_autoindex_benchmarks_1"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 3,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 29385.488,
+      "trial": 1
+    },
+    {
+      "id": "ext-10",
+      "question": "Return symbol and maturity_date for bonds maturing before 2026-01-01, oldest maturity first.",
+      "category": "simple",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "symbol",
+            "maturity_date"
+          ],
+          "rows": [
+            [
+              "UST-2Y",
+              "2024-01-15"
+            ],
+            [
+              "UST-5Y",
+              "2025-03-01"
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT symbol,maturity_date FROM securities WHERE asset_type='Bond' AND maturity_date<'2026-01-01' ORDER BY maturity_date"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "c645fbc7-b456-4a64-8e45-c3c68cdcc735",
+        "status": "answer",
+        "answer": "| Symbol | Maturity Date |\n| --- | --- |\n| UST-2Y | 2024-01-15 |\n| UST-5Y | 2025-03-01 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Return symbol and maturity_date for bonds maturing before 2026-01-01, oldest maturity first.",
+              "complete": true,
+              "explanation": "Querying securities table for bonds with maturity_date before 2026-01-01, ordered by maturity_date ascending.",
+              "sql": "SELECT symbol, maturity_date FROM securities WHERE asset_type = 'Bond' AND maturity_date < '2026-01-01' ORDER BY maturity_date ASC;"
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "maturity_date"
+              ],
+              "rows": [
+                [
+                  "UST-2Y",
+                  "2024-01-15"
+                ],
+                [
+                  "UST-5Y",
+                  "2025-03-01"
+                ]
+              ],
+              "sql": "SELECT symbol, maturity_date FROM securities WHERE asset_type = 'Bond' AND maturity_date < '2026-01-01' ORDER BY maturity_date ASC;",
+              "duration_ms": 0.911,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.19330000213813037,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.522
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 1367.058,
+        "model_duration_ms": 1364.036,
+        "api_calls": 1,
+        "tokens": 2500,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:36:49.679423+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1361.7043999984162,
+            "pacing_ms": 0.0,
+            "input_tokens": 2375,
+            "output_tokens": 125,
+            "thinking_tokens": null,
+            "total_tokens": 2500,
+            "error_kind": null,
+            "sequence": 10
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.7409999961964786,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 2,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 58,
+          "generated_vm_steps": 58,
+          "reference_query_plan": [
+            "SEARCH securities USING INDEX idx_securities_asset_type (asset_type=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH securities USING INDEX idx_securities_asset_type (asset_type=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 3,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 1372.777,
+      "trial": 1
+    },
+    {
+      "id": "ext-11",
+      "question": "List Financials sector stock symbols and company names, alphabetically by symbol.",
+      "category": "joins",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "symbol",
+            "company_name"
+          ],
+          "rows": [
+            [
+              "BAC",
+              "Bank of America Corp."
+            ],
+            [
+              "JPM",
+              "JPMorgan Chase & Co."
+            ],
+            [
+              "MA",
+              "Mastercard Inc."
+            ],
+            [
+              "V",
+              "Visa Inc."
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT s.symbol,s.company_name FROM securities s JOIN sectors c USING(sector_id) WHERE c.sector_name='Financials' AND s.asset_type='Stock' ORDER BY s.symbol"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "22d32e74-e4c7-4f70-a856-64b3b1933c26",
+        "status": "answer",
+        "answer": "| Symbol | Company Name |\n| --- | --- |\n| BAC | Bank of America Corp. |\n| JPM | JPMorgan Chase & Co. |\n| MA | Mastercard Inc. |\n| V | Visa Inc. |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "I am querying the securities table to find all stocks that belong to the 'Financials' sector, joining with the sectors table to filter by sector name, and ordering the results alphabetically by symbol.",
+              "complete": true,
+              "sql": "SELECT s.symbol, s.company_name FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id WHERE sec.sector_name = 'Financials' AND s.asset_type = 'Stock' ORDER BY s.symbol ASC;",
+              "question": "List Financials sector stock symbols and company names, alphabetically by symbol."
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "company_name"
+              ],
+              "rows": [
+                [
+                  "BAC",
+                  "Bank of America Corp."
+                ],
+                [
+                  "JPM",
+                  "JPMorgan Chase & Co."
+                ],
+                [
+                  "MA",
+                  "Mastercard Inc."
+                ],
+                [
+                  "V",
+                  "Visa Inc."
+                ]
+              ],
+              "sql": "SELECT s.symbol, s.company_name FROM securities s JOIN sectors sec ON s.sector_id = sec.sector_id WHERE sec.sector_name = 'Financials' AND s.asset_type = 'Stock' ORDER BY s.symbol ASC;",
+              "duration_ms": 0.894,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.2970000059576705,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.702
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 53386.516,
+        "model_duration_ms": 53383.345,
+        "api_calls": 1,
+        "tokens": 2501,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:36:56.179580+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 48254.56980000308,
+            "pacing_ms": 5126.485100001446,
+            "input_tokens": 2363,
+            "output_tokens": 138,
+            "thinking_tokens": null,
+            "total_tokens": 2501,
+            "error_kind": null,
+            "sequence": 11
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.483900003018789,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 4,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 78,
+          "generated_vm_steps": 78,
+          "reference_query_plan": [
+            "SEARCH c USING COVERING INDEX sqlite_autoindex_sectors_1 (sector_name=?)",
+            "SEARCH s USING INDEX idx_securities_sector (sector_id=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH sec USING COVERING INDEX sqlite_autoindex_sectors_1 (sector_name=?)",
+            "SEARCH s USING INDEX idx_securities_sector (sector_id=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 4,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 53392.441,
+      "trial": 1
+    },
+    {
+      "id": "ext-12",
+      "question": "Return portfolio_name and number of holdings for each portfolio, alphabetically by portfolio_name.",
+      "category": "joins",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name",
+            "COUNT(h.holding_id)"
+          ],
+          "rows": [
+            [
+              "Balanced Portfolio",
+              8
+            ],
+            [
+              "Conservative Income Fund",
+              7
+            ],
+            [
+              "Dividend Aristocrats Fund",
+              4
+            ],
+            [
+              "ESG Sustainable Fund",
+              7
+            ],
+            [
+              "Emerging Markets Fund",
+              8
+            ],
+            [
+              "Fixed Income Plus",
+              5
+            ],
+            [
+              "Growth Equity Fund",
+              8
+            ],
+            [
+              "International Equity Fund",
+              8
+            ],
+            [
+              "Small Cap Value Fund",
+              5
+            ],
+            [
+              "Tech Innovation Fund",
+              8
+            ],
+            [
+              "Total Bond Market Index Fund",
+              5
+            ],
+            [
+              "Total International Index Fund",
+              10
+            ],
+            [
+              "Total Stock Market Index Fund",
+              12
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT p.portfolio_name,COUNT(h.holding_id) FROM portfolios p LEFT JOIN holdings h USING(portfolio_id) GROUP BY p.portfolio_id ORDER BY p.portfolio_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "000d912e-19c0-48b7-b600-457837e7b40f",
+        "status": "answer",
+        "answer": "| Portfolio Name | Number Of Holdings |\n| --- | --- |\n| Balanced Portfolio | 8 |\n| Conservative Income Fund | 7 |\n| Dividend Aristocrats Fund | 4 |\n| ESG Sustainable Fund | 7 |\n| Emerging Markets Fund | 8 |\n| Fixed Income Plus | 5 |\n| Growth Equity Fund | 8 |\n| International Equity Fund | 8 |\n| Small Cap Value Fund | 5 |\n| Tech Innovation Fund | 8 |\n| Total Bond Market Index Fund | 5 |\n| Total International Index Fund | 10 |\n| Total Stock Market Index Fund | 12 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Return portfolio_name and number of holdings for each portfolio, alphabetically by portfolio_name.",
+              "explanation": "I am counting the number of holdings for each portfolio by joining the portfolios and holdings tables, grouping by the portfolio name, and ordering the results alphabetically.",
+              "sql": "SELECT p.portfolio_name, COUNT(h.holding_id) AS number_of_holdings FROM portfolios p LEFT JOIN holdings h ON p.portfolio_id = h.portfolio_id GROUP BY p.portfolio_name ORDER BY p.portfolio_name ASC;",
+              "complete": true
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "number_of_holdings"
+              ],
+              "rows": [
+                [
+                  "Balanced Portfolio",
+                  8
+                ],
+                [
+                  "Conservative Income Fund",
+                  7
+                ],
+                [
+                  "Dividend Aristocrats Fund",
+                  4
+                ],
+                [
+                  "ESG Sustainable Fund",
+                  7
+                ],
+                [
+                  "Emerging Markets Fund",
+                  8
+                ],
+                [
+                  "Fixed Income Plus",
+                  5
+                ],
+                [
+                  "Growth Equity Fund",
+                  8
+                ],
+                [
+                  "International Equity Fund",
+                  8
+                ],
+                [
+                  "Small Cap Value Fund",
+                  5
+                ],
+                [
+                  "Tech Innovation Fund",
+                  8
+                ],
+                [
+                  "Total Bond Market Index Fund",
+                  5
+                ],
+                [
+                  "Total International Index Fund",
+                  10
+                ],
+                [
+                  "Total Stock Market Index Fund",
+                  12
+                ]
+              ],
+              "sql": "SELECT p.portfolio_name, COUNT(h.holding_id) AS number_of_holdings FROM portfolios p LEFT JOIN holdings h ON p.portfolio_id = h.portfolio_id GROUP BY p.portfolio_name ORDER BY p.portfolio_name ASC;",
+              "duration_ms": 0.88,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.6738999945810065,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.153
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 1861.201,
+        "model_duration_ms": 1857.769,
+        "api_calls": 1,
+        "tokens": 2501,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:37:44.446618+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1855.113600002369,
+            "pacing_ms": 0.0,
+            "input_tokens": 2367,
+            "output_tokens": 134,
+            "thinking_tokens": null,
+            "total_tokens": 2501,
+            "error_kind": null,
+            "sequence": 12
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.4155999922659248,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 13,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 1313,
+          "generated_vm_steps": 1220,
+          "reference_query_plan": [
+            "SCAN p",
+            "SEARCH h USING COVERING INDEX idx_holdings_portfolio (portfolio_id=?) LEFT-JOIN",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SCAN p USING COVERING INDEX sqlite_autoindex_portfolios_1",
+            "SEARCH h USING COVERING INDEX idx_holdings_portfolio (portfolio_id=?) LEFT-JOIN"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 3,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 1871.975,
+      "trial": 1
+    },
+    {
+      "id": "ext-13",
+      "question": "Return portfolio_name for portfolios holding AAPL, alphabetically.",
+      "category": "joins",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name"
+          ],
+          "rows": [
+            [
+              "Balanced Portfolio"
+            ],
+            [
+              "ESG Sustainable Fund"
+            ],
+            [
+              "Growth Equity Fund"
+            ],
+            [
+              "International Equity Fund"
+            ],
+            [
+              "Tech Innovation Fund"
+            ],
+            [
+              "Total International Index Fund"
+            ],
+            [
+              "Total Stock Market Index Fund"
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT p.portfolio_name FROM portfolios p JOIN holdings h USING(portfolio_id) JOIN securities s USING(security_id) WHERE s.symbol='AAPL' ORDER BY p.portfolio_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "1a49ccb3-00a6-4d4e-9e1e-4df232aea3be",
+        "status": "answer",
+        "answer": "7 matching portfolios:\n* Balanced Portfolio\n* ESG Sustainable Fund\n* Growth Equity Fund\n* International Equity Fund\n* Tech Innovation Fund\n* Total International Index Fund\n* Total Stock Market Index Fund",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "I am querying the portfolios table joined with holdings and securities to find the names of portfolios that hold the security with the symbol 'AAPL'. The results are ordered alphabetically by portfolio_name.",
+              "question": "Return portfolio_name for portfolios holding AAPL, alphabetically.",
+              "complete": true,
+              "sql": "SELECT DISTINCT p.portfolio_name FROM portfolios p JOIN holdings h ON p.portfolio_id = h.portfolio_id JOIN securities s ON h.security_id = s.security_id WHERE s.symbol = 'AAPL' ORDER BY p.portfolio_name ASC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name"
+              ],
+              "rows": [
+                [
+                  "Balanced Portfolio"
+                ],
+                [
+                  "ESG Sustainable Fund"
+                ],
+                [
+                  "Growth Equity Fund"
+                ],
+                [
+                  "International Equity Fund"
+                ],
+                [
+                  "Tech Innovation Fund"
+                ],
+                [
+                  "Total International Index Fund"
+                ],
+                [
+                  "Total Stock Market Index Fund"
+                ]
+              ],
+              "sql": "SELECT DISTINCT p.portfolio_name FROM portfolios p JOIN holdings h ON p.portfolio_id = h.portfolio_id JOIN securities s ON h.security_id = s.security_id WHERE s.symbol = 'AAPL' ORDER BY p.portfolio_name ASC;",
+              "duration_ms": 0.967,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.3152999997837469,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.797
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 15857.175,
+        "model_duration_ms": 15853.514,
+        "api_calls": 1,
+        "tokens": 2496,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:37:50.947749+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 11223.406100005377,
+            "pacing_ms": 4626.812600006815,
+            "input_tokens": 2361,
+            "output_tokens": 135,
+            "thinking_tokens": null,
+            "total_tokens": 2496,
+            "error_kind": null,
+            "sequence": 13
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.5049000028520823,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 7,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 103,
+          "generated_vm_steps": 220,
+          "reference_query_plan": [
+            "SEARCH s USING COVERING INDEX sqlite_autoindex_securities_1 (symbol=?)",
+            "SEARCH h USING INDEX idx_holdings_security (security_id=?)",
+            "SEARCH p USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH s USING COVERING INDEX sqlite_autoindex_securities_1 (symbol=?)",
+            "SEARCH h USING INDEX idx_holdings_security (security_id=?)",
+            "SEARCH p USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR DISTINCT"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 12,
+          "vm_score": 46.82,
+          "reference_page_io": {
+            "cache_hits": 7,
+            "cache_misses": 5,
+            "logical_page_reads": 12,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 7,
+            "cache_misses": 5,
+            "logical_page_reads": 12,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 15864.742,
+      "trial": 1
+    },
+    {
+      "id": "ext-14",
+      "question": "Return sector_name and count of Stock securities per represented sector, alphabetically by sector.",
+      "category": "joins",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "sector_name",
+            "COUNT(*)"
+          ],
+          "rows": [
+            [
+              "Automotive",
+              1
+            ],
+            [
+              "Consumer Discretionary",
+              1
+            ],
+            [
+              "Consumer Staples",
+              4
+            ],
+            [
+              "Energy",
+              2
+            ],
+            [
+              "Financials",
+              4
+            ],
+            [
+              "Healthcare",
+              5
+            ],
+            [
+              "Technology",
+              8
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT c.sector_name,COUNT(*) FROM securities s JOIN sectors c USING(sector_id) WHERE s.asset_type='Stock' GROUP BY c.sector_id ORDER BY c.sector_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "ce7d4ec7-464a-4aa8-b5c1-8b1ea7f76e5a",
+        "status": "answer",
+        "answer": "| Sector | Stock Count |\n| --- | --- |\n| Automotive | 1 |\n| Consumer Discretionary | 1 |\n| Consumer Staples | 4 |\n| Energy | 2 |\n| Financials | 4 |\n| Healthcare | 5 |\n| Technology | 8 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Return sector_name and count of Stock securities per represented sector, alphabetically by sector.",
+              "sql": "SELECT s.sector_name, COUNT(sec.security_id) AS stock_count FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id WHERE sec.asset_type = 'Stock' GROUP BY s.sector_name ORDER BY s.sector_name ASC;",
+              "explanation": "I am counting the number of 'Stock' securities for each sector and ordering the results alphabetically by sector name.",
+              "complete": true
+            },
+            "result": {
+              "columns": [
+                "sector_name",
+                "stock_count"
+              ],
+              "rows": [
+                [
+                  "Automotive",
+                  1
+                ],
+                [
+                  "Consumer Discretionary",
+                  1
+                ],
+                [
+                  "Consumer Staples",
+                  4
+                ],
+                [
+                  "Energy",
+                  2
+                ],
+                [
+                  "Financials",
+                  4
+                ],
+                [
+                  "Healthcare",
+                  5
+                ],
+                [
+                  "Technology",
+                  8
+                ]
+              ],
+              "sql": "SELECT s.sector_name, COUNT(sec.security_id) AS stock_count FROM sectors s JOIN securities sec ON s.sector_id = sec.sector_id WHERE sec.asset_type = 'Stock' GROUP BY s.sector_name ORDER BY s.sector_name ASC;",
+              "duration_ms": 1.039,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.35179998667445034,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.039
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 1461.048,
+        "model_duration_ms": 1457.042,
+        "api_calls": 1,
+        "tokens": 2497,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:38:02.188266+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1453.1594999862136,
+            "pacing_ms": 0.0,
+            "input_tokens": 2366,
+            "output_tokens": 131,
+            "thinking_tokens": null,
+            "total_tokens": 2497,
+            "error_kind": null,
+            "sequence": 14
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.5330999993020669,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 7,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 592,
+          "generated_vm_steps": 573,
+          "reference_query_plan": [
+            "SEARCH s USING INDEX idx_securities_asset_type (asset_type=?)",
+            "SEARCH c USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR GROUP BY",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH sec USING INDEX idx_securities_asset_type (asset_type=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR GROUP BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 4,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 1474.544,
+      "trial": 1
+    },
+    {
+      "id": "ext-15",
+      "question": "List names of sectors with no securities, alphabetically.",
+      "category": "joins",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "sector_name"
+          ],
+          "rows": [
+            [
+              "Industrials"
+            ],
+            [
+              "Real Estate"
+            ],
+            [
+              "Utilities"
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT c.sector_name FROM sectors c LEFT JOIN securities s USING(sector_id) WHERE s.security_id IS NULL ORDER BY c.sector_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "894493fd-3572-4f03-95e0-beafa4fcf6f0",
+        "status": "answer",
+        "answer": "3 matching sectors:\n* Industrials\n* Real Estate\n* Utilities",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT s.sector_name FROM sectors s LEFT JOIN securities sec ON s.sector_id = sec.sector_id WHERE sec.security_id IS NULL ORDER BY s.sector_name ASC;",
+              "question": "List names of sectors with no securities, alphabetically.",
+              "complete": true,
+              "explanation": "I am selecting the names of sectors that do not have any associated securities by performing a LEFT JOIN between the sectors table and the securities table and filtering for rows where the security_id is NULL. The results are ordered alphabetically by sector_name."
+            },
+            "result": {
+              "columns": [
+                "sector_name"
+              ],
+              "rows": [
+                [
+                  "Industrials"
+                ],
+                [
+                  "Real Estate"
+                ],
+                [
+                  "Utilities"
+                ]
+              ],
+              "sql": "SELECT s.sector_name FROM sectors s LEFT JOIN securities sec ON s.sector_id = sec.sector_id WHERE sec.security_id IS NULL ORDER BY s.sector_name ASC;",
+              "duration_ms": 1.862,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.4560000088531524,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 3.061
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 23895.184,
+        "model_duration_ms": 23890.619,
+        "api_calls": 1,
+        "tokens": 2489,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:38:08.688095+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 18861.932599989814,
+            "pacing_ms": 5025.603799993405,
+            "input_tokens": 2359,
+            "output_tokens": 130,
+            "thinking_tokens": null,
+            "total_tokens": 2489,
+            "error_kind": null,
+            "sequence": 15
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.6618000043090433,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 3,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 224,
+          "generated_vm_steps": 214,
+          "reference_query_plan": [
+            "SCAN c USING COVERING INDEX sqlite_autoindex_sectors_1",
+            "SEARCH s USING COVERING INDEX idx_securities_sector (sector_id=?) LEFT-JOIN"
+          ],
+          "generated_query_plan": [
+            "SCAN s USING COVERING INDEX sqlite_autoindex_sectors_1",
+            "SEARCH sec USING COVERING INDEX idx_securities_sector (sector_id=?) LEFT-JOIN"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 3,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 23902.52,
+      "trial": 1
+    },
+    {
+      "id": "ext-16",
+      "question": "Return transaction_type and total fees per transaction type, sorted by transaction_type.",
+      "category": "transactions",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "transaction_type",
+            "SUM(fees)"
+          ],
+          "rows": [
+            [
+              "BUY",
+              291.0
+            ],
+            [
+              "SELL",
+              53.0
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT transaction_type,SUM(fees) FROM transactions GROUP BY transaction_type ORDER BY transaction_type"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "0504ce60-7447-4154-876c-44b80d9f9a2a",
+        "status": "answer",
+        "answer": "| Transaction Type | Total Fees |\n| --- | --- |\n| BUY | 291.0 |\n| SELL | 53.0 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "question": "Return transaction_type and total fees per transaction type, sorted by transaction_type.",
+              "complete": true,
+              "explanation": "I am querying the transactions table to group by transaction_type and calculate the sum of fees for each type, then ordering the results by transaction_type.",
+              "sql": "SELECT transaction_type, SUM(fees) AS total_fees FROM transactions GROUP BY transaction_type ORDER BY transaction_type;"
+            },
+            "result": {
+              "columns": [
+                "transaction_type",
+                "total_fees"
+              ],
+              "rows": [
+                [
+                  "BUY",
+                  291.0
+                ],
+                [
+                  "SELL",
+                  53.0
+                ]
+              ],
+              "sql": "SELECT transaction_type, SUM(fees) AS total_fees FROM transactions GROUP BY transaction_type ORDER BY transaction_type;",
+              "duration_ms": 0.931,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.19880000036209822,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.715
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 1803.398,
+        "model_duration_ms": 1800.069,
+        "api_calls": 1,
+        "tokens": 2469,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:38:27.567878+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1795.1501000061398,
+            "pacing_ms": 0.0,
+            "input_tokens": 2366,
+            "output_tokens": 103,
+            "thinking_tokens": null,
+            "total_tokens": 2469,
+            "error_kind": null,
+            "sequence": 16
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.7759000000078231,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 2,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 433,
+          "generated_vm_steps": 433,
+          "reference_query_plan": [
+            "SCAN transactions",
+            "USE TEMP B-TREE FOR GROUP BY"
+          ],
+          "generated_query_plan": [
+            "SCAN transactions",
+            "USE TEMP B-TREE FOR GROUP BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 1815.803,
+      "trial": 1
+    },
+    {
+      "id": "ext-17",
+      "question": "What is total BUY notional (quantity times price) across transactions? Return one value, excluding fees.",
+      "category": "transactions",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(quantity*price)"
+          ],
+          "rows": [
+            [
+              2187040.0
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT SUM(quantity*price) FROM transactions WHERE transaction_type='BUY'"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "c5080d4a-f5ae-404f-a3c8-914ba0f0f51b",
+        "status": "answer",
+        "answer": "Total Buy Notional: 2,187,040.0",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT SUM(quantity * price) AS total_buy_notional FROM transactions WHERE transaction_type = 'BUY'",
+              "complete": true,
+              "explanation": "Calculate the total notional value of all 'BUY' transactions by summing the product of quantity and price for each transaction.",
+              "question": "What is total BUY notional (quantity times price) across transactions? Return one value, excluding fees."
+            },
+            "result": {
+              "columns": [
+                "total_buy_notional"
+              ],
+              "rows": [
+                [
+                  2187040.0
+                ]
+              ],
+              "sql": "SELECT SUM(quantity * price) AS total_buy_notional FROM transactions WHERE transaction_type = 'BUY'",
+              "duration_ms": 0.873,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.1900000061141327,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.432
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 14816.499,
+        "model_duration_ms": 14813.242,
+        "api_calls": 1,
+        "tokens": 2468,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:38:34.067898+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 10125.92959999165,
+            "pacing_ms": 4682.752099994104,
+            "input_tokens": 2370,
+            "output_tokens": 98,
+            "thinking_tokens": null,
+            "total_tokens": 2468,
+            "error_kind": null,
+            "sequence": 17
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.45420000969897956,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 204,
+          "generated_vm_steps": 204,
+          "reference_query_plan": [
+            "SCAN transactions"
+          ],
+          "generated_query_plan": [
+            "SCAN transactions"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 2,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 1,
+            "logical_page_reads": 2,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 14821.664,
+      "trial": 1
+    },
+    {
+      "id": "ext-18",
+      "question": "Return the total fees for Growth Equity Fund transactions as one value.",
+      "category": "transactions",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(t.fees)"
+          ],
+          "rows": [
+            [
+              62.0
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT SUM(t.fees) FROM transactions t JOIN portfolios p USING(portfolio_id) WHERE p.portfolio_name='Growth Equity Fund'"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "d07c9803-49af-461f-b5fd-a3ee3d2ab8ca",
+        "status": "answer",
+        "answer": "Total Fees: 62.0",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT SUM(t.fees) AS total_fees FROM transactions t JOIN portfolios p ON t.portfolio_id = p.portfolio_id WHERE p.portfolio_name = 'Growth Equity Fund';",
+              "complete": true,
+              "explanation": "I am calculating the sum of the 'fees' column from the 'transactions' table for the portfolio named 'Growth Equity Fund'. I join with the 'portfolios' table to filter by the portfolio name.",
+              "question": "Return the total fees for Growth Equity Fund transactions as one value."
+            },
+            "result": {
+              "columns": [
+                "total_fees"
+              ],
+              "rows": [
+                [
+                  62.0
+                ]
+              ],
+              "sql": "SELECT SUM(t.fees) AS total_fees FROM transactions t JOIN portfolios p ON t.portfolio_id = p.portfolio_id WHERE p.portfolio_name = 'Growth Equity Fund';",
+              "duration_ms": 1.365,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.2631999959703535,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.117
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 1171.708,
+        "model_duration_ms": 1167.742,
+        "api_calls": 1,
+        "tokens": 2487,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:38:44.206414+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1164.3009999970673,
+            "pacing_ms": 0.0,
+            "input_tokens": 2362,
+            "output_tokens": 125,
+            "thinking_tokens": null,
+            "total_tokens": 2487,
+            "error_kind": null,
+            "sequence": 18
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.5092000064905733,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 42,
+          "generated_vm_steps": 42,
+          "reference_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH t USING INDEX idx_transactions_portfolio_date (portfolio_id=?)"
+          ],
+          "generated_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH t USING INDEX idx_transactions_portfolio_date (portfolio_id=?)"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 4,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 1180.084,
+      "trial": 1
+    },
+    {
+      "id": "ext-19",
+      "question": "What is the latest historical price date in the dataset? Return one value.",
+      "category": "history",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "MAX(price_date)"
+          ],
+          "rows": [
+            [
+              "2023-10-09"
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT MAX(price_date) FROM historical_prices"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "f8deb8aa-b08b-480a-ac72-14484571d1a3",
+        "status": "answer",
+        "answer": "Maximum price date: 2023-10-09",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "sql": "SELECT MAX(price_date) FROM historical_prices",
+              "question": "What is the latest historical price date in the dataset? Return one value.",
+              "explanation": "To find the latest historical price date, I am selecting the maximum value from the price_date column in the historical_prices table."
+            },
+            "result": {
+              "columns": [
+                "MAX(price_date)"
+              ],
+              "rows": [
+                [
+                  "2023-10-09"
+                ]
+              ],
+              "sql": "SELECT MAX(price_date) FROM historical_prices",
+              "duration_ms": 1.356,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.11979999544564635,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.771
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 11766.287,
+        "model_duration_ms": 11762.869,
+        "api_calls": 1,
+        "tokens": 2446,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:38:50.705917+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 6442.094500001986,
+            "pacing_ms": 5318.122800003039,
+            "input_tokens": 2364,
+            "output_tokens": 82,
+            "thinking_tokens": null,
+            "total_tokens": 2446,
+            "error_kind": null,
+            "sequence": 19
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.30339999648276716,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 14,
+          "generated_vm_steps": 14,
+          "reference_query_plan": [
+            "SEARCH historical_prices USING COVERING INDEX idx_historical_prices_date"
+          ],
+          "generated_query_plan": [
+            "SEARCH historical_prices USING COVERING INDEX idx_historical_prices_date"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 3,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 2,
+            "logical_page_reads": 3,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 11771.177,
+      "trial": 1
+    },
+    {
+      "id": "ext-20",
+      "question": "Return price_date and close_price for AAPL historical prices, oldest first.",
+      "category": "history",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "price_date",
+            "close_price"
+          ],
+          "rows": [
+            [
+              "2023-09-25",
+              183.18
+            ],
+            [
+              "2023-09-26",
+              179.56
+            ],
+            [
+              "2023-09-27",
+              180.45
+            ],
+            [
+              "2023-09-28",
+              181.3
+            ],
+            [
+              "2023-09-29",
+              182.72
+            ],
+            [
+              "2023-10-02",
+              189.84
+            ],
+            [
+              "2023-10-03",
+              191.96
+            ],
+            [
+              "2023-10-04",
+              193.75
+            ],
+            [
+              "2023-10-05",
+              195.36
+            ],
+            [
+              "2023-10-06",
+              198.16
+            ],
+            [
+              "2023-10-09",
+              199.8
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT h.price_date,h.close_price FROM historical_prices h JOIN securities s USING(security_id) WHERE s.symbol='AAPL' ORDER BY h.price_date"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "6d209e15-1dca-46e4-bedb-ae6b35c9a134",
+        "status": "answer",
+        "answer": "| Price Date | Close Price |\n| --- | --- |\n| 2023-09-25 | 183.18 |\n| 2023-09-26 | 179.56 |\n| 2023-09-27 | 180.45 |\n| 2023-09-28 | 181.3 |\n| 2023-09-29 | 182.72 |\n| 2023-10-02 | 189.84 |\n| 2023-10-03 | 191.96 |\n| 2023-10-04 | 193.75 |\n| 2023-10-05 | 195.36 |\n| 2023-10-06 | 198.16 |\n| 2023-10-09 | 199.8 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "I am retrieving the historical price data (price_date and close_price) for the security with the symbol 'AAPL', ordered by price_date in ascending order (oldest first).",
+              "question": "Return price_date and close_price for AAPL historical prices, oldest first.",
+              "complete": true,
+              "sql": "SELECT T1.price_date, T1.close_price FROM historical_prices AS T1 JOIN securities AS T2 ON T1.security_id = T2.security_id WHERE T2.symbol = 'AAPL' ORDER BY T1.price_date ASC"
+            },
+            "result": {
+              "columns": [
+                "price_date",
+                "close_price"
+              ],
+              "rows": [
+                [
+                  "2023-09-25",
+                  183.18
+                ],
+                [
+                  "2023-09-26",
+                  179.56
+                ],
+                [
+                  "2023-09-27",
+                  180.45
+                ],
+                [
+                  "2023-09-28",
+                  181.3
+                ],
+                [
+                  "2023-09-29",
+                  182.72
+                ],
+                [
+                  "2023-10-02",
+                  189.84
+                ],
+                [
+                  "2023-10-03",
+                  191.96
+                ],
+                [
+                  "2023-10-04",
+                  193.75
+                ],
+                [
+                  "2023-10-05",
+                  195.36
+                ],
+                [
+                  "2023-10-06",
+                  198.16
+                ],
+                [
+                  "2023-10-09",
+                  199.8
+                ]
+              ],
+              "sql": "SELECT T1.price_date, T1.close_price FROM historical_prices AS T1 JOIN securities AS T2 ON T1.security_id = T2.security_id WHERE T2.symbol = 'AAPL' ORDER BY T1.price_date ASC",
+              "duration_ms": 1.32,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.26200000138487667,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.04
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 2144.681,
+        "model_duration_ms": 2140.934,
+        "api_calls": 1,
+        "tokens": 2508,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:38:57.206224+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 2091.6514999989886,
+            "pacing_ms": 47.05969999486115,
+            "input_tokens": 2366,
+            "output_tokens": 142,
+            "thinking_tokens": null,
+            "total_tokens": 2508,
+            "error_kind": null,
+            "sequence": 20
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.8744000078877434,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 11,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 93,
+          "generated_vm_steps": 93,
+          "reference_query_plan": [
+            "SEARCH s USING COVERING INDEX sqlite_autoindex_securities_1 (symbol=?)",
+            "SEARCH h USING INDEX idx_historical_prices_security_date (security_id=?)"
+          ],
+          "generated_query_plan": [
+            "SEARCH T2 USING COVERING INDEX sqlite_autoindex_securities_1 (symbol=?)",
+            "SEARCH T1 USING INDEX idx_historical_prices_security_date (security_id=?)"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 6,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 2157.378,
+      "trial": 1
+    },
+    {
+      "id": "ext-21",
+      "question": "Calculate current market value of all Balanced Portfolio holdings as one value using quantity times current price.",
+      "category": "financial",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(h.quantity*s.current_price)"
+          ],
+          "rows": [
+            [
+              1073279.0
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT SUM(h.quantity*s.current_price) FROM holdings h JOIN securities s USING(security_id) JOIN portfolios p USING(portfolio_id) WHERE p.portfolio_name='Balanced Portfolio'"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "91d8b4c0-498c-4da4-84ea-28f6ed0c4dbe",
+        "status": "answer",
+        "answer": "Total Market Value: 1,073,279.0",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Calculate the total market value of all holdings in the 'Balanced Portfolio' by summing the product of quantity and current_price for each security.",
+              "complete": true,
+              "sql": "SELECT SUM(h.quantity * s.current_price) AS total_market_value FROM holdings h JOIN portfolios p ON h.portfolio_id = p.portfolio_id JOIN securities s ON h.security_id = s.security_id WHERE p.portfolio_name = 'Balanced Portfolio';",
+              "question": "Calculate current market value of all Balanced Portfolio holdings as one value using quantity times current price."
+            },
+            "result": {
+              "columns": [
+                "total_market_value"
+              ],
+              "rows": [
+                [
+                  1073279.0
+                ]
+              ],
+              "sql": "SELECT SUM(h.quantity * s.current_price) AS total_market_value FROM holdings h JOIN portfolios p ON h.portfolio_id = p.portfolio_id JOIN securities s ON h.security_id = s.security_id WHERE p.portfolio_name = 'Balanced Portfolio';",
+              "duration_ms": 1.013,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.3677000058814883,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.948
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 5992.5,
+        "model_duration_ms": 5989.006,
+        "api_calls": 1,
+        "tokens": 2505,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:39:03.707523+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1597.2288000048138,
+            "pacing_ms": 4388.796700004605,
+            "input_tokens": 2367,
+            "output_tokens": 138,
+            "thinking_tokens": null,
+            "total_tokens": 2505,
+            "error_kind": null,
+            "sequence": 21
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.5557999975280836,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "passed",
+        "rules": [
+          "scalar"
+        ],
+        "checks": [
+          {
+            "kind": "numeric_claim_present",
+            "expected": 1073279.0,
+            "actual": [
+              1073279.0
+            ],
+            "passed": true
+          }
+        ],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": [
+          "scalar"
+        ]
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 107,
+          "generated_vm_steps": 107,
+          "reference_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)"
+          ],
+          "generated_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 6,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 5998.544,
+      "trial": 1
+    },
+    {
+      "id": "ext-22",
+      "question": "What is total cost_basis of Conservative Income Fund? Return one value.",
+      "category": "financial",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "SUM(h.cost_basis)"
+          ],
+          "rows": [
+            [
+              1127330.0
+            ]
+          ],
+          "ordered": false,
+          "sql": "SELECT SUM(h.cost_basis) FROM holdings h JOIN portfolios p USING(portfolio_id) WHERE p.portfolio_name='Conservative Income Fund'"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "56721094-0f8f-4e94-836a-b95400a01e10",
+        "status": "answer",
+        "answer": "Total H.Cost Basis: 1,127,330.0",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT SUM(h.cost_basis) FROM holdings h JOIN portfolios p ON h.portfolio_id = p.portfolio_id WHERE p.portfolio_name = 'Conservative Income Fund'",
+              "question": "What is total cost_basis of Conservative Income Fund?",
+              "explanation": "I am calculating the total cost basis for the 'Conservative Income Fund' by summing the 'cost_basis' column from the 'holdings' table, joined with the 'portfolios' table to filter by the specific portfolio name.",
+              "complete": true
+            },
+            "result": {
+              "columns": [
+                "SUM(h.cost_basis)"
+              ],
+              "rows": [
+                [
+                  1127330.0
+                ]
+              ],
+              "sql": "SELECT SUM(h.cost_basis) FROM holdings h JOIN portfolios p ON h.portfolio_id = p.portfolio_id WHERE p.portfolio_name = 'Conservative Income Fund'",
+              "duration_ms": 0.905,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.23430000874213874,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.609
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 6020.449,
+        "model_duration_ms": 6017.505,
+        "api_calls": 1,
+        "tokens": 2490,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:39:10.208055+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1125.0235000043176,
+            "pacing_ms": 4889.538800009177,
+            "input_tokens": 2364,
+            "output_tokens": 126,
+            "thinking_tokens": null,
+            "total_tokens": 2490,
+            "error_kind": null,
+            "sequence": 22
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.446999998530373,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 1,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 60,
+          "generated_vm_steps": 60,
+          "reference_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)"
+          ],
+          "generated_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 5,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 4,
+            "logical_page_reads": 5,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 4,
+            "logical_page_reads": 5,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 6025.743,
+      "trial": 1
+    },
+    {
+      "id": "ext-23",
+      "question": "Return portfolio_name and summed current_weight for every portfolio, alphabetically by name.",
+      "category": "financial",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name",
+            "SUM(h.current_weight)"
+          ],
+          "rows": [
+            [
+              "Balanced Portfolio",
+              1.0
+            ],
+            [
+              "Conservative Income Fund",
+              1.0
+            ],
+            [
+              "Dividend Aristocrats Fund",
+              1.0
+            ],
+            [
+              "ESG Sustainable Fund",
+              1.0
+            ],
+            [
+              "Emerging Markets Fund",
+              1.0
+            ],
+            [
+              "Fixed Income Plus",
+              1.0
+            ],
+            [
+              "Growth Equity Fund",
+              1.0
+            ],
+            [
+              "International Equity Fund",
+              1.0
+            ],
+            [
+              "Small Cap Value Fund",
+              1.0
+            ],
+            [
+              "Tech Innovation Fund",
+              1.0
+            ],
+            [
+              "Total Bond Market Index Fund",
+              1.0
+            ],
+            [
+              "Total International Index Fund",
+              1.0
+            ],
+            [
+              "Total Stock Market Index Fund",
+              0.98
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT p.portfolio_name,SUM(h.current_weight) FROM portfolios p JOIN holdings h USING(portfolio_id) GROUP BY p.portfolio_id ORDER BY p.portfolio_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "6315192b-d47a-4e23-9226-7523fd2247d6",
+        "status": "answer",
+        "answer": "| Portfolio Name | Total Weight |\n| --- | --- |\n| Balanced Portfolio | 1.0 |\n| Conservative Income Fund | 1.0 |\n| Dividend Aristocrats Fund | 1.0 |\n| ESG Sustainable Fund | 1.0 |\n| Emerging Markets Fund | 1.0 |\n| Fixed Income Plus | 1.0 |\n| Growth Equity Fund | 1.0 |\n| International Equity Fund | 1.0 |\n| Small Cap Value Fund | 1.0 |\n| Tech Innovation Fund | 1.0 |\n| Total Bond Market Index Fund | 1.0 |\n| Total International Index Fund | 1.0 |\n| Total Stock Market Index Fund | 0.98 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "explanation": "Summing current_weight for each portfolio and ordering by portfolio_name alphabetically.",
+              "question": "Return portfolio_name and summed current_weight for every portfolio, alphabetically by name.",
+              "sql": "SELECT p.portfolio_name, SUM(h.current_weight) as total_weight FROM portfolios p JOIN holdings h ON p.portfolio_id = h.portfolio_id GROUP BY p.portfolio_name ORDER BY p.portfolio_name ASC;"
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "total_weight"
+              ],
+              "rows": [
+                [
+                  "Balanced Portfolio",
+                  1.0
+                ],
+                [
+                  "Conservative Income Fund",
+                  1.0
+                ],
+                [
+                  "Dividend Aristocrats Fund",
+                  1.0
+                ],
+                [
+                  "ESG Sustainable Fund",
+                  1.0
+                ],
+                [
+                  "Emerging Markets Fund",
+                  1.0
+                ],
+                [
+                  "Fixed Income Plus",
+                  1.0
+                ],
+                [
+                  "Growth Equity Fund",
+                  1.0
+                ],
+                [
+                  "International Equity Fund",
+                  1.0
+                ],
+                [
+                  "Small Cap Value Fund",
+                  1.0
+                ],
+                [
+                  "Tech Innovation Fund",
+                  1.0
+                ],
+                [
+                  "Total Bond Market Index Fund",
+                  1.0
+                ],
+                [
+                  "Total International Index Fund",
+                  1.0
+                ],
+                [
+                  "Total Stock Market Index Fund",
+                  0.98
+                ]
+              ],
+              "sql": "SELECT p.portfolio_name, SUM(h.current_weight) as total_weight FROM portfolios p JOIN holdings h ON p.portfolio_id = h.portfolio_id GROUP BY p.portfolio_name ORDER BY p.portfolio_name ASC;",
+              "duration_ms": 1.234,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.30420000257436186,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.133
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 18672.892,
+        "model_duration_ms": 18669.434,
+        "api_calls": 1,
+        "tokens": 2481,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:39:16.714330+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 13297.595099997125,
+            "pacing_ms": 5362.710799992783,
+            "input_tokens": 2366,
+            "output_tokens": 115,
+            "thinking_tokens": null,
+            "total_tokens": 2481,
+            "error_kind": null,
+            "sequence": 23
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.47050000284798443,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 13,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 1366,
+          "generated_vm_steps": 1286,
+          "reference_query_plan": [
+            "SCAN p",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SCAN p USING COVERING INDEX sqlite_autoindex_portfolios_1",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)"
+          ],
+          "score": 35.29,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 17,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 12,
+            "cache_misses": 5,
+            "logical_page_reads": 17,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 35.29,
+      "duration_ms": 18688.71,
+      "trial": 1
+    },
+    {
+      "id": "ext-24",
+      "question": "Return asset_type and total current_weight in Balanced Portfolio, sorted by asset_type.",
+      "category": "financial",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "asset_type",
+            "SUM(h.current_weight)"
+          ],
+          "rows": [
+            [
+              "Bond",
+              0.64
+            ],
+            [
+              "Stock",
+              0.36
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT s.asset_type,SUM(h.current_weight) FROM holdings h JOIN securities s USING(security_id) JOIN portfolios p USING(portfolio_id) WHERE p.portfolio_name='Balanced Portfolio' GROUP BY s.asset_type ORDER BY s.asset_type"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "a61245ab-ae36-4275-a0c2-2f6fcbe06fbb",
+        "status": "answer",
+        "answer": "| Asset Type | Total Current Weight |\n| --- | --- |\n| Bond | 0.64 |\n| Stock | 0.36 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT s.asset_type, SUM(h.current_weight) AS total_current_weight FROM holdings h JOIN securities s ON h.security_id = s.security_id JOIN portfolios p ON h.portfolio_id = p.portfolio_id WHERE p.portfolio_name = 'Balanced Portfolio' GROUP BY s.asset_type ORDER BY s.asset_type;",
+              "explanation": "I am querying the holdings for the 'Balanced Portfolio' to get the total current_weight grouped by asset_type. I join the holdings table with the securities table to access the asset_type information.",
+              "question": "Return asset_type and total current_weight in Balanced Portfolio, sorted by asset_type.",
+              "complete": true
+            },
+            "result": {
+              "columns": [
+                "asset_type",
+                "total_current_weight"
+              ],
+              "rows": [
+                [
+                  "Bond",
+                  0.64
+                ],
+                [
+                  "Stock",
+                  0.36
+                ]
+              ],
+              "sql": "SELECT s.asset_type, SUM(h.current_weight) AS total_current_weight FROM holdings h JOIN securities s ON h.security_id = s.security_id JOIN portfolios p ON h.portfolio_id = p.portfolio_id WHERE p.portfolio_name = 'Balanced Portfolio' GROUP BY s.asset_type ORDER BY s.asset_type;",
+              "duration_ms": 0.942,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.4062999942107126,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.022
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 24096.24,
+        "model_duration_ms": 24091.322,
+        "api_calls": 1,
+        "tokens": 2537,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:39:30.039836+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 24087.014199991245,
+            "pacing_ms": 0.0,
+            "input_tokens": 2368,
+            "output_tokens": 169,
+            "thinking_tokens": null,
+            "total_tokens": 2537,
+            "error_kind": null,
+            "sequence": 24
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.6070000090403482,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 2,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 218,
+          "generated_vm_steps": 218,
+          "reference_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR GROUP BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR GROUP BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 6,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 24104.047,
+      "trial": 1
+    },
+    {
+      "id": "ext-25",
+      "question": "Return symbol and market value (quantity times current_price) of the three largest Tech Innovation Fund positions by market value, descending.",
+      "category": "financial",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "symbol",
+            "market_value"
+          ],
+          "rows": [
+            [
+              "AAPL",
+              333900.0
+            ],
+            [
+              "NVDA",
+              262590.0
+            ],
+            [
+              "MSFT",
+              249156.0
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT s.symbol,h.quantity*s.current_price AS market_value FROM holdings h JOIN securities s USING(security_id) JOIN portfolios p USING(portfolio_id) WHERE p.portfolio_name='Tech Innovation Fund' ORDER BY market_value DESC LIMIT 3"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "e22731ed-0d8d-4675-8015-fc2ca9532ff5",
+        "status": "answer",
+        "answer": "| Symbol | Market Value |\n| --- | --- |\n| AAPL | 333900.0 |\n| NVDA | 262590.0 |\n| MSFT | 249156.0 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "explanation": "I am calculating the market value (quantity * current_price) for each holding in the 'Tech Innovation Fund' and selecting the top 3 by market value in descending order.",
+              "question": "Return symbol and market value (quantity times current_price) of the three largest Tech Innovation Fund positions by market value, descending.",
+              "sql": "SELECT s.symbol, (h.quantity * s.current_price) AS market_value\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Tech Innovation Fund'\nORDER BY market_value DESC\nLIMIT 3;"
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "market_value"
+              ],
+              "rows": [
+                [
+                  "AAPL",
+                  333900.0
+                ],
+                [
+                  "NVDA",
+                  262590.0
+                ],
+                [
+                  "MSFT",
+                  249156.0
+                ]
+              ],
+              "sql": "SELECT s.symbol, (h.quantity * s.current_price) AS market_value\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Tech Innovation Fund'\nORDER BY market_value DESC\nLIMIT 3;",
+              "duration_ms": 1.464,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.4050999996252358,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 2.532
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 1547.914,
+        "model_duration_ms": 1543.911,
+        "api_calls": 1,
+        "tokens": 2547,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:39:54.141705+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1541.6338999930304,
+            "pacing_ms": 0.0,
+            "input_tokens": 2375,
+            "output_tokens": 172,
+            "thinking_tokens": null,
+            "total_tokens": 2547,
+            "error_kind": null,
+            "sequence": 25
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.6914000114193186,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 3,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 149,
+          "generated_vm_steps": 149,
+          "reference_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 6,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 1558.56,
+      "trial": 1
+    },
+    {
+      "id": "ext-26",
+      "question": "Return symbol and unrealized gain (quantity times current_price minus cost_basis) for Growth Equity Fund holdings, sorted by symbol.",
+      "category": "financial",
+      "split": "validation",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "symbol",
+            "h.quantity*s.current_price-h.cost_basis"
+          ],
+          "rows": [
+            [
+              "AAPL",
+              25750.0
+            ],
+            [
+              "AMZN",
+              18000.0
+            ],
+            [
+              "AVGO",
+              10970.0
+            ],
+            [
+              "CRM",
+              25500.0
+            ],
+            [
+              "META",
+              26670.0
+            ],
+            [
+              "MSFT",
+              27808.0
+            ],
+            [
+              "NVDA",
+              62080.0
+            ],
+            [
+              "ORCL",
+              20520.0
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT s.symbol,h.quantity*s.current_price-h.cost_basis FROM holdings h JOIN securities s USING(security_id) JOIN portfolios p USING(portfolio_id) WHERE p.portfolio_name='Growth Equity Fund' ORDER BY s.symbol"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "14aea157-7453-49cb-9917-43c0ee0513dc",
+        "status": "answer",
+        "answer": "| Symbol | Unrealized Gain |\n| --- | --- |\n| AAPL | 25750.0 |\n| AMZN | 18000.0 |\n| AVGO | 10970.0 |\n| CRM | 25500.0 |\n| META | 26670.0 |\n| MSFT | 27808.0 |\n| NVDA | 62080.0 |\n| ORCL | 20520.0 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "I am calculating the unrealized gain for each holding in the 'Growth Equity Fund' by subtracting the cost_basis from the product of quantity and current_price. I am joining the holdings, securities, and portfolios tables to filter by the portfolio name and retrieve the symbol. The results are sorted by symbol.",
+              "sql": "SELECT \n    s.symbol, \n    (h.quantity * s.current_price - h.cost_basis) AS unrealized_gain\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY s.symbol;",
+              "question": "Return symbol and unrealized gain (quantity times current_price minus cost_basis) for Growth Equity Fund holdings, sorted by symbol.",
+              "complete": true
+            },
+            "result": {
+              "columns": [
+                "symbol",
+                "unrealized_gain"
+              ],
+              "rows": [
+                [
+                  "AAPL",
+                  25750.0
+                ],
+                [
+                  "AMZN",
+                  18000.0
+                ],
+                [
+                  "AVGO",
+                  10970.0
+                ],
+                [
+                  "CRM",
+                  25500.0
+                ],
+                [
+                  "META",
+                  26670.0
+                ],
+                [
+                  "MSFT",
+                  27808.0
+                ],
+                [
+                  "NVDA",
+                  62080.0
+                ],
+                [
+                  "ORCL",
+                  20520.0
+                ]
+              ],
+              "sql": "SELECT \n    s.symbol, \n    (h.quantity * s.current_price - h.cost_basis) AS unrealized_gain\nFROM holdings h\nJOIN securities s ON h.security_id = s.security_id\nJOIN portfolios p ON h.portfolio_id = p.portfolio_id\nWHERE p.portfolio_name = 'Growth Equity Fund'\nORDER BY s.symbol;",
+              "duration_ms": 0.917,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.3949000092688948,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.972
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 19622.375,
+        "model_duration_ms": 19618.247,
+        "api_calls": 1,
+        "tokens": 2583,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:40:00.643234+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 14675.451800008886,
+            "pacing_ms": 4939.090400002897,
+            "input_tokens": 2376,
+            "output_tokens": 207,
+            "thinking_tokens": null,
+            "total_tokens": 2583,
+            "error_kind": null,
+            "sequence": 26
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.799899993580766,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 8,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 186,
+          "generated_vm_steps": 186,
+          "reference_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH h USING INDEX idx_holdings_portfolio (portfolio_id=?)",
+            "SEARCH s USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 6,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 5,
+            "logical_page_reads": 6,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 19631.768,
+      "trial": 1
+    },
+    {
+      "id": "ext-27",
+      "question": "Return performance_date and nav for Balanced Portfolio performance history, oldest first.",
+      "category": "history",
+      "split": "heldout",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "performance_date",
+            "nav"
+          ],
+          "rows": [
+            [
+              "2023-09-25",
+              115.34
+            ],
+            [
+              "2023-09-26",
+              115.78
+            ],
+            [
+              "2023-09-27",
+              116.02
+            ],
+            [
+              "2023-09-28",
+              115.67
+            ],
+            [
+              "2023-09-29",
+              116.23
+            ],
+            [
+              "2023-10-02",
+              116.67
+            ],
+            [
+              "2023-10-03",
+              116.89
+            ],
+            [
+              "2023-10-04",
+              116.45
+            ],
+            [
+              "2023-10-05",
+              116.98
+            ],
+            [
+              "2023-10-06",
+              117.34
+            ],
+            [
+              "2023-10-09",
+              117.78
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT f.performance_date,f.nav FROM portfolio_performance f JOIN portfolios p USING(portfolio_id) WHERE p.portfolio_name='Balanced Portfolio' ORDER BY f.performance_date"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "3a4a0668-f78b-4da0-9ab1-179cd196d4e3",
+        "status": "answer",
+        "answer": "| Performance Date | Nav |\n| --- | --- |\n| 2023-09-25 | 115.34 |\n| 2023-09-26 | 115.78 |\n| 2023-09-27 | 116.02 |\n| 2023-09-28 | 115.67 |\n| 2023-09-29 | 116.23 |\n| 2023-10-02 | 116.67 |\n| 2023-10-03 | 116.89 |\n| 2023-10-04 | 116.45 |\n| 2023-10-05 | 116.98 |\n| 2023-10-06 | 117.34 |\n| 2023-10-09 | 117.78 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "complete": true,
+              "question": "Return performance_date and nav for Balanced Portfolio performance history, oldest first.",
+              "sql": "SELECT T1.performance_date, T1.nav FROM portfolio_performance AS T1 JOIN portfolios AS T2 ON T1.portfolio_id = T2.portfolio_id WHERE T2.portfolio_name = 'Balanced Portfolio' ORDER BY T1.performance_date ASC;",
+              "explanation": "I am retrieving the performance_date and nav for the 'Balanced Portfolio' from the portfolio_performance table, ordered by performance_date in ascending order to show the oldest first."
+            },
+            "result": {
+              "columns": [
+                "performance_date",
+                "nav"
+              ],
+              "rows": [
+                [
+                  "2023-09-25",
+                  115.34
+                ],
+                [
+                  "2023-09-26",
+                  115.78
+                ],
+                [
+                  "2023-09-27",
+                  116.02
+                ],
+                [
+                  "2023-09-28",
+                  115.67
+                ],
+                [
+                  "2023-09-29",
+                  116.23
+                ],
+                [
+                  "2023-10-02",
+                  116.67
+                ],
+                [
+                  "2023-10-03",
+                  116.89
+                ],
+                [
+                  "2023-10-04",
+                  116.45
+                ],
+                [
+                  "2023-10-05",
+                  116.98
+                ],
+                [
+                  "2023-10-06",
+                  117.34
+                ],
+                [
+                  "2023-10-09",
+                  117.78
+                ]
+              ],
+              "sql": "SELECT T1.performance_date, T1.nav FROM portfolio_performance AS T1 JOIN portfolios AS T2 ON T1.portfolio_id = T2.portfolio_id WHERE T2.portfolio_name = 'Balanced Portfolio' ORDER BY T1.performance_date ASC;",
+              "duration_ms": 2.238,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.5467000009957701,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 3.612
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 2466.058,
+        "model_duration_ms": 2460.691,
+        "api_calls": 1,
+        "tokens": 2504,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:40:15.336120+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 2457.687599991914,
+            "pacing_ms": 0.0,
+            "input_tokens": 2364,
+            "output_tokens": 140,
+            "thinking_tokens": null,
+            "total_tokens": 2504,
+            "error_kind": null,
+            "sequence": 27
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.9147999953711405,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 11,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 91,
+          "generated_vm_steps": 91,
+          "reference_query_plan": [
+            "SEARCH p USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH f USING INDEX sqlite_autoindex_portfolio_performance_1 (portfolio_id=?)"
+          ],
+          "generated_query_plan": [
+            "SEARCH T2 USING COVERING INDEX sqlite_autoindex_portfolios_1 (portfolio_name=?)",
+            "SEARCH T1 USING INDEX sqlite_autoindex_portfolio_performance_1 (portfolio_id=?)"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 4,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 2493.891,
+      "trial": 1
+    },
+    {
+      "id": "ext-28",
+      "question": "Return portfolio_name and beta for risk metrics on 2023-10-09, alphabetically by name.",
+      "category": "history",
+      "split": "development",
+      "passed": true,
+      "routing_correct": true,
+      "answer_correct": true,
+      "result_correct": true,
+      "data_correct": true,
+      "projection_exact": true,
+      "status_correct": true,
+      "sql_valid": true,
+      "narrative_status": "passed",
+      "expected": [
+        {
+          "tool": "sql_query",
+          "columns": [
+            "portfolio_name",
+            "beta"
+          ],
+          "rows": [
+            [
+              "Balanced Portfolio",
+              0.9
+            ],
+            [
+              "Conservative Income Fund",
+              0.43
+            ],
+            [
+              "Growth Equity Fund",
+              1.23
+            ],
+            [
+              "Tech Innovation Fund",
+              1.58
+            ]
+          ],
+          "ordered": true,
+          "sql": "SELECT p.portfolio_name,r.beta FROM risk_metrics r JOIN portfolios p USING(portfolio_id) WHERE r.calculation_date='2023-10-09' ORDER BY p.portfolio_name"
+        }
+      ],
+      "failures": [],
+      "actual": {
+        "request_id": "0a9e5e9d-e6ce-4a78-abe6-4b0b6431bdd1",
+        "status": "answer",
+        "answer": "| Portfolio Name | Beta |\n| --- | --- |\n| Balanced Portfolio | 0.9 |\n| Conservative Income Fund | 0.43 |\n| Growth Equity Fund | 1.23 |\n| Tech Innovation Fund | 1.58 |",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT p.portfolio_name, r.beta FROM portfolios p JOIN risk_metrics r ON p.portfolio_id = r.portfolio_id WHERE r.calculation_date = '2023-10-09' ORDER BY p.portfolio_name ASC;",
+              "complete": true,
+              "question": "Return portfolio_name and beta for risk metrics on 2023-10-09, alphabetically by name.",
+              "explanation": "I am joining the portfolios and risk_metrics tables to retrieve the portfolio name and beta for the specified date, ordered alphabetically by portfolio name."
+            },
+            "result": {
+              "columns": [
+                "portfolio_name",
+                "beta"
+              ],
+              "rows": [
+                [
+                  "Balanced Portfolio",
+                  0.9
+                ],
+                [
+                  "Conservative Income Fund",
+                  0.43
+                ],
+                [
+                  "Growth Equity Fund",
+                  1.23
+                ],
+                [
+                  "Tech Innovation Fund",
+                  1.58
+                ]
+              ],
+              "sql": "SELECT p.portfolio_name, r.beta FROM portfolios p JOIN risk_metrics r ON p.portfolio_id = r.portfolio_id WHERE r.calculation_date = '2023-10-09' ORDER BY p.portfolio_name ASC;",
+              "duration_ms": 2.503,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.5533999938052148,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 3.937
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 5358.902,
+        "model_duration_ms": 5349.383,
+        "api_calls": 1,
+        "tokens": 2516,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T14:40:21.839795+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1344.9037999962457,
+            "pacing_ms": 3998.7772000022233,
+            "input_tokens": 2375,
+            "output_tokens": 141,
+            "thinking_tokens": null,
+            "total_tokens": 2516,
+            "error_kind": null,
+            "sequence": 28
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 3.294499998446554,
+        "stages_ms": {}
+      },
+      "analytical_calls": 1,
+      "reference_checks": [
+        {
+          "reference_index": 0,
+          "matched_tool_index": 0,
+          "candidates": [
+            {
+              "tool_index": 0,
+              "matched": true,
+              "error": null,
+              "data_correct": true,
+              "projection_exact": true
+            }
+          ]
+        }
+      ],
+      "faithfulness": {
+        "status": "not_checked",
+        "rules": [],
+        "checks": [],
+        "failures": [],
+        "scope": "Limited configured assertions; unchecked prose is not certified.",
+        "configured_rules": []
+      },
+      "answer_verification": {
+        "status": "passed",
+        "checks": 4,
+        "failures": [],
+        "scope": "Explicit scalar/list/table/exposure coverage; not arbitrary prose entailment."
+      },
+      "sql_efficiency": [
+        {
+          "reference_vm_steps": 75,
+          "generated_vm_steps": 75,
+          "reference_query_plan": [
+            "SEARCH r USING INDEX idx_risk_metrics_date (calculation_date=?)",
+            "SEARCH p USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "generated_query_plan": [
+            "SEARCH r USING INDEX idx_risk_metrics_date (calculation_date=?)",
+            "SEARCH p USING INTEGER PRIMARY KEY (rowid=?)",
+            "USE TEMP B-TREE FOR ORDER BY"
+          ],
+          "score": 100,
+          "metric": "Correctness-gated relative SQLite logical page accesses",
+          "logical_page_reads": 4,
+          "vm_score": 100,
+          "reference_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          },
+          "generated_page_io": {
+            "cache_hits": 1,
+            "cache_misses": 3,
+            "logical_page_reads": 4,
+            "sqlite_version": "3.54.1",
+            "apsw_version": "3.54.1.0",
+            "cache_policy": "fresh private connection; schema preloaded; prepare + execute counted",
+            "metric": "SQLite pager cache hits + misses; not physical storage reads"
+          }
+        }
+      ],
+      "efficiency_score": 100,
+      "duration_ms": 5401.561,
+      "trial": 1
+    }
+  ]
+}

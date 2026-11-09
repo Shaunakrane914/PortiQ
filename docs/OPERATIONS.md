@@ -1,5 +1,10 @@
 # Operating the supported deployment
 
+[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
+holdout was not executed. These are observed outcomes, not a full-suite claim for the
+later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+
 PortiQ supports **one application process**, with up to four concurrent analyses by default.
 Each active request borrows a separate model client; they share the process's atomic RPM
 reservations and persistent daily ledger. Conversation turns serialize within their own
@@ -66,7 +71,7 @@ The stub soak measures API capacity, rejection/recovery, readiness and isolation
 are not Gemini inference measurements. Output files must be fresh. Neither test establishes
 a production SLA, unlimited throughput or distributed availability.
 
-[Latest verification](../reports/latency-2026-11-09/README.md) records extended 50/50 and supplied 10/10 on
+[Historical verification](../reports/latency-2026-11-09/README.md) records extended 50/50 and supplied 10/10 on
 `1eba590`, plus actual zero-spacing local browser observations of 1.454s and 2.834s.
 Eligible complete factual plans use direct validated result rendering by default. Set
 `PORTIQ_DIRECT_RESULTS=0` and restart to restore previous orchestration. This does not

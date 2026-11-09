@@ -1,8 +1,13 @@
 # Architecture
 
+[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
+holdout was not executed. These are observed outcomes, not a full-suite claim for the
+later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+
 The original [assignment](assignment/README.md) requires SQL translation, equity sector exposure, CLI tool selection and a CLI evaluator. They remain the core. The optional HTTP/UI layer adapts the same calculations and agent.
 
-[Current verification](../reports/latency-2026-11-09/README.md) records fresh full CLI passes of 50/50 extended
+[Historical verification](../reports/latency-2026-11-09/README.md) records fresh full CLI passes of 50/50 extended
 and 10/10 supplied on `1eba590`. Gemini can explicitly mark a whole factual tool batch
 complete; successful, bounded, untruncated evidence is rendered directly. Other requests
 retain the normal tool/synthesis loop. SQL safety, schema context and financial calculations
@@ -14,13 +19,16 @@ remain shared. The report separates actual zero-spacing browser timings from bat
 |---|---|---|
 | CLI | [cli.py](../src/portiq/cli.py) | `chat`, `ask`, supplied/extended `evaluate`, deterministic tools and optional server startup |
 | Ingestion/context | [database.py](../src/portiq/database.py) | Validate all CSVs, atomically initialize SQLite, read schema/domains/catalogue |
-| Gemini agent / SQL planning | [agent.py](../src/portiq/agent.py), [prompts.py](../src/portiq/prompts.py) | Typed tool selection, focused planning, bounded repairs, complete-plan result rendering or model synthesis |
+| Gemini agent / SQL planning | [agent.py](../src/portiq/agent.py), [prompts.py](../src/portiq/prompts.py) | Typed tool selection, focused planning, bounded repairs and completion decisions |
+| Answer contracts / rendering | [answers.py](../src/portiq/answers.py) | Response models, rendering eligibility and deterministic presentation; no orchestration or UI imports |
+| Exact cache | [cache.py](../src/portiq/cache.py) | Bounded TTL/LRU answers, defensive copies and database-version identity |
+| Conversation state | [sessions.py](../src/portiq/sessions.py) | Opaque session IDs, TTL/capacity, per-session locks and bounded history |
 | SQL execution | [sql.py](../src/portiq/sql.py) | Parse, authorize, bound and execute read-only queries |
 | Required exposure calculator | [exposure.py](../src/portiq/exposure.py) | Resolve one portfolio and normalize stock weights by stock sector |
 | Independent evaluation | [evaluation.py](../src/portiq/evaluation.py), [faithfulness.py](../src/portiq/faithfulness.py) | Reference SQL / CSV arithmetic, explicit answer verification and correctness-gated VM-work scores |
 | Optional page profiling | [profiling.py](../src/portiq/profiling.py) | Evaluation-only APSW pager hits/misses; matched cache/engine and independent result agreement |
-| Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, adaptive sliding-window limiter, local budget, safe retry/circuit handling |
-| Optional service | [service.py](../src/portiq/service.py) | Explicit local capabilities, exact cache, context and sequential fallback |
+| Provider boundary | [model.py](../src/portiq/model.py), [quota.py](../src/portiq/quota.py) | SDK calls, sequential fallback, adaptive limiter, local budget and safe retry/circuit handling |
+| Shared service | [service.py](../src/portiq/service.py) | Coordinate requests, local capabilities, context, cache lookup and model-client pool |
 | Optional analytics | [analytics.py](../src/portiq/analytics.py) | Snapshots, quote-value reconciliation and data-quality notices |
 | Optional platform | [api.py](../src/portiq/api.py), [web/](../src/portiq/web/) | Single-worker REST adapter and four-view static interface |
 | Optional Streamlit | [streamlit_app.py](../src/portiq/streamlit_app.py) | Chat using the shared analysis services; installed with the GUI extra |

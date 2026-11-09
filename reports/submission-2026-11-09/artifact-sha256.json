@@ -1,0 +1,13 @@
+{
+  "cli-1.json": "6f8fae9552b0b110453c12d58f249af9f48e9cde07b60a8b6db9f29994af73df",
+  "CLI_TRANSCRIPT.md": "a94fe16a9e0cded7916db52e127c26c94b7673293af5e428266b5e025d13bd53",
+  "extended-partial.json": "6535ff885f968d46c5b567e8dea0445dd7fa943390f4d555848cb5242d9d7834",
+  "extended-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "extended-stdout.txt": "ffd902e34bf5cdf32ce65b5c5cf51310dd30bb2b7ae0858848b4461655464e8d",
+  "run-manifest.json": "3011f10b0d406f176c44047ef4610c1cc3f7063abc005119158e008cf8fc95be",
+  "summary.json": "b95201533337cff11e1d957931bd028feaea2c2dd8f67a0929ff49bf6a3d79c7",
+  "supplied-stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "supplied-stdout.txt": "7e219d0568485c883ab95666b0a73eeec96099a2aa59de14cc1d8f196c9c8970",
+  "supplied.json": "1be169eaa665e013b9e08e4f6bc3be98bd2ceb9b32fcab2024eb9ca64ccfbb3a",
+  "supplied.md": "f923d178f4e73e3a348a6e181e169f62f2635d64c04922aeee045062517d9a05"
+}

@@ -1,10 +1,82 @@
 # Engineering decisions and evidence
 
+## Behavior-preserving maintainability refactor
+
+Branch: `refactor/maintainability-2026-11-09`. Runtime source commit: `0a06e56`.
+Baseline runtime: `1c2cc59` (also present in branch parent `4843a7d`). This work separates
+responsibilities; it does not tune prompts, change financial definitions or weaken evaluation.
+
+| Previous owner | New owner | Reason |
+| --- | --- | --- |
+| `agent.py`: response contracts and presentation | `answers.py` | The agent chooses/executes tools; pure rendering and response models can be used without importing orchestration or an SDK. |
+| `service.py`: TTL/LRU answers and database identity | `cache.py` | Cache lifetime, invalidation and defensive-copy behavior have one owner. |
+| `service.py`: sessions, locks and history | `sessions.py` | Conversation storage and bounded history are independent of model clients and caching. |
+| `service.py`: sequential provider fallback | Existing `model.py` | SDK, retry, circuit and fallback behavior share the provider boundary. |
+
+No new classes, frameworks, dependencies, commands or user features were introduced.
+The three new runtime files own existing implementations; compatibility imports in
+`agent.py` and `service.py` refer to the same classes/functions, without wrapper layers.
+The default CLI still imports neither FastAPI nor Streamlit.
+
+### Size and verification
+
+- `agent.py`: **718 → 384 lines**; `service.py`: **539 → 380**. The two overloaded files
+  shed 493 lines into their cohesive owners. Existing `model.py` grows 209 → 268 lines.
+- Total runtime across those files and the three extracted modules changes **1,466 →
+  1,507 lines**: +41 import/header lines, not 493 lines of deleted functionality.
+- Primary README: **110 → 62 lines**, with deeper documents and evidence retained.
+- **26 definition ASTs are identical**: 17 moved definitions and nine unchanged
+  orchestration/provider definitions. Prompts, SQL execution, equity exposure, evaluator,
+  configuration, quota policy and CLI files are byte-identical to the baseline.
+- **170 recorded responses** from multiple captured versions produce **510 byte-identical
+  rendered texts** and identical 170 early-completion decisions. System prompts, both tool
+  declaration modes and response JSON schemas also match. This is offline replay, not
+  a new 170-question live accuracy result.
+- **345 Python tests passed; one opt-in live test skipped.** Three focused regressions
+  cover dependency isolation, legacy import identity, and cache/agent evidence ownership.
+  The added CLI import-isolation assertions passed in a targeted three-test rerun.
+- Ruff, format checks and strict mypy passed (22 source files). All **13 key-free browser
+  tests passed**; the separate opt-in genuine-Gemini dashboard test passed at `0a06e56`,
+  returning the three correct Passive portfolio names in one SDK call, with cache off.
+  It reported 2,438 tokens. Streamlit navigation, mode controls and mobile checks passed.
+- All **13 original assignment inputs** remain byte-identical. No benchmark questions,
+  reference answers or strict pass criteria were changed by this refactor.
+
+No changed SQL values, exposure values, rendering text, completion decisions, retry policy
+or public import/API contracts were observed. Runtime fingerprint keys change with source
+layout as intended; this prevents old-version cache reuse. Probabilistic model behavior
+outside the recorded corpus is not certified by static/replay checks.
+
+### Evidence and remaining complexity
+
+The earlier prompt-removal experiment completed **5/10 supplied**, then stopped after
+28 of 50 extended cases (all 28 completed cases passed). It is preserved with its actual
+scope in the [experiment record](../reports/submission-2026-11-09/README.md). The holdout
+was sealed but not executed. These observed outcomes preceded this structural refactor;
+historical 50/50 and 32/32 captures belong to other runtime hashes. Lack of a new full
+live suite is not an observed functional regression from moving unchanged code.
+
+`AnalysisService.ask` still coordinates substantial context and client-pool behavior;
+the renderer still contains domain-sensitive label formatting. Splitting or simplifying
+those algorithms further would risk subtle behavior changes, so they remain unchanged.
+Both optional UIs, production controls and the performance profiler are retained because
+removing working optional features would violate scope. The earlier evaluator diagnostic
+fix remains; no new scoring changes were made here.
+
+My maintainability assessment improves from the independent review's **5/10 to 8/10**:
+ownership is clearer and the entry point shorter, while request/context and presentation
+complexity remain. This is an engineering judgment, not a PL Capital score or new accuracy claim.
+
+[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
+holdout was not executed. These are observed outcomes, not a full-suite claim for the
+later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+
 The original [assignment](assignment/README.md) prioritizes a working CLI, accurate financial
 tools, a ground-truth evaluator and brief run instructions. The optional enhancements are
 implemented without making web, Streamlit or Node dependencies mandatory for the core CLI.
 
-[Current verified result](../reports/latency-2026-11-09/README.md): **50/50 extended and 10/10 supplied** in
+[Historical verified result](../reports/latency-2026-11-09/README.md): **50/50 extended and 10/10 supplied** in
 fresh full native v4 runs on `1eba590`. The extended capture used 57 SDK attempts and
 137,274 reported tokens. Explicitly complete factual plans can render validated tool data
 directly; complex/ambiguous/error/truncated cases retain normal orchestration. Zero-spacing

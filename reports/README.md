@@ -1,6 +1,11 @@
 # Evaluation and verification report index
 
-**Current result: [50/50 extended and 10/10 supplied](latency-2026-11-09/README.md)** on
+Interrupted prompt-removal experiment: [frozen-runtime campaign](submission-2026-11-09/README.md),
+source `1c2cc59`, after removing benchmark-shaped prompt rules. All actual failures,
+provider usage, source hashes and the prospective holdout protocol are retained.
+[Read the CLI transcript](submission-2026-11-09/CLI_TRANSCRIPT.md) without an API key.
+
+**Historical direct-results result: [50/50 extended and 10/10 supplied](latency-2026-11-09/README.md)** on
 the direct-results implementation. The full native v4 trials preserve all data-answer
 checks. Extended usage is 57 SDK attempts and 137,274 reported tokens; supplied is 13
 and 29,269. No post-run answer substitutions were used.
