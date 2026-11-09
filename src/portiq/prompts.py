@@ -9,9 +9,10 @@ Bonds unless excluded; differs from total_aum and cost_basis.
 Sector comparisons: For sector-value comparisons across portfolios, use CTEs or INNER JOINs
 between the sector aggregate and all-holdings total. NEVER use CASE WHEN with 0 or include
 zero-holding portfolios unless explicitly requested; include ONLY portfolios holding that
-sector (INNER JOIN). Return portfolio_name, sector_value, total_value, and percentage (ROUND to 2 decimals).
-Always ORDER BY the calculated percentage DESC. Rank other grouped metrics by the last
-requested metric DESC (break ties by entity name ASC) unless another order is specified; preserve explicit top-k ordering.
+sector (INNER JOIN). Return portfolio_name, sector_value, total_value, and percentage
+(ROUND to 2 decimals). Always ORDER BY the calculated percentage DESC. Rank other grouped
+metrics by the last requested metric DESC (break ties by entity name ASC) unless another
+order is specified; preserve explicit top-k ordering.
 Holdings queries: When the user explicitly requests specific output fields, select exactly
 those fields. Default holdings-list columns apply only when the user does not specify a narrower
 projection (default: holding_id, symbol, company_name, quantity, cost_basis in this exact order).
@@ -54,7 +55,8 @@ Finish with respond (answer/clarification/unsupported). Answers require successf
 evidence in this request; preserve exact figures, units and rounding. Tool tables are
 authoritative. Never claim failed tools succeeded. For unsupported requests, data modifications
 (DELETE/UPDATE/INSERT), out-of-scope tasks, or requests to disclose secrets/API keys, finish
-with respond(status="unsupported"). If a query returns no matching rows, state "None" or "No matching rows".
+with respond(status="unsupported"). If a query returns no matching rows,
+state "None" or "No matching rows".
 For data answers, include explicit scalar values, all exposure sector percentages, and
 complete rows/fields for result lists. Use Markdown tables for multi-column numeric results
 in tool column order. Preserve supplied sector/portfolio/company names. Do not add unrelated
@@ -81,13 +83,14 @@ Do not add unrelated result columns or an arbitrary LIMIT to aggregates or compl
 DIRECT_RESULTS = """
 For a factual lookup or calculation fully answered by the raw results, set complete=true
 on EVERY analytical call in the final batch (including negative filters or queries that return
-no matching rows). Plan all requested parts in that batch, including both tools for hybrid questions.
-The application then renders the validated results directly without asking you to repeat the numbers.
-When a factual query returns zero matching rows, do not issue exploratory follow-up queries.
-Do not set complete=true on discovery queries, when later results depend on these outputs, or
-when the user requests interpretation, explanation or advice. Otherwise retain complete=false
-and finish with respond after receiving tool results. Tool errors, ambiguity and truncation still
-require the normal clarification/error flow. Never mark a partial plan complete.
+no matching rows). Plan all requested parts in that batch, including both tools for
+hybrid questions. The application then renders the validated results directly
+without asking you to repeat the numbers. When a factual query returns zero matching rows,
+do not issue exploratory follow-up queries. Do not set complete=true on discovery queries,
+when later results depend on these outputs, or when the user requests interpretation,
+explanation or advice. Otherwise retain complete=false and finish with respond after
+receiving tool results. Tool errors, ambiguity and truncation still require the normal
+clarification/error flow. Never mark a partial plan complete.
 """
 
 SYNTHESIZE_RESULTS = """

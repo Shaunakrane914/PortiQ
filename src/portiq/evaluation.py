@@ -166,7 +166,7 @@ def _compare_evidence(reference: dict[str, Any], candidate: dict[str, Any]) -> s
     if reference["tool"] == "sql_query":
         ref_cols = [c.lower() for c in reference["columns"]]
         actual_cols = [c.lower() for c in actual["columns"]]
-        candidate["projection_exact"] = (len(reference["columns"]) == len(actual["columns"]))
+        candidate["projection_exact"] = len(reference["columns"]) == len(actual["columns"])
         has_all_cols = len(ref_cols) <= len(actual_cols) and all(c in actual_cols for c in ref_cols)
         if has_all_cols and not candidate["projection_exact"]:
             indices = [actual_cols.index(c) for c in ref_cols]
@@ -293,9 +293,7 @@ def score_answer(
         else:
             record["projection_exact"] = False
             record["data_correct"] = any(
-                c.get("data_correct") is True
-                for c in candidates
-                if c.get("tool") == "sql_query"
+                c.get("data_correct") is True for c in candidates if c.get("tool") == "sql_query"
             )
         if assignment is None:
             details = [

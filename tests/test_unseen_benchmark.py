@@ -54,7 +54,6 @@ def test_unseen_benchmark_expectations_and_rendering() -> None:
         rendered = render_tools(traces, question=case["question"])
         assert rendered, f"Rendering failed for {case['id']}"
         verification = verify_answer(rendered, expected, [])
-        assert (
-            verification["status"] == "passed"
-        ), f"Faithfulness verification failed for {case['id']}: {verification['failures']}"
-
+        assert verification["status"] == "passed", (
+            f"Faithfulness verification failed for {case['id']}: {verification['failures']}"
+        )
