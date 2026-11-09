@@ -58,24 +58,26 @@ The CLI is the core interface required by the PL Capital assignment. It requires
 
 #### Fast Start via `main.py` (Zero-Config Entry Point)
 
-A dedicated `main.py` script is provided in the root directory for immediate terminal use:
-- **Auto-initializes the database** from `data/` on first run if missing.
-- **Starts interactive chat** when invoked with no arguments:
-  ```bash
-  python main.py
-  ```
-- **Executes a single question directly** when provided as an argument:
-  ```bash
-  python main.py "How many portfolios do we have in total?"
-  python main.py "Show me the top 5 holdings by cost basis in Growth Equity Fund"
-  python main.py "What are the sector exposures for Tech Innovation Fund?"
-  ```
-- **Passes through all subcommands transparently**:
-  ```bash
-  python main.py evaluate --suite supplied
-  python main.py exposure "Balanced Portfolio"
-  python main.py doctor
-  ```
+A dedicated `main.py` script is provided in the root directory for immediate terminal use. It automatically initializes the database from `data/` on first launch if missing.
+
+**1. Interactive Terminal Chat**
+```bash
+python main.py
+```
+
+**2. Direct Question Execution**
+```bash
+python main.py "How many portfolios do we have in total?"
+python main.py "Show me the top 5 holdings by cost basis in Growth Equity Fund"
+python main.py "What are the sector exposures for Tech Innovation Fund?"
+```
+
+**3. Transparent Subcommand Pass-Through**
+```bash
+python main.py evaluate --suite supplied
+python main.py exposure "Balanced Portfolio"
+python main.py doctor
+```
 
 #### Standard CLI Setup via `portfolio-agent`
 
