@@ -190,11 +190,12 @@ def local_answer(settings: Settings, question: str, selected: int | None) -> Age
     question = question.strip().rstrip("?.")
     started = time.perf_counter()
     tools: list[ToolTrace] = []
-    if re.fullmatch(
-        r"(?:count all portfolios|how many portfolios(?: do we have(?: in total)?)?)",
-        question,
-        re.I,
-    ):
+    count_pattern = (
+        r"(?:count all (?:portfolios|funds)|count (?:portfolios|funds)|"
+        r"how many (?:portfolios|funds)(?: (?:do we have|are there|exist)(?: in total)?)?|"
+        r"total (?:number of )?(?:portfolios|funds))"
+    )
+    if re.fullmatch(count_pattern, question, re.I):
         tools = [
             ToolTrace(
                 tool="sql_query",
@@ -207,16 +208,30 @@ def local_answer(settings: Settings, question: str, selected: int | None) -> Age
         ]
     else:
         exposure = re.fullmatch(
-            r"(?:show |calculate |what is )?(?:the )?(?:equity )?sector exposure(?: for| of)? (.+)",
+            r"(?:show |calculate |what is )?(?:the )?(?:equity[- ])?"
+            r"(?:sector )?(?:exposure|breakdown|allocation)(?: for| of)? (.+)",
             question,
             re.I,
         )
+        if not exposure:
+            exposure = re.fullmatch(
+                r"(?:show |calculate |what is )?(?:the )?"
+                r"(.+?)['’]s (?:equity[- ])?(?:sector )?(?:exposure|breakdown|allocation)",
+                question,
+                re.I,
+            )
         holdings = re.fullmatch(
             r"(?:show|list)(?: the)? holdings (?:in|for|of) (.+)", question, re.I
         )
+        if not holdings:
+            holdings = re.fullmatch(r"(?:show |list )?(?:the )?(.+?)['’]s holdings", question, re.I)
         metadata = re.fullmatch(
             r"(?:show|display)(?: the)? (?:metadata|details) (?:for|of) (.+)", question, re.I
         )
+        if not metadata:
+            metadata = re.fullmatch(
+                r"(?:show |display )?(?:the )?(.+?)['’]s (?:metadata|details)", question, re.I
+            )
         match = exposure or holdings or metadata
         if not match:
             return None

@@ -129,6 +129,7 @@ def test_render_exposure_equity_only_with_basis() -> None:
     )
     rendered = render_tools([trace])
     assert "equity-only sector exposure" in rendered
+    assert "| Sector | Exposure (%) |" in rendered
     assert "61.11%" in rendered and "22.22%" in rendered and "16.67%" in rendered
     assert "bonds excluded" in rendered
     expected = [
@@ -139,3 +140,60 @@ def test_render_exposure_equity_only_with_basis() -> None:
         }
     ]
     assert verify_answer(rendered, expected, ["Balanced Portfolio"])["status"] == "passed"
+
+
+def test_local_answer_paraphrased_queries(tmp_path) -> None:
+    import sqlite3
+
+    from portiq.config import Settings
+    from portiq.service import local_answer
+
+    db_path = tmp_path / "test.db"
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        "CREATE TABLE portfolios (portfolio_id INTEGER PRIMARY KEY, "
+        "portfolio_name TEXT, is_active INTEGER)"
+    )
+    conn.execute(
+        "CREATE TABLE securities (security_id INTEGER PRIMARY KEY, symbol TEXT, "
+        "company_name TEXT, asset_type TEXT, sector_id INTEGER)"
+    )
+    conn.execute("CREATE TABLE sectors (sector_id INTEGER PRIMARY KEY, sector_name TEXT)")
+    conn.execute(
+        "CREATE TABLE holdings (holding_id INTEGER PRIMARY KEY, portfolio_id INTEGER, "
+        "security_id INTEGER, current_weight REAL, quantity REAL, cost_basis REAL)"
+    )
+    conn.execute("INSERT INTO portfolios VALUES (1, 'Balanced Portfolio', 1)")
+    conn.execute("INSERT INTO portfolios VALUES (2, 'Growth Fund', 1)")
+    conn.execute("INSERT INTO sectors VALUES (1, 'Technology')")
+    conn.execute("INSERT INTO securities VALUES (1, 'AAPL', 'Apple Inc.', 'Stock', 1)")
+    conn.execute("INSERT INTO holdings VALUES (1, 1, 1, 1.0, 100, 150.0)")
+    conn.commit()
+    conn.close()
+
+    settings = Settings(database=db_path)
+
+    # Count paraphrases
+    for q in [
+        "count all portfolios",
+        "how many portfolios do we have",
+        "how many portfolios are there",
+        "total number of portfolios",
+        "how many funds do we have",
+        "count all funds",
+    ]:
+        res = local_answer(settings, q, None)
+        assert res is not None, f"Failed on {q}"
+        assert "Total portfolios: 2" in res.answer or "2" in res.answer
+
+    # Exposure paraphrases
+    for q in [
+        "sector exposure for Balanced Portfolio",
+        "what is Balanced Portfolio's equity-sector allocation",
+        "Balanced Portfolio's sector breakdown",
+        "show Balanced Portfolio's allocation",
+    ]:
+        res = local_answer(settings, q, None)
+        assert res is not None, f"Failed on {q}"
+        assert "Technology" in res.answer
+        assert "| Sector | Exposure (%) |" in res.answer

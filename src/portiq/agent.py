@@ -591,14 +591,17 @@ def render_tools(
         if not result:
             continue
         if tool.tool == "exposure_calculator":
+            table_lines = [
+                "| Sector | Exposure (%) |",
+                "|---|---|",
+            ]
+            for name, value in result["sectors"].items():
+                table_lines.append(f"| {name} | {_financial(value, percent=True)} |")
             sections.append(
                 str(result["portfolio_name"])
-                + " — equity-only sector exposure\n"
-                + "\n".join(
-                    f"{name}: {_financial(value, percent=True)}"
-                    for name, value in result["sectors"].items()
-                )
-                + "\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
+                + " — equity-only sector exposure\n\n"
+                + "\n".join(table_lines)
+                + "\n\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
             )
             continue
         columns, rows = result["columns"], result["rows"]

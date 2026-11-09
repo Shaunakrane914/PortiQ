@@ -1,14 +1,19 @@
 # Change history
 
-## Polished 1-call presentation and Detailed AI explanation toggle — 9 November 2026
+## NLP comprehension, polished 1-call presentation and Detailed AI explanation toggle — 9 November 2026
 
 - Upgraded 1-call deterministic rendering (`render_tools`):
   - Natural aggregate labels: formats `COUNT(*)`, `SUM(...)`, `AVG(...)`, `MIN(...)`, `MAX(...)` into grounded labels without guessing (e.g. `Total portfolios: 13`, `Total AUM: 5,000,000.00`).
   - Single-column list rendering: formats lists into clean bulleted entries with count header (e.g. `3 matching portfolios:\n* Portfolio A...`) instead of raw column dumps.
+  - Sector allocation Markdown table: formats sector exposures into a clear two-column Markdown table with headers `| Sector | Exposure (%) |` followed by the explicit equity basis note (`Basis: Stock current_weight / total Stock current_weight; bonds excluded.`).
   - Financial safety: preserves exact numeric values with standard grouping commas without inventing currency symbols. Structured evidence (`tool.result`) remains completely untouched.
-  - Added regression test suite (`tests/test_rendered_presentation.py`) covering counts, distinct aggregates, sums, averages, min/max, lists, nulls, negatives, and sector exposures.
+- Enhanced NLP question comprehension and paraphrase support:
+  - System prompts (`AGENT_SYSTEM` & `SQL_SYSTEM`): guides Gemini on conversational domain terminology (funds $\leftrightarrow$ portfolios, breakdown/allocation $\leftrightarrow$ sector exposure, holdings/constituents, comparisons and multi-part queries).
+  - Deterministic fast path (`local_answer`): supports natural variations including possessives (e.g., `"Balanced Portfolio's equity-sector allocation"`, `"Balanced Portfolio's holdings"`, `"Balanced Portfolio's details"`), and fund/portfolio count variations (`"how many funds do we have"`, `"count all funds"`, `"total number of portfolios"`).
 - Renamed the UI toggle in both web dashboard and Streamlit to **"Detailed AI explanation"** with updated help text describing it as an additional Gemini synthesis step.
-- Full Python test suite passed (313 tests), and Playwright browser tests passed (13 tests).
+- Comprehensive test coverage:
+  - Added regression test suite (`tests/test_rendered_presentation.py`) covering counts, distinct aggregates, sums, averages, min/max, lists, nulls, negatives, sector exposure tables, and paraphrased local queries (all 11 tests passed).
+  - Full Python test suite passed (314 passed, 1 skipped), Playwright browser tests passed (13 passed, 1 skipped), and type checking / linting clean.
 
 ## Per-request smarter answer mode with Gemini synthesis — 9 November 2026
 
