@@ -28,7 +28,7 @@ test("Streamlit smarter mode disables local/cache while preserving the question"
   await expect(page.getByRole("checkbox",{name:"Local fast path"})).not.toBeChecked();
   await expect(page.getByRole("textbox",{name:"Ask PortiQ",exact:true})).toHaveValue("Count all portfolios");
   await page.getByRole("button",{name:/^Analyze/}).click();
-  await expect(page.getByText("Analysis is temporarily unavailable. Please try again later.",{exact:true})).toBeVisible();
+  await expect(page.getByText(/AI is not configured for this deployment/)).toBeVisible();
   await page.getByText("Detailed AI explanation",{exact:true}).click();
   await expect(page.getByRole("checkbox",{name:"Local fast path"})).toBeEnabled();
 });
@@ -54,7 +54,7 @@ test("Streamlit shares portfolio selection across all four views", async ({ page
 test("Streamlit supports mobile navigation and renders questions as text", async ({ page, browser }) => {
   await page.getByRole("textbox", { name: "Ask PortiQ", exact: true }).fill("<img src=x onerror=alert(1)>");
   await page.getByRole("button", { name: /^Analyze/ }).click();
-  await expect(page.getByText("Analysis is temporarily unavailable. Please try again later.", { exact: true })).toBeVisible();
+  await expect(page.getByText(/AI is not configured for this deployment/)).toBeVisible();
   await expect(page.locator(".message img")).toHaveCount(0);
   const text = await page.locator("body").innerText();
   for (const privateValue of ["Shaunak", "PL Capital", "GEMINI_API_KEY"]) expect(text).not.toContain(privateValue);

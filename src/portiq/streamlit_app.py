@@ -2,6 +2,7 @@
 
 import csv
 import io
+import logging
 from html import escape
 from pathlib import Path
 from typing import Any
@@ -12,7 +13,7 @@ from portiq.agent import AgentResponse
 from portiq.analytics import Snapshot
 from portiq.config import Settings
 from portiq.database import initialize
-from portiq.errors import PortiqError
+from portiq.errors import ModelError, PortiqError
 from portiq.service import AnalysisService
 
 PAGES = {
@@ -22,6 +23,34 @@ PAGES = {
     "Reconciliation": "Two valid lenses. Make their differences visible.",
 }
 GOLD = "#B69C6A"
+logger = logging.getLogger(__name__)
+
+
+def analysis_error_message(settings: Settings, kind: str | None = None) -> str:
+    """Show only fixed, actionable messages; never render provider exception text."""
+    if not settings.api_key.get_secret_value().strip():
+        return (
+            "AI is not configured for this deployment. The app owner must add a Gemini API "
+            "key in Streamlit Cloud Secrets and reboot the app."
+        )
+    messages = {
+        "authentication": "Gemini rejected this deployment's credentials or API permissions. "
+        "The app owner must check the key and its restrictions in Streamlit Cloud Secrets.",
+        "unsupported_model": "The configured Gemini model is unavailable to this deployment. "
+        "The app owner must check the model setting and API access.",
+        "rate_limit": "The Gemini request rate limit has been reached. Please wait and retry.",
+        "daily_quota": "The Google project quota has been exhausted. "
+        "The app owner must check quota availability in Google AI Studio.",
+        "local_budget": "This deployment's daily request allowance has been reached. "
+        "Please try again after its daily reset.",
+        "timeout": "The Gemini request timed out. Please try again shortly.",
+        "connection": "This deployment could not connect to Gemini. Please try again shortly.",
+        "provider_transient": "Gemini is temporarily unavailable. Please try again shortly.",
+        "circuit_open": "Gemini requests are temporarily paused after repeated failures. "
+        "Please try again shortly.",
+        "busy": "All analysis slots are busy. Please try again shortly.",
+    }
+    return messages.get(kind or "", "Analysis is temporarily unavailable. Please try again later.")
 
 
 @st.cache_resource  # type: ignore[untyped-decorator]
@@ -194,10 +223,16 @@ def analyst(service: AnalysisService, selected: int | None) -> None:
                     if context:
                         st.session_state["gui_next_portfolio"] = result.context_portfolio
                     text = (
-                        "Analysis is temporarily unavailable. Please try again later."
+                        analysis_error_message(service.settings, result.error_kind)
                         if result.status == "error"
                         else result.answer
                     )
+                    if result.status == "error":
+                        logger.warning(
+                            "Streamlit analysis failed request=%s kind=%s",
+                            result.request_id,
+                            result.error_kind or "unknown",
+                        )
                     messages.append(
                         {
                             "role": "assistant",
@@ -205,11 +240,14 @@ def analyst(service: AnalysisService, selected: int | None) -> None:
                             "response": result.model_dump(mode="json"),
                         }
                     )
-                except PortiqError:
+                except PortiqError as exc:
+                    kind = exc.kind if isinstance(exc, ModelError) else None
+                    # Log the exception class only: messages may contain private provider data.
+                    logger.warning("Streamlit analysis failed exception=%s", type(exc).__name__)
                     messages.append(
                         {
                             "role": "assistant",
-                            "text": "Analysis is temporarily unavailable. Please try again later.",
+                            "text": analysis_error_message(service.settings, kind),
                         }
                     )
             st.session_state["messages"] = messages[-32:]

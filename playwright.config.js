@@ -21,6 +21,7 @@ module.exports = defineConfig({
       timeout: 30000,
       env: {
         GEMINI_API_KEY: "",
+        STREAMLIT_SECRETS_FILES: "tests/browser/empty-secrets.toml",
         STREAMLIT_SERVER_HEADLESS: "true",
         PORTIQ_DB: "portfolio_database.db",
         PORTIQ_QUOTA_DB: "reports/local/streamlit-quota.sqlite",

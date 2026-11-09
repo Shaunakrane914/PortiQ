@@ -16,8 +16,10 @@ Sign in, select **Create app**, and use:
 | App URL | Choose an available name, such as `portiq-analyst` |
 
 The entry point uses the existing application and services. Its adjacent
-`requirements.txt` installs `.[gui]` from the repository root, including the PortiQ
-package and Streamlit. Community Cloud checks this directory before the root dependency
+`requirements.txt` installs `-e .[gui]` from the repository root, including the PortiQ
+package and Streamlit. The editable install uses the checked-out source when code updates
+arrive, rather than retaining an older installed package copy. Community Cloud checks
+this directory before the root dependency
 files, so it does not accidentally install only the base CLI from `uv.lock` or the
 unchanged original-assignment `requirements.txt`.
 See [dependency discovery](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies).
@@ -44,6 +46,22 @@ Click **Deploy**. Follow the build log until the AI Analyst page opens. The host
 the public URL; no live deployment is claimed until that page has been verified.
 See [deployment](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy)
 and [secrets management](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/secrets-management).
+
+## Troubleshoot analysis failures
+
+The hosted application cannot access the `.env` on your computer. Copy the contents
+of your private local `.streamlit/secrets.toml` into **Settings → Secrets**, save, and
+reboot the app to replace the cached analytical service. Do not commit the secrets file.
+
+Streamlit distinguishes a missing deployment key, rejected credentials/permissions,
+rate limits, provider quota, the local daily guard and connection failures using fixed
+messages. It never renders raw SDK exception text. An unclassified failure retains a
+generic message. Cloud logs include a request ID/error category or exception class,
+without keys, questions or provider payloads.
+
+Browser-console Permissions-Policy warnings and blocked analytics requests are not
+Gemini response diagnostics. Use **Manage app → Cloud logs** to investigate server
+failures; browser logs alone cannot establish an API authentication or quota failure.
 
 ## Verify after deployment
 
