@@ -35,8 +35,10 @@ class SQLInput(BaseModel):
         min_length=1,
         max_length=20000,
         description=(
-            "One read-only SQLite query derived from the user's requested fields, filters, "
-            "population and ordering. Do not impose an unrelated default answer shape."
+            "Read-only SQLite query. Unless exact columns are explicitly requested, holdings "
+            "listings include holding_id, symbol, company_name, quantity and cost_basis. "
+            "For grouped metric summaries without a user-specified ordering, include ORDER BY "
+            "the last requested numeric metric DESC. Preserve any explicit user ordering."
         ),
     )
     explanation: str = Field(max_length=1000)
