@@ -7,9 +7,9 @@ from portiq.evaluation import _expectations
 from portiq.faithfulness import verify_answer
 
 
-def test_unseen_benchmark_expectations_and_rendering() -> None:
-    settings = Settings(database=Path("portfolio_database.db"))
-    with Path("evaluation/unseen_nlp.json").open(encoding="utf-8") as f:
+def test_unseen_benchmark_expectations_and_rendering(database: Path, source: Path) -> None:
+    settings = Settings(database=database, source=source)
+    with (source / "evaluation/unseen_nlp.json").open(encoding="utf-8") as f:
         data = json.load(f)
 
     questions = data["questions"]
