@@ -2,6 +2,7 @@
 
 import json
 import logging
+import math
 import re
 import time
 from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
@@ -16,7 +17,7 @@ from portiq.database import categorical_context, connect_readonly, schema_contex
 from portiq.errors import ModelError, PortiqError, QueryError
 from portiq.exposure import ExposureInput, calculate_exposure
 from portiq.model import Backend, MeteredBackend
-from portiq.prompts import AGENT_SYSTEM, SQL_SYSTEM
+from portiq.prompts import AGENT_SYSTEM, DIRECT_RESULTS, SQL_SYSTEM
 from portiq.sql import QueryResult, SQLPlan, execute, requires_dedicated_planning
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,20 @@ class FinalInput(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     status: Literal["answer", "clarification", "unsupported"]
     answer: str = Field(min_length=1, max_length=10000)
+
+
+COMPLETE_DESCRIPTION = (
+    "True only when all analytical calls in this batch fully answer the whole factual "
+    "request using raw results. False for discovery or requests needing interpretation."
+)
+
+
+class DirectSQLInput(SQLInput):
+    complete: bool = Field(default=False, description=COMPLETE_DESCRIPTION)
+
+
+class DirectExposureInput(ExposureInput):
+    complete: bool = Field(default=False, description=COMPLETE_DESCRIPTION)
 
 
 class ToolTrace(BaseModel):
@@ -149,7 +164,7 @@ def run_sql_tool(
     raise QueryError(f"SQL failed after {settings.sql_attempts} attempts: {last_error}")
 
 
-def tool_declarations() -> list[types.FunctionDeclaration]:
+def tool_declarations(*, direct_results: bool = True) -> list[types.FunctionDeclaration]:
     return [
         types.FunctionDeclaration(
             name="sql_query",
@@ -157,14 +172,18 @@ def tool_declarations() -> list[types.FunctionDeclaration]:
                 "Translate the question to one read-only SQLite query. Supply question, "
                 "generated sql and explanation; execution is validated locally."
             ),
-            parameters_json_schema=SQLInput.model_json_schema(),
+            parameters_json_schema=(
+                DirectSQLInput if direct_results else SQLInput
+            ).model_json_schema(),
         ),
         types.FunctionDeclaration(
             name="exposure_calculator",
             description=(
                 "Calculate equity-only sector exposure from weights for one portfolio name or ID."
             ),
-            parameters_json_schema=ExposureInput.model_json_schema(),
+            parameters_json_schema=(
+                DirectExposureInput if direct_results else ExposureInput
+            ).model_json_schema(),
         ),
         types.FunctionDeclaration(
             name="respond",
@@ -199,6 +218,7 @@ class PortfolioAgent:
             + json.dumps(catalogue, ensure_ascii=False, separators=(",", ":"))
             + "\n"
             + AGENT_SYSTEM
+            + (DIRECT_RESULTS if settings.direct_results else "")
         )
 
     def answer(self, question: str) -> AgentResponse:
@@ -260,7 +280,13 @@ class PortfolioAgent:
                     types.GenerateContentConfig(
                         system_instruction=system,
                         temperature=0,
-                        tools=[types.Tool(function_declarations=tool_declarations())],
+                        tools=[
+                            types.Tool(
+                                function_declarations=tool_declarations(
+                                    direct_results=self.settings.direct_results
+                                )
+                            )
+                        ],
                         automatic_function_calling=types.AutomaticFunctionCallingConfig(
                             disable=True
                         ),
@@ -309,7 +335,7 @@ class PortfolioAgent:
                 error: str | None = None
                 try:
                     if name == "sql_query":
-                        query = SQLInput.model_validate(arguments)
+                        query = DirectSQLInput.model_validate(arguments)
                         result = run_sql_tool(
                             self.settings,
                             meter,
@@ -318,7 +344,7 @@ class PortfolioAgent:
                             initial_plan=SQLPlan(sql=query.sql, explanation=query.explanation),
                         ).model_dump(mode="json")
                     elif name == "exposure_calculator":
-                        exposure = ExposureInput.model_validate(arguments)
+                        exposure = DirectExposureInput.model_validate(arguments)
                         result = calculate_exposure(
                             self.settings.database, exposure.portfolio
                         ).model_dump(mode="json")
@@ -346,6 +372,18 @@ class PortfolioAgent:
                     )
                 )
             contents.append(types.Content(role="tool", parts=responses))
+            if (
+                self.settings.direct_results
+                and all((call.args or {}).get("complete") is True for call in calls)
+                and can_render_complete(traces)
+            ):
+                rendering_start = time.perf_counter()
+                answer = render_tools(traces, exact=True)
+                if len(answer) <= 10000:
+                    completed = finish("answer", answer)
+                    completed.rendering = "validated tool results after Gemini complete plan"
+                    completed.rendering_ms = (time.perf_counter() - rendering_start) * 1000
+                    return completed
             # Honor an explicit scalar-only format without another model call to restate it.
             # Compound intents and every non-scalar/error result retain normal orchestration.
             if (
@@ -397,10 +435,10 @@ def render_response(response: AgentResponse, *, trace: bool = False, sql: bool =
     return "\n".join(lines)
 
 
-def _cell(value: Any) -> str:
+def _cell(value: Any, *, exact: bool = False) -> str:
     if value is None:
         return "Not available"
-    if isinstance(value, float):
+    if isinstance(value, float) and not exact:
         return format(Decimal(str(value)), ",.6f").rstrip("0").rstrip(".")
     return str(value).replace("|", "\\|").replace("\n", " ").replace("\r", " ")
 
@@ -416,7 +454,34 @@ def _financial(value: str, *, currency: str | None = None, percent: bool = False
     return text + ("%" if percent else f" {currency}" if currency else " (currency unspecified)")
 
 
-def render_tools(tools: list[ToolTrace], *, max_rows: int = 30) -> str:
+def can_render_complete(tools: list[ToolTrace]) -> bool:
+    """Only complete, bounded, losslessly representable analytical evidence can finish early."""
+    if not tools:
+        return False
+    for tool in tools:
+        if tool.error or tool.result is None:
+            return False
+        if tool.tool == "exposure_calculator":
+            continue
+        if tool.tool != "sql_query":
+            return False
+        result = tool.result
+        rows = result["rows"]
+        if result.get("truncated") or not rows or len(rows) > 30:
+            return False
+        values = [*result["columns"], *(value for row in rows for value in row)]
+        if any(
+            isinstance(value, str)
+            and ("|" in value or "\n" in value or "\r" in value)
+            or isinstance(value, float)
+            and not math.isfinite(value)
+            for value in values
+        ):
+            return False
+    return True
+
+
+def render_tools(tools: list[ToolTrace], *, max_rows: int = 30, exact: bool = False) -> str:
     sections = []
     for tool in tools:
         if tool.error:
@@ -444,16 +509,19 @@ def render_tools(tools: list[ToolTrace], *, max_rows: int = 30) -> str:
             formatted = (
                 _financial(str(value))
                 if value is not None
+                and not exact
                 and columns[0].lower()
                 in {"current_price", "total_aum", "cost_basis", "market_value"}
-                else _cell(value)
+                else _cell(value, exact=exact)
             )
             sections.append(f"{columns[0]}: {formatted}")
         else:
             sections.append(
-                " | ".join(_cell(c) for c in columns)
+                " | ".join(_cell(c, exact=exact) for c in columns)
                 + "\n"
-                + "\n".join(" | ".join(_cell(v) for v in row) for row in rows[:max_rows])
+                + "\n".join(
+                    " | ".join(_cell(v, exact=exact) for v in row) for row in rows[:max_rows]
+                )
             )
         if len(rows) > max_rows or result.get("truncated"):
             sections.append(

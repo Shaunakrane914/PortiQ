@@ -19,6 +19,7 @@ class Settings(BaseModel):
     query_seconds: float = Field(default=2.0, gt=0, le=10)
     max_tool_calls: int = Field(default=6, ge=1, le=12)
     sql_attempts: int = Field(default=3, ge=1, le=4)
+    direct_results: bool = True
     request_interval: float = Field(default=0.0, ge=0, le=60)
     rpm_limit: int = Field(default=12, ge=1, le=120)
     rpm_window: float = Field(default=60.0, ge=1.0, le=300.0)
@@ -41,6 +42,7 @@ class Settings(BaseModel):
             source=Path(os.getenv("PORTIQ_SOURCE", ".")),
             model=os.getenv("GEMINI_MODEL", "gemini-3.1-flash-lite"),
             api_key=SecretStr(os.getenv("GEMINI_API_KEY", "")),
+            direct_results=os.getenv("PORTIQ_DIRECT_RESULTS", "1") == "1",
             request_interval=float(os.getenv("PORTIQ_REQUEST_INTERVAL", "0")),
             rpm_limit=int(os.getenv("PORTIQ_RPM_LIMIT", "12")),
             rpm_window=float(os.getenv("PORTIQ_RPM_WINDOW", "60")),

@@ -58,3 +58,14 @@ Do not add unrelated result columns or an arbitrary LIMIT to aggregates or compl
 """
     + CONVENTIONS
 )
+
+DIRECT_RESULTS = """
+For a factual lookup or calculation fully answered by the raw results, set complete=true
+on EVERY analytical call in the final batch. Plan all requested parts in that batch,
+including both tools for hybrid questions. The application then renders the validated
+results directly without asking you to repeat the numbers. Do not set complete=true on
+discovery queries, when later results depend on these outputs, or when the user requests
+interpretation, explanation or advice. Otherwise retain complete=false and finish with
+respond after receiving tool results. Tool errors, ambiguity and truncation still require
+the normal clarification/error flow. Never mark a partial plan complete.
+"""
