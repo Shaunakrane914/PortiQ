@@ -1,9 +1,9 @@
 # Optional assignment enhancements
 
-[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+[Prompt-removal experiment](../reports/submission/README.md), runtime `1c2cc59`,
 records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
 holdout was not executed. These are observed outcomes, not a full-suite claim for the
-later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+later structural refactor. [Recorded CLI session](../reports/submission/CLI_TRANSCRIPT.md).
 
 Eleven of the twelve optional bullets have active implementations. Metadata RAG was
 evaluated and deliberately excluded based on measured tradeoffs. The core CLI continues
@@ -90,7 +90,7 @@ responsibilities. A passing smoke test is not a security certification or availa
 
 ## Validation
 
-The [historical verification](../reports/latency-2026-11-09/README.md) records fresh full passes of **50/50 extended
+The [historical verification](../reports/latency/README.md) records fresh full passes of **50/50 extended
 and 10/10 supplied**, including all 46/10 data-answer checks. The extended capture used 57
 SDK attempts and 137,274 reported tokens; supplied used 13 and 29,269. The extended run had
 zero provider errors; supplied recovered one error with unreported usage.

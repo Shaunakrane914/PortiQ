@@ -1,15 +1,15 @@
 # Evaluation and verification report index
 
-Latest restored verification: **[10/10 original questions](restored-working-2026-11-09/README.md)**,
+Latest restored verification: **[10/10 original questions](submission/README.md)**,
 runtime `3359777`, after restoring the proven conventions. The 32-question run was
 stopped; prior 32/32 and 50/50 remain historical, not new-run claims.
 
-Interrupted prompt-removal experiment: [frozen-runtime campaign](submission-2026-11-09/README.md),
+Interrupted prompt-removal experiment: [frozen-runtime campaign](submission/README.md),
 source `1c2cc59`, after removing benchmark-shaped prompt rules. All actual failures,
 provider usage, source hashes and the prospective holdout protocol are retained.
-[Read the CLI transcript](submission-2026-11-09/CLI_TRANSCRIPT.md) without an API key.
+[Read the CLI transcript](submission/CLI_TRANSCRIPT.md) without an API key.
 
-**Historical direct-results result: [50/50 extended and 10/10 supplied](latency-2026-11-09/README.md)** on
+**Historical direct-results result: [50/50 extended and 10/10 supplied](latency/README.md)** on
 the direct-results implementation. The full native v4 trials preserve all data-answer
 checks. Extended usage is 57 SDK attempts and 137,274 reported tokens; supplied is 13
 and 29,269. No post-run answer substitutions were used.
@@ -32,8 +32,8 @@ and recorded outcomes were not rewritten.
 
 | Evidence | Scope |
 |---|---|
-| [Smarter answer (2 SDK) live checks](smarter-mode-2026-11-09/README.md) | Per-request smarter toggle verification across web dashboard and Streamlit, real 2 vs 1 SDK calls |
-| [Current latency and accuracy](latency-2026-11-09/README.md) | Fresh 50/50 and 10/10, paired no-spacing results, true local browser input-to-output, regression and Docker checks |
+| [Smarter answer (2 SDK) live checks](latency/README.md) | Per-request smarter toggle verification across web dashboard and Streamlit, real 2 vs 1 SDK calls |
+| [Current latency and accuracy](latency/README.md) | Fresh 50/50 and 10/10, paired no-spacing results, true local browser input-to-output, regression and Docker checks |
 | [Earlier full CLI run](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/single-run-2026-11-09/README.md) | Current single-run 50/50; native JSON/Markdown, terminal streams, input/runtime hashes and metrics |
 | [Earlier completion view](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/completion-2026-11-09/README.md) | Historical retry-aware summary with all attempts and usage accounted for |
 | [New-key capture index](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/retest-2026-11-09/README.md) | Supplied 10/10, live conversations 9/9, dashboard/Streamlit, HTTP/stub soak, Docker and assignment integrity |

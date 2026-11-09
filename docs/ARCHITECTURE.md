@@ -1,13 +1,13 @@
 # Architecture
 
-[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+[Prompt-removal experiment](../reports/submission/README.md), runtime `1c2cc59`,
 records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
 holdout was not executed. These are observed outcomes, not a full-suite claim for the
-later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+later structural refactor. [Recorded CLI session](../reports/submission/CLI_TRANSCRIPT.md).
 
 The original [assignment](assignment/README.md) requires SQL translation, equity sector exposure, CLI tool selection and a CLI evaluator. They remain the core. The optional HTTP/UI layer adapts the same calculations and agent.
 
-[Historical verification](../reports/latency-2026-11-09/README.md) records fresh full CLI passes of 50/50 extended
+[Historical verification](../reports/latency/README.md) records fresh full CLI passes of 50/50 extended
 and 10/10 supplied on `1eba590`. Gemini can explicitly mark a whole factual tool batch
 complete; successful, bounded, untruncated evidence is rendered directly. Other requests
 retain the normal tool/synthesis loop. SQL safety, schema context and financial calculations

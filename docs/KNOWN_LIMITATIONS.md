@@ -1,9 +1,9 @@
 # Known limitations
 
-[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+[Prompt-removal experiment](../reports/submission/README.md), runtime `1c2cc59`,
 records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
 holdout was not executed. These are observed outcomes, not a full-suite claim for the
-later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+later structural refactor. [Recorded CLI session](../reports/submission/CLI_TRANSCRIPT.md).
 
 The [assignment checklist](SUBMISSION.md) and [enhancement guide](ENHANCEMENTS.md) map the
 mandatory and optional requirements to implementations.
@@ -13,7 +13,7 @@ mandatory and optional requirements to implementations.
 - The fresh supplied v4 retest passed 10/10 on `2a68b74`; the earlier verifier replay accepts
   all fifty archived answers and rejects 46 bad-prose mutations. Known finite suites and
   different generation/replay scopes are not blind validation.
-- The [historical direct-result implementation](../reports/latency-2026-11-09/README.md) passes fresh extended 50/50
+- The [historical direct-result implementation](../reports/latency/README.md) passes fresh extended 50/50
   and supplied 10/10. The extended capture uses 57 SDK attempts and 137,274 reported tokens.
   Normal bounded SDK retries remain active; one supplied attempt had unreported usage.
 - Direct rendering requires Gemini's complete-plan claim plus successful bounded evidence;

@@ -1,13 +1,13 @@
 # Assignment checklist and reviewer runbook
 
-[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+[Prompt-removal experiment](../reports/submission/README.md), runtime `1c2cc59`,
 records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
 holdout was not executed. These are observed outcomes, not a full-suite claim for the
-later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+later structural refactor. [Recorded CLI session](../reports/submission/CLI_TRANSCRIPT.md).
 
 The unchanged [original assignment](assignment/README.md) is the source of requirements. Its deliverables are a working command-line agent, a ground-truth evaluator, brief run documentation and clean code with error handling. The API/dashboard and other enhancements are optional.
 
-[Historical evaluation evidence](../reports/latency-2026-11-09/README.md): **50/50 extended and 10/10 supplied**
+[Historical evaluation evidence](../reports/latency/README.md): **50/50 extended and 10/10 supplied**
 passed in fresh full CLI runs on `1eba590`, with all explicit data-answer checks passing.
 The extended capture used 57 SDK attempts and 137,274 reported tokens. Actual uncached
 local browser submit-to-answer examples were 1.454s and 2.834s with zero test spacing.

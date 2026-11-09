@@ -7,7 +7,7 @@ successful recorded `987143b` run, while retaining the modular refactor and eval
 The over-broad prompt-removal experiment reduced strict supplied accuracy. Restoring the
 known conventions recovered **10/10 in a fresh original-suite run**, with 13 SDK calls,
 33,885 reported tokens and all ten final-answer checks passing.
-[Source-qualified results](../reports/restored-working-2026-11-09/README.md).
+[Source-qualified results](../reports/submission/README.md).
 The 32-question run remains stopped as requested. Prior 32/32 and 50/50 are not recertified
 for this version. The defaults are assignment-specific conventions, not proof of blind
 generalization. No benchmark or evaluator pass condition was changed.
@@ -63,7 +63,7 @@ outside the recorded corpus is not certified by static/replay checks.
 
 The earlier prompt-removal experiment completed **5/10 supplied**, then stopped after
 28 of 50 extended cases (all 28 completed cases passed). It is preserved with its actual
-scope in the [experiment record](../reports/submission-2026-11-09/README.md). The holdout
+scope in the [experiment record](../reports/submission/README.md). The holdout
 was sealed but not executed. These observed outcomes preceded this structural refactor;
 historical 50/50 and 32/32 captures belong to other runtime hashes. Lack of a new full
 live suite is not an observed functional regression from moving unchanged code.
@@ -79,16 +79,16 @@ My maintainability assessment improves from the independent review's **5/10 to 8
 ownership is clearer and the entry point shorter, while request/context and presentation
 complexity remain. This is an engineering judgment, not a PL Capital score or new accuracy claim.
 
-[Prompt-removal experiment](../reports/submission-2026-11-09/README.md), runtime `1c2cc59`,
+[Prompt-removal experiment](../reports/submission/README.md), runtime `1c2cc59`,
 records 5/10 supplied and an interrupted extended run (28 cases completed). The sealed
 holdout was not executed. These are observed outcomes, not a full-suite claim for the
-later structural refactor. [Recorded CLI session](../reports/submission-2026-11-09/CLI_TRANSCRIPT.md).
+later structural refactor. [Recorded CLI session](../reports/submission/CLI_TRANSCRIPT.md).
 
 The original [assignment](assignment/README.md) prioritizes a working CLI, accurate financial
 tools, a ground-truth evaluator and brief run instructions. The optional enhancements are
 implemented without making web, Streamlit or Node dependencies mandatory for the core CLI.
 
-[Historical verified result](../reports/latency-2026-11-09/README.md): **50/50 extended and 10/10 supplied** in
+[Historical verified result](../reports/latency/README.md): **50/50 extended and 10/10 supplied** in
 fresh full native v4 runs on `1eba590`. The extended capture used 57 SDK attempts and
 137,274 reported tokens. Explicitly complete factual plans can render validated tool data
 directly; complex/ambiguous/error/truncated cases retain normal orchestration. Zero-spacing
