@@ -1,12 +1,6 @@
 # PortiQ — Portfolio Analytics AI Agent
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Checked with mypy](https://img.shields.io/badge/mypy-checked-blue)](http://mypy-lang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Render-Live%20Demo-brightgreen)](https://portiq-b9u7.onrender.com)
-
-**PortiQ** is an AI agent built for portfolio analytics. It translates natural language questions into read-only, AST-validated SQLite queries or executes deterministic sector exposure calculations with equity-only normalization.
+**PortiQ** is an AI agent built for the PL Capital portfolio analytics assessment. It translates natural language questions into read-only, AST-validated SQLite queries or executes deterministic sector exposure calculations with equity-only normalization.
 
 ---
 
@@ -47,13 +41,13 @@ PortiQ defaults to **1-call direct factual execution**, eliminating redundant LL
 
 ## User Interfaces
 
-PortiQ supports three complementary interface modes, starting with the primary command-line agent:
+PortiQ provides three complementary interface modes, starting with the primary command-line agent:
 
 ```
 Interfaces:
 ├── 1. Command-Line Interface (CLI)   [Primary take-home deliverable]
 ├── 2. Streamlit Web Dashboard        [Interactive graphical GUI]
-└── 3. FastAPI REST API              [Production service & headless endpoints]
+└── 3. FastAPI REST API              [Asynchronous API service & headless endpoints]
 ```
 
 ---
@@ -62,7 +56,29 @@ Interfaces:
 
 The CLI is the core interface required by the PL Capital assignment. It requires no browser or web server.
 
-#### 1. Setup & Environment
+#### Fast Start via `main.py` (Zero-Config Entry Point)
+
+A dedicated `main.py` script is provided in the root directory for immediate terminal use:
+- **Auto-initializes the database** from `data/` on first run if missing.
+- **Starts interactive chat** when invoked with no arguments:
+  ```bash
+  python main.py
+  ```
+- **Executes a single question directly** when provided as an argument:
+  ```bash
+  python main.py "How many portfolios do we have in total?"
+  python main.py "Show me the top 5 holdings by cost basis in Growth Equity Fund"
+  python main.py "What are the sector exposures for Tech Innovation Fund?"
+  ```
+- **Passes through all subcommands transparently**:
+  ```bash
+  python main.py evaluate --suite supplied
+  python main.py exposure "Balanced Portfolio"
+  python main.py doctor
+  ```
+
+#### Standard CLI Setup via `portfolio-agent`
+
 ```bash
 # Clone and enter the repository
 git clone https://github.com/Shaunakrane914/PortiQ.git
@@ -76,20 +92,14 @@ pip install -r requirements.txt
 # Configure your Gemini API key in .env (never commit your key)
 cp .env.example .env
 # Edit .env and set GEMINI_API_KEY="your_api_key"
-```
 
-#### 2. Initialize Database
-Loads all assessment CSVs from `data/` into SQLite with strict relational schema:
-```bash
+# Initialize database explicitly
 uv run portfolio-agent init-db
-# Or: python -m portiq.cli init-db
-```
 
-#### 3. Interactive Multi-Turn Chat
-Maintains conversational context, portfolio reference resolution, and follow-up turns:
-```bash
+# Launch interactive chat
 uv run portfolio-agent chat
 ```
+
 ```text
 Portfolio Agent Ready. Type 'exit' to quit.
 Question: How many portfolios do we have?
@@ -104,7 +114,7 @@ Question: Show me the sector exposure for Balanced Portfolio
   Healthcare: 16.67%
 ```
 
-#### 4. Single-Shot Query Execution
+#### Single-Shot Query Execution
 ```bash
 # Execute single query with SQL evidence
 uv run portfolio-agent ask "What are the top 5 holdings by cost basis in Growth Equity Fund?" --show-sql
@@ -113,8 +123,8 @@ uv run portfolio-agent ask "What are the top 5 holdings by cost basis in Growth 
 uv run portfolio-agent exposure "Balanced Portfolio"
 ```
 
-#### 5. Evaluation Harness
-Run automated evaluation against any test suite:
+#### Evaluation Harness
+Run automated verification against any benchmark suite:
 ```bash
 # Supplied 10-question evaluation
 uv run portfolio-agent evaluate --suite supplied --output reports/submission/supplied.json
@@ -152,7 +162,7 @@ Open your browser at `http://localhost:8501`.
 
 ### Interface 3: FastAPI REST API
 
-A production-ready asynchronous REST API supporting concurrent requests, session state, and health probes.
+An asynchronous REST API supporting concurrent requests, session state, and health probes.
 
 ```bash
 # Launch the API server
@@ -176,7 +186,7 @@ Open OpenAPI documentation at `http://localhost:8000/docs`.
 ```mermaid
 flowchart TD
     User([User Query]) --> IF{Interface Layer}
-    IF -->|CLI| CLI[portfolio-agent CLI]
+    IF -->|CLI / main.py| CLI[portfolio-agent CLI]
     IF -->|GUI| ST[Streamlit Dashboard]
     IF -->|REST API| API[FastAPI Endpoints]
 
@@ -212,7 +222,7 @@ flowchart TD
 
 ## Key Architectural Decisions
 
-- **Direct Schema Grounding over RAG**: Vector and Graph retrieval (RAG) were experimentally evaluated on earlier iterations and excluded from the production path. Because the relational schema is small (6 tables, 95 holdings, 13 portfolios), dynamic schema reflection and exact categorical value injection into prompt context achieve 100% accuracy with lower latency, no vector database overhead, and zero semantic retrieval drift.
+- **Direct Schema Grounding over RAG**: Vector and Graph retrieval (RAG) were experimentally evaluated on earlier iterations and excluded from the runtime implementation. Because the relational schema is small (6 tables, 95 holdings, 13 portfolios), dynamic schema reflection and exact categorical value injection into prompt context achieve 100% accuracy with lower latency, no vector database overhead, and zero semantic retrieval drift.
 - **AST-Level SQL Validation**: Using `sqlglot` to parse and inspect queries prior to SQLite execution ensures strict read-only safety independently of model obedience. All non-`SELECT` statements, dangerous PRAGMAs, and recursive CTEs are blocked before reaching SQLite.
 - **Deterministic Financial Normalization**: Equity sector exposure is computed deterministically in Python using `Decimal` with `ROUND_HALF_UP` rounding to 2 decimals, strictly excluding bonds (`s.asset_type = 'Stock'`) and eliminating LLM arithmetic errors.
 
@@ -251,9 +261,3 @@ uv run python scripts/verify_service.py --seconds 2 --output reports/local/soak.
 # System health inspection
 uv run portfolio-agent doctor
 ```
-
----
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
