@@ -1,5 +1,13 @@
 # Change history
 
+## Per-request smarter answer mode with Gemini synthesis — 9 November 2026
+
+- Added a user-facing **"Smarter answer (2 SDK)"** toggle to both the web dashboard (`src/portiq/web/app.js`) and Streamlit application (`src/portiq/streamlit_app.py`).
+- When checked, requests bypass local fast-path and exact cache, disabling direct-result shortcuts and instructing Gemini via `SYNTHESIZE_RESULTS` to provide grounded model synthesis (2 SDK calls typical).
+- When unchecked (default), requests preserve the direct-result fast path (1 SDK call for factual counts/queries) and allow optional local fast path / exact caching.
+- Per-request immutability: simultaneous requests with different modes execute independently without mutating service configuration.
+- Verified live across both interfaces; unit/API tests (303 passed) and Playwright browser tests (13 passed) confirm UI exclusivity, state preservation, and responsive mobile layouts.
+
 ## Direct validated results and latency verification — 9 November 2026
 
 - Gemini may explicitly complete a factual tool batch. Successful small untruncated results

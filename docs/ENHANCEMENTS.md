@@ -40,6 +40,11 @@ selector and backend calculations. SQL evidence, SDK/token/timing metrics and re
 CSV export are available in Streamlit. Questions render as escaped plain text; the launcher
 hides framework deployment controls and client error traces.
 
+Both the web dashboard and Streamlit support a per-request **"Smarter answer (2 SDK)"** checkbox.
+When checked, the system bypasses local deterministic shortcuts and exact cache hits, requiring
+Gemini to synthesize an explained narrative answer from the authoritative tool data (typically 2 SDK calls).
+When left unchecked (the default), factual queries utilize direct tool results with 1 SDK call.
+
 ## Production deployment profile
 
 The [operations guide](OPERATIONS.md) documents the supported single-process topology,

@@ -1,0 +1,167 @@
+{
+  "mode": "Actual Gemini through local dashboard, smart then fast; no local/cache answers",
+  "session_capabilities_omitted": true,
+  "rows": [
+    {
+      "smarter": true,
+      "question": "Count all portfolios. Return just the count.",
+      "click_to_answer_ms": 7311.5463,
+      "actual": {
+        "request_id": "7103cf1c-9965-445b-a273-6c020f3b3bc1",
+        "status": "answer",
+        "answer": "There are 13 portfolios in total.",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT COUNT(*) FROM portfolios;",
+              "explanation": "Counting the total number of portfolios in the portfolios table.",
+              "question": "Count all portfolios. Return just the count."
+            },
+            "result": {
+              "columns": [
+                "COUNT(*)"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) FROM portfolios;",
+              "duration_ms": 3.351,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.7107999990694225,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 4.73
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 7223.421699993196,
+        "model_duration_ms": 7125.558,
+        "api_calls": 2,
+        "tokens": 4425,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T08:51:45.095015+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1805.5465999932494,
+            "pacing_ms": 0,
+            "input_tokens": 2108,
+            "output_tokens": 51,
+            "thinking_tokens": null,
+            "total_tokens": 2159,
+            "error_kind": null,
+            "sequence": 1
+          },
+          {
+            "timestamp_utc": "2026-11-09T08:51:46.912567+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 5311.631300006411,
+            "pacing_ms": 0,
+            "input_tokens": 2238,
+            "output_tokens": 28,
+            "thinking_tokens": null,
+            "total_tokens": 2266,
+            "error_kind": null,
+            "sequence": 2
+          }
+        ],
+        "backoff_ms": 0,
+        "context_portfolio": 4,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "rendering_ms": null,
+        "stages_ms": {
+          "metadata_and_version": 3.8742999895475805,
+          "cache_lookup": 0.000200001522898674
+        }
+      }
+    },
+    {
+      "smarter": false,
+      "question": "Count all portfolios. Return just the count.",
+      "click_to_answer_ms": 4746.0463,
+      "actual": {
+        "request_id": "e8417fa3-c33e-48ef-82bc-9189d88bfe7a",
+        "status": "answer",
+        "answer": "COUNT(*): 13",
+        "tools": [
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT COUNT(*) FROM portfolios",
+              "question": "Count all portfolios.",
+              "explanation": "Counting the total number of portfolios in the portfolios table.",
+              "complete": true
+            },
+            "result": {
+              "columns": [
+                "COUNT(*)"
+              ],
+              "rows": [
+                [
+                  13
+                ]
+              ],
+              "sql": "SELECT COUNT(*) FROM portfolios",
+              "duration_ms": 0.831,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.12290000449866056,
+              "vm_steps": null,
+              "query_plan": []
+            },
+            "error": null,
+            "duration_ms": 1.248
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 4653.311999994912,
+        "model_duration_ms": 4620.004,
+        "api_calls": 1,
+        "tokens": 2310,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-09T08:51:52.562068+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 4615.167299998575,
+            "pacing_ms": 0,
+            "input_tokens": 2261,
+            "output_tokens": 49,
+            "thinking_tokens": null,
+            "total_tokens": 2310,
+            "error_kind": null,
+            "sequence": 3
+          }
+        ],
+        "backoff_ms": 0,
+        "context_portfolio": 4,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "validated tool results after Gemini complete plan",
+        "rendering_ms": 0.039300008211284876,
+        "stages_ms": {
+          "metadata_and_version": 9.555099997669458,
+          "cache_lookup": 0.000500003807246685
+        }
+      }
+    }
+  ]
+}

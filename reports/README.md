@@ -15,6 +15,7 @@ their own source versions, provider counts and campaign accounting snapshots.
 
 | Evidence | Scope |
 |---|---|
+| [Smarter answer (2 SDK) live checks](smarter-mode-2026-11-09/README.md) | Per-request smarter toggle verification across web dashboard and Streamlit, real 2 vs 1 SDK calls |
 | [Current latency and accuracy](latency-2026-11-09/README.md) | Fresh 50/50 and 10/10, paired no-spacing results, true local browser input-to-output, regression and Docker checks |
 | [Earlier full CLI run](single-run-2026-11-09/README.md) | Current single-run 50/50; native JSON/Markdown, terminal streams, input/runtime hashes and metrics |
 | [Earlier completion view](completion-2026-11-09/README.md) | Historical retry-aware summary with all attempts and usage accounted for |
