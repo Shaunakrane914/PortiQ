@@ -74,6 +74,7 @@ class Ask(BaseModel):
     strategy: Literal["existing"] = "existing"
     local: bool = True
     cache: bool = True
+    smarter: bool = False
 
 
 class AskResult(BaseModel):
@@ -380,6 +381,7 @@ def create_app(
                 strategy=body.strategy,
                 local=body.local,
                 cached=body.cache,
+                smarter=body.smarter,
             )
             if result.status == "error":
                 result.answer = "Analysis is temporarily unavailable. Please try again later."

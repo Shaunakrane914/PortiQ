@@ -18,6 +18,7 @@ let page = "analyst",
   session = null,
   token = "",
   snapshot = null,
+  smarterAnswers = false,
   epoch = 0;
 const titles = {
   overview: ["Portfolio overview", "See the allocation. Understand the basis."],
@@ -687,12 +688,32 @@ async function analyst() {
   const cache = el("input");
   cache.type = "checkbox";
   cache.checked = false;
+  const smarter = el("input");
+  smarter.type = "checkbox";
+  smarter.checked = smarterAnswers;
   const lab = (text, i) => {
     const l = el("label");
     l.append(i, document.createTextNode(" " + text));
     return l;
   };
-  controls.append(lab("Local fast path", local), lab("Exact cache", cache));
+  const smarterLabel = lab("Smarter answer (2 SDK)", smarter);
+  smarterLabel.className = "smarter-option";
+  const smarterHelp = el(
+    "p",
+    "Gemini reviews results and adds an explanation. Usually 2 calls; analysis, repairs or retries can add more. Uses live Gemini with local fast path and cache off.",
+    "caption",
+  );
+  smarterHelp.id = "smarter-help";
+  smarter.setAttribute("aria-describedby", smarterHelp.id);
+  const updateMode = () => {
+    smarterAnswers = smarter.checked;
+    local.disabled = cache.disabled = smarter.checked;
+    if (smarter.checked) local.checked = cache.checked = false;
+    smarterHelp.hidden = !smarter.checked;
+  };
+  smarter.onchange = updateMode;
+  updateMode();
+  controls.append(lab("Local fast path", local), lab("Exact cache", cache), smarterLabel);
   const bottom = el("div", null, "form-bottom"),
     send = el("button", "Analyze →", "button");
   send.type = "submit";
@@ -704,7 +725,7 @@ async function analyst() {
     log.replaceChildren();
   };
   bottom.append(reset, send);
-  form.append(input, controls, bottom);
+  form.append(input, controls, smarterHelp, bottom);
   c.append(form);
   root.append(c);
   form.onsubmit = async (event) => {
@@ -725,6 +746,7 @@ async function analyst() {
         strategy: "existing",
         local: local.checked,
         cache: cache.checked,
+        smarter: smarter.checked,
       });
       session = d.session_id;
       const a = d.response;

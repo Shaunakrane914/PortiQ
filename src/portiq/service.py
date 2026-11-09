@@ -329,11 +329,18 @@ class AnalysisService:
         strategy: str = "existing",
         local: bool = True,
         cached: bool = True,
+        smarter: bool = False,
     ) -> tuple[AgentResponse, str]:
         if not question.strip() or len(question) > 4000:
             raise PortiqError("Question must contain 1 to 4000 characters.")
         if strategy != "existing":
             raise PortiqError("Only the existing orchestration strategy is supported.")
+        request_settings = self.settings
+        if smarter:
+            local = cached = False
+            request_settings = self.settings.model_copy(
+                update={"direct_results": False, "force_synthesis": True}
+            )
         with self.lock:
             session_id, state = self.sessions.get(session_id)
         # Independent conversations execute concurrently; turns in one conversation serialize.
@@ -431,6 +438,8 @@ class AnalysisService:
                         self.settings.fallback_models,
                         strategy,
                         local,
+                        request_settings.direct_results,
+                        request_settings.force_synthesis,
                         context,
                         session_id,
                     ],
@@ -481,7 +490,7 @@ class AnalysisService:
                     query += prefix + json.dumps(context_data)
                 backend = self.borrow_backend()
                 try:
-                    result = PortfolioAgent(self.settings, backend).answer(query)
+                    result = PortfolioAgent(request_settings, backend).answer(query)
                 finally:
                     if self.backend is None and isinstance(backend, FallbackBackend):
                         with self.lock:

@@ -17,7 +17,7 @@ from portiq.database import categorical_context, connect_readonly, schema_contex
 from portiq.errors import ModelError, PortiqError, QueryError
 from portiq.exposure import ExposureInput, calculate_exposure
 from portiq.model import Backend, MeteredBackend
-from portiq.prompts import AGENT_SYSTEM, DIRECT_RESULTS, SQL_SYSTEM
+from portiq.prompts import AGENT_SYSTEM, DIRECT_RESULTS, SQL_SYSTEM, SYNTHESIZE_RESULTS
 from portiq.sql import QueryResult, SQLPlan, execute, requires_dedicated_planning
 
 logger = logging.getLogger(__name__)
@@ -211,6 +211,11 @@ class PortfolioAgent:
                     "SELECT portfolio_id,portfolio_name FROM portfolios ORDER BY portfolio_id"
                 )
             ]
+        completion_instructions = ""
+        if settings.force_synthesis:
+            completion_instructions = SYNTHESIZE_RESULTS
+        elif settings.direct_results:
+            completion_instructions = DIRECT_RESULTS
         self.system = (
             "DATABASE SCHEMA:\n"
             + self.schema
@@ -218,7 +223,7 @@ class PortfolioAgent:
             + json.dumps(catalogue, ensure_ascii=False, separators=(",", ":"))
             + "\n"
             + AGENT_SYSTEM
-            + (DIRECT_RESULTS if settings.direct_results else "")
+            + completion_instructions
         )
 
     def answer(self, question: str) -> AgentResponse:
@@ -284,6 +289,7 @@ class PortfolioAgent:
                             types.Tool(
                                 function_declarations=tool_declarations(
                                     direct_results=self.settings.direct_results
+                                    and not self.settings.force_synthesis
                                 )
                             )
                         ],
@@ -374,6 +380,7 @@ class PortfolioAgent:
             contents.append(types.Content(role="tool", parts=responses))
             if (
                 self.settings.direct_results
+                and not self.settings.force_synthesis
                 and all((call.args or {}).get("complete") is True for call in calls)
                 and can_render_complete(traces)
             ):
@@ -387,7 +394,8 @@ class PortfolioAgent:
             # Honor an explicit scalar-only format without another model call to restate it.
             # Compound intents and every non-scalar/error result retain normal orchestration.
             if (
-                len(traces) == len(calls) == 1
+                not self.settings.force_synthesis
+                and len(traces) == len(calls) == 1
                 and traces[0].tool == "sql_query"
                 and traces[0].error is None
                 and (scalar := traces[0].result) is not None

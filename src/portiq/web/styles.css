@@ -404,6 +404,15 @@ th button {
   flex-wrap: wrap;
   margin: 15px 0;
 }
+.toolbar .smarter-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  background: var(--mint);
+}
 input,
 select,
 textarea {

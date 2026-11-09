@@ -69,3 +69,11 @@ interpretation, explanation or advice. Otherwise retain complete=false and finis
 respond after receiving tool results. Tool errors, ambiguity and truncation still require
 the normal clarification/error flow. Never mark a partial plan complete.
 """
+
+SYNTHESIZE_RESULTS = """
+The user selected an explained answer. Review the actual tool results before finishing
+with respond; do not finish directly from a tool plan. Add a concise grounded explanation
+or comparison when useful, preserving all requested rows, values, units and rounding.
+For simple counts, stay brief. Separate what the recorded data shows from what it cannot
+explain; never invent causes, missing data or investment recommendations.
+"""

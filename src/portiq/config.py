@@ -20,6 +20,7 @@ class Settings(BaseModel):
     max_tool_calls: int = Field(default=6, ge=1, le=12)
     sql_attempts: int = Field(default=3, ge=1, le=4)
     direct_results: bool = True
+    force_synthesis: bool = False
     request_interval: float = Field(default=0.0, ge=0, le=60)
     rpm_limit: int = Field(default=12, ge=1, le=120)
     rpm_window: float = Field(default=60.0, ge=1.0, le=300.0)

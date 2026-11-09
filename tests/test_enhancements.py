@@ -139,8 +139,9 @@ def test_streamlit_chat_uses_shared_local_tools(database: Path, monkeypatch) -> 
     script = Path(__file__).parents[1] / "src/portiq/streamlit_app.py"
     app = AppTest.from_file(str(script), default_timeout=15).run()
     assert not app.exception
-    assert not app.checkbox[0].value
-    app.checkbox[0].check()
+    local = next(widget for widget in app.checkbox if widget.label == "Local fast path")
+    assert not local.value
+    local.check()
     app.text_area[0].set_value("Count all portfolios")
     app.button(key="gui_analyze").click().run()
     assert not app.exception

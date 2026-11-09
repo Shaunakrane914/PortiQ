@@ -136,6 +136,20 @@ def analyst(service: AnalysisService, selected: int | None) -> None:
                 st.session_state["gui_question"] = (
                     label if label == "Count all portfolios" else f"{label} for {reference}"
                 )
+
+        def change_answer_mode() -> None:
+            if st.session_state.get("gui_smarter"):
+                st.session_state["gui_local"] = False
+                st.session_state["gui_cached"] = False
+
+        smarter = st.checkbox(
+            "Smarter answer (2 SDK)",
+            value=False,
+            key="gui_smarter",
+            on_change=change_answer_mode,
+            help="Gemini reviews results and adds explanation. Usually 2 calls; analysis, "
+            "repairs or retries can add more. Uses live Gemini with local fast path and cache off.",
+        )
         with st.form("analyst_question", clear_on_submit=True):
             question = st.text_area(
                 "Ask PortiQ",
@@ -145,8 +159,12 @@ def analyst(service: AnalysisService, selected: int | None) -> None:
                 placeholder="Ask about holdings, exposure or recorded observations…",
             )
             controls = st.columns(3)
-            local = controls[0].checkbox("Local fast path", value=False)
-            cached = controls[1].checkbox("Exact cache", value=False)
+            local = controls[0].checkbox(
+                "Local fast path", value=False, key="gui_local", disabled=smarter
+            )
+            cached = controls[1].checkbox(
+                "Exact cache", value=False, key="gui_cached", disabled=smarter
+            )
             context = controls[2].checkbox("Conversation context", value=False)
             left, right = st.columns([3, 1])
             reset = left.form_submit_button("New conversation", key="gui_reset")
@@ -170,6 +188,7 @@ def analyst(service: AnalysisService, selected: int | None) -> None:
                         conversation=context,
                         local=local,
                         cached=cached,
+                        smarter=smarter,
                     )
                     st.session_state["conversation_id"] = session
                     if context:

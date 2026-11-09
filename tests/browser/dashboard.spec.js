@@ -141,6 +141,36 @@ test("reconciliation export and mobile layout", async ({ page }) => {
     fullPage: true,
   });
 });
+
+test("smarter answer selects live synthesis and keeps the fast controls exclusive", async ({ page }) => {
+  await page.goto("/");
+  const smarter = page.getByRole("checkbox", { name: "Smarter answer (2 SDK)", exact: true });
+  const local = page.getByRole("checkbox", { name: "Local fast path" });
+  const cache = page.getByRole("checkbox", { name: "Exact cache" });
+  await expect(smarter).not.toBeChecked();
+  await local.check();
+  await cache.check();
+  await smarter.check();
+  await expect(local).toBeDisabled();
+  await expect(cache).toBeDisabled();
+  await expect(local).not.toBeChecked();
+  await expect(cache).not.toBeChecked();
+  await expect(page.locator("#smarter-help")).toBeVisible();
+  const request = page.waitForRequest(r => r.url().endsWith("/api/conversation") && r.method() === "POST");
+  await page.getByRole("textbox", { name: "Ask PortiQ" }).fill("Count all portfolios");
+  await page.getByRole("button", { name: /^Analyze/ }).click();
+  expect((await request).postDataJSON()).toMatchObject({smarter:true,local:false,cache:false});
+  await expect(page.getByText("Analysis is temporarily unavailable. Please try again later.", {exact:true})).toBeVisible();
+  await page.getByRole("button", { name: "Overview", exact:true }).click();
+  await page.getByRole("button", { name: "AI Analyst", exact:true }).click();
+  await expect(page.getByRole("checkbox", {name:"Smarter answer (2 SDK)",exact:true})).toBeChecked();
+  await page.screenshot({path:shots+"/smarter-answer-desktop.png",fullPage:true});
+  await page.setViewportSize({width:390,height:844});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBeTruthy();
+  await page.screenshot({path:shots+"/smarter-answer-mobile.png",fullPage:true});
+  await page.getByRole("checkbox", {name:"Smarter answer (2 SDK)",exact:true}).uncheck();
+  await expect(page.getByRole("checkbox", {name:"Local fast path"})).toBeEnabled();
+});
 test("public interface omits assessment and internal metadata", async ({
   page,
 }) => {
