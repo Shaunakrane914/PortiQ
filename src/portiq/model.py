@@ -207,3 +207,62 @@ class MeteredBackend:
         if response.usage_metadata:
             self.tokens += response.usage_metadata.total_token_count or 0
         return response
+
+
+class FallbackBackend:
+    """Opt-in sequential models with shared budget; daily/auth failures stop immediately."""
+
+    def __init__(
+        self,
+        settings: Settings,
+        *,
+        budget: RequestBudget | None = None,
+        limiter: AdaptiveRateLimiter | None = None,
+    ) -> None:
+        settings.require_key()
+        self.owns_budget = budget is None
+        self.budget = budget or RequestBudget(settings.daily_requests, settings.quota_path)
+        self.limiter = limiter or AdaptiveRateLimiter(
+            rpm_limit=settings.rpm_limit,
+            window_seconds=settings.rpm_window,
+            max_wait_seconds=settings.max_wait_seconds,
+            cooldown_threshold=settings.rpm_cooldown_threshold,
+            cooldown_seconds=settings.rpm_cooldown_seconds,
+        )
+        models = list(dict.fromkeys([settings.model, *settings.fallback_models]))
+        self.backends = [
+            GeminiBackend(
+                settings.model_copy(update={"model": m}),
+                budget=self.budget,
+                limiter=self.limiter,
+            )
+            for m in models
+        ]
+        self.attempts: list[dict[str, Any]] = []
+        self.attempt_sequence = 0
+        self.last_request = 0.0
+
+    def generate(self, contents: Any, config: Any) -> Any:
+        last: ModelError | None = None
+        for backend in self.backends:
+            before = backend.attempt_sequence
+            backend.last_request = max(backend.last_request, self.last_request)
+            try:
+                return backend.generate(contents, config)
+            except ModelError as exc:
+                last = exc
+                if exc.kind in {"daily_quota", "authentication", "local_budget"}:
+                    raise
+            finally:
+                self.last_request = backend.last_request
+                for entry in [a for a in backend.attempts if a["sequence"] > before]:
+                    self.attempt_sequence += 1
+                    self.attempts.append({**entry, "sequence": self.attempt_sequence})
+                del self.attempts[:-1000]
+        raise last or ModelError("No configured model is available.")
+
+    def close(self) -> None:
+        for backend in self.backends:
+            backend.close()
+        if self.owns_budget:
+            self.budget.close()

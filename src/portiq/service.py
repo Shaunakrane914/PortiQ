@@ -4,186 +4,27 @@ import contextlib
 import hashlib
 import json
 import re
-import secrets
 import threading
 import time
-from collections import OrderedDict
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from portiq.agent import AgentResponse, PortfolioAgent, ToolTrace, render_tools
+from portiq.agent import PortfolioAgent
 from portiq.analytics import PortfolioService
+from portiq.answers import AgentResponse, ToolTrace, render_tools
+from portiq.cache import ExactCache as ExactCache
+from portiq.cache import database_version as database_version
 from portiq.config import Settings
 from portiq.errors import ModelError, PortiqError
 from portiq.exposure import calculate_exposure, resolve_portfolio
-from portiq.model import Backend, GeminiBackend
+from portiq.model import Backend
+from portiq.model import FallbackBackend as FallbackBackend
 from portiq.quota import AdaptiveRateLimiter, RequestBudget
+from portiq.sessions import Conversation as Conversation
+from portiq.sessions import Sessions as Sessions
+from portiq.sessions import remember_turn as remember_turn
 from portiq.sql import execute
-
-
-def database_version(path: Path) -> str:
-    before = path.stat()
-    content = path.read_bytes()
-    after = path.stat()
-    before_identity = (before.st_ino, before.st_mtime_ns, before.st_size)
-    after_identity = (after.st_ino, after.st_mtime_ns, after.st_size)
-    if before_identity != after_identity:
-        raise PortiqError("Database changed during version lookup; retry.")
-    return hashlib.sha256(content + repr(after_identity).encode()).hexdigest()
-
-
-class ExactCache:
-    def __init__(self, capacity: int = 64, ttl: float = 300) -> None:
-        self.capacity, self.ttl = capacity, ttl
-        self.items: OrderedDict[str, tuple[float, AgentResponse]] = OrderedDict()
-        self.lock = threading.RLock()
-
-    def get(self, key: str) -> AgentResponse | None:
-        with self.lock:
-            item = self.items.pop(key, None)
-            if item is None or time.monotonic() - item[0] > self.ttl:
-                return None
-            self.items[key] = item
-            return item[1].model_copy(deep=True)
-
-    def put(self, key: str, answer: AgentResponse) -> None:
-        if answer.status != "answer" or any(t.error for t in answer.tools):
-            return
-        with self.lock:
-            self.items[key] = (time.monotonic(), answer.model_copy(deep=True))
-            self.items.move_to_end(key)
-            while len(self.items) > self.capacity:
-                self.items.popitem(last=False)
-
-    def clear(self) -> None:
-        with self.lock:
-            self.items.clear()
-
-
-@dataclass
-class Conversation:
-    selected: int | None = None
-    history: list[dict[str, Any]] = field(default_factory=list)
-    choices: list[str] = field(default_factory=list)
-    securities: list[str] = field(default_factory=list)
-    touched: float = field(default_factory=time.monotonic)
-    lock: Any = field(default_factory=threading.RLock, repr=False)
-
-
-def remember_turn(state: Conversation, question: str, result: AgentResponse) -> None:
-    state.history.append(
-        {
-            "question": question[:400],
-            "status": result.status,
-            "clarification": result.answer[:300] if result.status == "clarification" else None,
-            "tools": [t.tool for t in result.tools],
-            "result_summaries": [
-                {
-                    "tool": t.tool,
-                    "rows": len(t.result.get("rows", [])),
-                    "columns": t.result.get("columns", [])[:12],
-                    "portfolio": t.result.get("portfolio_name"),
-                }
-                for t in result.tools
-                if t.result
-            ],
-        }
-    )
-    state.history = state.history[-8:]
-    if result.status != "answer":
-        return
-    state.choices = []
-    state.securities = []
-    for t in result.tools:
-        if t.result and t.tool == "sql_query" and "symbol" in t.result["columns"]:
-            col = t.result["columns"].index("symbol")
-            state.securities.extend(str(row[col])[:30] for row in t.result["rows"][:10])
-        if t.result and t.tool == "sql_query" and "portfolio_name" in t.result["columns"]:
-            col = t.result["columns"].index("portfolio_name")
-            state.choices.extend(str(row[col]) for row in t.result["rows"][:10])
-
-
-class Sessions:
-    def __init__(self, capacity: int = 100, ttl: float = 1800) -> None:
-        self.capacity, self.ttl = capacity, ttl
-        self.items: OrderedDict[str, Conversation] = OrderedDict()
-
-    def get(self, key: str | None) -> tuple[str, Conversation]:
-        now = time.monotonic()
-        for old in [k for k, v in self.items.items() if now - v.touched > self.ttl]:
-            del self.items[old]
-        if key is None:
-            key = secrets.token_urlsafe(32)
-            self.items[key] = Conversation()
-        if key not in self.items:
-            raise PortiqError("Conversation expired or unavailable; start a new session.")
-        state = self.items[key]
-        state.touched = now
-        self.items.move_to_end(key)
-        while len(self.items) > self.capacity:
-            self.items.popitem(last=False)
-        return key, state
-
-
-class FallbackBackend:
-    """Opt-in sequential models with shared budget; daily/auth failures stop immediately."""
-
-    def __init__(
-        self,
-        settings: Settings,
-        *,
-        budget: RequestBudget | None = None,
-        limiter: AdaptiveRateLimiter | None = None,
-    ) -> None:
-        settings.require_key()
-        self.owns_budget = budget is None
-        self.budget = budget or RequestBudget(settings.daily_requests, settings.quota_path)
-        self.limiter = limiter or AdaptiveRateLimiter(
-            rpm_limit=settings.rpm_limit,
-            window_seconds=settings.rpm_window,
-            max_wait_seconds=settings.max_wait_seconds,
-            cooldown_threshold=settings.rpm_cooldown_threshold,
-            cooldown_seconds=settings.rpm_cooldown_seconds,
-        )
-        models = list(dict.fromkeys([settings.model, *settings.fallback_models]))
-        self.backends = [
-            GeminiBackend(
-                settings.model_copy(update={"model": m}),
-                budget=self.budget,
-                limiter=self.limiter,
-            )
-            for m in models
-        ]
-        self.attempts: list[dict[str, Any]] = []
-        self.attempt_sequence = 0
-        self.last_request = 0.0
-
-    def generate(self, contents: Any, config: Any) -> Any:
-        last: ModelError | None = None
-        for backend in self.backends:
-            before = backend.attempt_sequence
-            backend.last_request = max(backend.last_request, self.last_request)
-            try:
-                return backend.generate(contents, config)
-            except ModelError as exc:
-                last = exc
-                if exc.kind in {"daily_quota", "authentication", "local_budget"}:
-                    raise
-            finally:
-                self.last_request = backend.last_request
-                for entry in [a for a in backend.attempts if a["sequence"] > before]:
-                    self.attempt_sequence += 1
-                    self.attempts.append({**entry, "sequence": self.attempt_sequence})
-                del self.attempts[:-1000]
-        raise last or ModelError("No configured model is available.")
-
-    def close(self) -> None:
-        for backend in self.backends:
-            backend.close()
-        if self.owns_budget:
-            self.budget.close()
 
 
 def local_answer(settings: Settings, question: str, selected: int | None) -> AgentResponse | None:

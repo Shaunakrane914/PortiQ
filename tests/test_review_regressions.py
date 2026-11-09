@@ -16,6 +16,67 @@ from portiq.faithfulness import verify_answer
 from portiq.sql import execute
 
 
+def test_answer_state_modules_do_not_import_orchestration_or_optional_ui(source: Path) -> None:
+    code = """
+import sys
+import portiq.answers
+import portiq.cache
+import portiq.sessions
+assert 'portiq.agent' not in sys.modules
+assert 'google.genai' not in sys.modules
+assert 'fastapi' not in sys.modules
+assert 'streamlit' not in sys.modules
+import portiq.cli
+assert 'fastapi' not in sys.modules
+assert 'streamlit' not in sys.modules
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", code], cwd=source, capture_output=True, text=True, check=False
+    )
+    assert result.returncode == 0, result.stderr
+
+
+def test_legacy_imports_share_one_answer_and_state_contract() -> None:
+    from portiq import agent, answers, cache, model, service, sessions
+
+    assert agent.AgentResponse is answers.AgentResponse
+    assert agent.ToolTrace is answers.ToolTrace
+    assert agent.render_tools is answers.render_tools
+    assert agent.render_response is answers.render_response
+    assert service.ExactCache is cache.ExactCache
+    assert service.Sessions is sessions.Sessions
+    assert service.FallbackBackend is model.FallbackBackend
+
+
+def test_shared_cache_does_not_mutate_agent_evidence(database: Path) -> None:
+    from test_agent import FakeBackend, call
+
+    from portiq.agent import PortfolioAgent
+    from portiq.cache import ExactCache
+
+    backend = FakeBackend(
+        [
+            call(
+                "sql_query",
+                question="Count portfolios",
+                sql="SELECT COUNT(*) FROM portfolios",
+                explanation="Count",
+                complete=True,
+            )
+        ]
+    )
+    answer = PortfolioAgent(Settings(database=database), backend).answer("Count portfolios")
+    cache = ExactCache()
+    cache.put("count", answer)
+    answer.answer = "changed outside cache"
+    answer.tools[0].result["rows"][0][0] = 999
+    cached = cache.get("count")
+    assert cached is not None and cached.tools[0].result["rows"] == [[13]]
+    cached.tools[0].result["rows"][0][0] = 777
+    assert cache.get("count").tools[0].result["rows"] == [[13]]
+    assert answer.api_calls == 1 and len(backend.requests) == 1
+
+
 def response_for(database: Path, case: dict) -> AgentResponse:
     reference = case["ground_truth"]
     if "sql_query" in reference:
