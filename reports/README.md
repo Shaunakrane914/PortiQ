@@ -1,5 +1,9 @@
 # Evaluation and verification report index
 
+Latest restored verification: **[10/10 original questions](restored-working-2026-11-09/README.md)**,
+runtime `3359777`, after restoring the proven conventions. The 32-question run was
+stopped; prior 32/32 and 50/50 remain historical, not new-run claims.
+
 Interrupted prompt-removal experiment: [frozen-runtime campaign](submission-2026-11-09/README.md),
 source `1c2cc59`, after removing benchmark-shaped prompt rules. All actual failures,
 provider usage, source hashes and the prospective holdout protocol are retained.

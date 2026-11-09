@@ -1,5 +1,17 @@
 # Engineering decisions and evidence
 
+## Restored working assignment conventions
+
+Source `3359777` restores the runtime prompt strings and SQL tool descriptions from the
+successful recorded `987143b` run, while retaining the modular refactor and evaluator fix.
+The over-broad prompt-removal experiment reduced strict supplied accuracy. Restoring the
+known conventions recovered **10/10 in a fresh original-suite run**, with 13 SDK calls,
+33,885 reported tokens and all ten final-answer checks passing.
+[Source-qualified results](../reports/restored-working-2026-11-09/README.md).
+The 32-question run remains stopped as requested. Prior 32/32 and 50/50 are not recertified
+for this version. The defaults are assignment-specific conventions, not proof of blind
+generalization. No benchmark or evaluator pass condition was changed.
+
 ## Behavior-preserving maintainability refactor
 
 Branch: `refactor/maintainability-2026-11-09`. Runtime source commit: `0a06e56`.
