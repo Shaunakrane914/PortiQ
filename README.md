@@ -31,7 +31,7 @@ Evaluated with an independent SQL oracle, bipartite row matching, and strict flo
 | **Unseen NLP Benchmark** (`unseen_nlp.json`) | 32 | **32** | **100%** | **100%** |
 | **Total Comprehensive Benchmark** | **112** | **112** | **100%** | **100%** |
 
-*Verified with **0 API errors** (HTTP 504, 503, 429, 500 eliminated via 60s client timeouts and adaptive rate limiting).*
+*Zero API errors observed across all 105 recorded live evaluation calls. 60-second client timeouts and adaptive rate limiting guard against transient throttling, though future provider-side outages remain possible.*
 
 ### 2. Measured Latency Comparison
 
@@ -210,31 +210,11 @@ flowchart TD
 
 ---
 
-## Assignment Deliverables & Rubric Checklist
+## Key Architectural Decisions
 
-Evaluating against the original PL Capital specifications ([`docs/assignment/README.md`](docs/assignment/README.md)):
-
-### Core Deliverables (4 / 4 Complete — 40/40)
-
-- [x] **1. SQL Query Tool**: Read-only SQLite query generator using `sqlglot` AST parsing, schema injection, categorical context, and parameter binding.
-- [x] **2. Exposure Calculator Tool**: Deterministic calculation combining holding weights and security sectors, strictly filtering equities (`asset_class = 'Equity'`), excluding bonds, normalized to 100%, and rounded to 2 decimal places.
-- [x] **3. Portfolio Agent**: Command-line agent capable of routing queries to the correct tool, handling multi-turn follow-ups, and presenting structured Markdown answers.
-- [x] **4. Agent Evaluator**: CLI testing harness (`portfolio-agent evaluate`) comparing responses against ground-truth datasets via independent SQL oracle execution and bipartite row matching.
-
-### Optional Enhancements (12 / 12 Complete)
-
-1. [x] **SQL Safety / Parameterized Queries**: Strict parameter binding preventing injection (`src/portiq/sql.py`).
-2. [x] **AST Query Validation**: Queries validated via `sqlglot` prior to execution, rejecting mutations and dangerous PRAGMAs.
-3. [x] **Graceful Database Error Handling**: Structured `QueryError` with schema-guided self-repair.
-4. [x] **Structured Logging**: Comprehensive JSON and Python logging tracking agent actions and timings.
-5. [x] **Input Validation & Sanitization**: Strict Pydantic models (`strict=True`, `extra="forbid"`) bounding inputs to 4,000 characters.
-6. [x] **Answer & Query Caching**: In-memory `ExactCache` with monotonic TTL and SHA-256 database invalidation.
-7. [x] **Streamlit Graphical Interface**: Web UI featuring AI Analyst, Portfolio Explorer, and exposure bar charts.
-8. [x] **Schema & Context Grounding**: Categorical value extraction injecting valid ticker symbols and names into prompts.
-9. [x] **Production REST API**: FastAPI server with OpenAPI documentation, `/health`, `/ask`, and `/portfolios`.
-10. [x] **Concurrency & Multi-User Support**: Bounded connection pools with per-session turn serialization.
-11. [x] **Logical I/O & Performance Profiling**: SQLite page profiling tracking cache hits and execution steps (`tests/test_page_profiling.py`).
-12. [x] **Hybrid Multi-Tool Question Support**: Intelligent chaining for queries requiring both SQL filtering and exposure calculation.
+- **Direct Schema Grounding over RAG**: Vector and Graph retrieval (RAG) were experimentally evaluated on earlier iterations and excluded from the production path. Because the relational schema is small (6 tables, 95 holdings, 13 portfolios), dynamic schema reflection and exact categorical value injection into prompt context achieve 100% accuracy with lower latency, no vector database overhead, and zero semantic retrieval drift.
+- **AST-Level SQL Validation**: Using `sqlglot` to parse and inspect queries prior to SQLite execution ensures strict read-only safety independently of model obedience. All non-`SELECT` statements, dangerous PRAGMAs, and recursive CTEs are blocked before reaching SQLite.
+- **Deterministic Financial Normalization**: Equity sector exposure is computed deterministically in Python using `Decimal` with `ROUND_HALF_UP` rounding to 2 decimals, strictly excluding bonds (`s.asset_type = 'Stock'`) and eliminating LLM arithmetic errors.
 
 ---
 
@@ -242,7 +222,7 @@ Evaluating against the original PL Capital specifications ([`docs/assignment/REA
 
 PortiQ enforces strict financial domain guardrails:
 
-1. **Equity-Only Sector Exposure**: Bonds are strictly excluded (`asset_class = 'Equity'`). Sector weights are normalized to sum to 100.00% across equities.
+1. **Equity-Only Sector Exposure**: Bonds are strictly excluded (`s.asset_type = 'Stock'`). Sector weights are normalized to sum to 100.00% across equities.
 2. **Lossless Decimal Representation**: Financial values use Python's `Decimal` with `ROUND_HALF_UP` rounding to 2 decimals.
 3. **No Invented Currency**: If currency is not explicitly recorded in the database, PortiQ never assumes or hallucinates `$` or `USD`.
 4. **Distinction Between Concepts**:
