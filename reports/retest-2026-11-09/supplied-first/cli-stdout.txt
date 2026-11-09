@@ -1,0 +1,11 @@
+trial=1 id=1 PASS 
+trial=1 id=2 PASS 
+trial=1 id=3 PASS 
+trial=1 id=4 PASS 
+trial=1 id=5 PASS 
+trial=1 id=6 PASS 
+trial=1 id=7 PASS 
+trial=1 id=8 PASS 
+trial=1 id=9 PASS 
+trial=1 id=10 PASS 
+10/10 passed; report: reports\retest-2026-11-09\supplied-first\supplied.json

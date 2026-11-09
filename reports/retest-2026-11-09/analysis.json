@@ -1,0 +1,150 @@
+{
+  "runtime_source_commit": "2a68b74e6756071badccd9d00a83e9031cb82318",
+  "runtime_changed": false,
+  "supplied": {
+    "capture": "supplied-first/supplied.json",
+    "evaluator_version": 4,
+    "total": 10,
+    "passed": 10,
+    "api_calls": 21,
+    "tokens": 48292,
+    "narrative_checked": 10,
+    "narrative_failed": 0,
+    "mean_ms": 17192.0056,
+    "p95_ms": 24081.439,
+    "sql_efficiency_mean": 100,
+    "provider_service_ms": 137790.45529999712,
+    "pacing_ms": 31941.919799995958,
+    "backoff_ms": 0.0,
+    "provider_error_attempts": 0,
+    "usage_unknown_attempts": 0,
+    "failed_cases": [],
+    "hybrids": []
+  },
+  "extended_first": {
+    "capture": "extended-first/extended.json",
+    "evaluator_version": 4,
+    "total": 50,
+    "passed": 48,
+    "api_calls": 94,
+    "tokens": 198790,
+    "narrative_checked": 44,
+    "narrative_failed": 0,
+    "mean_ms": 16438.68882,
+    "p95_ms": 47090.984,
+    "sql_efficiency_mean": 92.84567567567568,
+    "provider_service_ms": 562050.96949992,
+    "pacing_ms": 215232.84150006657,
+    "backoff_ms": 4631.43698678617,
+    "provider_error_attempts": 6,
+    "usage_unknown_attempts": 6,
+    "failed_cases": [
+      {
+        "id": "ext-12",
+        "failure": "status: Expected answer; actual error: Gemini request failed (ServerError, status=504). Check model availability, credentials, network, and quota. | routing: Expected tools ['sql_query']; got []. | result: Reference 0: No successful tool evidence.",
+        "error_kind": "provider_transient"
+      },
+      {
+        "id": "ext-13",
+        "failure": "status: Expected answer; actual error: Gemini request failed (ServerError, status=504). Check model availability, credentials, network, and quota.",
+        "error_kind": "provider_transient"
+      }
+    ],
+    "hybrids": [
+      {
+        "id": "ext-44",
+        "passed": true
+      },
+      {
+        "id": "ext-45",
+        "passed": true
+      },
+      {
+        "id": "ext-46",
+        "passed": true
+      }
+    ]
+  },
+  "provider_recovery": {
+    "capture": "provider-recovery.json",
+    "evaluator_version": 4,
+    "total": 2,
+    "passed": 2,
+    "api_calls": 4,
+    "tokens": 9307,
+    "narrative_checked": 2,
+    "narrative_failed": 0,
+    "mean_ms": 10285.7775,
+    "p95_ms": 12797.816,
+    "sql_efficiency_mean": 100,
+    "provider_service_ms": 13355.757099983748,
+    "pacing_ms": 7159.356199990725,
+    "backoff_ms": 0.0,
+    "provider_error_attempts": 0,
+    "usage_unknown_attempts": 0,
+    "failed_cases": [],
+    "hybrids": []
+  },
+  "live_conversations": {
+    "mode": "real Gemini HTTP concurrency",
+    "source_commit": "2a68b74e6756071badccd9d00a83e9031cb82318",
+    "started_utc": "2026-11-09T06:07:58.984314+00:00",
+    "finished_utc": "2026-11-09T06:10:35.102496+00:00",
+    "wall_ms": 155569.02690000425,
+    "model": "gemini-3.1-flash-lite",
+    "actors": 3,
+    "capacity": 4,
+    "checks": {
+      "all_accepted_answers_correct": true,
+      "only_expected_statuses": true,
+      "overflow_retry_after": true,
+      "sessions_isolated": true,
+      "same_actor_session_stable": true,
+      "pool_bounded": true,
+      "session_store_bounded": true,
+      "ledger_matches_sdk_attempts": true,
+      "cache_disabled": true,
+      "runtime_unchanged": true,
+      "recovered_after_load": true,
+      "live_protocol_complete": true,
+      "clean_shutdown": true
+    },
+    "passed": true,
+    "answers": 9,
+    "busy_responses": 0,
+    "quota_responses": 0,
+    "non_success_responses": 0,
+    "sdk_attempts": 22,
+    "ledger_before": 0,
+    "ledger_after": 22,
+    "reported_tokens": 40972,
+    "provider_calls": 22,
+    "p50_http_ms": 40901.408000005176,
+    "p95_http_ms": 61592.64230000554,
+    "max_readiness_ms": 20.122800007811747
+  },
+  "browser_live": {
+    "dashboard_sdk_attempts": 2,
+    "dashboard_reported_tokens": 4371,
+    "streamlit_sdk_attempts": 1,
+    "streamlit_reported_tokens": 2076,
+    "passed": 2,
+    "total": 2
+  },
+  "opt_in_live_pytest": {
+    "passed": 1,
+    "deselected": 282,
+    "sdk_attempts": 2,
+    "reported_tokens": "Not collected by this assertion; excluded from token totals"
+  },
+  "ledger_before_all_checks": 0,
+  "ledger_after_all_checks": 146,
+  "daily_guard_unchanged": 1000,
+  "expected_real_sdk_attempts": 146,
+  "limits": [
+    "First full extended run remains 48/50. Separate 2/2 recovery is not merged into a 50/50 score.",
+    "Six extended-run provider error attempts had unreported usage. Token sums are reported usage, not complete billing totals.",
+    "No claim of quota remaining in Google, physical device I/O, blind validation, distributed operation, sustained hours of real-provider load or production SLA.",
+    "Batch-only 6.5-second spacing is retained in evaluation/live protocol. Normal application settings and daily ledger were not reset."
+  ]
+}

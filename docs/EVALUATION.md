@@ -101,12 +101,24 @@ preserved with the experiment. Ordinary evaluation does not contain a retrieval 
 
 ## Current and historical evidence
 
-The [9 November verification](../reports/assurance-2026-11-09/README.md) includes a fresh
+The [new-key retest](../reports/retest-2026-11-09/README.md), source `2a68b74`, completed
+the previously quota-blocked three-user hybrid conversation protocol: all nine fresh
+answers and session follow-ups passed, with 22 SDK attempts, 40,972 reported tokens and
+no quota responses. A separate fresh supplied CLI run passed 10/10 under v4, with 21
+SDK attempts and 48,292 reported tokens. Both disable local/cache/fallback answers.
+
+The fresh extended v4 run completed all fifty cases at **48/50**, including all three
+hybrids. Questions 12 and 13 failed after provider HTTP 504s; cases 26 and 41 recovered
+within their bounded retries. Six SDK errors had unreported usage. A separate post-run
+retry of only questions 12 and 13 passed 2/2; it is not stitched into a 50/50 full score.
+
+The [earlier 9 November verification](../reports/assurance-2026-11-09/README.md) includes a fresh
 supplied v4 CLI pass at `a3b9b24` (10/10, 21 SDK attempts, 48,249 reported tokens, measured page
 accesses), a final-source offline replay at `bfcca5e` (50/50 archived answers, 46 wrong-prose
 mutations rejected) and actual HTTP/Docker checks. The subsequent real-provider conversation
 attempt accepted four correct answers but hit daily quota on two others and did not complete
-its planned nine questions. None of these scopes is substituted for another.
+its planned nine questions. Those original failed/incomplete captures remain intact;
+the new retest is independent. None of these scopes is substituted for another.
 
 The archived [schema-graph comparison](https://github.com/Shaunakrane914/PortiQ/blob/8a6143c96d1780f1890ff8d7db1c92cc5dbdd4a8/reports/graph-rag-2026-11-08/README.md), source
 `7caf262`, completed all twenty entries: full schema 10/10 versus graph 9/10, with 21 SDK
@@ -120,6 +132,10 @@ explains why both retrieval strategies and their comparison runners were removed
 
 | Evidence | Recorded result | Scope |
 |---|---|---|
+| [New-key supplied v4 CLI](../reports/retest-2026-11-09/supplied-first/supplied.json), `2a68b74` | **10/10**, 21 SDK attempts, 48,292 reported tokens | Fresh generation on the final verifier/context runtime; all ten answer checks, measured SQL pager work |
+| [New-key extended v4 CLI](../reports/retest-2026-11-09/extended-first/extended.json), `2a68b74` | **48/50**, 94 SDK attempts, 198,790 reported tokens | Fresh full run; two provider-timeout failures, all three hybrids pass; six attempts have unknown usage |
+| [Separate provider recovery](../reports/retest-2026-11-09/provider-recovery.json), `2a68b74` | **2/2**, 4 SDK attempts, 9,307 reported tokens | One post-run retry of the two failed questions; original full score remains 48/50 |
+| [New-key live concurrent conversations](../reports/retest-2026-11-09/live-conversations.json), `2a68b74` | **9/9**, 22 SDK attempts, 40,972 reported tokens | Three concurrent users, three turns each; both tools, isolated session follow-ups; no quota failures |
 | [Fresh supplied v4 CLI](../reports/assurance-2026-11-09/supplied/supplied.json), `a3b9b24` | **10/10**, 21 SDK attempts, 48,249 reported tokens | Fresh generation, all ten final-answer checks, eight SQL page profiles; later compatible verifier/context fixes have separate proof |
 | [Final historical replay](../reports/assurance-2026-11-09/historical-replay-final.json), `bfcca5e` | **50/50**, 46 bad-prose mutations rejected | Offline archived answers; zero provider calls; not a fresh 50-question model run |
 | [Full-schema CLI capture without RAG](../reports/supplied-no-rag-2026-11-09/README.md), `0b3e94a` | **10/10 supplied**, 21 SDK attempts, 48,293 reported tokens | Evaluator v3; all ten explicit answer checks passed; no active retrieval, cache/local disabled, zero provider errors |
@@ -131,7 +147,7 @@ explains why both retrieval strategies and their comparison runners were removed
 | [Original-agent extended capture](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.2.0/extended.json) | 50/50; 97 SDK calls; 266,304 tokens | Historical comparison, not a controlled latency experiment |
 | [v0.1.1 supplied](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.1.1/supplied.json) / [extended](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.1.1/extended.json) | 10/10 / 50/50 | Historical release evidence |
 
-The fresh supplied run took 132.471 seconds of CLI wall time, with 13.143-second mean and
+The historical `b8db4a9` supplied run took 132.471 seconds of CLI wall time, with 13.143-second mean and
 19.520-second p95 question time, including its child-process-only 6.5-second batch spacing.
 No normal pacing settings or ledger records were reset. It is a full independent run, not
 a rescore or retry of only the failed questions. Later GUI work changed Streamlit startup

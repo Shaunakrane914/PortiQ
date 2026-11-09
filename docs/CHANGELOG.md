@@ -1,5 +1,19 @@
 # Change history
 
+## New-key retest — 9 November 2026
+
+- Completed the previously quota-blocked live protocol: three users, three hybrid turns
+  each, all nine answers correct with stable isolated session context and no quota responses.
+- Fresh v4 CLI supplied run passed 10/10. The fresh extended run scored 48/50; two
+  provider-timeout failures passed a separate 2/2 recovery check. Original failures and
+  unknown usage remain recorded; the retry is not presented as a clean full 50/50 score.
+- Rechecked Python 3.14/3.11, lint/format/types, actual dashboard/Streamlit browsers including
+  real Gemini answers, the 60-second HTTP/stub soak, all 16 production Docker checks and
+  original-assignment integrity. No runtime changes were required.
+- Refreshed the evidence index and current limits, corrected an archived RAG link and the
+  reviewer verification anchor. [Retest captures](../reports/retest-2026-11-09/README.md)
+  preserve the earlier historical evidence rather than replacing it.
+
 ## Hybrid evaluation and operational verification — 9 November 2026
 
 - Evaluator v4 separates exposure percentages from SQL scalar checks, supports percentages

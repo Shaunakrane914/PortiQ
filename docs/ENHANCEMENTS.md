@@ -63,8 +63,9 @@ hosts and an absent persistent quota ledger. Its origin checks use exact origins
 proxy deployments must explicitly allow their public HTTPS origin. The existing access-code
 dialog supplies the bearer token when configured; anonymous demo mode is unchanged.
 
-`GET /api/live` reports process liveness. `GET`/`HEAD /api/ready` and `/api/health` check the
-portfolio table, return 503 if unavailable and reveal no model/key configuration. Four
+`GET /api/live` reports process liveness. `GET`/`HEAD /api/ready` checks all nine analytical
+tables and quota storage; `/api/health` checks the portfolio table. Dependency failures
+return 503 without revealing model/key configuration. Four
 analyses can run at once by default; excess requests get 503 with `Retry-After: 1`. Configure
 `PORTIQ_MAX_CONCURRENT_ANALYSES=1..32` to change this bound. Provider quota may still reject
 concurrent requests; local RPM reservations coordinate the pool and daily attempts share
@@ -78,11 +79,17 @@ responsibilities. A passing smoke test is not a security certification or availa
 
 ## Validation
 
-The [current verification](../reports/assurance-2026-11-09/README.md) records 282 local tests,
-fresh supplied v4 CLI 10/10, final offline historical replay 50/50, a 1,729-request HTTP/stub
-soak, and 16 passing production Docker checks. A corrected real three-user hybrid run
-accepted four correct answers but stopped on daily-quota failures, so its nine-query live
-protocol remains incomplete. This is verified single-process behavior, not distributed/SLA proof.
+The [new-key retest](../reports/retest-2026-11-09/README.md) records 282 local tests, fresh
+supplied v4 CLI 10/10, a completed nine-answer real three-user hybrid protocol, a 60-second
+HTTP/stub soak and all 16 production Docker checks. Browser verification includes actual
+dashboard and Streamlit servers. Earlier failed/quota-interrupted runs remain in the
+[previous evidence](../reports/assurance-2026-11-09/README.md). This is verified single-process
+behavior, not distributed/SLA proof.
+
+The fresh extended v4 run scored 48/50, with all three hybrid cases passing. Two requests
+failed on provider HTTP 504s; both passed in a separate 2/2 recovery check. Six SDK errors
+had unreported usage. Neither the retries nor the old offline replay are combined into a
+claimed clean fresh 50/50 run.
 
 `tests/test_enhancements.py` checks query work, rate reservations, simultaneous
 requests, overload recovery, production settings and an actual Streamlit AppTest session.

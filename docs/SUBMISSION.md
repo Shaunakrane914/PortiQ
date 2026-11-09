@@ -136,4 +136,4 @@ Reports, evaluation fixtures, `.env` and developer files are excluded from the i
 
 ## Key-free validation
 
-Use the checks in [README](../README.md#key-free-verification). CI covers Python 3.11/3.13 on Ubuntu/Windows plus real Playwright/container checks, using runner Python and pinned uv from PyPI. It does not spend Gemini quota. See [security](SECURITY.md), [data assumptions](DATA_ASSUMPTIONS.md), [limitations](KNOWN_LIMITATIONS.md) and [change history](CHANGELOG.md).
+Use the checks in [README](../README.md#verify-without-spending-gemini-quota). CI covers Python 3.11/3.13 on Ubuntu/Windows plus real Playwright/container checks, using runner Python and pinned uv from PyPI. It does not spend Gemini quota. See [security](SECURITY.md), [data assumptions](DATA_ASSUMPTIONS.md), [limitations](KNOWN_LIMITATIONS.md) and [change history](CHANGELOG.md).

@@ -1,0 +1,23 @@
+{
+  "mode": "One separate post-run retry of transient-provider failures; not a replacement full-suite score",
+  "source_commit": "2a68b74e6756071badccd9d00a83e9031cb82318",
+  "started_utc": "2026-11-09T06:28:19.778830+00:00",
+  "finished_utc": "2026-11-09T06:28:40.403173+00:00",
+  "wall_ms": 20624.191599999904,
+  "original_capture": "reports/retest-2026-11-09/extended-first/extended.json",
+  "original_capture_sha256": "d2dd6b57a64a5c2b216b020107605fca4b3e67574292415bcc2902f7822227cd",
+  "original_suite_sha256": "69901d3acfd9a1ffd049ad5f68d3b7886258541190c3b70766dbc8055cf27e30",
+  "selected_case_ids": [
+    "ext-12",
+    "ext-13"
+  ],
+  "selected_suite_sha256": "6c7abb9e9336224be8438f8f0e11779c32a1f2fab6a39e1b076175e5e5b05b01",
+  "ledger_before": 137,
+  "ledger_after": 141,
+  "daily_guard": 1000,
+  "passed": 2,
+  "total": 2,
+  "sdk_attempts": 4,
+  "reported_tokens": 9307,
+  "source_and_inputs_unchanged": true
+}

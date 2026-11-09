@@ -1,0 +1,71 @@
+{
+  "original_files": 13,
+  "all_identical": true,
+  "files": [
+    {
+      "original": "database_schema.sql",
+      "repository": "database_schema.sql",
+      "matches": true
+    },
+    {
+      "original": "ground_truth_dataset.json",
+      "repository": "ground_truth_dataset.json",
+      "matches": true
+    },
+    {
+      "original": "README.md",
+      "repository": "docs/assignment/README.md",
+      "matches": true
+    },
+    {
+      "original": "requirements.txt",
+      "repository": "requirements.txt",
+      "matches": true
+    },
+    {
+      "original": "data/benchmarks.csv",
+      "repository": "data/benchmarks.csv",
+      "matches": true
+    },
+    {
+      "original": "data/historical_prices.csv",
+      "repository": "data/historical_prices.csv",
+      "matches": true
+    },
+    {
+      "original": "data/holdings.csv",
+      "repository": "data/holdings.csv",
+      "matches": true
+    },
+    {
+      "original": "data/portfolios.csv",
+      "repository": "data/portfolios.csv",
+      "matches": true
+    },
+    {
+      "original": "data/portfolio_performance.csv",
+      "repository": "data/portfolio_performance.csv",
+      "matches": true
+    },
+    {
+      "original": "data/risk_metrics.csv",
+      "repository": "data/risk_metrics.csv",
+      "matches": true
+    },
+    {
+      "original": "data/sectors.csv",
+      "repository": "data/sectors.csv",
+      "matches": true
+    },
+    {
+      "original": "data/securities.csv",
+      "repository": "data/securities.csv",
+      "matches": true
+    },
+    {
+      "original": "data/transactions.csv",
+      "repository": "data/transactions.csv",
+      "matches": true
+    }
+  ]
+}
