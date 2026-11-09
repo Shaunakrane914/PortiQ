@@ -31,6 +31,21 @@
 [class*="st-key-card_"] { background: var(--ivory); border-radius: 6px; padding: 20px 22px; }
 [data-testid="stLayoutWrapper"]:has(> [class*="st-key-card_"]) { background: var(--ivory); border-radius: 6px; }
 [data-testid="stForm"] { border: 0; padding: 0; }
+.st-key-card_analyst [data-testid="stTextArea"] label p {
+  color: var(--navy); font-size: 15px; font-weight: 650;
+}
+.st-key-card_analyst [data-testid="stTextArea"] [data-testid="stTextAreaRootElement"] {
+  background: var(--paper); border: 2px solid var(--gold); border-radius: 10px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 12%, transparent);
+}
+.st-key-card_analyst [data-testid="stTextArea"] [data-testid="stTextAreaRootElement"]:focus-within {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 24%, transparent);
+}
+.st-key-card_analyst [data-testid="stTextArea"] textarea {
+  background: var(--paper); color: var(--navy); font-size: 16px;
+  line-height: 1.6; padding: 16px; caret-color: var(--gold);
+}
 [data-testid="stButton"] button, [data-testid="stFormSubmitButton"] button,
 [data-testid="stDownloadButton"] button { border-color: var(--line); border-radius: 4px; }
 [data-testid="stButton"] button p, [data-testid="stFormSubmitButton"] button p { font-size: 11px; }

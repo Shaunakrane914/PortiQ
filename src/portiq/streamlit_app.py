@@ -143,11 +143,6 @@ def message(item: dict[str, Any]) -> None:
 
 def analyst(service: AnalysisService, selected: int | None) -> None:
     with st.container(border=True, key="card_analyst"):
-        heading("A conversation with evidence", "PORTFOLIO QUESTIONS")
-        st.info(
-            "Ask about recorded portfolio data. AI questions and relevant tool results are sent "
-            "to Google Gemini; avoid entering personal or confidential information."
-        )
         messages: list[dict[str, Any]] = st.session_state.setdefault("messages", [])
         if not messages:
             st.html(
@@ -183,7 +178,8 @@ def analyst(service: AnalysisService, selected: int | None) -> None:
             question = st.text_area(
                 "Ask PortiQ",
                 key="gui_question",
-                label_visibility="collapsed",
+                label_visibility="visible",
+                height=150,
                 max_chars=3500,
                 placeholder="Ask about holdings, exposure or recorded observations…",
             )
