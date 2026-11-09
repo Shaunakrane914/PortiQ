@@ -1,0 +1,312 @@
+{
+  "provenance": {
+    "archive_commit": "f6d93578e3a2b5017dd926c3aba1e36b6d4e2816",
+    "capture_path": "reports/cli-2026-11-08/extended.json",
+    "capture_sha256": "545b48985d88ac307a4a07253431047969e253db88fc000df4aefb4e56c7c5ad",
+    "record_ids": [
+      "ext-44",
+      "ext-45",
+      "ext-46"
+    ],
+    "note": "Exact actual-response objects retained for existing hybrid regression tests. Full immutable capture is preserved in archive/reports-2026-11-09."
+  },
+  "records": [
+    {
+      "id": "ext-44",
+      "actual": {
+        "request_id": "4d5a1a67-9649-498d-82dd-2d9bd69ecbd7",
+        "status": "answer",
+        "answer": "The equity sector exposure for the Balanced Portfolio is as follows:\n- Technology: 61.11%\n- Financials: 22.22%\n- Healthcare: 16.67%\n\nThe current price of AAPL is 185.50.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "Balanced Portfolio"
+            },
+            "result": {
+              "portfolio_id": 4,
+              "portfolio_name": "Balanced Portfolio",
+              "equity_weight": "0.36",
+              "sectors": {
+                "Technology": "61.11",
+                "Financials": "22.22",
+                "Healthcare": "16.67"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 1.512
+          },
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT current_price FROM securities WHERE symbol = 'AAPL'",
+              "explanation": "Query the current_price of the security with symbol 'AAPL'.",
+              "question": "What is the current_price of AAPL?"
+            },
+            "result": {
+              "columns": [
+                "current_price"
+              ],
+              "rows": [
+                [
+                  185.5
+                ]
+              ],
+              "sql": "SELECT current_price FROM securities WHERE symbol = 'AAPL'",
+              "duration_ms": 1.009,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.14030000238562934
+            },
+            "error": null,
+            "duration_ms": 1.495
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 12886.754,
+        "model_duration_ms": 12882.368,
+        "api_calls": 2,
+        "tokens": 4389,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-08T09:40:25.257926+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1082.951399999729,
+            "pacing_ms": 5125.393400001485,
+            "input_tokens": 1978,
+            "output_tokens": 77,
+            "thinking_tokens": null,
+            "total_tokens": 2055,
+            "error_kind": null,
+            "sequence": 81
+          },
+          {
+            "timestamp_utc": "2026-11-08T09:40:31.755415+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1257.5213000018266,
+            "pacing_ms": 5408.426699999836,
+            "input_tokens": 2253,
+            "output_tokens": 81,
+            "thinking_tokens": null,
+            "total_tokens": 2334,
+            "error_kind": null,
+            "sequence": 82
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "rendering_ms": null,
+        "stages_ms": {}
+      }
+    },
+    {
+      "id": "ext-45",
+      "actual": {
+        "request_id": "c11cc46f-1bd1-446a-bda6-1b707c874834",
+        "status": "answer",
+        "answer": "The equity sector exposure for the Growth Equity Fund is 93.00% in Technology and 7.00% in Consumer Discretionary. The current price of MSFT is $415.26.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "Growth Equity Fund"
+            },
+            "result": {
+              "portfolio_id": 1,
+              "portfolio_name": "Growth Equity Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Technology": "93.00",
+                "Consumer Discretionary": "7.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 1.574
+          },
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "sql": "SELECT current_price FROM securities WHERE symbol = 'MSFT'",
+              "question": "What is the current price of MSFT?",
+              "explanation": "Query the current price of MSFT."
+            },
+            "result": {
+              "columns": [
+                "current_price"
+              ],
+              "rows": [
+                [
+                  415.26
+                ]
+              ],
+              "sql": "SELECT current_price FROM securities WHERE symbol = 'MSFT'",
+              "duration_ms": 0.737,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.15070000154082663
+            },
+            "error": null,
+            "duration_ms": 1.203
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13209.398,
+        "model_duration_ms": 13204.778,
+        "api_calls": 2,
+        "tokens": 4362,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-08T09:40:38.261301+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1336.4517000009073,
+            "pacing_ms": 5235.088800000085,
+            "input_tokens": 1979,
+            "output_tokens": 73,
+            "thinking_tokens": null,
+            "total_tokens": 2052,
+            "error_kind": null,
+            "sequence": 83
+          },
+          {
+            "timestamp_utc": "2026-11-08T09:40:44.757010+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1470.1691000009305,
+            "pacing_ms": 5152.2350999985065,
+            "input_tokens": 2244,
+            "output_tokens": 66,
+            "thinking_tokens": null,
+            "total_tokens": 2310,
+            "error_kind": null,
+            "sequence": 84
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "rendering_ms": null,
+        "stages_ms": {}
+      }
+    },
+    {
+      "id": "ext-46",
+      "actual": {
+        "request_id": "1388f725-80c4-4660-88e5-2f01f41ad00a",
+        "status": "answer",
+        "answer": "The equity sector exposure for the International Equity Fund is as follows:\n- Energy: 38.00%\n- Technology: 36.00%\n- Automotive: 15.00%\n- Consumer Staples: 11.00%\n\nAdditionally, the current price of NVDA is $875.30.",
+        "tools": [
+          {
+            "tool": "exposure_calculator",
+            "arguments": {
+              "portfolio": "International Equity Fund"
+            },
+            "result": {
+              "portfolio_id": 7,
+              "portfolio_name": "International Equity Fund",
+              "equity_weight": "1.00",
+              "sectors": {
+                "Energy": "38.00",
+                "Technology": "36.00",
+                "Automotive": "15.00",
+                "Consumer Staples": "11.00"
+              },
+              "basis": "Stock current_weight / sum(Stock current_weight) * 100",
+              "rounding": "2 decimals, ROUND_HALF_UP; displayed totals can differ from 100 by rounding"
+            },
+            "error": null,
+            "duration_ms": 2.029
+          },
+          {
+            "tool": "sql_query",
+            "arguments": {
+              "explanation": "Query the current price of NVDA.",
+              "sql": "SELECT current_price FROM securities WHERE symbol = 'NVDA'",
+              "question": "What is the current price of NVDA?"
+            },
+            "result": {
+              "columns": [
+                "current_price"
+              ],
+              "rows": [
+                [
+                  875.3
+                ]
+              ],
+              "sql": "SELECT current_price FROM securities WHERE symbol = 'NVDA'",
+              "duration_ms": 0.692,
+              "truncated": false,
+              "attempts": 1,
+              "validation_ms": 0.14650000230176374
+            },
+            "error": null,
+            "duration_ms": 1.163
+          }
+        ],
+        "model": "gemini-3.1-flash-lite",
+        "model_versions": [
+          "gemini-3.1-flash-lite"
+        ],
+        "duration_ms": 13031.907,
+        "model_duration_ms": 13027.292,
+        "api_calls": 2,
+        "tokens": 4410,
+        "cache": "disabled",
+        "execution_source": "Gemini planned analysis",
+        "strategy": "existing",
+        "provider_metrics": [
+          {
+            "timestamp_utc": "2026-11-08T09:40:51.256976+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1362.6602000003913,
+            "pacing_ms": 5022.007399998984,
+            "input_tokens": 1979,
+            "output_tokens": 73,
+            "thinking_tokens": null,
+            "total_tokens": 2052,
+            "error_kind": null,
+            "sequence": 85
+          },
+          {
+            "timestamp_utc": "2026-11-08T09:40:57.758739+00:00",
+            "model": "gemini-3.1-flash-lite",
+            "service_ms": 1505.0401000007696,
+            "pacing_ms": 5131.805000000895,
+            "input_tokens": 2263,
+            "output_tokens": 95,
+            "thinking_tokens": null,
+            "total_tokens": 2358,
+            "error_kind": null,
+            "sequence": 86
+          }
+        ],
+        "backoff_ms": 0.0,
+        "context_portfolio": null,
+        "error_kind": null,
+        "error_retry_after": null,
+        "rendering": "model synthesis with authoritative tool evidence",
+        "rendering_ms": null,
+        "stages_ms": {}
+      }
+    }
+  ]
+}

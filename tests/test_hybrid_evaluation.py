@@ -13,7 +13,9 @@ from portiq.evaluation import score_answer
 @pytest.fixture(params=["ext-44", "ext-45", "ext-46"])
 def hybrid(request, source: Path):
     cases = json.loads((source / "evaluation/extended.json").read_text())["questions"]
-    archive = json.loads((source / "reports/cli-2026-11-08/extended.json").read_text())
+    archive = json.loads(
+        (source / "tests/fixtures/historical_hybrids.json").read_text(encoding="utf-8")
+    )
     case = next(c for c in cases if c["id"] == request.param)
     row = next(r for r in archive["records"] if r["id"] == request.param)
     return case, AgentResponse.model_validate(row["actual"])

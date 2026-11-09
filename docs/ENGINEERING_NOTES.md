@@ -61,7 +61,7 @@ retain failed/interrupted attempts and their limitations.
 
 After both removals, **232 core tests passed** and a fresh supplied CLI evaluation on
 `0b3e94a` passed **10/10**, including all ten explicit final-answer checks: 21 SDK attempts,
-48,293 reported tokens and zero provider errors. The [capture](../reports/supplied-no-rag-2026-11-09/README.md)
+48,293 reported tokens and zero provider errors. The [capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-no-rag-2026-11-09/README.md)
 also records an offline check that all initial prompts/configurations match the original
 no-RAG control. This known-suite verification does not establish unseen accuracy.
 
@@ -74,17 +74,17 @@ The [retrieval decision above](#metadata-retrieval-evaluated-and-excluded) also 
 subsequent removal of BM25. The earlier graph-removal verification below still used BM25.
 
 Removal verification: 235 core tests passed, followed by a fresh **10/10 supplied CLI run**
-on `f14ea21`, including all ten explicit final-answer checks. The [capture](../reports/supplied-after-graph-removal-2026-11-08/README.md)
+on `f14ea21`, including all ten explicit final-answer checks. The [capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-after-graph-removal-2026-11-08/README.md)
 records 21 SDK attempts, 54,093 reported tokens and zero provider errors.
 
-The fresh [supplied-ten capture](../reports/supplied-v3-2026-11-08/README.md) on `b8db4a9`
+The fresh [supplied-ten capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-v3-2026-11-08/README.md) on `b8db4a9`
 passed 10/10 with all ten explicit v3 answer checks, 21 SDK calls and 54,075 reported tokens.
 Its first complete 8/10 run is separately retained: percentage units in exposure-table headers
 needed verifier format support. Added tests reject wrong/missing/extra percentages; no failed
 fragments were stitched into the subsequent full run. A later GUI-only configuration-forwarding
 fix does not change the evaluated analytical code.
 
-The retained [8 November CLI capture](../reports/cli-2026-11-08/README.md) on `4b49d95`
+The retained [8 November CLI capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/cli-2026-11-08/README.md) on `4b49d95`
 passed 50/50 under evaluator v2 with 92 SDK calls and 201,404 reported tokens. Its six
 configured narrative cases passed; that capture is not retroactively verified under v3.
 Original data and the eight captured artifact bytes remain unchanged.

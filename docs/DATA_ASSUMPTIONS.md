@@ -4,7 +4,7 @@ The original assignment requires sector exposure from holding weights and securi
 
 ## Supplied data
 
-The nine tables contain 603 rows: sectors 10, securities 30, benchmarks 13, portfolios 13, holdings 95, transactions 24, historical_prices 330, portfolio_performance 44 and risk_metrics 44. [data-audit.json](data-audit.json) records source SHA-256 values. The [latest independent database/CSV audit](../reports/cli-2026-11-08/database-csv-audit.json) matched all 603 rows, including types and duplicate multiplicities.
+The nine tables contain 603 rows: sectors 10, securities 30, benchmarks 13, portfolios 13, holdings 95, transactions 24, historical_prices 330, portfolio_performance 44 and risk_metrics 44. [data-audit.json](data-audit.json) records source SHA-256 values. The [latest independent database/CSV audit](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/cli-2026-11-08/database-csv-audit.json) matched all 603 rows, including types and duplicate multiplicities.
 
 Initialization checks exact CSV headers and row widths, primary keys, uniqueness, required cells, foreign keys, finite numbers, ISO dates, supported asset/transaction classifications, nonnegative holding quantities, valid weights and stock-sector mappings. Blank optional cells become SQL NULL. It validates foreign keys/integrity and atomically replaces a database only with explicit `--rebuild`. Original CSV/schema/assessment inputs are protected against accidental overwrite.
 

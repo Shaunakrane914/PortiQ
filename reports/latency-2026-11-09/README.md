@@ -51,7 +51,7 @@ runtime, input and database hashes and reconcile real SDK attempts with the reta
 The extended run has zero provider errors/unknown-usage attempts. The supplied run recovered
 one provider error within its normal retry policy; that attempt has unreported usage.
 
-The [previous full-schema baseline](../single-run-2026-11-09/README.md) used 93 SDK attempts
+The [previous full-schema baseline](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/single-run-2026-11-09/README.md) used 93 SDK attempts
 and 205,940 reported tokens for the extended fifty. This capture uses **38.7% fewer SDK
 attempts** and **33.3% fewer reported tokens**. Those full-suite runs were not interleaved;
 the baseline also includes two provider-error attempts with unreported usage. This is

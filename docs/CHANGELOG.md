@@ -1,5 +1,18 @@
 # Change history
 
+## Historical report archive and submission cleanup — 9 November 2026
+
+- Preserved 110 historical report files (1,959,696 bytes) on
+  `archive/reports-2026-11-09` at `f6d9357`, verified their exact bytes, then removed
+  those copies from active `main`. Documentation links pin the archived commit.
+- Kept current latency/mode evidence, original assignment inputs, security controls
+  and regression tests. Hybrid tests retain the same three historical responses in
+  a small provenance-labelled fixture, with unchanged assertions.
+- Removed the redundant `run_cli.py` wrapper; `python main.py` and `portfolio-agent`
+  remain available. Browser release captures default to ignored local output.
+- No Gemini calls or changes to analytical runtime, active evaluation outputs or
+  quota accounting were needed for this cleanup.
+
 ## NLP comprehension, polished 1-call presentation and Detailed AI explanation toggle — 9 November 2026
 
 - Upgraded 1-call deterministic rendering (`render_tools`):
@@ -46,7 +59,7 @@
   14.926/28.658 seconds and 98.25/100 mean relative pager-work score.
 - Preserved 2 provider-error attempts and 2 unknown-usage attempts in the metrics. Normal
   runtime configuration, data, prompts, safeguards and evaluator criteria were unchanged.
-- Updated current documentation and [single-run evidence](../reports/single-run-2026-11-09/README.md); historical
+- Updated current documentation and [single-run evidence](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/single-run-2026-11-09/README.md); historical
   captures retain their original bytes. Complete campaign accounting is reported separately.
 
 ## New-key retest — 9 November 2026
@@ -57,12 +70,12 @@
   after retries**, with all 54 executions counted: 102 SDK attempts, 217,421 reported tokens
   and 865.927 seconds of summed capture time. The requested confirmation passed 2/2.
   Six unknown-usage attempts and all raw history remain recorded in the
-  [completion evidence](../reports/completion-2026-11-09/README.md).
+  [completion evidence](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/completion-2026-11-09/README.md).
 - Rechecked Python 3.14/3.11, lint/format/types, actual dashboard/Streamlit browsers including
   real Gemini answers, the 60-second HTTP/stub soak, all 16 production Docker checks and
   original-assignment integrity. No runtime changes were required.
 - Refreshed the evidence index and current limits, corrected an archived RAG link and the
-  reviewer verification anchor. [Retest captures](../reports/retest-2026-11-09/README.md)
+  reviewer verification anchor. [Retest captures](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/retest-2026-11-09/README.md)
   preserve the earlier historical evidence rather than replacing it.
 
 ## Hybrid evaluation and operational verification — 9 November 2026
@@ -84,7 +97,7 @@
 - Final validation: 282 local tests, isolated Python 3.11 checks, fresh supplied v4 10/10,
   final offline replay 50/50 with 46 bad-prose mutations rejected, a passing HTTP soak and
   all 16 production Docker checks. The longer real-provider protocol is quota-interrupted;
-  its failed/incomplete captures remain in the [evidence](../reports/assurance-2026-11-09/README.md).
+  its failed/incomplete captures remain in the [evidence](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/assurance-2026-11-09/README.md).
 
 ## BM25 retrieval removed from active architecture — 9 November 2026
 
@@ -99,7 +112,7 @@
   explicitly marked evaluated and excluded rather than claimed as active functionality.
 - Verification passed: 232 core tests, lint/format/types and a fresh supplied CLI **10/10**
   with 21 SDK attempts, 48,293 reported tokens and zero provider errors. The
-  [no-RAG capture](../reports/supplied-no-rag-2026-11-09/README.md) is tied to source `0b3e94a`.
+  [no-RAG capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-no-rag-2026-11-09/README.md) is tied to source `0b3e94a`.
 
 ## Graph retrieval removed from active architecture — 9 November 2026
 
@@ -109,7 +122,7 @@
   The agent retains full-schema context, basic BM25, SQL validation/repair and financial tools.
 - Recorded the correctness/complexity decision in [engineering notes](ENGINEERING_NOTES.md#schema-graph-retrieval-archived).
 - Verification passed: 235 core tests, lint/format/types and a fresh supplied CLI **10/10**
-  with 21 SDK attempts and zero provider errors. The [post-removal evidence](../reports/supplied-after-graph-removal-2026-11-08/README.md)
+  with 21 SDK attempts and zero provider errors. The [post-removal evidence](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-after-graph-removal-2026-11-08/README.md)
   is tied to captured source `f14ea21`.
 
 ## Experimental schema-graph retrieval — 8 November 2026
@@ -184,7 +197,7 @@ Repeated GitHub Release HTTP 504 responses prevented `setup-uv` from reaching th
 
 ## CLI evidence publication - `3fd4cab`, `6ae3355`
 
-Published the complete [CLI-only 50-question capture](../reports/cli-2026-11-08/README.md): 50/50, 92 actual SDK invocations, 201,404 reported tokens and zero provider errors on source `4b49d95`. It includes complete answers, SQL, independent references, per-question metrics, transcript, immutable hashes and data audits. Scoped attributes preserve exact original CRLF/transcript bytes. Publishing the evidence did not run the model again.
+Published the complete [CLI-only 50-question capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/cli-2026-11-08/README.md): 50/50, 92 actual SDK invocations, 201,404 reported tokens and zero provider errors on source `4b49d95`. It includes complete answers, SQL, independent references, per-question metrics, transcript, immutable hashes and data audits. Scoped attributes preserve exact original CRLF/transcript bytes. Publishing the evidence did not run the model again.
 
 ## Model requests - `4b49d95`
 

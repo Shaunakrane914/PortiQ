@@ -121,12 +121,12 @@ submit-to-visible-answer samples were 1.454s and 2.834s. Small samples and provi
 preclude a general latency percentile or SLA. Source capture hashes and all raw responses
 are retained. Disabling direct results preserves the original system prompt/tool schemas.
 
-The earlier [single-run baseline](../reports/single-run-2026-11-09/README.md) passed 50/50
+The earlier [single-run baseline](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/single-run-2026-11-09/README.md) passed 50/50
 using 93 SDK attempts and 205,940 reported tokens. Observed reductions are 38.7% in SDK
 attempts and 33.3% in reported tokens; the captures were not interleaved and the baseline
 includes two unknown-usage provider failures. They are not a complete billing comparison.
 
-The [earlier 9 November verification](../reports/assurance-2026-11-09/README.md) includes a fresh
+The [earlier 9 November verification](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/assurance-2026-11-09/README.md) includes a fresh
 supplied v4 CLI pass at `a3b9b24` (10/10, 21 SDK attempts, 48,249 reported tokens, measured page
 accesses), a final-source offline replay at `bfcca5e` (50/50 archived answers, 46 wrong-prose
 mutations rejected) and actual HTTP/Docker checks. The subsequent real-provider conversation
@@ -149,19 +149,19 @@ explains why both retrieval strategies and their comparison runners were removed
 | [Current extended CLI](../reports/latency-2026-11-09/extended-candidate/extended.json), `1eba590` | **50/50**, 57 SDK attempts, 137,274 reported tokens | Fresh full native v4 trial; all 46 data-answer checks pass; no post-run substitution |
 | [Current supplied CLI](../reports/latency-2026-11-09/supplied-candidate/supplied.json), `1eba590` | **10/10**, 13 SDK attempts, 29,269 reported tokens | Fresh full native v4 trial; all ten data-answer checks pass; one unknown-usage provider retry |
 | [Interactive comparison](../reports/latency-2026-11-09/paired-interactive.json), `1eba590` | Four verified answers; two pairs; zero pacing | Same client/model/schema; list faster, exposure slightly slower; both 2→1 SDK calls |
-| [Earlier single full CLI run](../reports/single-run-2026-11-09/extended.json), `a9f1e67` | **50/50**, 93 SDK attempts, 205,940 reported tokens | One full native v4 trial; no post-run substitutions; all 46 data-answer checks and three hybrids pass |
-| [New-key supplied v4 CLI](../reports/retest-2026-11-09/supplied-first/supplied.json), `2a68b74` | **10/10**, 21 SDK attempts, 48,292 reported tokens | Fresh generation on the final verifier/context runtime; all ten answer checks, measured SQL pager work |
-| [Earlier retry-aware completion](../reports/completion-2026-11-09/completion.json), runtime unchanged | **50/50 passed after retries**, 102 SDK attempts, 217,421 reported tokens | All 54 executions counted; six attempts have unknown usage; 46 final data-answer checks pass; full provenance retained |
-| [Requested confirmation retry](../reports/completion-2026-11-09/retry.json), `a29d1c0` | **2/2**, 4 SDK attempts, 9,324 reported tokens | Latest answers for questions 12 and 13; included in completion accounting |
-| [Earlier provider recovery](../reports/retest-2026-11-09/provider-recovery.json), `2a68b74` | **2/2**, 4 SDK attempts, 9,307 reported tokens | Earlier recovery capture also included in usage accounting |
-| [New-key live concurrent conversations](../reports/retest-2026-11-09/live-conversations.json), `2a68b74` | **9/9**, 22 SDK attempts, 40,972 reported tokens | Three concurrent users, three turns each; both tools, isolated session follow-ups; no quota failures |
-| [Fresh supplied v4 CLI](../reports/assurance-2026-11-09/supplied/supplied.json), `a3b9b24` | **10/10**, 21 SDK attempts, 48,249 reported tokens | Fresh generation, all ten final-answer checks, eight SQL page profiles; later compatible verifier/context fixes have separate proof |
-| [Final historical replay](../reports/assurance-2026-11-09/historical-replay-final.json), `bfcca5e` | **50/50**, 46 bad-prose mutations rejected | Offline archived answers; zero provider calls; not a fresh 50-question model run |
-| [Full-schema CLI capture without RAG](../reports/supplied-no-rag-2026-11-09/README.md), `0b3e94a` | **10/10 supplied**, 21 SDK attempts, 48,293 reported tokens | Evaluator v3; all ten explicit answer checks passed; no active retrieval, cache/local disabled, zero provider errors |
-| [Post-removal supplied CLI capture](../reports/supplied-after-graph-removal-2026-11-08/README.md), `f14ea21` | **10/10 supplied**, 21 SDK attempts, 54,093 reported tokens | Evaluator v3; all ten explicit answer checks passed; full schema/basic BM25, graph removed, cache/local disabled |
-| [Fresh supplied CLI capture](../reports/supplied-v3-2026-11-08/README.md), `b8db4a9` | **10/10 supplied**, 21 SDK calls, 54,075 reported tokens | Evaluator v3; all ten explicit answer-format checks passed; cache/local disabled |
-| [First v3 supplied capture](../reports/supplied-v3-2026-11-08/supplied.json), `f3a9954` | **8/10**, 21 SDK calls, 54,076 tokens | Two false negatives for correct exposure tables with percentage units in their header; raw failed run retained |
-| [Retained CLI-only capture](../reports/cli-2026-11-08/README.md), `4b49d95` | 50/50 extended; 92 SDK calls; 201,404 reported tokens | Evaluator v2: 46 data and four handling cases; six configured narrative cases |
+| [Earlier single full CLI run](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/single-run-2026-11-09/extended.json), `a9f1e67` | **50/50**, 93 SDK attempts, 205,940 reported tokens | One full native v4 trial; no post-run substitutions; all 46 data-answer checks and three hybrids pass |
+| [New-key supplied v4 CLI](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/retest-2026-11-09/supplied-first/supplied.json), `2a68b74` | **10/10**, 21 SDK attempts, 48,292 reported tokens | Fresh generation on the final verifier/context runtime; all ten answer checks, measured SQL pager work |
+| [Earlier retry-aware completion](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/completion-2026-11-09/completion.json), runtime unchanged | **50/50 passed after retries**, 102 SDK attempts, 217,421 reported tokens | All 54 executions counted; six attempts have unknown usage; 46 final data-answer checks pass; full provenance retained |
+| [Requested confirmation retry](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/completion-2026-11-09/retry.json), `a29d1c0` | **2/2**, 4 SDK attempts, 9,324 reported tokens | Latest answers for questions 12 and 13; included in completion accounting |
+| [Earlier provider recovery](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/retest-2026-11-09/provider-recovery.json), `2a68b74` | **2/2**, 4 SDK attempts, 9,307 reported tokens | Earlier recovery capture also included in usage accounting |
+| [New-key live concurrent conversations](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/retest-2026-11-09/live-conversations.json), `2a68b74` | **9/9**, 22 SDK attempts, 40,972 reported tokens | Three concurrent users, three turns each; both tools, isolated session follow-ups; no quota failures |
+| [Fresh supplied v4 CLI](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/assurance-2026-11-09/supplied/supplied.json), `a3b9b24` | **10/10**, 21 SDK attempts, 48,249 reported tokens | Fresh generation, all ten final-answer checks, eight SQL page profiles; later compatible verifier/context fixes have separate proof |
+| [Final historical replay](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/assurance-2026-11-09/historical-replay-final.json), `bfcca5e` | **50/50**, 46 bad-prose mutations rejected | Offline archived answers; zero provider calls; not a fresh 50-question model run |
+| [Full-schema CLI capture without RAG](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-no-rag-2026-11-09/README.md), `0b3e94a` | **10/10 supplied**, 21 SDK attempts, 48,293 reported tokens | Evaluator v3; all ten explicit answer checks passed; no active retrieval, cache/local disabled, zero provider errors |
+| [Post-removal supplied CLI capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-after-graph-removal-2026-11-08/README.md), `f14ea21` | **10/10 supplied**, 21 SDK attempts, 54,093 reported tokens | Evaluator v3; all ten explicit answer checks passed; full schema/basic BM25, graph removed, cache/local disabled |
+| [Fresh supplied CLI capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-v3-2026-11-08/README.md), `b8db4a9` | **10/10 supplied**, 21 SDK calls, 54,075 reported tokens | Evaluator v3; all ten explicit answer-format checks passed; cache/local disabled |
+| [First v3 supplied capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/supplied-v3-2026-11-08/supplied.json), `f3a9954` | **8/10**, 21 SDK calls, 54,076 tokens | Two false negatives for correct exposure tables with percentage units in their header; raw failed run retained |
+| [Retained CLI-only capture](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/cli-2026-11-08/README.md), `4b49d95` | 50/50 extended; 92 SDK calls; 201,404 reported tokens | Evaluator v2: 46 data and four handling cases; six configured narrative cases |
 | [Original-agent supplied capture](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.2.0/supplied.json) | 10/10 | Historical source/evaluator, not current v3 certification |
 | [Original-agent extended capture](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.2.0/extended.json) | 50/50; 97 SDK calls; 266,304 tokens | Historical comparison, not a controlled latency experiment |
 | [v0.1.1 supplied](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.1.1/supplied.json) / [extended](https://github.com/Shaunakrane914/PortiQ/blob/95436a7/reports/v0.1.1/extended.json) | 10/10 / 50/50 | Historical release evidence |
@@ -175,7 +175,7 @@ Subsequent experimental retrieval controls have their own pinned source and pair
 above; the historical supplied capture is not silently recertified for those modes.
 
 The retained eight CLI capture files remain byte-exact and have
-[SHA-256 hashes](../reports/cli-2026-11-08/artifact-sha256.json). Their original scores, failures,
+[SHA-256 hashes](https://github.com/Shaunakrane914/PortiQ/blob/f6d93578e3a2b5017dd926c3aba1e36b6d4e2816/reports/cli-2026-11-08/artifact-sha256.json). Their original scores, failures,
 runtime hashes and six-case narrative coverage are not rewritten to imply v3 checks.
 Earlier reports removed from the current tree remain accessible at the pinned history links.
 
