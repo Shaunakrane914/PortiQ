@@ -75,6 +75,9 @@ def parser() -> argparse.ArgumentParser:
     evaluation.add_argument("--output", type=Path, default=Path("reports/local/evaluation.json"))
     evaluation.add_argument("--trials", type=int, choices=range(1, 6), default=1)
     evaluation.add_argument("--split", choices=["development", "validation", "heldout"])
+    evaluation.add_argument(
+        "--dataset", type=Path, help="Explicit evaluation JSON; overrides --suite"
+    )
     evaluation.add_argument("--limit", type=int)
     evaluation.add_argument(
         "--profile-io",
@@ -207,7 +210,7 @@ def main(argv: list[str] | None = None) -> int:
             if args.profile_io and importlib.util.find_spec("apsw") is None:
                 raise PortiqError("Install --extra performance before using --profile-io.")
 
-            suite = settings.source / (
+            suite = args.dataset or settings.source / (
                 "ground_truth_dataset.json"
                 if args.suite == "supplied"
                 else "evaluation/unseen_nlp.json"

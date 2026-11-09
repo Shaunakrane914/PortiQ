@@ -7,12 +7,72 @@ from test_agent import FakeBackend, call
 from portiq.agent import AgentResponse, PortfolioAgent
 from portiq.config import Settings
 from portiq.evaluation import (
+    _compare_evidence,
     compare_rows,
     evaluate,
     evaluate_case,
     reference_exposure,
     score_answer,
 )
+
+
+@pytest.mark.parametrize("actual,correct", [([[13]], True), ([[999]], False), ([], False)])
+def test_data_diagnostic_checks_values_not_only_projection(actual: list, correct: bool) -> None:
+    reference = {"tool": "sql_query", "columns": ["n"], "rows": [[13]], "ordered": True}
+    candidate = {"tool": "sql_query", "result": {"columns": ["n"], "rows": actual}}
+    error = _compare_evidence(reference, candidate)
+    assert candidate["projection_exact"] is True
+    assert candidate["data_correct"] is correct
+    assert (error is None) is correct
+
+
+def test_extra_projection_can_have_correct_data_without_strict_pass() -> None:
+    reference = {"tool": "sql_query", "columns": ["n"], "rows": [[13]], "ordered": True}
+    candidate = {"tool": "sql_query", "result": {"columns": ["n", "extra"], "rows": [[13, 99]]}}
+    assert _compare_evidence(reference, candidate) is not None
+    assert candidate["data_correct"] is True
+    assert candidate["projection_exact"] is False
+
+
+def test_data_diagnostic_requires_all_distinct_references(database: Path, source: Path) -> None:
+    from portiq.sql import execute
+
+    case = {
+        "id": "two-counts",
+        "question": "Give both counts",
+        "references": [{"sql_query": "SELECT 13 AS n"}, {"sql_query": "SELECT 5 AS n"}],
+    }
+    from portiq.agent import ToolTrace
+
+    def answer(sqls: list[str]) -> AgentResponse:
+        return AgentResponse(
+            request_id="diagnostic",
+            status="answer",
+            answer="13 and 5",
+            tools=[
+                ToolTrace(
+                    tool="sql_query",
+                    arguments={},
+                    result=execute(database, sql).model_dump(mode="json"),
+                    duration_ms=0,
+                )
+                for sql in sqls
+            ],
+            model="test",
+            model_versions=[],
+            duration_ms=0,
+            model_duration_ms=0,
+            api_calls=0,
+            tokens=0,
+        )
+
+    settings = Settings(database=database, source=source)
+    wrong = score_answer(settings, case, answer(["SELECT 13 AS n", "SELECT 999 AS n"]))
+    assert not wrong["data_correct"] and not wrong["passed"]
+    right = score_answer(settings, case, answer(["SELECT 13 AS n", "SELECT 5 AS n"]))
+    assert right["data_correct"] and right["result_correct"]
+    duplicate = {**case, "references": [case["references"][0]] * 2}
+    assert not score_answer(settings, duplicate, answer(["SELECT 13 AS n"]))["data_correct"]
 
 
 @pytest.mark.parametrize(

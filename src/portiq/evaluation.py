@@ -175,7 +175,10 @@ def _compare_evidence(reference: dict[str, Any], candidate: dict[str, Any]) -> s
                 compare_rows(reference["rows"], projected, ordered=reference["ordered"]) is None
             )
         else:
-            candidate["data_correct"] = candidate["projection_exact"]
+            candidate["data_correct"] = candidate["projection_exact"] and (
+                compare_rows(reference["rows"], actual["rows"], ordered=reference["ordered"])
+                is None
+            )
 
         if len(reference["columns"]) != len(actual["columns"]):
             return f"Projection width: expected {reference['columns']}, got {actual['columns']}."
@@ -251,26 +254,52 @@ def score_answer(
                 sql_validity.append(False)
         candidates.append(candidate)
     record["sql_valid"] = all(sql_validity) if sql_validity else None
-    comparisons = [[_compare_evidence(ref, c) for c in candidates] for ref in expected]
+    diagnostics = []
+    comparisons = []
+    for reference in expected:
+        row_diagnostics = []
+        row_errors = []
+        for candidate in candidates:
+            assessed = candidate.copy()
+            row_errors.append(_compare_evidence(reference, assessed))
+            row_diagnostics.append(assessed)
+        diagnostics.append(row_diagnostics)
+        comparisons.append(row_errors)
     matches = [[i for i, error in enumerate(row) if error is None] for row in comparisons]
 
-    def assign(index: int, used: set[int]) -> list[int] | None:
-        if index == len(matches):
+    def assign(index: int, used: set[int], choices: list[list[int]]) -> list[int] | None:
+        if index == len(choices):
             return []
-        for candidate in matches[index]:
+        for candidate in choices[index]:
             if candidate not in used:
-                rest = assign(index + 1, used | {candidate})
+                rest = assign(index + 1, used | {candidate}, choices)
                 if rest is not None:
                     return [candidate, *rest]
         return None
 
-    assignment = assign(0, set())
+    assignment = assign(0, set(), matches)
+    data_matches = [
+        [
+            j
+            for j, candidate in enumerate(row)
+            if candidate.get("data_correct") is True
+            or (reference["tool"] != "sql_query" and comparisons[i][j] is None)
+        ]
+        for i, (reference, row) in enumerate(zip(expected, diagnostics, strict=True))
+    ]
+    data_assignment = assign(0, set(), data_matches)
     record["reference_checks"] = [
         {
             "reference_index": i,
             "matched_tool_index": assignment[i] if assignment else None,
             "candidates": [
-                {"tool_index": j, "matched": error is None, "error": error}
+                {
+                    "tool_index": j,
+                    "matched": error is None,
+                    "error": error,
+                    "data_correct": diagnostics[i][j].get("data_correct"),
+                    "projection_exact": diagnostics[i][j].get("projection_exact"),
+                }
                 for j, error in enumerate(row)
             ],
         }
@@ -279,22 +308,15 @@ def score_answer(
     if expected_status == "answer":
         record["result_correct"] = assignment is not None
         if assignment is not None:
-            matched_candidates = [candidates[assignment[i]] for i in range(len(expected))]
+            matched_candidates = [diagnostics[i][assignment[i]] for i in range(len(expected))]
             record["projection_exact"] = all(
                 c.get("projection_exact", True)
                 for c in matched_candidates
                 if c.get("tool") == "sql_query"
             )
-            record["data_correct"] = all(
-                c.get("data_correct", True)
-                for c in matched_candidates
-                if c.get("tool") == "sql_query"
-            )
         else:
             record["projection_exact"] = False
-            record["data_correct"] = any(
-                c.get("data_correct") is True for c in candidates if c.get("tool") == "sql_query"
-            )
+        record["data_correct"] = data_assignment is not None
         if assignment is None:
             details = [
                 f"Reference {i}: "
@@ -516,6 +538,7 @@ def evaluate(
         "result_correct": sum(r["result_correct"] is True for r in records),
         "result_checked": sum(r["result_correct"] is not None for r in records),
         "projection_exact": sum(r.get("projection_exact") is True for r in records),
+        "data_correct": sum(r.get("data_correct") is True for r in records),
         "routing_correct": sum(r["routing_correct"] for r in records),
         "narrative_checked": sum(
             r.get("answer_verification", {}).get("status") in {"passed", "failed"}

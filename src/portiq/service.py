@@ -1,5 +1,6 @@
 """Shared CLI/API execution, exact cache and bounded opt-in conversation state."""
 
+import contextlib
 import hashlib
 import json
 import re
@@ -513,9 +514,13 @@ class AnalysisService:
                 identities = set()
                 for trace in result.tools:
                     if trace.result and trace.tool == "exposure_calculator":
-                        identities.add(int(trace.result["portfolio_id"]))
+                        pid = trace.result.get("portfolio_id")
+                        if pid is not None:
+                            with contextlib.suppress(ValueError, TypeError):
+                                identities.add(int(pid))
                     elif trace.result and trace.arguments.get("portfolio_id"):
-                        identities.add(int(trace.arguments["portfolio_id"]))
+                        with contextlib.suppress(ValueError, TypeError):
+                            identities.add(int(trace.arguments["portfolio_id"]))
                 if len(identities) == 1:
                     state.selected = next(iter(identities))
                 elif len(identities) > 1:
