@@ -207,35 +207,33 @@ def local_answer(settings: Settings, question: str, selected: int | None) -> Age
             )
         ]
     else:
-        exposure = re.fullmatch(
-            r"(?:show |calculate |what is )?(?:the )?(?:equity[- ])?"
-            r"(?:sector )?(?:exposure|breakdown|allocation)(?: for| of)? (.+)",
-            question,
-            re.I,
-        )
-        if not exposure:
-            exposure = re.fullmatch(
-                r"(?:show |calculate |what is )?(?:the )?"
-                r"(.+?)['’]s (?:equity[- ])?(?:sector )?(?:exposure|breakdown|allocation)",
-                question,
-                re.I,
-            )
-        holdings = re.fullmatch(
-            r"(?:show|list)(?: the)? holdings (?:in|for|of) (.+)", question, re.I
-        )
-        if not holdings:
-            holdings = re.fullmatch(r"(?:show |list )?(?:the )?(.+?)['’]s holdings", question, re.I)
-        metadata = re.fullmatch(
-            r"(?:show|display)(?: the)? (?:metadata|details) (?:for|of) (.+)", question, re.I
-        )
-        if not metadata:
-            metadata = re.fullmatch(
-                r"(?:show |display )?(?:the )?(.+?)['’]s (?:metadata|details)", question, re.I
-            )
-        match = exposure or holdings or metadata
-        if not match:
+        patterns = [
+            (
+                "exposure",
+                (
+                    r"(?:show |calculate |what is )?(?:the )?(?:equity[- ])?"
+                    r"(?:sector )?(?:exposure|breakdown|allocation)(?: for| of)? (.+)"
+                ),
+            ),
+            (
+                "exposure",
+                (
+                    r"(?:show |calculate |what is )?(?:the )?"
+                    r"(.+?)['’]s (?:equity[- ])?(?:sector )?(?:exposure|breakdown|allocation)"
+                ),
+            ),
+            ("holdings", r"(?:show|list)(?: the)? holdings (?:in|for|of) (.+)"),
+            ("holdings", r"(?:show |list )?(?:the )?(.+?)['’]s holdings"),
+            ("metadata", r"(?:show|display)(?: the)? (?:metadata|details) (?:for|of) (.+)"),
+            ("metadata", r"(?:show |display )?(?:the )?(.+?)['’]s (?:metadata|details)"),
+        ]
+        kind, reference = None, None
+        for k, pat in patterns:
+            if m := re.fullmatch(pat, question, re.I):
+                kind, reference = k, m[1]
+                break
+        if not kind or not reference:
             return None
-        reference = match[1]
         if reference.casefold() in {"it", "its", "this portfolio", "the selected portfolio"}:
             if selected is None:
                 return None
@@ -244,7 +242,7 @@ def local_answer(settings: Settings, question: str, selected: int | None) -> Age
             portfolio_id, _ = resolve_portfolio(settings.database, reference)
         except PortiqError:
             return None
-        if exposure:
+        if kind == "exposure":
             tools = [
                 ToolTrace(
                     tool="exposure_calculator",
@@ -262,7 +260,7 @@ def local_answer(settings: Settings, question: str, selected: int | None) -> Age
                     "JOIN securities s ON s.security_id=h.security_id WHERE "
                     "h.portfolio_id=? ORDER BY h.holding_id"
                 )
-                if holdings
+                if kind == "holdings"
                 else "SELECT * FROM portfolios WHERE portfolio_id=?"
             )
             tools = [

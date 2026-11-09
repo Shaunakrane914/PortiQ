@@ -473,17 +473,17 @@ def can_render_complete(tools: list[ToolTrace]) -> bool:
             continue
         if tool.tool != "sql_query":
             return False
-        result = tool.result
-        rows = result["rows"]
-        if result.get("truncated") or not rows or len(rows) > 30:
+        res = tool.result
+        rows = res["rows"]
+        if res.get("truncated") or not rows or len(rows) > 30:
             return False
-        values = [*result["columns"], *(value for row in rows for value in row)]
+        vals = [*res["columns"], *(v for row in rows for v in row)]
         if any(
-            isinstance(value, str)
-            and ("|" in value or "\n" in value or "\r" in value)
-            or isinstance(value, float)
-            and not math.isfinite(value)
-            for value in values
+            isinstance(v, str)
+            and any(c in v for c in ("|", "\n", "\r"))
+            or isinstance(v, float)
+            and not math.isfinite(v)
+            for v in vals
         ):
             return False
     return True
@@ -497,14 +497,12 @@ def _format_scalar_value(value: Any, *, exact: bool = False) -> str:
     if isinstance(value, float):
         if not math.isfinite(value):
             return "Not available"
-        d = Decimal(str(value))
-        text = str(d)
+        text = str(Decimal(str(value)))
         if "." in text:
-            integer_part, frac_part = text.split(".", 1)
-            sign = "-" if integer_part.startswith("-") else ""
-            clean_int = integer_part.lstrip("-")
-            return f"{sign}{int(clean_int):,}.{frac_part}"
-        return f"{int(d):,}"
+            int_p, frac_p = text.split(".", 1)
+            sign, clean = ("-" if int_p.startswith("-") else ""), int_p.lstrip("-")
+            return f"{sign}{int(clean):,}.{frac_p}"
+        return f"{int(text):,}"
     return str(value)
 
 
@@ -517,37 +515,24 @@ def _parse_sql_metadata(sql: str) -> dict[str, Any]:
         from sqlglot import exp
 
         tree = sqlglot.parse_one(sql, read="sqlite")
-        where = tree.args.get("where")
-        group = tree.args.get("group")
-        tables = [t.name.lower() for t in tree.find_all(exp.Table)]
-
+        where, group = tree.args.get("where"), tree.args.get("group")
         w_sql = where.sql().lower() if where else ""
-        is_active = any(
-            k in w_sql
-            for k in [
-                "is_active = 1",
-                "is_active=1",
-                "status = 'active'",
-                "status='active'",
-                "active",
-            ]
-        )
-        is_passive = any(
-            k in w_sql
-            for k in [
-                "status = 'passive'",
-                "status='passive'",
-                "strategy_type = 'passive'",
-                "passive",
-            ]
-        )
-
         return {
             "has_where": where is not None,
             "has_group": group is not None,
-            "tables": tables,
-            "is_active": is_active,
-            "is_passive": is_passive,
+            "tables": [t.name.lower() for t in tree.find_all(exp.Table)],
+            "is_active": any(
+                k in w_sql for k in ("is_active", "status = 'active'", "status='active'", "active")
+            ),
+            "is_passive": any(
+                k in w_sql
+                for k in (
+                    "status = 'passive'",
+                    "status='passive'",
+                    "strategy_type = 'passive'",
+                    "passive",
+                )
+            ),
         }
     except Exception:
         return {}
@@ -559,11 +544,11 @@ def _format_label(
     sql_meta: dict[str, Any] | None = None,
 ) -> str:
     """Format an SQL column or alias into a natural human label without guessing."""
-    col = column.strip()
-    q = question.strip().lower()
+    col, q = column.strip(), question.strip().lower()
     sql_meta = sql_meta or {}
+    acronyms = {"aum": "AUM", "pnl": "PnL", "id": "ID"}
 
-    known_labels = {
+    known = {
         "portfolio_count": "Total portfolios",
         "total_portfolios": "Total portfolios",
         "active_portfolios": "Active portfolios",
@@ -572,10 +557,10 @@ def _format_label(
         "passive_portfolio_count": "Passive portfolios",
         "total_aum": "Total AUM",
         "aum": "AUM",
+        "cost_basis": "Cost Basis",
         "portfolio_name": "Portfolio Name",
         "portfolio_id": "Portfolio ID",
         "security_id": "Security ID",
-        "cost_basis": "Cost Basis",
         "market_value": "Market Value",
         "total_market_value": "Total Market Value",
         "total_cost_basis": "Total Cost Basis",
@@ -590,120 +575,79 @@ def _format_label(
         "sector_name": "Sector",
         "unrealized_pnl": "Unrealized PnL",
     }
-    if col.lower() in known_labels:
-        return known_labels[col.lower()]
+    if col.lower() in known:
+        return known[col.lower()]
 
-    # If column is an identifier/alias without functions
     if not re.search(r"\(|\)", col):
-        if "_" in col:
-            words = col.split("_")
-            acronyms = {"aum": "AUM", "pnl": "PnL", "id": "ID"}
-            formatted_words = [acronyms.get(w.lower(), w.capitalize()) for w in words]
-            return " ".join(formatted_words)
-        acronyms = {"aum": "AUM", "pnl": "PnL", "id": "ID"}
-        return acronyms.get(col.lower(), col.capitalize())
+        return " ".join(acronyms.get(w.lower(), w.capitalize()) for w in col.split("_"))
 
-    # Unpack outer wrapper functions such as ROUND(expr, 2), COALESCE(expr, 0), CAST(expr AS ...)
+    # Unpack outer wrapper functions (ROUND, COALESCE, CAST, NULLIF)
     cleaned = col
-    while True:
-        wrapper = re.match(r"(?i)^(?:round|coalesce|cast|nullif)\s*\((.*)\)$", cleaned)
-        if not wrapper:
-            break
-        inner = wrapper.group(1).strip()
-        if "," in inner:
-            inner = inner.rsplit(",", 1)[0].strip()
-        elif re.search(r"(?i)\s+as\s+\w+$", inner):
-            inner = re.sub(r"(?i)\s+as\s+\w+$", "", inner).strip()
-        cleaned = inner
+    while m := re.match(r"(?i)^(?:round|coalesce|cast|nullif)\s*\((.*)\)$", cleaned):
+        inner = m.group(1).strip()
+        cleaned = (
+            inner.rsplit(",", 1)[0].strip()
+            if "," in inner
+            else re.sub(r"(?i)\s+as\s+\w+$", "", inner).strip()
+        )
 
-    count_match = re.match(r"(?i)^count\s*\((.*?)\)$", cleaned)
-    if count_match:
-        inner = count_match.group(1).strip()
+    if m := re.match(r"(?i)^count\s*\((.*?)\)$", cleaned):
+        inner = m.group(1).strip()
         if re.match(r"(?i)^distinct\s+", inner):
             sub = re.sub(r"(?i)^distinct\s+", "", inner).strip().replace("_", " ")
             return f"Distinct {sub} count"
-
-        # If inside a grouped table (e.g. GROUP BY status), format as column header
+        tables = sql_meta.get("tables", [])
         if sql_meta.get("has_group"):
-            tables = sql_meta.get("tables", [])
             if "portfolios" in tables:
                 return "Portfolios"
             if "securities" in tables:
                 return "Securities"
             return "Count"
-
-        # Determine entity from SQL tables or question context
-        tables = sql_meta.get("tables", [])
-        if "portfolios" in tables or re.search(r"\b(?:portfolio|fund)s?\b", q):
-            entity = "portfolios"
-        elif "securities" in tables or re.search(r"\b(?:securit|stock|bond)s?\b", q):
-            entity = "securities"
-        elif "holdings" in tables or re.search(r"\bholdings?\b", q):
-            entity = "holdings"
-        elif "transactions" in tables or re.search(r"\btransactions?\b", q):
-            entity = "transactions"
-        elif "sectors" in tables or re.search(r"\bsectors?\b", q):
-            entity = "sectors"
-        else:
-            entity = ""
-
-        # Distinguish filtered vs unfiltered using SQL semantics first, then question qualifiers
+        entities = (
+            ("portfolio", "portfolios"),
+            ("fund", "portfolios"),
+            ("securit", "securities"),
+            ("stock", "securities"),
+            ("bond", "securities"),
+            ("holding", "holdings"),
+            ("transaction", "transactions"),
+            ("sector", "sectors"),
+        )
+        entity = next((v for k, v in entities if k in q or v in tables), "")
         if sql_meta.get("is_active"):
             return f"Active {entity}" if entity else "Active count"
         if sql_meta.get("is_passive"):
             return f"Passive {entity}" if entity else "Passive count"
-
-        qualifier_match = re.search(
+        if qm := re.search(
             r"\b(active|passive|equity|bond|taxable|retirement|open|closed|technology|matching)\b",
             q,
-        )
-        if qualifier_match:
-            qualifier = qualifier_match.group(1).capitalize()
-            return f"{qualifier} {entity}" if entity else f"{qualifier} count"
-
+        ):
+            qual = qm.group(1).capitalize()
+            return f"{qual} {entity}" if entity else f"{qual} count"
         if sql_meta.get("has_where"):
             return f"Matching {entity}" if entity else "Matching count"
-
         if (
             re.search(r"\b(total|all)\b", q)
             or re.search(r"\bhow many\b", q)
             or not sql_meta.get("has_where")
         ):
             return f"Total {entity}" if entity else "Total count"
+        return entity.capitalize() if entity else "Total count"
 
-        if entity:
-            return entity.capitalize()
-        return "Total count"
-
-    sum_match = re.match(r"(?i)^sum\s*\((.*?)\)$", cleaned)
-    if sum_match:
-        inner = sum_match.group(1).strip().replace("_", " ")
+    aggs = {
+        "sum": ("Total", True),
+        "avg": ("Average", False),
+        "min": ("Minimum", False),
+        "max": ("Maximum", False),
+    }
+    if m := re.match(r"(?i)^(sum|avg|min|max)\s*\((.*?)\)$", cleaned):
+        func, inner = m.group(1).lower(), m.group(2).strip().replace("_", " ")
+        prefix, is_title = aggs[func]
         if inner.lower() == "total aum":
             return "Total AUM"
         if not re.search(r"[*+\-/]|case\b", inner, re.I):
-            return f"Total {inner.title()}"
-        return "Total"
-
-    avg_match = re.match(r"(?i)^avg\s*\((.*?)\)$", cleaned)
-    if avg_match:
-        inner = avg_match.group(1).strip().replace("_", " ")
-        if not re.search(r"[*+\-/]|case\b", inner, re.I):
-            return f"Average {inner}"
-        return "Average"
-
-    min_match = re.match(r"(?i)^min\s*\((.*?)\)$", cleaned)
-    if min_match:
-        inner = min_match.group(1).strip().replace("_", " ")
-        if not re.search(r"[*+\-/]|case\b", inner, re.I):
-            return f"Minimum {inner}"
-        return "Minimum"
-
-    max_match = re.match(r"(?i)^max\s*\((.*?)\)$", cleaned)
-    if max_match:
-        inner = max_match.group(1).strip().replace("_", " ")
-        if not re.search(r"[*+\-/]|case\b", inner, re.I):
-            return f"Maximum {inner}"
-        return "Maximum"
+            return f"{prefix} {inner.title() if is_title else inner}"
+        return prefix
 
     return col
 
@@ -724,54 +668,50 @@ def render_tools(
         if not result:
             continue
         if tool.tool == "exposure_calculator":
-            table_lines = [
-                "| Sector | Exposure (%) |",
-                "|---|---|",
-            ]
+            table_lines = ["| Sector | Exposure (%) |", "|---|---|"]
             for name, value in result["sectors"].items():
                 table_lines.append(f"| {name} | {_financial(value, percent=True)} |")
             sections.append(
-                str(result["portfolio_name"])
-                + " — equity-only sector exposure\n\n"
+                f"{result['portfolio_name']} — equity-only sector exposure\n\n"
                 + "\n".join(table_lines)
                 + "\n\nBasis: Stock current_weight / total Stock current_weight; bonds excluded."
             )
             continue
         columns, rows = result["columns"], result["rows"]
-        sql_text = (result or {}).get("sql") or (tool.arguments or {}).get("sql") or ""
-        sql_meta = _parse_sql_metadata(sql_text)
+        sql_meta = _parse_sql_metadata(
+            (result or {}).get("sql") or (tool.arguments or {}).get("sql") or ""
+        )
         q_context = question or (tool.arguments or {}).get("question") or ""
         if not rows:
             sections.append("No matching rows.")
         elif len(columns) == len(rows) == 1:
-            value = rows[0][0]
             label = _format_label(columns[0], q_context, sql_meta)
-            formatted = _format_scalar_value(value, exact=exact)
-            sections.append(f"{label}: {formatted}")
+            sections.append(f"{label}: {_format_scalar_value(rows[0][0], exact=exact)}")
         elif len(columns) == 1 and len(rows) > 1:
-            count = len(rows)
-            clean_label = _format_label(columns[0], q_context, sql_meta).lower()
-            if "portfolio" in clean_label:
-                entity = "portfolios"
-            elif "securit" in clean_label or clean_label == "symbols":
-                entity = "securities"
-            elif "sector" in clean_label:
-                entity = "sectors"
-            elif clean_label.endswith("s"):
-                entity = clean_label
-            else:
-                entity = clean_label + "s"
-            header = f"{count} matching {entity}:"
+            clean = _format_label(columns[0], q_context, sql_meta).lower()
+            entity = (
+                "portfolios"
+                if "portfolio" in clean
+                else "securities"
+                if "securit" in clean or clean == "symbols"
+                else "sectors"
+                if "sector" in clean
+                else clean
+                if clean.endswith("s")
+                else f"{clean}s"
+            )
             items = [f"* {_cell(r[0], exact=exact)}" for r in rows[:max_rows]]
-            sections.append(header + "\n" + "\n".join(items))
+            sections.append(f"{len(rows)} matching {entity}:\n" + "\n".join(items))
         else:
             headers = [_format_label(c, q_context, sql_meta) for c in columns]
             table_lines = [
                 "| " + " | ".join(headers) + " |",
                 "| " + " | ".join("---" for _ in columns) + " |",
             ]
-            for row in rows[:max_rows]:
-                table_lines.append("| " + " | ".join(_cell(v, exact=exact) for v in row) + " |")
+            table_lines.extend(
+                "| " + " | ".join(_cell(v, exact=exact) for v in row) + " |"
+                for row in rows[:max_rows]
+            )
             sections.append("\n".join(table_lines))
         if len(rows) > max_rows or result.get("truncated"):
             sections.append(
