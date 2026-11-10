@@ -224,7 +224,7 @@ flowchart TD
 
 ## Key Architectural Decisions
 
-- **Direct Schema Grounding over RAG**: Vector and Graph retrieval (RAG) were experimentally evaluated on earlier iterations and excluded from the runtime implementation. Because the relational schema is small (6 tables, 95 holdings, 13 portfolios), dynamic schema reflection and exact categorical value injection into prompt context achieve 100% accuracy with lower latency, no vector database overhead, and zero semantic retrieval drift.
+- **Direct Schema Grounding over RAG**: Vector and Graph retrieval (RAG) were experimentally evaluated on earlier iterations and excluded from the runtime implementation. Because the relational schema is compact (9 tables, 95 holdings, 13 portfolios, 603 total rows), dynamic schema reflection and exact categorical value injection into prompt context achieve 100% accuracy with lower latency, no vector database overhead, and zero semantic retrieval drift.
 - **AST-Level SQL Validation**: Using `sqlglot` to parse and inspect queries prior to SQLite execution ensures strict read-only safety independently of model obedience. All non-`SELECT` statements, dangerous PRAGMAs, and recursive CTEs are blocked before reaching SQLite.
 - **Deterministic Financial Normalization**: Equity sector exposure is computed deterministically in Python using `Decimal` with `ROUND_HALF_UP` rounding to 2 decimals, strictly excluding bonds (`s.asset_type = 'Stock'`) and eliminating LLM arithmetic errors.
 
